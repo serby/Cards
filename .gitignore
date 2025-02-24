@@ -1,0 +1,10 @@
+# Xcode
+.DS_Store
+*.xcuserstate
+xcuserdata/
+DerivedData
+*.swp
+*.mode1v3
+*.pbxuser
+*.xcscmblueprint
+*.xcworkspace/
