@@ -5,15 +5,12 @@
 //  Created by Serby, Paul on 18/12/2024.
 //
 
-import XCTest
 @testable import Cards
+import XCTest
 
 final class CardsUITestsLaunchTests: XCTestCase {
     
     let app = XCUIApplication()
-    override class var runsForEachTargetApplicationUIConfiguration: Bool {
-        true
-    }
 
     override func setUpWithError() throws {
 

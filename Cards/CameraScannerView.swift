@@ -5,9 +5,8 @@
 //  Created by Serby, Paul on 18/12/2024.
 //
 
-
-import SwiftUI
 import AVFoundation
+import SwiftUI
 
 struct CameraScannerView: UIViewControllerRepresentable {
     @Binding var scannedCode: String?
@@ -28,7 +27,7 @@ struct CameraScannerView: UIViewControllerRepresentable {
         Coordinator(self)
     }
 
-    class Coordinator: NSObject, ScannerViewControllerDelegate {
+    class Coordinator: NSObject, @preconcurrency ScannerViewControllerDelegate {
         var parent: CameraScannerView
         
         init(_ parent: CameraScannerView) {
@@ -36,7 +35,7 @@ struct CameraScannerView: UIViewControllerRepresentable {
         }
         
         // This is called when a barcode is scanned
-        func didFindScannedCode(code: String, type: AVMetadataObject.ObjectType) {
+        @MainActor func didFindScannedCode(code: String, type: AVMetadataObject.ObjectType) {
             parent.scannedCode = code
             parent.barcodeType = BarcodeMapper.mapMetadataObjectTypeToBarcodeType(type)
         }

@@ -1,12 +1,12 @@
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \CardItem.order) private var cardItems: [CardItem]
     @State private var isShowingScanner = false
-    @State private var scannedCode: String? = nil
-    @State private var barcodeType: BarcodeType? = nil
+    @State private var scannedCode: String?
+    @State private var barcodeType: BarcodeType?
     @State private var isAddingCard = false
     @State private var isEditing = false
     

@@ -1,0 +1,113 @@
+disabled_rules: # rule identifiers to exclude from running
+  - trailing_whitespace
+  - line_length
+  - function_body_length
+  - file_length
+  - type_body_length
+  - cyclomatic_complexity
+
+opt_in_rules: # some rules are only opt-in
+  - empty_count
+  - force_unwrapping
+  - private_outlet
+  - unneeded_parentheses_in_closure_argument
+  - vertical_parameter_alignment_on_call
+  - implicitly_unwrapped_optional
+  - redundant_nil_coalescing
+  - prohibited_super_call
+  - fatal_error_message
+  - closure_spacing
+  - opening_brace
+  - operator_usage_whitespace
+  - operator_whitespace
+  - sorted_imports
+  - unused_optional_binding
+  - unused_closure_parameter
+  - vertical_parameter_alignment
+  - closure_end_indentation
+  - closure_parameter_position
+  - explicit_init
+  - first_where
+  - nimble_operator
+  - number_separator
+  - object_literal
+  - overridden_super_call
+  - pattern_matching_keywords
+  - private_action
+  - prohibited_interface_builder
+  - quick_discouraged_call
+  - quick_discouraged_focused_test
+  - quick_discouraged_pending_test
+  - single_test_class
+  - strict_fileprivate
+  - switch_case_on_newline
+
+excluded: # paths to ignore during linting. Takes precedence over `included`.
+  - Pods
+  - DerivedData
+  - .build
+  - fastlane
+  - vendor
+  - Cards/GeneratedMocks.swift
+
+# configurable rules can be customized from this configuration file
+# binary rules can set their severity level
+force_cast: warning # implicitly
+force_try:
+  severity: warning # explicitly
+# rules that have both warning and error levels, can set just the warning level
+# implicitly
+identifier_name:
+  min_length: 2 # only warning
+  excluded: # excluded via string array
+    - id
+    - URL
+    - x
+    - y
+    - i
+    - j
+    - to
+    - at
+    - in
+    - me
+    - or
+    - on
+    - up
+    - if
+    - ok
+    - db
+    - vm
+    - vc
+    - ui
+    - ip
+    - qa
+    - tv
+    - os
+    - no
+    - by
+    - is
+    - am
+    - pm
+    - of
+    - as
+    - it
+    - vs
+    - we
+    - us
+    - my
+    - he
+    - do
+    - be
+    - go
+    - so
+    - an
+    - a
+    - r
+    - s
+    - t
+    - v
+    - w
+    - z
+    - _
+    - GlobalAPIKey
+reporter: "xcode" # reporter type (xcode, json, csv, checkstyle, codeclimate, junit, html, emoji, sonarqube, markdown, github-actions-logging)

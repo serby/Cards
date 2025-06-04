@@ -1,6 +1,6 @@
+import SwiftData
 import SwiftUI
 import UIKit // Import UIKit for UIScreen
-import SwiftData
 
 struct CardItemView: View {
     @State private var originalBrightness: CGFloat = UIScreen.main.brightness
@@ -16,7 +16,7 @@ struct CardItemView: View {
             Text(item.name)
                 .font(.title).foregroundStyle(.secondary).padding(.vertical)
 
-            BarcodeView(barcodeString: item.code, barcodeType:item.barcodeType)
+            BarcodeView(barcodeString: item.code, barcodeType: item.barcodeType)
             Spacer()
             Text("\(item.code)").font(.largeTitle)
             Spacer()

@@ -5,8 +5,8 @@
 //  Created by Serby, Paul on 18/12/2024.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 class AppLifecycleTracker: ObservableObject {
     @Published var startTime: Date?
@@ -29,7 +29,7 @@ struct CardsApp: App {
     
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
-            CardItem.self,
+            CardItem.self
         ])
 
         let isTesting = CommandLine.arguments.contains("-uiTesting")

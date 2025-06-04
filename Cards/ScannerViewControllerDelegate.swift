@@ -5,15 +5,14 @@
 //  Created by Serby, Paul on 18/12/2024.
 //
 
-
-import UIKit
 import AVFoundation
+import UIKit
 
 protocol ScannerViewControllerDelegate: AnyObject {
     func didFindScannedCode(code: String, type: AVMetadataObject.ObjectType)
 }
 
-class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
+class ScannerViewController: UIViewController, @preconcurrency AVCaptureMetadataOutputObjectsDelegate {
     
     var captureSession: AVCaptureSession!
     var previewLayer: AVCaptureVideoPreviewLayer!
@@ -72,8 +71,11 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
         previewLayer.videoGravity = .resizeAspectFill
         view.layer.addSublayer(previewLayer)
         
-        DispatchQueue.global(qos: .userInitiated).async {
-            self.captureSession.startRunning()
+        Task { [weak self] in
+            await MainActor.run {
+                guard let self = self else { return }
+                self.captureSession.startRunning()
+            }
         }
     }
     
@@ -96,7 +98,7 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
                 dismiss(animated: true)
             } else {
                 // Play Ket Error sounds
-                AudioServicesPlaySystemSound(SystemSoundID(1053))
+                AudioServicesPlaySystemSound(SystemSoundID(1_053))
             }
         }
     }

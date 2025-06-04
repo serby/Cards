@@ -1,11 +1,8 @@
-import RSBarcodes_Swift
 import AVFoundation
+import RSBarcodes_Swift
 import SwiftUI
 
 let pointsWidth: CGFloat = 400
-let pixelWidth = pointsWidth * UIScreen.main.scale
-let pixelHeight = (pointsWidth / 3) * UIScreen.main.scale
-let barCodeSize = CGSize(width: pixelWidth, height: pixelHeight)
 
 struct BarcodeView: View {
     let barcodeString: String
@@ -30,6 +27,9 @@ struct BarcodeView: View {
         guard let metadataType = BarcodeMapper.mapBarcodeTypeToMetadataObjectType(type) else {
             return nil
         }
+        let pixelWidth = pointsWidth * UIScreen.main.scale
+        let pixelHeight = (pointsWidth / 3) * UIScreen.main.scale
+        let barCodeSize = CGSize(width: pixelWidth, height: pixelHeight)
         
         let barcodeImage = RSUnifiedCodeGenerator.shared.generateCode(
             code,
