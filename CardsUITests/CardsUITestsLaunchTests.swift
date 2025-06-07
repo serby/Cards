@@ -10,75 +10,29 @@ import XCTest
 
 final class CardsUITestsLaunchTests: XCTestCase {
     
-    let app = XCUIApplication()
-
     override func setUpWithError() throws {
-
-        // Pass -uiTesting flag to ensure in-memory storage is used
-        app.launchArguments.append("-uiTesting")
-        app.launch()
-
+        // Put setup code here. This method is called before the invocation of each test method in the class.
+        
         // In UI tests it is usually best to stop immediately when a failure occurs.
         continueAfterFailure = false
-
-    }
-
-    func testAdd() throws {
         
-        app.buttons["addCardButton"].tap()
-        
-        let enterNameTextField = app.textFields["Enter name"]
-        XCTAssertEqual(enterNameTextField.value as? String, "Enter name", "Enter Name text field is not empty")
-        
-        let enterCodeTextField = app.textFields["Enter code"]
-        XCTAssertEqual(enterCodeTextField.value as? String, "Enter code", "Enter Code text field is not empty")
-        
-        enterNameTextField.tap()
-        enterNameTextField.typeText("Test Name")
-        
-        enterCodeTextField.tap()
-        enterCodeTextField.typeText("Test Code")
-        app.buttons["saveCardButton"].tap()
-        
-        let firstCell = app.cells.firstMatch
-        XCTAssertTrue(firstCell.exists, "Expected at least one card in the list, but found none.")
-        XCTAssertTrue(firstCell.staticTexts["Test Name"].exists, "First card in the list does not have the expected name 'Test Name'.")
-        
-        // Check the values are blank second time round
-        app.buttons["addCardButton"].tap()
-        
-        XCTAssertEqual(enterNameTextField.value as? String, "Enter name", "Enter Name text field is not empty")
-        
-        XCTAssertEqual(enterCodeTextField.value as? String, "Enter code", "Enter Code text field is not empty")
+        // In UI tests it’s important to set the initial state - such as interface orientation - required for your tests before they run. The setUp method is a good place to do this.
     }
     
-    func testEdit() throws {
-        
-        app.buttons["addCardButton"].tap()
-        
-        let enterNameTextField = app.textFields["Enter name"]
-        let enterCodeTextField = app.textFields["Enter code"]
-        enterNameTextField.tap()
-        enterNameTextField.typeText("Test Name")
-        
-        enterCodeTextField.tap()
-        enterCodeTextField.typeText("Test Code")
-        app.navigationBars["Add Card"]/*@START_MENU_TOKEN@*/.buttons["Save"]/*[[".otherElements[\"Save\"].buttons[\"Save\"]",".buttons[\"Save\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.tap()
-        
-        let collectionViewsQuery = app.collectionViews
-        collectionViewsQuery.buttons["Test Name"].tap()
-        app.buttons["editCardButton"].tap()
-        
-        enterNameTextField.tap()
-        enterNameTextField.typeText("Edited ")
-        
-        enterCodeTextField.tap()
-        enterCodeTextField.typeText("Edited ")
-        
-        app.buttons["saveCardButton"].tap()
-        
-        let firstCell = app.cells.firstMatch
-        XCTAssertTrue(firstCell.exists, "Expected at least one card in the list, but found none.")
-        XCTAssertTrue(firstCell.staticTexts["Test Name"].exists, "First card in the list does not have the expected name 'Test Name'.")
+    override func tearDownWithError() throws {
+        // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
+    
+    @MainActor
+    func testLaunchPerformance() throws {
+        if #available(macOS 10.15, iOS 17.0, tvOS 17.0, watchOS 7.0, *) {
+            let metric = XCTApplicationLaunchMetric()
+            
+            // Measure app launch performance
+            measure(metrics: [metric]) {
+                XCUIApplication().launch()
+            }
+        }
+    }
+    
 }

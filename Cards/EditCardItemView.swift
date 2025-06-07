@@ -24,32 +24,47 @@ struct EditCardItemView: View {
                 Section {
                     HStack {
                         Text("Name")
+                            .accessibilityIdentifier("nameLabel")
                         Spacer()
                         TextField("Enter name", text: $tempName)
                             .multilineTextAlignment(.trailing)
                             .autocorrectionDisabled()
+                            .accessibilityIdentifier("nameTextField")
+                            .accessibilityLabel("Card name")
+                            .accessibilityHint("Enter the name of this card")
                     }
                     
                     HStack {
                         Text("Code")
+                            .accessibilityIdentifier("codeLabel")
                         Spacer()
                         TextField("Enter code", text: $tempCode)
                             .multilineTextAlignment(.trailing)
                             .keyboardType(.default)
                             .autocorrectionDisabled()
+                            .accessibilityIdentifier("codeTextField")
+                            .accessibilityLabel("Card code")
+                            .accessibilityHint("Enter the barcode number for this card")
                     }
                 }
+                .accessibilityIdentifier("cardDetailsSection")
                 
                 Section {
                     Picker("Barcode Type", selection: $selectedType) {
                         ForEach(BarcodeType.allCases, id: \.self) { type in
                             Text(type.rawValue).tag(type.rawValue)
+                                .accessibilityIdentifier("barcodeType_\(type.rawValue.replacingOccurrences(of: " ", with: "_"))")
                         }
                     }
-                    .pickerStyle(.menu)  // Choose your preferred style
+                    .pickerStyle(.menu)
+                    .accessibilityIdentifier("barcodeTypePicker")
+                    .accessibilityLabel("Barcode type")
+                    .accessibilityHint("Select the type of barcode for this card")
                 }
+                .accessibilityIdentifier("barcodeTypeSection")
             }
             .navigationBarTitleDisplayMode(.inline)
+            .accessibilityIdentifier("editCardForm")
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save") {
@@ -60,6 +75,17 @@ struct EditCardItemView: View {
                         dismiss()
                     }
                     .accessibilityIdentifier("saveCardButton")
+                    .accessibilityLabel("Save card")
+                    .accessibilityHint("Save changes to this card")
+                }
+                
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") {
+                        dismiss()
+                    }
+                    .accessibilityIdentifier("cancelButton")
+                    .accessibilityLabel("Cancel")
+                    .accessibilityHint("Discard changes and return to previous screen")
                 }
             }
         }
