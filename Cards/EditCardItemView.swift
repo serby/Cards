@@ -78,15 +78,6 @@ struct EditCardItemView: View {
                     .accessibilityLabel("Save card")
                     .accessibilityHint("Save changes to this card")
                 }
-                
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
-                        dismiss()
-                    }
-                    .accessibilityIdentifier("cancelButton")
-                    .accessibilityLabel("Cancel")
-                    .accessibilityHint("Discard changes and return to previous screen")
-                }
             }
         }
     }
