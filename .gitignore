@@ -8,3 +8,5 @@ DerivedData
 *.pbxuser
 *.xcscmblueprint
 *.xcworkspace/
+# Test results
+TestResults.xcresult
