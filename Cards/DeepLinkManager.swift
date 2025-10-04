@@ -38,8 +38,10 @@ class DeepLinkManager: ObservableObject {
                 selectedCardId = cardId
             }
         case "edit":
+            print("Deep link Edit Card id: \(pathComponents.first ?? "Missing")")
             if let cardId = pathComponents.first,
                let card = findCard(by: cardId, in: modelContext) {
+                print("Deep link Edit Card Found: \(cardId)")
                 activeSheet = .editCard(card)
             }
         default:
