@@ -1,23 +1,18 @@
 {
   "configurations" : [
     {
-      "id" : "E539554B-53B4-44B7-B00E-47FEA09520CA",
-      "name" : "Test Scheme Action",
+      "id" : "ECDCDEF3-B776-40F2-9BC5-645C8A0DB18E",
+      "name" : "Configuration 1",
       "options" : {
 
       }
     }
   ],
   "defaultOptions" : {
-    "targetForVariableExpansion" : {
-      "containerPath" : "container:Cards.xcodeproj",
-      "identifier" : "6976AD842D1392F1006F2674",
-      "name" : "Cards"
-    }
+
   },
   "testTargets" : [
     {
-      "parallelizable" : true,
       "target" : {
         "containerPath" : "container:Cards.xcodeproj",
         "identifier" : "6976AD972D1392F2006F2674",
@@ -25,7 +20,6 @@
       }
     },
     {
-      "parallelizable" : true,
       "target" : {
         "containerPath" : "container:Cards.xcodeproj",
         "identifier" : "6976ADA12D1392F2006F2674",

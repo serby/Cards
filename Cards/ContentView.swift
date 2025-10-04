@@ -17,12 +17,19 @@ struct ContentView: View {
                     NavigationLink {
                         CardItemView(item: item)
                     } label: {
-                        Text(item.name).padding(.vertical)
+                        Text(item.name)
+                            .padding(.vertical)
+                            .foregroundColor(.primary)
                     }
+                    .listRowBackground(Color.clear)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
                 }
                 .onDelete(perform: deleteItems)
                 .onMove(perform: moveItems)
             }
+            .listStyle(.plain)
+            .background(.ultraThinMaterial)
             .toolbar {
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
                     Button(action: { isAddingCard = true }) {
@@ -70,6 +77,9 @@ struct ContentView: View {
             }
             // Save changes to SwiftData
             try? modelContext.save()
+            let generator = UIImpactFeedbackGenerator(style: .medium)
+            generator.prepare()
+            generator.impactOccurred()
         }
     }
     
