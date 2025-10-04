@@ -14,6 +14,7 @@ import XCTest
 final class BarcodeViewTests: XCTestCase {
     
     // Test successful barcode generation for Code 128
+    @MainActor
     func testGenerateBarcodeCode128() {
         let barcodeView = BarcodeView(barcodeString: "1234567890", barcodeType: .code128)
         let image = barcodeView.generateBarcode(from: "1234567890", type: .code128)
@@ -22,6 +23,7 @@ final class BarcodeViewTests: XCTestCase {
     }
     
     // Test successful barcode generation for QR Code
+    @MainActor
     func testGenerateBarcodeQRCode() {
         let barcodeView = BarcodeView(barcodeString: "https://example.com", barcodeType: .qrCode)
         let image = barcodeView.generateBarcode(from: "https://example.com", type: .qrCode)
@@ -30,6 +32,7 @@ final class BarcodeViewTests: XCTestCase {
     }
     
     // Test successful barcode generation for EAN-13
+    @MainActor
     func testGenerateBarcodeEAN13() {
         let barcodeView = BarcodeView(barcodeString: "5901234123457", barcodeType: .ean13)
         let image = barcodeView.generateBarcode(from: "5901234123457", type: .ean13)
@@ -38,6 +41,7 @@ final class BarcodeViewTests: XCTestCase {
     }
     
     // Test barcode generation with empty string
+    @MainActor
     func testGenerateBarcodeEmptyString() {
         let barcodeView = BarcodeView(barcodeString: "", barcodeType: .code128)
         let image = barcodeView.generateBarcode(from: "", type: .code128)
@@ -51,6 +55,7 @@ final class BarcodeViewTests: XCTestCase {
     }
     
     // Test barcode generation with very long string
+    @MainActor
     func testGenerateBarcodeLongString() {
         let longString = String(repeating: "1234567890", count: 20) // 200 characters
         let barcodeView = BarcodeView(barcodeString: longString, barcodeType: .code128)
@@ -61,6 +66,7 @@ final class BarcodeViewTests: XCTestCase {
     }
     
     // Test barcode generation with special characters
+    @MainActor
     func testGenerateBarcodeSpecialCharacters() {
         let specialString = "!@#$%^&*()-_=+[]{}|;:,.<>?/"
         let barcodeView = BarcodeView(barcodeString: specialString, barcodeType: .code128)
@@ -71,6 +77,7 @@ final class BarcodeViewTests: XCTestCase {
     }
     
     // Test barcode generation with unsupported type
+    @MainActor
     func testGenerateBarcodeUnsupportedType() {
         // Create a mock BarcodeType that won't map to a valid AVMetadataObject.ObjectType
         let mockBarcodeType = BarcodeType.code128
@@ -97,6 +104,7 @@ final class BarcodeViewTests: XCTestCase {
     }
     
     // Test image dimensions
+    @MainActor
     func testBarcodeImageDimensions() {
         let barcodeView = BarcodeView(barcodeString: "1234567890", barcodeType: .code128)
         let image = barcodeView.generateBarcode(from: "1234567890", type: .code128)

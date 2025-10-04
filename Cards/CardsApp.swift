@@ -59,6 +59,9 @@ struct CardsApp: App {
                     let duration = Date().timeIntervalSince(Self.trueLaunchTime)
                     print("Cold Start Time: \(duration) seconds")
                 }
+                .onOpenURL { url in
+                    handleDeepLink(url)
+                }
         }
         .modelContainer(sharedModelContainer)
         .onChange(of: scenePhase) {
@@ -78,5 +81,11 @@ struct CardsApp: App {
                 break
             }
         }
+    }
+    
+    private func handleDeepLink(_ url: URL) {
+        // Handle deep links: cards://list, cards://camera, cards://card/123, cards://edit/123
+        print("Deep link received: \(url)")
+        NotificationCenter.default.post(name: .deepLink, object: url)
     }
 }

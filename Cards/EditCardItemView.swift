@@ -29,7 +29,7 @@ struct EditCardItemView: View {
                         TextField("Enter name", text: $tempName)
                             .multilineTextAlignment(.trailing)
                             .autocorrectionDisabled()
-                            .accessibilityIdentifier("nameTextField")
+                            .accessibilityIdentifier("cardDetailsSection.nameTextField")
                             .accessibilityLabel("Card name")
                             .accessibilityHint("Enter the name of this card")
                     }
@@ -42,7 +42,7 @@ struct EditCardItemView: View {
                             .multilineTextAlignment(.trailing)
                             .keyboardType(.default)
                             .autocorrectionDisabled()
-                            .accessibilityIdentifier("codeTextField")
+                            .accessibilityIdentifier("cardDetailsSection.codeTextField")
                             .accessibilityLabel("Card code")
                             .accessibilityHint("Enter the barcode number for this card")
                     }

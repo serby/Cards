@@ -1,14 +1,16 @@
 import SwiftData
 import SwiftUI
 
+extension Notification.Name {
+    static let deepLink = Notification.Name("deepLink")
+}
+
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \CardItem.order) private var cardItems: [CardItem]
-    @State private var isShowingScanner = false
+    @StateObject private var deepLinkManager = DeepLinkManager()
     @State private var scannedCode: String?
     @State private var barcodeType: BarcodeType?
-    @State private var isAddingCard = false
-    @State private var isEditing = false
     
     var body: some View {
         NavigationStack {
@@ -32,28 +34,42 @@ struct ContentView: View {
             .background(.ultraThinMaterial)
             .toolbar {
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
-                    Button(action: { isAddingCard = true }) {
+                    Button(action: {
+                        deepLinkManager.activeSheet = .addCard
+                    }) {
                         Label("Add Card", systemImage: "plus")
                             .accessibilityIdentifier("addCardButton")
                     }
-                    Button(action: { isShowingScanner = true }) {
+                    Button(action: {
+                        deepLinkManager.activeSheet = .camera
+                    }) {
                         Label("Scan Code", systemImage: "camera")
                             .accessibilityIdentifier("scanCodeButton")
                     }
                 }
             }
         }
-        .sheet(isPresented: $isAddingCard) {
-            NavigationStack {
-                let newCardItem = CardItem(timestamp: Date(), code: "", name: "")
-                EditCardItemView(cardItem: newCardItem, onSave: { updatedCard in
-                    modelContext.insert(updatedCard)
-                })
-                .navigationTitle("Add Card")
+        .sheet(item: $deepLinkManager.activeSheet) { sheet in
+            switch sheet {
+            case .addCard:
+                NavigationStack {
+                    let newCardItem = CardItem(timestamp: Date(), code: "", name: "")
+                    EditCardItemView(cardItem: newCardItem, onSave: { updatedCard in
+                        modelContext.insert(updatedCard)
+                        deepLinkManager.activeSheet = nil
+                    })
+                    .navigationTitle("Add Card")
+                }
+            case .camera:
+                CameraScannerView(scannedCode: $scannedCode, barcodeType: $barcodeType)
+            case .editCard(let card):
+                NavigationStack {
+                    EditCardItemView(cardItem: card, onSave: { _ in
+                        deepLinkManager.activeSheet = nil
+                    })
+                    .navigationTitle("Edit Card")
+                }
             }
-        }
-        .sheet(isPresented: $isShowingScanner) {
-            CameraScannerView(scannedCode: $scannedCode, barcodeType: $barcodeType)
         }
         .onChange(of: scannedCode) {
             if let safeScannedCode = scannedCode {
@@ -61,7 +77,13 @@ struct ContentView: View {
                     let newItem = CardItem(timestamp: Date(), code: safeScannedCode, name: safeScannedCode, barcodeType: barcodeType)
                     modelContext.insert(newItem)
                     scannedCode = nil
+                    deepLinkManager.activeSheet = nil
                 }
+            }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .deepLink)) { notification in
+            if let url = notification.object as? URL {
+                deepLinkManager.handleDeepLink(url, modelContext: modelContext)
             }
         }
     }
@@ -75,7 +97,6 @@ struct ContentView: View {
             cardItems.enumerated().forEach { index, item in
                 item.order = index
             }
-            // Save changes to SwiftData
             try? modelContext.save()
             let generator = UIImpactFeedbackGenerator(style: .medium)
             generator.prepare()
@@ -88,12 +109,10 @@ struct ContentView: View {
             var mutableItems = Array(cardItems)
             mutableItems.move(fromOffsets: source, toOffset: destination)
             
-            // Update order property directly on SwiftData objects
             mutableItems.enumerated().forEach { index, item in
                 item.order = index
             }
             
-            // Save changes to SwiftData
             try? modelContext.save()
         }
     }
