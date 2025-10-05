@@ -4,11 +4,12 @@ import UIKit // Import UIKit for UIScreen
 
 struct CardItemView: View {
     @State private var originalBrightness: CGFloat = UIScreen.main.brightness
-    @State private var isEditingName = false // Control navigation to EditNameView
     @State private var item: CardItem // Make item a @State variable so changes are seen
+    let navigationManager: NavigationManager
     
-    init(item: CardItem) {
+    init(item: CardItem, navigationManager: NavigationManager) {
         _item = State(initialValue: item)
+        self.navigationManager = navigationManager
     }
     
     var body: some View {
@@ -62,16 +63,12 @@ struct CardItemView: View {
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                NavigationLink {
-                    EditCardItemView(cardItem: item)
-                        .navigationTitle("Edit Card")
-                        
-                } label: {
-                    Text("Edit")
-                        .accessibilityIdentifier("editCardButton")
-                        .accessibilityLabel("Edit card")
-                        .accessibilityHint("Tap to edit this card's details")
+                Button("Edit") {
+                    navigationManager.navigate(to: .editCard(item.code))
                 }
+                .accessibilityIdentifier("editCardButton")
+                .accessibilityLabel("Edit card")
+                .accessibilityHint("Tap to edit this card's details")
             }
         }
     }
@@ -95,5 +92,5 @@ struct CardItemView: View {
 
 #Preview {
     let item = CardItem(timestamp: Date(), code: "123ABC", name: "Westway", barcodeType: BarcodeType.code128)
-    CardItemView(item: item)
+    CardItemView(item: item, navigationManager: NavigationManager())
 }

@@ -1,191 +1,135 @@
-# Cards App - Project Context
+# Cards App - Development Context
 
 ## Project Overview
+Cards is a SwiftUI-based iOS application for barcode card management with camera scanning, deep linking, and comprehensive navigation.
 
-Cards is a SwiftUI-based iOS application for storing and displaying barcode cards (loyalty cards, membership cards, etc.). The app allows users to scan barcodes with their camera, manually enter card details, and display barcodes for scanning at point-of-sale terminals.
+## Development Principles
 
-## Key Technologies
+### System Integration Verification
+**Always verify complete system integration, not just individual components**
 
-- **SwiftUI**: Main UI framework
-- **SwiftData**: Persistence framework for storing card information
-- **AVFoundation**: Camera access and barcode scanning
-- **RSBarcodes_Swift**: Third-party library for barcode generation
-- **UIKit Integration**: Camera controller and orientation management
+**Mental Model**: Think in terms of **user journeys**, not isolated features
+- Entry point → Processing → Final state
+- URL scheme → Navigation handling → UI update
+- User action → Data flow → UI response
 
-## Core Features
+### Architecture Patterns
 
-1. **Card Management**
-   - Create, edit, and delete cards
-   - Reorder cards in the list
-   - Store card name, barcode data, and barcode type
+**Singletons**
+- Never use Singletons under any circumstance. Globalism is bad avoid at all costs!
 
-2. **Barcode Support**
-   - Multiple barcode formats (Code 128, Code 39, QR Code, EAN-8, EAN-13, etc.)
-   - Barcode generation and display
-   - Camera-based barcode scanning
+**Navigation Architecture**
+- Path-based routing with NavigationStack
+- Centralized NavigationManager for state management
+- Type-safe route definitions with enums
+- Deep linking through URL scheme handling
 
-3. **User Experience**
-   - Screen brightness adjustment when displaying barcodes
-   - Portrait-only orientation for barcode display
-   - Performance monitoring for app startup and resume
+**State Management**
+- SwiftUI @ObservableObject for navigation state
+- SwiftData for persistent storage
+- Avoid @MainActor isolation in testable components
 
-## Project Structure
+## Development Checklists
 
-### Models
-- **CardItem**: SwiftData model for card information
-  - `timestamp`: Creation date
-  - `code`: Barcode data
-  - `name`: Card name
-  - `order`: Display order in the list
-  - `type`: Barcode format type
-  - `barcodeType`: Computed property for convenient access
+### New Feature Implementation
+- [ ] Define clear entry and exit points
+- [ ] Create unit tests for logic components
+- [ ] Create integration tests for full user flows
+- [ ] Verify all connection points are updated
+- [ ] Search codebase for old patterns to replace
+- [ ] Test end-to-end user journey manually
 
-- **BarcodeType**: Enum defining supported barcode formats
-  - Maps between app's barcode types and AVFoundation's metadata types
+### Navigation System Changes
+- [ ] Update NavigationRoute enum if needed
+- [ ] Update NavigationManager for new flows
+- [ ] Update all view navigation calls
+- [ ] Test deep linking for new routes
+- [ ] Verify backstack behavior
+- [ ] Update URL scheme documentation
 
-### Views
-- **ContentView**: Main list view showing all cards
-- **CardItemView**: Detail view for displaying a single card with its barcode
-- **EditCardItemView**: Form for creating/editing card details
-- **BarcodeView**: Renders barcodes using RSBarcodes_Swift
-- **CameraScannerView**: SwiftUI wrapper for the camera scanner
-- **PortraitLockedView**: Utility for restricting orientation to portrait
+### Testing Strategy
+- [ ] Unit tests for individual components
+- [ ] Integration tests for component interactions
+- [ ] End-to-end tests for complete user flows
+- [ ] Manual testing of critical paths
+- [ ] Code coverage verification
+- [ ] Performance impact assessment
 
-### Controllers
-- **ScannerViewController**: UIKit-based camera controller
-- **ScannerViewControllerDelegate**: Protocol for handling scanned codes
+## Verification Loops
 
-### App Structure
-- **CardsApp**: Main app entry point with SwiftData configuration
-- **AppLifecycleTracker**: Monitors app lifecycle for performance tracking
+### Before Claiming Completion
+1. **Code Search**: `grep -r "old_pattern" .` to find remaining usage
+2. **Integration Test**: Write test that exercises complete flow
+3. **Manual Verification**: Test actual user scenario
+4. **Dependency Check**: Verify all connection points updated
 
-## Development Notes
+### When Introducing New Systems
+1. **Inventory existing usage**: Find all places old system is used
+2. **Create migration plan**: Document what needs updating
+3. **Update incrementally**: Replace usage one component at a time
+4. **Deprecate old system**: Mark as deprecated with clear migration path
+5. **Verify replacement**: Ensure no old system usage remains
 
-### SwiftData Usage
-- Model container configured in CardsApp
-- In-memory storage option for UI testing
-- Manual order management for list reordering
+### Testing Validation
+1. **Unit tests pass**: Individual components work correctly
+2. **Integration tests pass**: Components work together
+3. **End-to-end tests pass**: Complete user flows work
+4. **Manual testing**: Real user scenarios verified
+5. **Performance acceptable**: No significant regressions
 
-### Barcode Handling
-- RSBarcodes_Swift used for barcode generation
-- AVFoundation's metadata object types for scanning
-- Mapping between app's barcode types and system types
+## Common Failure Patterns
 
-### Camera Integration
-- AVCaptureSession for camera access
-- Metadata output for barcode detection
-- SwiftUI wrapper around UIKit camera controller
+### AI/Agent Reasoning Failures
+- **Assumption without verification**: Claiming integration exists without checking
+- **Component-focused thinking**: Testing parts instead of wholes
+- **Success bias**: Focusing on making new things work vs ensuring old things are replaced
+- **Incomplete migration**: Adding new systems without removing old ones
 
-### UI/UX Considerations
-- Screen brightness increased when displaying barcodes
-- Smooth brightness transitions
-- Portrait orientation lock for barcode display
-- Accessibility identifiers for UI testing
+### Prevention Strategies
+- **Always verify assumptions** with actual code inspection
+- **Test complete user journeys** from entry to exit
+- **Search for old patterns** when introducing new systems
+- **Require evidence** for integration claims
+- **Challenge success statements** with specific verification steps
 
-## Testing Strategy
+## Mental Models
 
-### Unit Tests
-- Test barcode generation and mapping functions
-- Test data model operations
-- Test utility functions
-
-### UI Tests
-- Test card creation flow
-- Test card editing and deletion
-- Test barcode scanning (with mock camera)
-
-### Performance Tests
-- Measure app startup time
-- Test barcode generation performance
-- Test list scrolling performance with many cards
-
-## Common Issues & Solutions
-
-### Barcode Generation
-- Ensure code string is valid for the selected barcode type
-- Verify barcode dimensions are appropriate
-- Check RSBarcodes_Swift integration
-
-### SwiftData
-- Verify schema migrations when model changes
-- Handle threading issues (SwiftData operations on main thread)
-- Validate relationships between entities
-
-### Camera Permissions
-- Info.plist needs camera usage description
-- Handle permission denial gracefully
-
-### UI Layout
-- Test on different device sizes
-- Check for conflicting constraints
-
-## Code Snippets
-
-### SwiftData Operations
-```swift
-// Create a new card
-let newCard = CardItem(
-    timestamp: Date(),
-    code: "123456789",
-    name: "Store Card",
-    barcodeType: .code128,
-    order: cardItems.count
-)
-modelContext.insert(newCard)
-
-// Delete a card
-modelContext.delete(cardToDelete)
-
-// Save changes
-try? modelContext.save()
-
-// Update order after reordering
-cardItems.enumerated().forEach { index, item in
-    item.order = index
-}
+### System Integration Model
+```
+Entry Point → Processing Layer → State Management → UI Update
+     ↓              ↓                ↓              ↓
+  Verify         Verify           Verify         Verify
+ Connected      Logic Works     State Updates   UI Reflects
 ```
 
-### Barcode Generation
-```swift
-let barcodeImage = RSUnifiedCodeGenerator.shared.generateCode(
-    "123456789",
-    machineReadableCodeObjectType: AVMetadataObject.ObjectType.code128.rawValue,
-    targetSize: CGSize(width: 300, height: 100)
-)
+### Testing Pyramid
+```
+    E2E Tests (Few, High Value)
+         ↑
+   Integration Tests (Some)
+         ↑
+    Unit Tests (Many, Fast)
 ```
 
-### Performance Monitoring
-```swift
-func measureTime<T>(name: String, operation: () -> T) -> T {
-    let start = CFAbsoluteTimeGetCurrent()
-    let result = operation()
-    let end = CFAbsoluteTimeGetCurrent()
-    print("\(name) took \(end - start) seconds")
-    return result
-}
+### Change Impact Analysis
+```
+New Feature → Identify Touch Points → Update Each Point → Verify Integration
 ```
 
-## Future Enhancements
+## Quality Gates
 
-1. **Data Backup & Sync**
-   - iCloud integration for syncing across devices
-   - Export/import functionality
+### Code Review Focus
+- Are all integration points identified and updated?
+- Do tests cover the complete user journey?
+- Is old code properly deprecated/removed?
+- Are assumptions backed by verification?
 
-2. **Enhanced Card Management**
-   - Categories/folders for organizing cards
-   - Search functionality
-   - Card expiration dates
-
-3. **UI Improvements**
-   - Custom card designs/themes
-   - Dark mode optimization
-   - Widget support for quick access
-
-4. **Advanced Barcode Features**
-   - Support for more barcode types
-   - Custom barcode styling options
-   - Batch scanning for multiple cards
-
-5. **Security**
-   - Biometric authentication option
-   - Secure storage for sensitive cards
+### Definition of Done
+- [ ] Feature works in isolation
+- [ ] Feature integrates with existing system
+- [ ] All entry points connect properly
+- [ ] Tests cover integration scenarios
+- [ ] Old patterns removed/deprecated
+- [ ] Documentation updated
+- [ ] **FINAL VERIFICATION**: All targets build successfully (run after all changes)
+- [ ] **FINAL VERIFICATION**: All tests pass (run after all changes)

@@ -33,6 +33,7 @@ class AppLifecycleTracker: ObservableObject {
 struct CardsApp: App {
     @Environment(\.scenePhase) private var scenePhase
     @StateObject private var lifecycleTracker = AppLifecycleTracker()
+    @StateObject private var navigationManager = NavigationManager()
     
     static let trueLaunchTime = Date() // Capture at App struct creation
     
@@ -54,6 +55,7 @@ struct CardsApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(navigationManager)
                 .onAppear {
                     // Measure cold start from true app launch
                     let duration = Date().timeIntervalSince(Self.trueLaunchTime)
@@ -84,8 +86,7 @@ struct CardsApp: App {
     }
     
     private func handleDeepLink(_ url: URL) {
-        // Handle deep links: cards://list, cards://camera, cards://card/123, cards://edit/123
         print("Deep link received: \(url)")
-        NotificationCenter.default.post(name: .deepLink, object: url)
+        navigationManager.handleDeepLink(url)
     }
 }

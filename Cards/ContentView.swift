@@ -1,24 +1,18 @@
 import SwiftData
 import SwiftUI
 
-extension Notification.Name {
-    static let deepLink = Notification.Name("deepLink")
-}
-
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \CardItem.order) private var cardItems: [CardItem]
-    @StateObject private var deepLinkManager = DeepLinkManager()
+    @EnvironmentObject private var navigationManager: NavigationManager
     @State private var scannedCode: String?
     @State private var barcodeType: BarcodeType?
     
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $navigationManager.navigationPath) {
             List {
                 ForEach(cardItems) { item in
-                    NavigationLink {
-                        CardItemView(item: item)
-                    } label: {
+                    NavigationLink(value: NavigationRoute.card(item.code)) {
                         Text(item.name)
                             .padding(.vertical)
                             .foregroundColor(.primary)
@@ -32,43 +26,25 @@ struct ContentView: View {
             }
             .listStyle(.plain)
             .background(.ultraThinMaterial)
+            .navigationTitle("Cards")
             .toolbar {
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
                     Button(action: {
-                        deepLinkManager.activeSheet = .addCard
+                        navigationManager.navigate(to: .newCard)
                     }) {
                         Label("Add Card", systemImage: "plus")
                             .accessibilityIdentifier("addCardButton")
                     }
                     Button(action: {
-                        deepLinkManager.activeSheet = .camera
+                        navigationManager.navigate(to: .camera)
                     }) {
                         Label("Scan Code", systemImage: "camera")
                             .accessibilityIdentifier("scanCodeButton")
                     }
                 }
             }
-        }
-        .sheet(item: $deepLinkManager.activeSheet) { sheet in
-            switch sheet {
-            case .addCard:
-                NavigationStack {
-                    let newCardItem = CardItem(timestamp: Date(), code: "", name: "")
-                    EditCardItemView(cardItem: newCardItem, onSave: { updatedCard in
-                        modelContext.insert(updatedCard)
-                        deepLinkManager.activeSheet = nil
-                    })
-                    .navigationTitle("Add Card")
-                }
-            case .camera:
-                CameraScannerView(scannedCode: $scannedCode, barcodeType: $barcodeType)
-            case .editCard(let card):
-                NavigationStack {
-                    EditCardItemView(cardItem: card, onSave: { _ in
-                        deepLinkManager.activeSheet = nil
-                    })
-                    .navigationTitle("Edit Card")
-                }
+            .navigationDestination(for: NavigationRoute.self) { route in
+                destinationView(for: route)
             }
         }
         .onChange(of: scannedCode) {
@@ -77,15 +53,47 @@ struct ContentView: View {
                     let newItem = CardItem(timestamp: Date(), code: safeScannedCode, name: safeScannedCode, barcodeType: barcodeType)
                     modelContext.insert(newItem)
                     scannedCode = nil
-                    deepLinkManager.activeSheet = nil
+                    navigationManager.navigate(to: .cards)
                 }
             }
         }
-        .onReceive(NotificationCenter.default.publisher(for: .deepLink)) { notification in
-            if let url = notification.object as? URL {
-                deepLinkManager.handleDeepLink(url, modelContext: modelContext)
+    }
+    
+    @ViewBuilder
+    private func destinationView(for route: NavigationRoute) -> some View {
+        switch route {
+        case .cards:
+            EmptyView()
+        case .card(let code):
+            if let card = findCard(by: code) {
+                CardItemView(item: card, navigationManager: navigationManager)
+            } else {
+                Text("Card not found")
             }
+        case .editCard(let code):
+            if let card = findCard(by: code) {
+                EditCardItemView(cardItem: card, navigationManager: navigationManager)
+                    .navigationTitle("Edit Card")
+            } else {
+                Text("Card not found")
+            }
+        case .newCard:
+            EditCardItemView(
+                cardItem: CardItem(timestamp: Date(), code: "", name: ""),
+                navigationManager: navigationManager,
+                onSave: { updatedCard in
+                    modelContext.insert(updatedCard)
+                    navigationManager.navigate(to: .cards)
+                }
+            )
+            .navigationTitle("Add Card")
+        case .camera:
+            CameraScannerView(scannedCode: $scannedCode, barcodeType: $barcodeType)
         }
+    }
+    
+    private func findCard(by code: String) -> CardItem? {
+        return cardItems.first { $0.code == code }
     }
     
     private func deleteItems(offsets: IndexSet) {
