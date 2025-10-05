@@ -96,6 +96,20 @@ final class CardItem {
 - **Integration tests**: Complete user journey validation
 - **Manual testing**: End-to-end user scenarios
 
+## Development Commands
+
+### Build and Test
+```bash
+# Build (quiet, errors only)
+xcodebuild -scheme Cards -destination 'platform=iOS Simulator,arch=arm64,name=iPhone 16 Pro,OS=18.4' build -quiet
+
+# Test (quiet, errors only)
+xcodebuild -scheme Cards -destination 'platform=iOS Simulator,arch=arm64,name=iPhone 16 Pro,OS=18.4' test -quiet
+
+# Test without building (after successful build)
+xcodebuild -scheme Cards -destination 'platform=iOS Simulator,arch=arm64,name=iPhone 16 Pro,OS=18.4' test-without-building -quiet
+```
+
 ## Development Workflow
 
 ### Adding New Routes

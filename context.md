@@ -131,5 +131,7 @@ New Feature → Identify Touch Points → Update Each Point → Verify Integrati
 - [ ] Tests cover integration scenarios
 - [ ] Old patterns removed/deprecated
 - [ ] Documentation updated
-- [ ] **FINAL VERIFICATION**: All targets build successfully (run after all changes)
-- [ ] **FINAL VERIFICATION**: All tests pass (run after all changes)
+- [ ] **FINAL VERIFICATION**: All targets build successfully using commands from README.md
+- [ ] **FINAL VERIFICATION**: All tests pass using commands from README.md
+
+**Build Commands**: Use only the commands specified in README.md with iPhone 16 Pro iOS 18.4
