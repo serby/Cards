@@ -29,11 +29,16 @@ class NavigationManager: ObservableObject {
     }
     
     func handleDeepLink(_ url: URL) {
-        guard url.scheme == "cards" else { return }
-        
-        let path = url.path.isEmpty ? "/cards" : url.path
-        guard let route = NavigationRoute.from(path: path) else { return }
-        
+        print("Deep Link Recieved: \(url) - Schema: \(url.scheme ?? "nil") Host: \(url.host ?? "nil") Path: \(url.path)")
+        guard url.scheme == "cards" && url.host == "cards" else {
+            print("Scheme not recognized: \(url)")
+            return
+        }
+        guard let route = NavigationRoute.from(path: url.path) else {
+            print("Invalid path: \(url.path)")
+            return
+        }
+        print("Navigating to route: \(route)")
         navigate(to: route)
     }
 }

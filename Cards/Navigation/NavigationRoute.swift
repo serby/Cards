@@ -38,31 +38,30 @@ enum NavigationRoute: Hashable, Identifiable {
     }
     
     static func from(path: String) -> NavigationRoute? {
-        let components = path.components(separatedBy: "/").filter { !$0.isEmpty }
-        
-        guard components.first == "cards" else { return nil }
+        let components = Array(path.components(separatedBy: "/").dropFirst())
+        let hasUnexpectedEmptyElements = components.contains("")
+        if hasUnexpectedEmptyElements {
+            return .cards
+        }
         
         switch components.count {
         case 1:
-            return .cards
-        case 2:
-            if components[1] == "new" {
+            if components[0] == "new" {
                 return .newCard
             }
-        case 3:
-            if components[1] == "card" {
-                return .card(components[2])
-            } else if components[1] == "new" && components[2] == "camera" {
+        case 2:
+            if components[0] == "card" {
+                return .card(components[1])
+            } else if components[0] == "new" && components[1] == "camera" {
                 return .camera
             }
-        case 4:
-            if components[1] == "card" && components[3] == "edit" {
-                return .editCard(components[2])
+        case 3:
+            if components[0] == "card" && components[2] == "edit" {
+                return .editCard(components[1])
             }
         default:
-            break
+            return .cards
         }
-        
-        return nil
+        return .cards
     }
 }
