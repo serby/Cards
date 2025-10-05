@@ -83,7 +83,7 @@ struct ContentView: View {
                 navigationManager: navigationManager,
                 onSave: { updatedCard in
                     modelContext.insert(updatedCard)
-                    navigationManager.navigate(to: .cards)
+                    navigationManager.navigate(to: .card(updatedCard.code))
                 }
             )
             .navigationTitle("Add Card")

@@ -28,6 +28,10 @@ final class CardsUITests: XCTestCase {
         for button in app.buttons.allElementsBoundByIndex {
             print("Button: '\(button.identifier)' - label: '\(button.label)' - exists: \(button.exists)")
         }
+        print("=== DEBUG: All Static ===")
+        for text in app.staticTexts.allElementsBoundByIndex {
+            print("Static Text: '\(text.identifier)' - label: '\(text.label)' - exists: \(text.exists)")
+        }
     }
     
     @MainActor
@@ -38,23 +42,25 @@ final class CardsUITests: XCTestCase {
         
         XCTAssertTrue(waitForElement(app.buttons["addCardButton"]), "addCardButton did not appear")
         app.buttons["addCardButton"].tap()
-        
-        // Wait longer for sheet to present
-        sleep(3)
-        
+                
         // Try finding by accessibility label since identifier is being overridden
         let nameField = app.textFields["Card name"]
-        XCTAssertTrue(waitForElement(nameField, timeout: 10), "nameTextField did not appear")
+        XCTAssertTrue(waitForElement(nameField), "nameTextField did not appear")
         
         let codeField = app.textFields["Card code"]
         
+        let testName = "Test Name"
+        let testCode = "Test Code"
+        
         nameField.tap()
-        nameField.typeText("Test Name")
+        nameField.typeText(testName)
         codeField.tap()
-        codeField.typeText("Test Code")
+        codeField.typeText(testCode)
         
         app.buttons["saveCardButton"].tap()
-        
-        XCTAssertTrue(waitForElement(app.cells.firstMatch), "Cell did not appear after saving")
+
+        // Assert that we navigate to CardItemView with the new values
+        XCTAssertTrue(waitForElement(app.staticTexts["Card name: \(testName)"]), "Card name '\(testName)' not displayed in CardItemView")
+        XCTAssertTrue(waitForElement(app.staticTexts["Card code: \(testCode)"]), "Card code '\(testCode)' not displayed in CardItemView")
     }
 }

@@ -74,7 +74,7 @@ struct EditCardItemView: View {
                     if let onSave = onSave {
                         onSave(cardItem)
                     } else {
-                        navigationManager?.navigate(to: .cards)
+                        navigationManager?.navigate(to: .card(cardItem.code))
                     }
                 }
                 .accessibilityIdentifier("saveCardButton")
