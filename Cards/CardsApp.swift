@@ -8,40 +8,14 @@
 import SwiftData
 import SwiftUI
 
-class AppLifecycleTracker: ObservableObject {
-    @Published var startTime: Date?
-    @Published var wasInBackground = false
-    static let appLaunchTime = Date() // Capture actual app launch time
-    
-    func recordStartTime() {
-        startTime = Date()
-    }
-    
-    func printAppStartTime(for type: String) {
-        guard let startTime = startTime else { return }
-        let duration = Date().timeIntervalSince(startTime)
-        print("\(type) Time: \(duration) seconds")
-    }
-    
-    func printColdStartTime() {
-        let duration = Date().timeIntervalSince(Self.appLaunchTime)
-        print("Cold Start Time: \(duration) seconds")
-    }
-}
-
 @main
 struct CardsApp: App {
     @Environment(\.scenePhase) private var scenePhase
-    @StateObject private var lifecycleTracker = AppLifecycleTracker()
     @StateObject private var navigationManager = NavigationManager()
-    
-    static let trueLaunchTime = Date() // Capture at App struct creation
+    private let performanceTracker = PerformanceTracker()
     
     var sharedModelContainer: ModelContainer = {
-        let schema = Schema([
-            CardItem.self
-        ])
-
+        let schema = Schema([CardItem.self])
         let isTesting = CommandLine.arguments.contains("-uiTesting")
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: isTesting)
         
@@ -57,36 +31,22 @@ struct CardsApp: App {
             ContentView()
                 .environmentObject(navigationManager)
                 .onAppear {
-                    // Measure cold start from true app launch
-                    let duration = Date().timeIntervalSince(Self.trueLaunchTime)
-                    print("Cold Start Time: \(duration) seconds")
+                    performanceTracker.recordAppLaunch()
                 }
-                .onOpenURL { url in
-                    handleDeepLink(url)
-                }
+                .onOpenURL(perform: navigationManager.handleDeepLink)
         }
         .modelContainer(sharedModelContainer)
-        .onChange(of: scenePhase) {
-            switch scenePhase {
+        .onChange(of: scenePhase) { _, newPhase in
+            switch newPhase {
             case .active:
-                if lifecycleTracker.wasInBackground {
-                    lifecycleTracker.printAppStartTime(for: "Warm Start")
-                    lifecycleTracker.wasInBackground = false
-                }
-            case .background:
-                lifecycleTracker.wasInBackground = true
+                performanceTracker.recordWarmStart()
             case .inactive:
-                if lifecycleTracker.wasInBackground {
-                    lifecycleTracker.recordStartTime() // Start timing resume
-                }
-            default:
+                performanceTracker.recordForegroundTransition()
+            case .background:
+                performanceTracker.recordBackgroundTransition()
+            @unknown default:
                 break
             }
         }
-    }
-    
-    private func handleDeepLink(_ url: URL) {
-        print("Deep link received: \(url)")
-        navigationManager.handleDeepLink(url)
     }
 }
