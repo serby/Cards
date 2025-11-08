@@ -16,6 +16,13 @@ struct CameraScannerView: UIViewControllerRepresentable {
     func makeUIViewController(context: Context) -> ScannerViewController {
         let scannerVC = ScannerViewController()
         scannerVC.delegate = context.coordinator
+        
+        // Configure sheet presentation
+        if let sheet = scannerVC.sheetPresentationController {
+            sheet.detents = [.medium()]
+            sheet.prefersGrabberVisible = true
+        }
+        
         return scannerVC
     }
 

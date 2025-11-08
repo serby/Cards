@@ -7,6 +7,10 @@ struct ContentView: View {
     @EnvironmentObject private var navigationManager: NavigationManager
     @State private var scannedCode: String?
     @State private var barcodeType: BarcodeType?
+    @State private var showScanner = false
+    #if DEBUG
+    @State private var loader = Loader.shared
+    #endif
     
     var body: some View {
         NavigationStack(path: $navigationManager.navigationPath) {
@@ -32,7 +36,7 @@ struct ContentView: View {
 #if DEBUG
                     Button(
                         action: {
-                            Loader.load()
+                            showScanner = true
                         },
                         label: {
                             Label("Test", systemImage: "tortoise.fill")
@@ -64,8 +68,12 @@ struct ContentView: View {
                 destinationView(for: route)
             }
         }
+        .sheet(isPresented: $showScanner) {
+            
+        }
         .onChange(of: scannedCode) {
             if let safeScannedCode = scannedCode {
+                showScanner = false
                 withAnimation {
                     let newItem = CardItem(timestamp: Date(), code: safeScannedCode, name: safeScannedCode, barcodeType: barcodeType)
                     modelContext.insert(newItem)

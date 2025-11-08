@@ -14,7 +14,7 @@ struct EditCardItemView: View {
         self.navigationManager = navigationManager
         _tempName = State(initialValue: cardItem.name)
         _tempCode = State(initialValue: cardItem.code)
-        _selectedType = State(initialValue: cardItem.type ?? BarcodeType.code128.rawValue)
+        _selectedType = State(initialValue: cardItem.type)
         self.onSave = onSave
     }
     
