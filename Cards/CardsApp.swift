@@ -8,6 +8,12 @@
 import SwiftData
 import SwiftUI
 
+#if DEBUG
+let isProduction = true
+#else
+let isProduction = true
+#endif
+
 @main
 struct CardsApp: App {
     @Environment(\.scenePhase) private var scenePhase
@@ -17,12 +23,17 @@ struct CardsApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([CardItem.self])
         let isTesting = CommandLine.arguments.contains("-uiTesting")
-        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: isTesting)
+        
+        print("🔍 ModelContainer Debug Info:")
+        print("  - isTesting: \(isTesting)")
+        print("  - isProduction: \(isProduction)")
+        print("  - Schema models: \(schema.entities.map { $0.name })")
         
         do {
+            let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: isTesting, cloudKitDatabase: .automatic)
             return try ModelContainer(for: schema, configurations: [modelConfiguration])
         } catch {
-            fatalError("Could not create ModelContainer: \(error)")
+            fatalError("ModelContainer failed: \(error)")
         }
     }()
     

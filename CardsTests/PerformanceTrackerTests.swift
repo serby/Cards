@@ -5,8 +5,8 @@
 //  Created by Serby, Paul on 05/10/2024.
 //
 
-import XCTest
 @testable import Cards
+import XCTest
 
 final class PerformanceTrackerTests: XCTestCase {
     var tracker: PerformanceTracker!

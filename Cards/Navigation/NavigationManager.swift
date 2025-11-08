@@ -1,5 +1,5 @@
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 class NavigationManager: ObservableObject {
     @Published var navigationPath = NavigationPath()
@@ -11,7 +11,7 @@ class NavigationManager: ObservableObject {
         switch route {
         case .cards:
             navigationPath = NavigationPath()
-        case .card(_):
+        case .card:
             navigationPath = NavigationPath()
             navigationPath.append(route)
         case .editCard(let code):

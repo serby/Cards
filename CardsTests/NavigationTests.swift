@@ -1,6 +1,6 @@
-import XCTest
-import SwiftData
 @testable import Cards
+import SwiftData
+import XCTest
 
 final class NavigationTests: XCTestCase {
     var navigationManager: NavigationManager!
@@ -256,9 +256,9 @@ final class NavigationTests: XCTestCase {
             switch route {
             case .cards:
                 XCTAssertEqual(navigationManager.navigationPath.count, 0)
-            case .card(_), .newCard:
+            case .card, .newCard:
                 XCTAssertEqual(navigationManager.navigationPath.count, 1)
-            case .editCard(_), .camera:
+            case .editCard, .camera:
                 XCTAssertEqual(navigationManager.navigationPath.count, 2)
             }
         }

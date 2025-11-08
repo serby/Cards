@@ -10,25 +10,22 @@ import SwiftData
 
 @Model
 public final class CardItem: Identifiable {
-    var timestamp: Date
-    var code: String
-    var name: String
-    var order: Int?
+    var timestamp: Date = Date()
+    var code: String = ""
+    var name: String = ""
+    var order: Int = 0
+    var type: String = BarcodeType.code128.rawValue
     
-    // Store the raw value of the BarcodeType
-    var type: String?
-    
-    // Computed property for convenient access as BarcodeType
-    var barcodeType: BarcodeType {
-        get { BarcodeType(rawValue: type ?? "Code 128" ) ?? .code128 }
-        set { type = newValue.rawValue }
-    }
-    
-    init(timestamp: Date, code: String, name: String, barcodeType: BarcodeType? = nil, order: Int? = nil) {
+    init(timestamp: Date = Date(), code: String, name: String, barcodeType: BarcodeType? = nil, order: Int? = nil) {
         self.timestamp = timestamp
         self.code = code
         self.name = name
-        self.barcodeType = barcodeType ?? .code128
+        self.type = barcodeType?.rawValue ?? BarcodeType.code128.rawValue
         self.order = order ?? 0
+    }
+    
+    // Helper method to get BarcodeType
+    func getBarcodeType() -> BarcodeType {
+        return BarcodeType(rawValue: type) ?? .code128
     }
 }

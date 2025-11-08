@@ -101,13 +101,13 @@ final class CardItem {
 ### Build and Test
 ```bash
 # Build (quiet, errors only)
-xcodebuild -scheme Cards -destination 'platform=iOS Simulator,arch=arm64,name=iPhone 16 Pro,OS=18.4' build -quiet
+xcodebuild -scheme Cards -destination 'platform=iOS Simulator,arch=arm64,name=iPhone 17 Pro Max,OS=26.0' build -quiet
 
 # Test (quiet, errors only)
-xcodebuild -scheme Cards -destination 'platform=iOS Simulator,arch=arm64,name=iPhone 16 Pro,OS=18.4' test -quiet
+xcodebuild -scheme Cards -destination 'platform=iOS Simulator,arch=arm64,name=iPhone 17 Pro Max,OS=26.0' test -quiet
 
 # Test without building (after successful build)
-xcodebuild -scheme Cards -destination 'platform=iOS Simulator,arch=arm64,name=iPhone 16 Pro,OS=18.4' test-without-building -quiet
+xcodebuild -scheme Cards -destination 'platform=iOS Simulator,arch=arm64,name=iPhone 17 Pro Max,OS=26.0' test-without-building -quiet
 ```
 
 ## Development Workflow

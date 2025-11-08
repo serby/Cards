@@ -24,7 +24,7 @@ final class CardItemTests: XCTestCase {
         XCTAssertEqual(cardItem.timestamp, timestamp)
         XCTAssertEqual(cardItem.code, code)
         XCTAssertEqual(cardItem.name, name)
-        XCTAssertEqual(cardItem.barcodeType, barcodeType)
+        XCTAssertEqual(cardItem.getBarcodeType(), barcodeType)
         XCTAssertEqual(cardItem.order, order)
         XCTAssertEqual(cardItem.type, barcodeType.rawValue)
     }
@@ -40,7 +40,7 @@ final class CardItemTests: XCTestCase {
         XCTAssertEqual(cardItem.timestamp, timestamp)
         XCTAssertEqual(cardItem.code, code)
         XCTAssertEqual(cardItem.name, name)
-        XCTAssertEqual(cardItem.barcodeType, .code128) // Default value
+        XCTAssertEqual(cardItem.getBarcodeType(), .code128) // Default value
         XCTAssertEqual(cardItem.order, 0) // Default value
         XCTAssertEqual(cardItem.type, BarcodeType.code128.rawValue)
     }
@@ -50,24 +50,24 @@ final class CardItemTests: XCTestCase {
         let cardItem = CardItem(timestamp: Date(), code: "1234567890", name: "Test Card")
         cardItem.type = BarcodeType.ean13.rawValue
         
-        XCTAssertEqual(cardItem.barcodeType, .ean13)
+        XCTAssertEqual(cardItem.getBarcodeType(), .ean13)
     }
     
     // Test barcodeType computed property setter
     func testBarcodeTypeSetter() {
         let cardItem = CardItem(timestamp: Date(), code: "1234567890", name: "Test Card")
-        cardItem.barcodeType = .pdf417
+        cardItem.type = BarcodeType.pdf417.rawValue
         
         XCTAssertEqual(cardItem.type, BarcodeType.pdf417.rawValue)
     }
     
-    // Test barcodeType with nil type
+    // Test getBarcodeType with invalid type
     func testBarcodeTypeWithNilType() {
         let cardItem = CardItem(timestamp: Date(), code: "1234567890", name: "Test Card")
-        cardItem.type = nil
+        cardItem.type = ""
         
-        // Should default to code128 when type is nil
-        XCTAssertEqual(cardItem.barcodeType, .code128)
+        // Should default to code128 when type is empty
+        XCTAssertEqual(cardItem.getBarcodeType(), .code128)
     }
     
     // Test barcodeType with invalid type
@@ -76,7 +76,7 @@ final class CardItemTests: XCTestCase {
         cardItem.type = "Invalid Type"
         
         // Should default to code128 when type is invalid
-        XCTAssertEqual(cardItem.barcodeType, .code128)
+        XCTAssertEqual(cardItem.getBarcodeType(), .code128)
     }
     
     // Test Identifiable conformance

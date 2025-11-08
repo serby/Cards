@@ -1,4 +1,4 @@
-disabled_rules: # rule identifiers to exclude from running
+disabled_rules:
   - trailing_whitespace
   - line_length
   - function_body_length
@@ -6,7 +6,7 @@ disabled_rules: # rule identifiers to exclude from running
   - type_body_length
   - cyclomatic_complexity
 
-opt_in_rules: # some rules are only opt-in
+opt_in_rules:
   - empty_count
   - force_unwrapping
   - private_outlet
@@ -14,35 +14,34 @@ opt_in_rules: # some rules are only opt-in
   - vertical_parameter_alignment_on_call
   - implicitly_unwrapped_optional
   - redundant_nil_coalescing
-  - prohibited_super_call
   - fatal_error_message
   - closure_spacing
-  - opening_brace
-  - operator_usage_whitespace
-  - operator_whitespace
   - sorted_imports
   - unused_optional_binding
   - unused_closure_parameter
   - vertical_parameter_alignment
   - closure_end_indentation
-  - closure_parameter_position
   - explicit_init
   - first_where
-  - nimble_operator
   - number_separator
-  - object_literal
   - overridden_super_call
   - pattern_matching_keywords
   - private_action
-  - prohibited_interface_builder
-  - quick_discouraged_call
-  - quick_discouraged_focused_test
-  - quick_discouraged_pending_test
-  - single_test_class
   - strict_fileprivate
   - switch_case_on_newline
+  - contains_over_filter_count
+  - contains_over_filter_is_empty
+  - empty_string
+  - flatmap_over_map_reduce
+  - last_where
+  - reduce_into
+  - sorted_first_last
+  - toggle_bool
+  - unavailable_function
+  - unowned_variable_capture
+  - weak_delegate
 
-excluded: # paths to ignore during linting. Takes precedence over `included`.
+excluded:
   - Pods
   - DerivedData
   - .build
@@ -64,16 +63,12 @@ custom_rules:
     severity: error
     excluded: [".*Tests?/.*.swift"]
 
-# configurable rules can be customized from this configuration file
-# binary rules can set their severity level
-force_cast: warning # implicitly
-force_try:
-  severity: warning # explicitly
-# rules that have both warning and error levels, can set just the warning level
-# implicitly
+force_cast: warning
+force_try: warning
+
 identifier_name:
-  min_length: 2 # only warning
-  excluded: # excluded via string array
+  min_length: 2
+  excluded:
     - id
     - URL
     - x
@@ -123,5 +118,6 @@ identifier_name:
     - w
     - z
     - _
-    - GlobalAPIKey
-reporter: "xcode" # reporter type (xcode, json, csv, checkstyle, codeclimate, junit, html, emoji, sonarqube, markdown, github-actions-logging)
+
+reporter: xcode
+
