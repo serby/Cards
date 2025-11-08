@@ -38,7 +38,7 @@ struct ContentView: View {
                     Button(action: {
                         navigationManager.navigate(to: .camera)
                     }) {
-                        Label("Scan Code", systemImage: "camera")
+                        Label("Scan Code", systemImage: "barcode.viewfinder")
                             .accessibilityIdentifier("scanCodeButton")
                     }
                 }
