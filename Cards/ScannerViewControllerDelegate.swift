@@ -14,15 +14,16 @@ protocol ScannerViewControllerDelegate: AnyObject {
 
 class ScannerViewController: UIViewController, @preconcurrency AVCaptureMetadataOutputObjectsDelegate {
     
-    var captureSession: AVCaptureSession!
-    var previewLayer: AVCaptureVideoPreviewLayer!
+    var captureSession: AVCaptureSession?
+    var previewLayer: AVCaptureVideoPreviewLayer?
     weak var delegate: ScannerViewControllerDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         view.backgroundColor = UIColor.black
-        captureSession = AVCaptureSession()
+        let session = AVCaptureSession()
+        captureSession = session
         
         // Select the video device (back camera)
         guard let videoCaptureDevice = AVCaptureDevice.default(for: .video) else {
@@ -33,8 +34,8 @@ class ScannerViewController: UIViewController, @preconcurrency AVCaptureMetadata
         do {
             let videoInput = try AVCaptureDeviceInput(device: videoCaptureDevice)
             
-            if captureSession.canAddInput(videoInput) {
-                captureSession.addInput(videoInput)
+            if session.canAddInput(videoInput) {
+                session.addInput(videoInput)
             } else {
                 print("Unable to add input to capture session")
                 return
@@ -46,8 +47,8 @@ class ScannerViewController: UIViewController, @preconcurrency AVCaptureMetadata
         
         let metadataOutput = AVCaptureMetadataOutput()
         
-        if captureSession.canAddOutput(metadataOutput) {
-            captureSession.addOutput(metadataOutput)
+        if session.canAddOutput(metadataOutput) {
+            session.addOutput(metadataOutput)
             
             metadataOutput.setMetadataObjectsDelegate(self, queue: DispatchQueue.main)
             metadataOutput.metadataObjectTypes = [
@@ -66,15 +67,16 @@ class ScannerViewController: UIViewController, @preconcurrency AVCaptureMetadata
             return
         }
         
-        previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
-        previewLayer.frame = view.layer.bounds
-        previewLayer.videoGravity = .resizeAspectFill
-        view.layer.addSublayer(previewLayer)
+        let preview = AVCaptureVideoPreviewLayer(session: session)
+        preview.frame = view.layer.bounds
+        preview.videoGravity = .resizeAspectFill
+        view.layer.addSublayer(preview)
+        previewLayer = preview
         
         Task { [weak self] in
             await MainActor.run {
                 guard let self = self else { return }
-                self.captureSession.startRunning()
+                self.captureSession?.startRunning()
             }
         }
     }
@@ -82,8 +84,8 @@ class ScannerViewController: UIViewController, @preconcurrency AVCaptureMetadata
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
-        if captureSession.isRunning {
-            captureSession.stopRunning()
+        if captureSession?.isRunning == true {
+            captureSession?.stopRunning()
         }
     }
     
@@ -92,7 +94,7 @@ class ScannerViewController: UIViewController, @preconcurrency AVCaptureMetadata
         if let metadataObject = metadataObjects.first {
             guard let readableObject = metadataObject as? AVMetadataMachineReadableCodeObject else { return }
             if let scannedCode = readableObject.stringValue {
-                captureSession.stopRunning()
+                captureSession?.stopRunning()
                 AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
                 delegate?.didFindScannedCode(code: scannedCode, type: readableObject.type)
                 dismiss(animated: true)

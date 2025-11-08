@@ -49,20 +49,6 @@ excluded:
   - vendor
   - Cards/GeneratedMocks.swift
 
-custom_rules:
-  no_left_identifier:
-    regex: 'left|Left'
-    match_kinds: [identifier]
-    message: "Use 'leading' instead of 'left'"
-    severity: error
-    excluded: [".*Tests?/.*.swift"]
-  no_right_identifier:
-    regex: 'right|Right'
-    match_kinds: [identifier] 
-    message: "Use 'trailing' instead of 'right'"
-    severity: error
-    excluded: [".*Tests?/.*.swift"]
-
 force_cast: warning
 force_try: warning
 

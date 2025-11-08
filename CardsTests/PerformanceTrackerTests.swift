@@ -9,19 +9,9 @@
 import XCTest
 
 final class PerformanceTrackerTests: XCTestCase {
-    var tracker: PerformanceTracker!
-    
-    override func setUp() {
-        super.setUp()
-        tracker = PerformanceTracker()
-    }
-    
-    override func tearDown() {
-        tracker = nil
-        super.tearDown()
-    }
-    
+        
     func test_recordAppLaunch_completesWithoutCrashing() {
+        let tracker = PerformanceTracker()
         // Given: A fresh tracker
         // When: Recording app launch
         // Then: Should complete without throwing
@@ -29,6 +19,7 @@ final class PerformanceTrackerTests: XCTestCase {
     }
     
     func test_recordWarmStartWithoutForegroundTransition_handlesGracefully() {
+        let tracker = PerformanceTracker()
         // Given: A tracker with no foreground transition recorded
         // When: Recording warm start
         // Then: Should complete without throwing (no foreground time to measure)
@@ -37,6 +28,7 @@ final class PerformanceTrackerTests: XCTestCase {
     
     @MainActor
     func test_recordWarmStartAfterForegroundTransition_measuresTimingCorrectly() async {
+        let tracker = PerformanceTracker()
         // Given: A tracker that has recorded foreground transition
         tracker.recordForegroundTransition()
         let expectedMinDuration: TimeInterval = 0.01
@@ -50,6 +42,7 @@ final class PerformanceTrackerTests: XCTestCase {
     }
     
     func test_recordBackgroundTransition_completesWithoutCrashing() {
+        let tracker = PerformanceTracker()
         // Given: A fresh tracker
         // When: Recording background transition
         // Then: Should complete without throwing
@@ -57,6 +50,7 @@ final class PerformanceTrackerTests: XCTestCase {
     }
     
     func test_recordForegroundTransition_completesWithoutCrashing() {
+        let tracker = PerformanceTracker()
         // Given: A fresh tracker
         // When: Recording foreground transition
         // Then: Should complete without throwing
@@ -64,6 +58,7 @@ final class PerformanceTrackerTests: XCTestCase {
     }
     
     func test_multipleWarmStartsAfterSingleForegroundTransition_handlesCorrectly() {
+        let tracker = PerformanceTracker()
         // Given: A tracker with one foreground transition
         tracker.recordForegroundTransition()
         
@@ -75,6 +70,7 @@ final class PerformanceTrackerTests: XCTestCase {
     }
     
     func test_warmStartSequence_followsCorrectFlow() {
+        let tracker = PerformanceTracker()
         // Given: A fresh tracker
         // When: Following the correct sequence
         XCTAssertNoThrow(tracker.recordBackgroundTransition())
@@ -85,6 +81,7 @@ final class PerformanceTrackerTests: XCTestCase {
     }
     
     func test_performanceTrackerConformsToProtocol() {
+        let tracker = PerformanceTracker()
         // Given: A PerformanceTracker instance
         // When: Casting to protocol
         let protocolTracker: PerformanceTracking = tracker

@@ -3,9 +3,18 @@ import SwiftData
 import XCTest
 
 final class NavigationTests: XCTestCase {
-    var navigationManager: NavigationManager!
-    var modelContainer: ModelContainer!
-    var modelContext: ModelContext!
+    var navigationManager: NavigationManager?
+    var modelContainer: ModelContainer?
+    var modelContext: ModelContext?
+    
+    // Helper to safely unwrap navigationManager
+    var manager: NavigationManager {
+        guard let manager = navigationManager else {
+            XCTFail("NavigationManager not initialized")
+            fatalError("NavigationManager not initialized")
+        }
+        return manager
+    }
     
     override func setUpWithError() throws {
         navigationManager = NavigationManager()
@@ -13,7 +22,7 @@ final class NavigationTests: XCTestCase {
         let schema = Schema([CardItem.self])
         let configuration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
         modelContainer = try ModelContainer(for: schema, configurations: [configuration])
-        modelContext = ModelContext(modelContainer)
+        modelContext = ModelContext(try XCTUnwrap(modelContainer))
     }
     
     override func tearDownWithError() throws {
@@ -87,159 +96,159 @@ final class NavigationTests: XCTestCase {
     // MARK: - Navigation Manager Tests
     
     func test_navigateToCards_clearsPath() throws {
-        navigationManager.navigate(to: .cards)
+        manager.navigate(to: .cards)
         
-        XCTAssertEqual(navigationManager.currentRoute, .cards)
-        XCTAssertEqual(navigationManager.navigationPath.count, 0)
+        XCTAssertEqual(manager.currentRoute, .cards)
+        XCTAssertEqual(manager.navigationPath.count, 0)
     }
     
     func test_navigateToCard_setsCorrectPath() throws {
-        navigationManager.navigate(to: .card("123"))
+        manager.navigate(to: .card("123"))
         
-        XCTAssertEqual(navigationManager.currentRoute, .card("123"))
-        XCTAssertEqual(navigationManager.navigationPath.count, 1)
+        XCTAssertEqual(manager.currentRoute, .card("123"))
+        XCTAssertEqual(manager.navigationPath.count, 1)
     }
     
     func test_navigateToEditCard_setsCorrectPath() throws {
-        navigationManager.navigate(to: .editCard("123"))
+        manager.navigate(to: .editCard("123"))
         
-        XCTAssertEqual(navigationManager.currentRoute, .editCard("123"))
-        XCTAssertEqual(navigationManager.navigationPath.count, 2)
+        XCTAssertEqual(manager.currentRoute, .editCard("123"))
+        XCTAssertEqual(manager.navigationPath.count, 2)
     }
     
     func test_navigateToNewCard_setsCorrectPath() throws {
-        navigationManager.navigate(to: .newCard)
+        manager.navigate(to: .newCard)
         
-        XCTAssertEqual(navigationManager.currentRoute, .newCard)
-        XCTAssertEqual(navigationManager.navigationPath.count, 1)
+        XCTAssertEqual(manager.currentRoute, .newCard)
+        XCTAssertEqual(manager.navigationPath.count, 1)
     }
     
     func test_navigateToCamera_setsCorrectPath() throws {
-        navigationManager.navigate(to: .camera)
+        manager.navigate(to: .camera)
         
-        XCTAssertEqual(navigationManager.currentRoute, .camera)
-        XCTAssertEqual(navigationManager.navigationPath.count, 2)
+        XCTAssertEqual(manager.currentRoute, .camera)
+        XCTAssertEqual(manager.navigationPath.count, 2)
     }
     
     // MARK: - Deep Link Tests
     
     func test_handleDeepLink_validCardsURL_navigatesCorrectly() throws {
-        let url = URL(string: "cards://cards/new")!
+        let url = try XCTUnwrap(URL(string: "cards://cards/new"))
         
-        navigationManager.handleDeepLink(url)
+        manager.handleDeepLink(url)
         
-        XCTAssertEqual(navigationManager.currentRoute, .newCard)
+        XCTAssertEqual(manager.currentRoute, .newCard)
     }
     
     func test_handleDeepLink_validCardURL_navigatesCorrectly() throws {
-        let url = URL(string: "cards://cards/card/123456")!
+        let url = try XCTUnwrap(URL(string: "cards://cards/card/123456"))
         
-        navigationManager.handleDeepLink(url)
+        manager.handleDeepLink(url)
         
-        XCTAssertEqual(navigationManager.currentRoute, .card("123456"))
+        XCTAssertEqual(manager.currentRoute, .card("123456"))
     }
     
     func test_handleDeepLink_validEditCardURL_navigatesCorrectly() throws {
-        let url = URL(string: "cards://cards/card/123456/edit")!
+        let url = try XCTUnwrap(URL(string: "cards://cards/card/123456/edit"))
         
-        navigationManager.handleDeepLink(url)
+        manager.handleDeepLink(url)
         
-        XCTAssertEqual(navigationManager.currentRoute, .editCard("123456"))
+        XCTAssertEqual(manager.currentRoute, .editCard("123456"))
     }
     
     func test_handleDeepLink_validCameraURL_navigatesCorrectly() throws {
-        let url = URL(string: "cards://cards/new/camera")!
+        let url = try XCTUnwrap(URL(string: "cards://cards/new/camera"))
         
-        navigationManager.handleDeepLink(url)
+        manager.handleDeepLink(url)
         
-        XCTAssertEqual(navigationManager.currentRoute, .camera)
+        XCTAssertEqual(manager.currentRoute, .camera)
     }
     
     func test_handleDeepLink_invalidScheme_doesNotNavigate() throws {
-        let originalRoute = navigationManager.currentRoute
-        let url = URL(string: "invalid://cards/new")!
+        let originalRoute = manager.currentRoute
+        let url = try XCTUnwrap(URL(string: "invalid://cards/new"))
         
-        navigationManager.handleDeepLink(url)
+        manager.handleDeepLink(url)
         
-        XCTAssertEqual(navigationManager.currentRoute, originalRoute)
+        XCTAssertEqual(manager.currentRoute, originalRoute)
     }
     
     func test_handleDeepLink_invalidHost_doesNotNavigate() throws {
-        let originalRoute = navigationManager.currentRoute
-        let url = URL(string: "cards://invalid/new")!
+        let originalRoute = manager.currentRoute
+        let url = try XCTUnwrap(URL(string: "cards://invalid/new"))
         
-        navigationManager.handleDeepLink(url)
+        manager.handleDeepLink(url)
         
-        XCTAssertEqual(navigationManager.currentRoute, originalRoute)
+        XCTAssertEqual(manager.currentRoute, originalRoute)
     }
     
     func test_handleDeepLink_noHost_doesNotNavigate() throws {
-        let originalRoute = navigationManager.currentRoute
-        let url = URL(string: "cards:///new")!
+        let originalRoute = manager.currentRoute
+        let url = try XCTUnwrap(URL(string: "cards:///new"))
         
-        navigationManager.handleDeepLink(url)
+        manager.handleDeepLink(url)
         
-        XCTAssertEqual(navigationManager.currentRoute, originalRoute)
+        XCTAssertEqual(manager.currentRoute, originalRoute)
     }
     
     func test_handleDeepLink_invalidPath_navigatesToCards() throws {
-        let url = URL(string: "cards://cards/invalid/path")!
+        let url = try XCTUnwrap(URL(string: "cards://cards/invalid/path"))
         
-        navigationManager.handleDeepLink(url)
+        manager.handleDeepLink(url)
         
-        XCTAssertEqual(navigationManager.currentRoute, .cards)
+        XCTAssertEqual(manager.currentRoute, .cards)
     }
     
     func test_handleDeepLink_emptyPath_navigatesToCards() throws {
-        let url = URL(string: "cards://cards")!
+        let url = try XCTUnwrap(URL(string: "cards://cards"))
         
-        navigationManager.handleDeepLink(url)
+        manager.handleDeepLink(url)
         
-        XCTAssertEqual(navigationManager.currentRoute, .cards)
+        XCTAssertEqual(manager.currentRoute, .cards)
     }
     
     func test_handleDeepLink_rootPath_navigatesToCards() throws {
-        let url = URL(string: "cards://cards/")!
+        let url = try XCTUnwrap(URL(string: "cards://cards/"))
         
-        navigationManager.handleDeepLink(url)
+        manager.handleDeepLink(url)
         
-        XCTAssertEqual(navigationManager.currentRoute, .cards)
+        XCTAssertEqual(manager.currentRoute, .cards)
     }
     
     func test_handleDeepLink_specialCharactersInCardCode_handlesCorrectly() throws {
-        let url = URL(string: "cards://cards/card/ABC-123_456")!
+        let url = try XCTUnwrap(URL(string: "cards://cards/card/ABC-123_456"))
         
-        navigationManager.handleDeepLink(url)
+        manager.handleDeepLink(url)
         
-        XCTAssertEqual(navigationManager.currentRoute, .card("ABC-123_456"))
+        XCTAssertEqual(manager.currentRoute, .card("ABC-123_456"))
     }
     
     // MARK: - Navigation Path Validation Tests
     
     func test_navigationPath_complexFlow_maintainsCorrectCounts() throws {
         // Test complex navigation flow
-        navigationManager.navigate(to: .cards)
-        XCTAssertEqual(navigationManager.navigationPath.count, 0)
+        manager.navigate(to: .cards)
+        XCTAssertEqual(manager.navigationPath.count, 0)
         
-        navigationManager.navigate(to: .card("123"))
-        XCTAssertEqual(navigationManager.navigationPath.count, 1)
+        manager.navigate(to: .card("123"))
+        XCTAssertEqual(manager.navigationPath.count, 1)
         
-        navigationManager.navigate(to: .editCard("123"))
-        XCTAssertEqual(navigationManager.navigationPath.count, 2)
+        manager.navigate(to: .editCard("123"))
+        XCTAssertEqual(manager.navigationPath.count, 2)
         
-        navigationManager.navigate(to: .cards)
-        XCTAssertEqual(navigationManager.navigationPath.count, 0)
+        manager.navigate(to: .cards)
+        XCTAssertEqual(manager.navigationPath.count, 0)
     }
     
     func test_navigationPath_cameraFlow_maintainsCorrectCounts() throws {
-        navigationManager.navigate(to: .newCard)
-        XCTAssertEqual(navigationManager.navigationPath.count, 1)
+        manager.navigate(to: .newCard)
+        XCTAssertEqual(manager.navigationPath.count, 1)
         
-        navigationManager.navigate(to: .camera)
-        XCTAssertEqual(navigationManager.navigationPath.count, 2)
+        manager.navigate(to: .camera)
+        XCTAssertEqual(manager.navigationPath.count, 2)
         
-        navigationManager.navigate(to: .cards)
-        XCTAssertEqual(navigationManager.navigationPath.count, 0)
+        manager.navigate(to: .cards)
+        XCTAssertEqual(manager.navigationPath.count, 0)
     }
     
     func test_navigationPath_allRoutes_clearPathCorrectly() throws {
@@ -249,17 +258,17 @@ final class NavigationTests: XCTestCase {
         ]
         
         for route in routes {
-            navigationManager.navigate(to: route)
-            XCTAssertEqual(navigationManager.currentRoute, route)
+            manager.navigate(to: route)
+            XCTAssertEqual(manager.currentRoute, route)
             
             // Verify path count matches expected for each route
             switch route {
             case .cards:
-                XCTAssertEqual(navigationManager.navigationPath.count, 0)
+                XCTAssertEqual(manager.navigationPath.count, 0)
             case .card, .newCard:
-                XCTAssertEqual(navigationManager.navigationPath.count, 1)
+                XCTAssertEqual(manager.navigationPath.count, 1)
             case .editCard, .camera:
-                XCTAssertEqual(navigationManager.navigationPath.count, 2)
+                XCTAssertEqual(manager.navigationPath.count, 2)
             }
         }
     }

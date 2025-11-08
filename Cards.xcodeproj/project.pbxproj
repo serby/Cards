@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		6900C4AB2EBF46460070C6FF /* MBProgressHUD in Frameworks */ = {isa = PBXBuildFile; productRef = 6900C4AA2EBF46460070C6FF /* MBProgressHUD */; };
+		6900C4E42EBF66720070C6FF /* run_swiftlint.sh in Resources */ = {isa = PBXBuildFile; fileRef = 6900C4E32EBF66720070C6FF /* run_swiftlint.sh */; };
+		6900C4E72EBF97AD0070C6FF /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = 6900C4E62EBF97AD0070C6FF /* Makefile */; };
+		6900C4E92EBF98DD0070C6FF /* MBProgressHUD in Frameworks */ = {isa = PBXBuildFile; productRef = 6900C4E82EBF98DD0070C6FF /* MBProgressHUD */; };
+		6900C4EB2EBF98E20070C6FF /* MBProgressHUD in Frameworks */ = {isa = PBXBuildFile; productRef = 6900C4EA2EBF98E20070C6FF /* MBProgressHUD */; };
 		6974D8BD2D18DA5600F18FC7 /* RSBarcodes_Swift in Frameworks */ = {isa = PBXBuildFile; productRef = 6974D8BC2D18DA5600F18FC7 /* RSBarcodes_Swift */; };
 /* End PBXBuildFile section */
 
@@ -29,6 +33,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		6900C4E32EBF66720070C6FF /* run_swiftlint.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = run_swiftlint.sh; sourceTree = "<group>"; };
+		6900C4E62EBF97AD0070C6FF /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		692FDA852DF4E0AE009B663E /* Cards.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = Cards.xctestplan; sourceTree = "<group>"; };
 		6976AD852D1392F1006F2674 /* Cards.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Cards.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6976AD982D1392F2006F2674 /* CardsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CardsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -67,6 +73,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6900C4E92EBF98DD0070C6FF /* MBProgressHUD in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -74,6 +81,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6900C4EB2EBF98E20070C6FF /* MBProgressHUD in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -90,6 +98,8 @@
 		6976AD7C2D1392F1006F2674 = {
 			isa = PBXGroup;
 			children = (
+				6900C4E62EBF97AD0070C6FF /* Makefile */,
+				6900C4E32EBF66720070C6FF /* run_swiftlint.sh */,
 				692FDA852DF4E0AE009B663E /* Cards.xctestplan */,
 				6976AD872D1392F1006F2674 /* Cards */,
 				6976AD9B2D1392F2006F2674 /* CardsTests */,
@@ -155,6 +165,7 @@
 			);
 			name = CardsTests;
 			packageProductDependencies = (
+				6900C4E82EBF98DD0070C6FF /* MBProgressHUD */,
 			);
 			productName = CardsTests;
 			productReference = 6976AD982D1392F2006F2674 /* CardsTests.xctest */;
@@ -178,6 +189,7 @@
 			);
 			name = CardsUITests;
 			packageProductDependencies = (
+				6900C4EA2EBF98E20070C6FF /* MBProgressHUD */,
 			);
 			productName = CardsUITests;
 			productReference = 6976ADA22D1392F2006F2674 /* CardsUITests.xctest */;
@@ -191,7 +203,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1620;
-				LastUpgradeCheck = 1640;
+				LastUpgradeCheck = 2600;
 				TargetAttributes = {
 					6976AD842D1392F1006F2674 = {
 						CreatedOnToolsVersion = 16.2;
@@ -236,6 +248,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6900C4E42EBF66720070C6FF /* run_swiftlint.sh in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -258,6 +271,7 @@
 /* Begin PBXShellScriptBuildPhase section */
 		A1SWIFTLINT /* Run SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -281,6 +295,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6900C4E72EBF97AD0070C6FF /* Makefile in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -372,6 +387,7 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -429,6 +445,7 @@
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				SWIFT_COMPILATION_MODE = wholemodule;
 			};
@@ -446,8 +463,10 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Cards/Preview Content\"";
+				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
@@ -489,8 +508,10 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Cards/Preview Content\"";
+				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
@@ -670,6 +691,16 @@
 
 /* Begin XCSwiftPackageProductDependency section */
 		6900C4AA2EBF46460070C6FF /* MBProgressHUD */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6900C4A92EBF46460070C6FF /* XCRemoteSwiftPackageReference "MBProgressHUD" */;
+			productName = MBProgressHUD;
+		};
+		6900C4E82EBF98DD0070C6FF /* MBProgressHUD */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6900C4A92EBF46460070C6FF /* XCRemoteSwiftPackageReference "MBProgressHUD" */;
+			productName = MBProgressHUD;
+		};
+		6900C4EA2EBF98E20070C6FF /* MBProgressHUD */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 6900C4A92EBF46460070C6FF /* XCRemoteSwiftPackageReference "MBProgressHUD" */;
 			productName = MBProgressHUD;

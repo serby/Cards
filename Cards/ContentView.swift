@@ -29,18 +29,35 @@ struct ContentView: View {
             .navigationTitle("Cards")
             .toolbar {
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
-                    Button(action: {
-                        navigationManager.navigate(to: .newCard)
-                    }) {
-                        Label("Add Card", systemImage: "plus")
-                            .accessibilityIdentifier("addCardButton")
-                    }
-                    Button(action: {
-                        navigationManager.navigate(to: .camera)
-                    }) {
-                        Label("Scan Code", systemImage: "barcode.viewfinder")
-                            .accessibilityIdentifier("scanCodeButton")
-                    }
+#if DEBUG
+                    Button(
+                        action: {
+                            Loader.load()
+                        },
+                        label: {
+                            Label("Test", systemImage: "tortoise.fill")
+                                .accessibilityIdentifier("testCardButton")
+                        }
+                    )
+#endif // DEBUG
+                    Button(
+                        action: {
+                            navigationManager.navigate(to: .newCard)
+                        },
+                        label: {
+                            Label("Add Card", systemImage: "plus")
+                                .accessibilityIdentifier("addCardButton")
+                        }
+                    )
+                    Button(
+                        action: {
+                            navigationManager.navigate(to: .camera)
+                        },
+                        label: {
+                            Label("Scan Code", systemImage: "barcode.viewfinder")
+                                .accessibilityIdentifier("scanCodeButton")
+                        }
+                    )
                 }
             }
             .navigationDestination(for: NavigationRoute.self) { route in
