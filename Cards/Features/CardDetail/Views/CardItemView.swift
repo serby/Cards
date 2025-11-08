@@ -23,9 +23,7 @@ struct CardItemView: View {
                 .accessibilityAddTraits(.isHeader)
 
             BarcodeView(barcodeString: item.code, barcodeType: item.getBarcodeType())
-                .accessibilityIdentifier("barcodeView")
                 .accessibilityLabel("Barcode for \(item.name)")
-                .accessibilityHint("This is a \(item.getBarcodeType().rawValue) barcode with code \(item.code)")
             
             Spacer()
             

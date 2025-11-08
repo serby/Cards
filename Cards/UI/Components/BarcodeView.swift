@@ -20,7 +20,9 @@ struct BarcodeView: View {
                     .foregroundColor(.red)
             }
         }
-        .background(Color.white) // Background for clarity
+        .background(Color.white)
+        .accessibilityIdentifier("barcodeView")
+        .accessibilityHint("This is a \(barcodeType.rawValue) barcode with code \(barcodeString)")
     }
     
     func generateBarcode(from code: String, type: BarcodeType) -> UIImage? {
