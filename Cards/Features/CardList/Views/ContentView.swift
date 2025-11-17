@@ -1,25 +1,41 @@
 import SwiftData
 import SwiftUI
 
+struct CardRow: View {
+    @EnvironmentObject private var navigationManager: NavigationManager
+    @State private var trigger: Bool = false
+    private var cardItem: CardItem
+    init(cardItem: CardItem) {
+        self.cardItem = cardItem
+    }
+    
+    var body: some View {
+        Button {
+            trigger.toggle()
+            navigationManager.navigate(to: NavigationRoute.card(cardItem.code))
+        } label: {
+            Text(cardItem.name)
+                .padding(.vertical)
+                .foregroundColor(.primary)
+        }
+        .sensoryFeedback(trigger: trigger, { SensoryFeedback.impact(weight: .heavy) })
+    }
+}
+
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \CardItem.order) private var cardItems: [CardItem]
     @EnvironmentObject private var navigationManager: NavigationManager
     @State private var scannedCode: String?
     @State private var barcodeType: BarcodeType?
-    
     var body: some View {
         NavigationStack(path: $navigationManager.navigationPath) {
             List {
                 ForEach(cardItems) { item in
-                    NavigationLink(value: NavigationRoute.card(item.code)) {
-                        Text(item.name)
-                            .padding(.vertical)
-                            .foregroundColor(.primary)
-                    }
-                    .listRowBackground(Color.clear)
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 4)
+                    CardRow(cardItem: item)
+                        .listRowBackground(Color.clear)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
                 }
                 .onDelete(perform: deleteItems)
                 .onMove(perform: moveItems)
