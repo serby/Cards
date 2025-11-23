@@ -28,6 +28,13 @@ class NavigationManager: ObservableObject {
         }
     }
     
+    func resetToRoot() {
+        if case .camera = currentRoute {
+            navigationPath = NavigationPath()
+            currentRoute = .cards
+        }
+    }
+    
     func handleDeepLink(_ url: URL) {
         print("Deep Link Recieved: \(url) - Schema: \(url.scheme ?? "nil") Host: \(url.host ?? "nil") Path: \(url.path)")
         guard url.scheme == "cards" && url.host == "cards" else {

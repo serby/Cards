@@ -28,6 +28,14 @@ struct CameraScannerView: UIViewControllerRepresentable {
 
     // Update the view when state changes
     func updateUIViewController(_ uiViewController: ScannerViewController, context: Context) {}
+    
+    // Clean up camera session when view is removed
+    static func dismantleUIViewController(_ uiViewController: ScannerViewController, coordinator: Coordinator) {
+        uiViewController.captureSession?.stopRunning()
+        uiViewController.captureSession = nil
+        uiViewController.previewLayer?.removeFromSuperlayer()
+        uiViewController.previewLayer = nil
+    }
 
     // Connect SwiftUI's state to the UIKit delegate
     func makeCoordinator() -> Coordinator {

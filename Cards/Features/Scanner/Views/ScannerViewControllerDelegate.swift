@@ -72,11 +72,14 @@ class ScannerViewController: UIViewController, @preconcurrency AVCaptureMetadata
         preview.videoGravity = .resizeAspectFill
         view.layer.addSublayer(preview)
         previewLayer = preview
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         
-        Task { [weak self] in
-            await MainActor.run {
-                guard let self = self else { return }
-                self.captureSession?.startRunning()
+        if captureSession?.isRunning == false {
+            Task {
+                await captureSession?.startRunning()
             }
         }
     }

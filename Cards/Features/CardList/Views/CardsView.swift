@@ -22,53 +22,63 @@ struct CardRow: View {
     }
 }
 
-struct ContentView: View {
+struct CardListView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \CardItem.order) private var cardItems: [CardItem]
     @EnvironmentObject private var navigationManager: NavigationManager
     @State private var scannedCode: String?
     @State private var barcodeType: BarcodeType?
+    @State var searchText: String = ""
+    @State var searchable: Bool = false
     var body: some View {
-        NavigationStack(path: $navigationManager.navigationPath) {
-            List {
-                ForEach(cardItems) { item in
-                    CardRow(cardItem: item)
-                        .listRowBackground(Color.clear)
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 4)
-                }
-                .onDelete(perform: deleteItems)
-                .onMove(perform: moveItems)
+        List {
+            ForEach(cardItems) { item in
+                CardRow(cardItem: item)
+                    .listRowBackground(Color.clear)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
             }
-            .listStyle(.plain)
-            .background(.ultraThinMaterial)
-            .navigationTitle("Cards")
-            .toolbar {
-                ToolbarItemGroup(placement: .navigationBarTrailing) {
-                    Button(
-                        action: {
-                            navigationManager.navigate(to: .newCard)
-                        },
-                        label: {
-                            Label("Add Card", systemImage: "plus")
-                                .accessibilityIdentifier("addCardButton")
-                        }
-                    )
-                    Button(
-                        action: {
-                            navigationManager.navigate(to: .camera)
-                        },
-                        label: {
-                            Label("Scan Code", systemImage: "barcode.viewfinder")
-                                .accessibilityIdentifier("scanCodeButton")
-                        }
-                    )
+            .onDelete(perform: deleteItems)
+            .onMove(perform: moveItems)
+        }
+        .listStyle(.plain)
+        .background(.ultraThinMaterial)
+        .navigationTitle("Cards")
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                HStack(spacing: 16) {
+                    Button {
+                        navigationManager.navigate(to: .newCard)
+                    } label: {
+                        Image(systemName: "plus")
+                    }
+                    .accessibilityIdentifier("addCardButton")
+                    .accessibilityLabel("Add Card")
+                    
+                    Button {
+                        navigationManager.navigate(to: .camera)
+                    } label: {
+                        Image(systemName: "barcode.viewfinder")
+                    }
+                    .accessibilityIdentifier("scanCodeButton")
+                    .accessibilityLabel("Scan Code")
                 }
-            }
-            .navigationDestination(for: NavigationRoute.self) { route in
-                destinationView(for: route)
             }
         }
+        .navigationDestination(for: NavigationRoute.self) { route in
+            destinationView(for: route)
+        }
+//        .conditionalModifier { view in
+//            if searchable {
+//                view.searchable(
+//                    text: $searchText,
+//                    placement: .automatic,
+//                    prompt: "Type here to search"
+//                )
+//            } else {
+//                view
+//            }
+//        }
     }
     
     @ViewBuilder
@@ -140,6 +150,6 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView()
+    CardListView()
         .modelContainer(for: CardItem.self, inMemory: true)
 }

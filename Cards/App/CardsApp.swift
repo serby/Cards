@@ -19,21 +19,48 @@ struct CardsApp: App {
         let isTesting = CommandLine.arguments.contains("-uiTesting")
         
         do {
-            let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: isTesting, cloudKitDatabase: .automatic)
+            let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: isTesting)
             return try ModelContainer(for: schema, configurations: [modelConfiguration])
         } catch {
             fatalError("ModelContainer failed: \(error)")
         }
     }()
     
+    private var tabView: some View {
+        TabView {
+            Tab("Cards", systemImage: "barcode") {
+                NavigationStack(path: $navigationManager.navigationPath) {
+                    CardListView()
+                        .environmentObject(navigationManager)
+                }
+                .onAppear {
+                    navigationManager.resetToRoot()
+                }
+            }
+            Tab("Settings", systemImage: "gearshape") {
+                NavigationStack {
+                    VStack {
+                        Text("Settings")
+                    }
+                    .navigationTitle("Settings")
+                }
+            }
+        }.onAppear {
+            performanceTracker.recordAppLaunch()
+        }.onOpenURL(perform: navigationManager.handleDeepLink)
+    }
+    
     var body: some Scene {
         WindowGroup {
-            ContentView()
-                .environmentObject(navigationManager)
-                .onAppear {
-                    performanceTracker.recordAppLaunch()
+            tabView
+                .conditionalModifier { view in
+                    if #available(iOS 26.0, *) {
+                        view.tabBarMinimizeBehavior(.onScrollDown)
+                    } else {
+                        view
+                    }
                 }
-                .onOpenURL(perform: navigationManager.handleDeepLink)
+            
         }
         .modelContainer(sharedModelContainer)
         .onChange(of: scenePhase) { _, newPhase in
