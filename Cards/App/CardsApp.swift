@@ -39,10 +39,7 @@ struct CardsApp: App {
             }
             Tab("Settings", systemImage: "gearshape") {
                 NavigationStack {
-                    VStack {
-                        Text("Settings")
-                    }
-                    .navigationTitle("Settings")
+                    SettingsView()
                 }
             }
         }.onAppear {

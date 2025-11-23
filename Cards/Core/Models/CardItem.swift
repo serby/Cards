@@ -24,8 +24,33 @@ public final class CardItem: Identifiable {
         self.order = order ?? 0
     }
     
-    // Helper method to get BarcodeType
     func getBarcodeType() -> BarcodeType {
         return BarcodeType(rawValue: type) ?? .code128
+    }
+}
+
+struct CardItemDTO: Codable {
+    let timestamp: Date
+    let code: String
+    let name: String
+    let order: Int
+    let type: String
+    
+    init(from card: CardItem) {
+        timestamp = card.timestamp
+        code = card.code
+        name = card.name
+        order = card.order
+        type = card.type
+    }
+    
+    func toCardItem() -> CardItem {
+        CardItem(
+            timestamp: timestamp,
+            code: code,
+            name: name,
+            barcodeType: BarcodeType(rawValue: type),
+            order: order
+        )
     }
 }

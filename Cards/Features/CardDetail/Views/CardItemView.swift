@@ -3,6 +3,7 @@ import SwiftUI
 import UIKit // Import UIKit for UIScreen
 
 struct CardItemView: View {
+    @AppStorage("brightnessBoost") private var brightnessBoost = true
     @State private var originalBrightness: CGFloat = UIScreen.main.brightness
     @State private var item: CardItem // Make item a @State variable so changes are seen
     let navigationManager: NavigationManager
@@ -46,6 +47,7 @@ struct CardItemView: View {
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("cardDetailView")
         .onAppear {
+            guard brightnessBoost else { return }
             originalBrightness = UIScreen.main.brightness
             Task {
                 await fadeBrightness(to: 1.0, duration: 0.5)
@@ -55,6 +57,7 @@ struct CardItemView: View {
             UIAccessibility.post(notification: .announcement, argument: "Screen brightness increased for better barcode visibility")
         }
         .onDisappear {
+            guard brightnessBoost else { return }
             Task {
                 await fadeBrightness(to: originalBrightness, duration: 0.2)
             }
