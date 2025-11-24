@@ -36,6 +36,11 @@
 - ✅ Use `weak` and `unowned` to prevent retain cycles
 - ✅ Use `[weak self]` in closures when capturing self
 
+### Git Commits
+- ✅ Use Conventional Commits format: `<type>(<scope>): <description>`
+- ✅ Types: `feat`, `fix`, `refactor`, `docs`, `style`, `test`, `chore`
+- ✅ Include body with bullet points for multiple changes
+
 ## Update Instructions
 **IMPORTANT**: This file should be updated whenever new coding preferences or patterns are discovered during development. Add new sections or examples as they emerge from actual code reviews and implementations.
 
