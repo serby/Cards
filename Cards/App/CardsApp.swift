@@ -26,38 +26,57 @@ struct CardsApp: App {
         }
     }()
     
+    @ViewBuilder
     private var tabView: some View {
-        TabView {
-            Tab("Cards", systemImage: "barcode") {
-                NavigationStack(path: $navigationManager.navigationPath) {
-                    CardListView()
-                        .environmentObject(navigationManager)
+        if #available(iOS 26.0, *) {
+            TabView {
+                Tab("Cards", systemImage: "barcode") {
+                    NavigationStack(path: $navigationManager.navigationPath) {
+                        CardListView()
+                            .environmentObject(navigationManager)
+                    }
+                    .onAppear {
+                        navigationManager.resetToRoot()
+                    }
                 }
-                .onAppear {
-                    navigationManager.resetToRoot()
+                Tab("Settings", systemImage: "gearshape") {
+                    NavigationStack {
+                        SettingsView()
+                    }
                 }
             }
-            Tab("Settings", systemImage: "gearshape") {
-                NavigationStack {
-                    SettingsView()
+            .onAppear {
+                performanceTracker.recordAppLaunch()
+            }
+            .onOpenURL(perform: navigationManager.handleDeepLink)
+            .tabBarMinimizeBehavior(.onScrollUp)
+        } else {
+            TabView {
+                Tab("Cards", systemImage: "barcode") {
+                    NavigationStack(path: $navigationManager.navigationPath) {
+                        CardListView()
+                            .environmentObject(navigationManager)
+                    }
+                    .onAppear {
+                        navigationManager.resetToRoot()
+                    }
+                }
+                Tab("Settings", systemImage: "gearshape") {
+                    NavigationStack {
+                        SettingsView()
+                    }
                 }
             }
-        }.onAppear {
-            performanceTracker.recordAppLaunch()
-        }.onOpenURL(perform: navigationManager.handleDeepLink)
+            .onAppear {
+                performanceTracker.recordAppLaunch()
+            }
+            .onOpenURL(perform: navigationManager.handleDeepLink)
+        }
     }
     
     var body: some Scene {
         WindowGroup {
             tabView
-                .conditionalModifier { view in
-                    if #available(iOS 26.0, *) {
-                        view.tabBarMinimizeBehavior(.onScrollDown)
-                    } else {
-                        view
-                    }
-                }
-            
         }
         .modelContainer(sharedModelContainer)
         .onChange(of: scenePhase) { _, newPhase in

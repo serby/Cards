@@ -30,6 +30,8 @@ struct CardListView: View {
     @State private var barcodeType: BarcodeType?
     @State var searchText: String = ""
     @State var searchable: Bool = false
+    @State private var toolbarVisible = true
+    
     var body: some View {
         List {
             ForEach(cardItems) { item in
@@ -44,6 +46,7 @@ struct CardListView: View {
         .listStyle(.plain)
         .background(.ultraThinMaterial)
         .navigationTitle("Cards")
+        .toolbar(toolbarVisible ? .visible : .hidden, for: .navigationBar)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 HStack(spacing: 16) {
@@ -63,6 +66,13 @@ struct CardListView: View {
                     .accessibilityIdentifier("scanCodeButton")
                     .accessibilityLabel("Scan Code")
                 }
+            }
+        }
+        .onScrollGeometryChange(for: CGFloat.self) { geometry in
+            geometry.contentOffset.y
+        } action: { oldValue, newValue in
+            withAnimation(.easeInOut(duration: 0.3)) {
+                toolbarVisible = newValue <= 0
             }
         }
         .navigationDestination(for: NavigationRoute.self) { route in
