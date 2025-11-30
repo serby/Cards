@@ -17,12 +17,12 @@ jobs:
       run: xcodebuild -version
     
     - name: List available simulators
-      run: xcrun simctl list devices available | grep "iPhone 16 Pro Max"
+      run: xcrun simctl list devices available | grep "iPhone 17 Pro Max"
     
     - name: Build and Test
       run: |
         xcodebuild -scheme Cards \
-          -destination 'platform=iOS Simulator,name=iPhone 16 Pro Max,OS=26.0' \
+          -destination 'platform=iOS Simulator,name=iPhone 17 Pro Max' \
           -skipPackagePluginValidation \
           clean build test -quiet
     
