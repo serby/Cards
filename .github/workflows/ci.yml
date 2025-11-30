@@ -13,8 +13,8 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    - name: Select Xcode
-      run: sudo xcode-select -s /Applications/Xcode.app
+    - name: Select Xcode 16
+      run: sudo xcode-select -s /Applications/Xcode_16.0.app
     
     - name: Show Xcode version
       run: xcodebuild -version
@@ -25,7 +25,7 @@ jobs:
     - name: Build and Test
       run: |
         xcodebuild -scheme Cards \
-          -destination 'platform=iOS Simulator,name=iPhone 16 Pro Max,OS=18.4' \
+          -destination 'platform=iOS Simulator,name=iPhone 16 Pro Max,OS=26.0' \
           -skipPackagePluginValidation \
           clean build test -quiet
     
