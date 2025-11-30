@@ -7,22 +7,34 @@ A SwiftUI-based iOS application for barcode card management with camera scanning
 ### Modern Swift Practices
 
 #### Concurrency
-- ✅ Use `async/await` and `Task` for asynchronous operations
+- ✅ Use `async/await` for truly asynchronous operations
+- ✅ Use `Task` for background work (even with synchronous code)
 - ✅ Use `Task.sleep(for:)` for delays
-- ❌ Avoid `DispatchQueue.async` and `DispatchQueue.asyncAfter`
+- ❌ Avoid `DispatchQueue.async` and `DispatchQueue.asyncAfter` (use `Task` instead)
+- ⚠️ Don't use `await` on non-async methods
 
 ```swift
-// ✅ Preferred
+// ✅ Preferred - async/await for delays
 .task {
     try? await Task.sleep(for: .seconds(0.6))
     isReady = true
 }
 
-// ❌ Avoid
+// ✅ Preferred - Task for background work (no await needed)
+Task {
+    captureSession?.startRunning() // Synchronous but blocking
+}
+
+// ❌ Avoid - DispatchQueue
 .onAppear {
     DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
         isReady = true
     }
+}
+
+// ❌ Wrong - await on non-async method
+Task {
+    await captureSession?.startRunning() // startRunning() is not async!
 }
 ```
 
