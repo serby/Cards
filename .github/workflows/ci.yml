@@ -19,11 +19,16 @@ jobs:
     - name: Show Xcode version
       run: xcodebuild -version
     
-    - name: Build
-      run: make build
+    - name: Setup iOS Simulator
+      run: |
+        xcrun simctl list devices available
+        xcrun simctl create "iPhone 16 CI" "iPhone 16" "iOS18.1" || true
+        SIMULATOR_ID=$(xcrun simctl list devices available | grep "iPhone 16" | grep "18.1" | head -1 | grep -o '[A-F0-9-]\{36\}')
+        echo "SIMULATOR_ID=$SIMULATOR_ID" >> $GITHUB_ENV
+        xcrun simctl boot "$SIMULATOR_ID" || true
     
-    - name: Test
-      run: make test
+    - name: Build and Test
+      run: make ci
     
     - name: Upload test results
       if: always()
@@ -31,4 +36,4 @@ jobs:
       with:
         name: test-results
         path: |
-          *.xcresult
+          ~/Library/Developer/Xcode/DerivedData/*/Logs/Test/*.xcresult
