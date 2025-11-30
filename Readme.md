@@ -191,15 +191,27 @@ final class CardItem {
 
 ### Build and Test
 ```bash
-# Build (quiet, errors only)
-xcodebuild -scheme Cards -destination 'platform=iOS Simulator,arch=arm64,name=iPhone 17 Pro Max,OS=26.0' build -quiet
+# Build
+make build
 
-# Test (quiet, errors only)
-xcodebuild -scheme Cards -destination 'platform=iOS Simulator,arch=arm64,name=iPhone 17 Pro Max,OS=26.0' test -quiet
+# Test
+make test
 
-# Test without building (after successful build)
-xcodebuild -scheme Cards -destination 'platform=iOS Simulator,arch=arm64,name=iPhone 17 Pro Max,OS=26.0' test-without-building -quiet
+# Using Fastlane
+fastlane build
+fastlane test
 ```
+
+### Deployment
+```bash
+# Deploy to TestFlight
+fastlane beta
+
+# Deploy to App Store
+fastlane release
+```
+
+See [DEPLOYMENT.md](docs/DEPLOYMENT.md) for full deployment pipeline documentation.
 
 ## Development Workflow
 

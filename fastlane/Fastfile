@@ -1,0 +1,53 @@
+default_platform(:ios)
+
+platform :ios do
+  desc "Run tests"
+  lane :test do
+    run_tests(
+      scheme: "Cards",
+      device: "iPhone 16",
+      clean: true
+    )
+  end
+
+  desc "Build for testing"
+  lane :build do
+    build_app(
+      scheme: "Cards",
+      configuration: "Debug",
+      skip_archive: true,
+      skip_codesigning: true
+    )
+  end
+
+  desc "Build and deploy to TestFlight"
+  lane :beta do
+    increment_build_number(xcodeproj: "Cards.xcodeproj")
+    
+    build_app(
+      scheme: "Cards",
+      configuration: "Release",
+      export_method: "app-store"
+    )
+    
+    upload_to_testflight(
+      skip_waiting_for_build_processing: true
+    )
+  end
+
+  desc "Deploy to App Store"
+  lane :release do
+    increment_build_number(xcodeproj: "Cards.xcodeproj")
+    
+    build_app(
+      scheme: "Cards",
+      configuration: "Release",
+      export_method: "app-store"
+    )
+    
+    upload_to_app_store(
+      submit_for_review: false,
+      automatic_release: false
+    )
+  end
+end
