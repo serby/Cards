@@ -27,7 +27,8 @@ platform :ios do
     build_app(
       scheme: "Cards",
       configuration: "Release",
-      export_method: "app-store"
+      export_method: "app-store",
+      xcargs: "-skipPackagePluginValidation"
     )
     
     upload_to_testflight(
