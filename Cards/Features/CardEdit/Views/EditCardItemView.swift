@@ -5,6 +5,11 @@ struct EditCardItemView: View {
     @State private var tempName: String
     @State private var tempCode: String
     @State private var selectedType: String
+    @FocusState private var focusedField: Field?
+    
+    enum Field {
+        case name, code
+    }
     
     let navigationManager: NavigationManager?
     var onSave: ((CardItem) -> Void)? // Closure to be called on save
@@ -28,6 +33,7 @@ struct EditCardItemView: View {
                     TextField("Enter name", text: $tempName)
                         .multilineTextAlignment(.trailing)
                         .autocorrectionDisabled()
+                        .focused($focusedField, equals: .name)
                         .accessibilityIdentifier("cardDetailsSection.nameTextField")
                         .accessibilityLabel("Card name")
                         .accessibilityHint("Enter the name of this card")
@@ -41,6 +47,7 @@ struct EditCardItemView: View {
                         .multilineTextAlignment(.trailing)
                         .keyboardType(.default)
                         .autocorrectionDisabled()
+                        .focused($focusedField, equals: .code)
                         .accessibilityIdentifier("cardDetailsSection.codeTextField")
                         .accessibilityLabel("Card code")
                         .accessibilityHint("Enter the barcode number for this card")
@@ -64,6 +71,10 @@ struct EditCardItemView: View {
         }
         .navigationBarTitleDisplayMode(.inline)
         .accessibilityIdentifier("editCardForm")
+        .task {
+            try? await Task.sleep(for: .seconds(0.6))
+            focusedField = .name
+        }
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button("Save") {

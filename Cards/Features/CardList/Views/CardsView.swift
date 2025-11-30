@@ -70,13 +70,18 @@ struct CardListView: View {
         }
         .onScrollGeometryChange(for: CGFloat.self) { geometry in
             geometry.contentOffset.y
-        } action: { oldValue, newValue in
+        } action: { _, newValue in
             withAnimation(.easeInOut(duration: 0.3)) {
                 toolbarVisible = newValue <= 0
             }
         }
         .navigationDestination(for: NavigationRoute.self) { route in
             destinationView(for: route)
+        }
+        .onChange(of: scannedCode) { _, newCode in
+            if newCode != nil {
+                navigationManager.navigate(to: .newCard)
+            }
         }
 //        .conditionalModifier { view in
 //            if searchable {
@@ -111,14 +116,22 @@ struct CardListView: View {
             }
         case .newCard:
             EditCardItemView(
-                cardItem: CardItem(timestamp: Date(), code: "", name: ""),
+                cardItem: CardItem(
+                    timestamp: Date(),
+                    code: scannedCode ?? "",
+                    name: "",
+                    barcodeType: barcodeType
+                ),
                 navigationManager: navigationManager,
                 onSave: { updatedCard in
                     modelContext.insert(updatedCard)
+                    scannedCode = nil
+                    barcodeType = nil
                     navigationManager.navigate(to: .card(updatedCard.code))
                 }
             )
             .navigationTitle("Add Card")
+            .id("\(scannedCode ?? "")-\(barcodeType?.rawValue ?? "")")
         case .camera:
             CameraScannerView(scannedCode: $scannedCode, barcodeType: $barcodeType)
         }

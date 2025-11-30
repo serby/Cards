@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		6900C4E42EBF66720070C6FF /* run_swiftlint.sh in Resources */ = {isa = PBXBuildFile; fileRef = 6900C4E32EBF66720070C6FF /* run_swiftlint.sh */; };
-		6900C4E72EBF97AD0070C6FF /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = 6900C4E62EBF97AD0070C6FF /* Makefile */; };
 		6974D8BD2D18DA5600F18FC7 /* RSBarcodes_Swift in Frameworks */ = {isa = PBXBuildFile; productRef = 6974D8BC2D18DA5600F18FC7 /* RSBarcodes_Swift */; };
 /* End PBXBuildFile section */
 
@@ -31,7 +30,6 @@
 
 /* Begin PBXFileReference section */
 		6900C4E32EBF66720070C6FF /* run_swiftlint.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = run_swiftlint.sh; sourceTree = "<group>"; };
-		6900C4E62EBF97AD0070C6FF /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		692FDA852DF4E0AE009B663E /* Cards.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = Cards.xctestplan; sourceTree = "<group>"; };
 		6976AD852D1392F1006F2674 /* Cards.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Cards.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6976AD982D1392F2006F2674 /* CardsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CardsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -92,7 +90,6 @@
 		6976AD7C2D1392F1006F2674 = {
 			isa = PBXGroup;
 			children = (
-				6900C4E62EBF97AD0070C6FF /* Makefile */,
 				6900C4E32EBF66720070C6FF /* run_swiftlint.sh */,
 				692FDA852DF4E0AE009B663E /* Cards.xctestplan */,
 				6976AD872D1392F1006F2674 /* Cards */,
@@ -123,11 +120,11 @@
 				6976AD812D1392F1006F2674 /* Sources */,
 				6976AD822D1392F1006F2674 /* Frameworks */,
 				6976AD832D1392F1006F2674 /* Resources */,
-				A1SWIFTLINT /* Run SwiftLint */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				69EE5F952EDCE551005D72DB /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				6976AD872D1392F1006F2674 /* Cards */,
@@ -220,6 +217,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				6974D8BA2D18D79500F18FC7 /* XCRemoteSwiftPackageReference "RSBarcodes_Swift" */,
+				69EE5F8F2EDCE46E005D72DB /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 6976AD862D1392F1006F2674 /* Products */;
@@ -258,34 +256,11 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
-/* Begin PBXShellScriptBuildPhase section */
-		A1SWIFTLINT /* Run SwiftLint */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Run SwiftLint";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "${SRCROOT}/run_swiftlint.sh\n";
-		};
-/* End PBXShellScriptBuildPhase section */
-
 /* Begin PBXSourcesBuildPhase section */
 		6976AD812D1392F1006F2674 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6900C4E72EBF97AD0070C6FF /* Makefile in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -315,6 +290,10 @@
 			isa = PBXTargetDependency;
 			target = 6976AD842D1392F1006F2674 /* Cards */;
 			targetProxy = 6976ADA32D1392F2006F2674 /* PBXContainerItemProxy */;
+		};
+		69EE5F952EDCE551005D72DB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 69EE5F942EDCE551005D72DB /* SwiftLintBuildToolPlugin */;
 		};
 /* End PBXTargetDependency section */
 
@@ -669,6 +648,14 @@
 				minimumVersion = 5.2.0;
 			};
 		};
+		69EE5F8F2EDCE46E005D72DB /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SimplyDanny/SwiftLintPlugins";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.62.2;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -676,6 +663,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 6974D8BA2D18D79500F18FC7 /* XCRemoteSwiftPackageReference "RSBarcodes_Swift" */;
 			productName = RSBarcodes_Swift;
+		};
+		69EE5F942EDCE551005D72DB /* SwiftLintBuildToolPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 69EE5F8F2EDCE46E005D72DB /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */;
+			productName = "plugin:SwiftLintBuildToolPlugin";
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

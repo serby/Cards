@@ -27,9 +27,11 @@ final class CardsUITestsLaunchTests: XCTestCase {
     func testLaunchPerformance() throws {
         if #available(macOS 10.15, iOS 17.0, tvOS 17.0, watchOS 7.0, *) {
             let metric = XCTApplicationLaunchMetric()
+            let options = XCTMeasureOptions()
+            options.iterationCount = 5
             
             // Measure app launch performance
-            measure(metrics: [metric]) {
+            measure(metrics: [metric], options: options) {
                 XCUIApplication().launch()
             }
         }

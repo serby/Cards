@@ -6,6 +6,7 @@ class NavigationManager: ObservableObject {
     @Published var currentRoute: NavigationRoute = .cards
     
     func navigate(to route: NavigationRoute) {
+        objectWillChange.send()
         currentRoute = route
         
         switch route {
@@ -30,6 +31,7 @@ class NavigationManager: ObservableObject {
     
     func resetToRoot() {
         if case .camera = currentRoute {
+            objectWillChange.send()
             navigationPath = NavigationPath()
             currentRoute = .cards
         }

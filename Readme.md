@@ -2,6 +2,56 @@
 
 A SwiftUI-based iOS application for barcode card management with camera scanning and deep linking capabilities.
 
+## Coding Style Guide
+
+### Modern Swift Practices
+
+#### Concurrency
+- ✅ Use `async/await` and `Task` for asynchronous operations
+- ✅ Use `Task.sleep(for:)` for delays
+- ❌ Avoid `DispatchQueue.async` and `DispatchQueue.asyncAfter`
+
+```swift
+// ✅ Preferred
+.task {
+    try? await Task.sleep(for: .seconds(0.6))
+    isReady = true
+}
+
+// ❌ Avoid
+.onAppear {
+    DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+        isReady = true
+    }
+}
+```
+
+#### State Management
+- ✅ Use `@State`, `@Binding`, `@ObservedObject`, `@StateObject` appropriately
+- ✅ Use `@FocusState` for keyboard focus management
+- ✅ Batch state updates with `objectWillChange.send()` to prevent multiple updates per frame
+
+```swift
+// ✅ Batch updates
+func navigate(to route: NavigationRoute) {
+    objectWillChange.send()
+    currentRoute = route
+    navigationPath = NavigationPath()
+}
+```
+
+#### SwiftUI
+- ✅ Prefer SwiftUI over UIKit
+- ✅ Use `.task` modifier for async work in views
+- ✅ Use modern view modifiers and APIs
+- ❌ Only use UIKit when absolutely necessary (e.g., AVCaptureSession)
+
+#### Code Style
+- ✅ Minimal, focused implementations
+- ✅ Clear, descriptive naming
+- ✅ Use Swift's modern features (property wrappers, result builders)
+- ✅ Avoid verbose or unnecessary code
+
 ## Architecture
 
 ### Navigation System

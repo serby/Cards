@@ -4,6 +4,37 @@
 <dict>
 	<key>runDestinationsByUUID</key>
 	<dict>
+		<key>439BFF43-726E-44E8-A197-EB242C0555D5</key>
+		<dict>
+			<key>localComputer</key>
+			<dict>
+				<key>busSpeedInMHz</key>
+				<integer>0</integer>
+				<key>cpuCount</key>
+				<integer>1</integer>
+				<key>cpuKind</key>
+				<string>Apple M3 Pro</string>
+				<key>cpuSpeedInMHz</key>
+				<integer>0</integer>
+				<key>logicalCPUCoresPerPackage</key>
+				<integer>12</integer>
+				<key>modelCode</key>
+				<string>Mac15,6</string>
+				<key>physicalCPUCoresPerPackage</key>
+				<integer>12</integer>
+				<key>platformIdentifier</key>
+				<string>com.apple.platform.macosx</string>
+			</dict>
+			<key>targetArchitecture</key>
+			<string>arm64</string>
+			<key>targetDevice</key>
+			<dict>
+				<key>modelCode</key>
+				<string>iPhone17,3</string>
+				<key>platformIdentifier</key>
+				<string>com.apple.platform.iphonesimulator</string>
+			</dict>
+		</dict>
 		<key>67FEA3E1-ADA6-4FC7-BB30-CAE0E3132674</key>
 		<dict>
 			<key>localComputer</key>

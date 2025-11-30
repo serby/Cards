@@ -33,12 +33,14 @@ struct SettingsView: View {
                     }
                 }
                 
-                Link(destination: URL(string: "https://github.com/serby")!) {
-                    HStack {
-                        Text("Created by Paul Serby")
-                        Spacer()
+                if let url = URL(string: "https://github.com/serby") {
+                    Link(destination: url) {
+                        HStack {
+                            Text("Created by Paul Serby")
+                            Spacer()
                         Image(systemName: "arrow.up.forward.square")
                             .foregroundStyle(.secondary)
+                        }
                     }
                 }
             }
