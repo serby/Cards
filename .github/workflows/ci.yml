@@ -22,7 +22,7 @@ jobs:
     - name: Build and Test
       run: |
         xcodebuild -scheme Cards \
-          -destination 'platform=iOS Simulator,name=iPhone 17 Pro Max' \
+          -destination 'platform=iOS Simulator,name=iPhone 17 Pro Max,OS=26.1,arch=arm64' \
           -skipPackagePluginValidation \
           clean build test -quiet
     
