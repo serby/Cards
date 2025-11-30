@@ -19,16 +19,15 @@ jobs:
     - name: Show Xcode version
       run: xcodebuild -version
     
-    - name: Setup iOS Simulator
-      run: |
-        xcrun simctl list devices available
-        xcrun simctl create "iPhone 16 CI" "iPhone 16" "iOS18.1" || true
-        SIMULATOR_ID=$(xcrun simctl list devices available | grep "iPhone 16" | grep "18.1" | head -1 | grep -o '[A-F0-9-]\{36\}')
-        echo "SIMULATOR_ID=$SIMULATOR_ID" >> $GITHUB_ENV
-        xcrun simctl boot "$SIMULATOR_ID" || true
+    - name: List available simulators
+      run: xcrun simctl list devices available | grep "iPhone 16 Pro Max"
     
     - name: Build and Test
-      run: make ci
+      run: |
+        xcodebuild -scheme Cards \
+          -destination 'platform=iOS Simulator,name=iPhone 16 Pro Max,OS=18.4' \
+          -skipPackagePluginValidation \
+          clean build test -quiet
     
     - name: Upload test results
       if: always()
