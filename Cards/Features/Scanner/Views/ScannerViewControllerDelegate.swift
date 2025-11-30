@@ -78,8 +78,8 @@ class ScannerViewController: UIViewController, @preconcurrency AVCaptureMetadata
         super.viewDidAppear(animated)
         
         if captureSession?.isRunning == false {
-            Task {
-                await captureSession?.startRunning()
+            DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+                self?.captureSession?.startRunning()
             }
         }
     }
