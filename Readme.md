@@ -52,6 +52,47 @@ func navigate(to route: NavigationRoute) {
 - ✅ Use Swift's modern features (property wrappers, result builders)
 - ✅ Avoid verbose or unnecessary code
 
+### Git Commit Style
+
+Follow [Conventional Commits](https://www.conventionalcommits.org/) format:
+
+```
+<type>(<scope>): <description>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+#### Types
+- `feat`: New feature
+- `fix`: Bug fix
+- `refactor`: Code refactoring
+- `docs`: Documentation changes
+- `style`: Code style changes (formatting)
+- `test`: Adding or updating tests
+- `chore`: Maintenance tasks
+- `perf`: Performance improvements
+
+#### Examples
+```bash
+# Simple feature
+feat: add user authentication
+
+# Bug fix with scope
+fix(scanner): handle empty barcode values
+
+# Breaking change
+feat!: update navigation to use NavigationStack
+
+# With body
+feat: add scanner integration
+
+- Integrate camera scanner with new card form
+- Add auto-focus to name field
+- Batch navigation state updates
+```
+
 ## Architecture
 
 ### Navigation System
