@@ -28,7 +28,12 @@ platform :ios do
       scheme: "Cards",
       configuration: "Release",
       export_method: "app-store",
-      xcargs: "-skipPackagePluginValidation"
+      xcargs: "-skipPackagePluginValidation -allowProvisioningUpdates",
+      export_options: {
+        provisioningProfiles: {
+          "net.serby.cards" => "Card Codes Wallet Test Flight Profile"
+        }
+      }
     )
     
     upload_to_testflight(
