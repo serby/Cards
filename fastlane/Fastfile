@@ -28,9 +28,7 @@ platform :ios do
       scheme: "Cards",
       configuration: "Release",
       export_method: "app-store",
-      xcargs: "-skipPackagePluginValidation",
-      codesigning_identity: "Apple Distribution",
-      skip_profile_detection: false
+      xcargs: "-skipPackagePluginValidation"
     )
     
     upload_to_testflight(
