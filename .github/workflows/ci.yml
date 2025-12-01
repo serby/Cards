@@ -3,8 +3,22 @@ name: CI/CD
 on:
   push:
     branches: [ main ]
+    paths-ignore:
+      - '**.md'
+      - 'fastlane/**'
+      - 'docs/**'
+      - '.gitignore'
+      - 'Gemfile'
+      - 'Gemfile.lock'
   pull_request:
     branches: [ main ]
+    paths-ignore:
+      - '**.md'
+      - 'fastlane/**'
+      - 'docs/**'
+      - '.gitignore'
+      - 'Gemfile'
+      - 'Gemfile.lock'
 
 jobs:
   build-and-test:
