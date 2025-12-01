@@ -1,6 +1,223 @@
 # Cards App
 
-A SwiftUI-based iOS application for barcode card management with camera scanning and deep linking capabilities.
+A modern iOS application for managing barcode cards on your iPhone. Store loyalty cards, membership cards, and any barcode-based cards for quick access without carrying physical cards.
+
+## What It Does
+
+Cards is a SwiftUI-based barcode card manager that lets you:
+- Scan barcodes using your camera
+- Store cards with custom names
+- Display barcodes for scanning at stores
+- Organize cards with drag-and-drop reordering
+- Access cards quickly with deep linking
+
+## Features
+
+### Card Management
+- **Scan barcodes** - Use camera to capture barcode values automatically
+- **Multiple barcode formats** - Supports QR, EAN-8, EAN-13, Code128, Code39, Code93, UPC-E, Aztec, PDF417
+- **Custom names** - Label cards with memorable names
+- **Drag to reorder** - Organize cards in your preferred order
+- **Swipe to delete** - Remove cards with a swipe gesture
+- **Search** - Quickly find cards (when enabled)
+
+### Barcode Display
+- **Full brightness** - Automatically increases screen brightness for better scanning
+- **Large display** - Shows barcode prominently for easy scanning
+- **Multiple formats** - Renders barcodes in the correct format for each card
+
+### User Interface
+- **SwiftUI** - Modern, native iOS interface
+- **Dark mode** - Full support for light and dark themes
+- **Accessibility** - VoiceOver support throughout
+- **Haptic feedback** - Tactile responses for interactions
+- **Hide toolbar on scroll** - Maximizes screen space when browsing
+
+### Navigation
+- **Deep linking** - Open specific cards via `cards://` URLs
+- **Tab-based** - Cards and Settings tabs
+- **Type-safe routing** - NavigationStack with route definitions
+
+### Data & Persistence
+- **SwiftData** - Modern data persistence
+- **Automatic saving** - Changes saved immediately
+- **Order preservation** - Card order maintained across launches
+
+### Performance
+- **Launch tracking** - Monitors cold and warm start times
+- **Optimized rendering** - Efficient barcode generation
+- **Background camera** - Camera starts on background thread
+
+## Contributing
+
+This project is open source and welcomes contributions! Feel free to:
+- Report bugs via GitHub Issues
+- Submit feature requests
+- Create pull requests with improvements
+- Suggest enhancements
+
+See the [Development Workflow](#development-workflow) section for guidelines on contributing code.
+
+## Installation & Setup
+
+### Prerequisites
+- macOS with Xcode 26 or later
+- iOS 18.0+ deployment target
+- Apple Developer account (for device testing)
+
+### Clone and Build
+```bash
+# Clone the repository
+git clone https://github.com/serby/Cards.git
+cd Cards
+
+# Open in Xcode
+open Cards.xcodeproj
+
+# Or build from command line
+make build
+```
+
+### Dependencies
+Dependencies are managed via Swift Package Manager and will be resolved automatically:
+- **RSBarcodes_Swift** - Barcode generation
+- **SwiftLintPlugins** - Code linting
+
+## Build & Test
+
+### Using Make
+```bash
+# Build
+make build
+
+# Run tests
+make test
+
+# CI build (clean + build + test)
+make ci
+```
+
+### Using Fastlane
+```bash
+# Install Fastlane
+brew install fastlane
+
+# Build
+fastlane build
+
+# Run tests
+fastlane test
+```
+
+### Using Xcode
+1. Open `Cards.xcodeproj`
+2. Select the Cards scheme
+3. Choose a simulator or device
+4. Press Cmd+B to build or Cmd+U to test
+
+## Deployment
+
+### TestFlight
+```bash
+# Deploy to TestFlight
+fastlane beta
+```
+
+### App Store
+```bash
+# Deploy to App Store
+fastlane release
+```
+
+See [DEPLOYMENT.md](docs/DEPLOYMENT.md) for complete CI/CD pipeline documentation including:
+- GitHub Actions workflows
+- Certificate management
+- Secrets configuration
+- Automated deployment
+
+## Architecture
+
+### Navigation System
+- **NavigationStack-based routing** with path-based deep linking
+- **NavigationManager** - Centralized navigation state management
+- **NavigationRoute enum** - Type-safe route definitions
+- **URL scheme** - `cards://` for deep linking
+
+### Navigation Paths
+- `/cards` - Main card list
+- `/cards/card/{code}` - Card detail view
+- `/cards/card/{code}/edit` - Edit existing card
+- `/cards/new` - Create new card
+- `/cards/new/camera` - Camera scanner for new card
+
+### Key Technologies
+- **SwiftUI** - Main UI framework with NavigationStack
+- **SwiftData** - Persistence framework for card storage
+- **AVFoundation** - Camera access and barcode scanning
+- **RSBarcodes_Swift** - Barcode generation library
+
+### Project Structure
+```
+Cards/
+├── App/
+│   └── CardsApp.swift                    # Main app entry point
+├── Core/
+│   ├── Models/
+│   │   ├── BarcodeType.swift            # Barcode type enum and mapper
+│   │   └── CardItem.swift               # SwiftData model for cards
+│   ├── Navigation/
+│   │   ├── NavigationManager.swift      # Navigation state management
+│   │   └── NavigationRoute.swift        # Route definitions
+│   └── Services/
+│       └── PerformanceTracker.swift     # App performance metrics
+├── Features/
+│   ├── CardDetail/
+│   │   └── Views/
+│   │       └── CardItemView.swift       # Card detail display
+│   ├── CardEdit/
+│   │   └── Views/
+│   │       └── EditCardItemView.swift   # Card editing form
+│   ├── CardList/
+│   │   └── Views/
+│   │       └── CardsView.swift          # Main card list view
+│   ├── Scanner/
+│   │   └── Views/
+│   │       ├── CameraScannerView.swift  # SwiftUI camera wrapper
+│   │       └── ScannerViewControllerDelegate.swift  # UIKit camera controller
+│   └── Settings/
+│       └── Views/
+│           └── SettingsView.swift       # Settings screen
+└── UI/
+    ├── Components/
+    │   ├── BarcodeView.swift            # Barcode rendering
+    │   └── Spinner.swift                # Loading spinner
+    └── Modifiers/
+        ├── PortraitLockedView.swift     # Portrait orientation lock
+        └── ConditionalModifier.swift    # Conditional view modifiers
+```
+
+## Development Workflow
+
+### Adding New Features
+1. Create feature branch from `main`
+2. Implement feature following coding style guide
+3. Write tests for new functionality
+4. Update documentation
+5. Submit pull request
+
+### Adding New Routes
+1. Update `NavigationRoute` enum with new case
+2. Add path parsing logic in `from(path:)` method
+3. Update `NavigationManager.navigate(to:)` handling
+4. Add destination view in `navigationDestination`
+5. Write tests for new route and navigation flow
+
+### Testing New Features
+1. Write unit tests for individual components
+2. Create integration tests for complete flows
+3. Add manual test scenarios
+4. Verify all entry points are connected
+5. Run full test suite before submitting PR
 
 ## Coding Style Guide
 
@@ -77,14 +294,14 @@ Follow [Conventional Commits](https://www.conventionalcommits.org/) format:
 ```
 
 #### Types
-- `feat`: New feature
-- `fix`: Bug fix
-- `refactor`: Code refactoring
-- `docs`: Documentation changes
-- `style`: Code style changes (formatting)
-- `test`: Adding or updating tests
-- `chore`: Maintenance tasks
-- `perf`: Performance improvements
+- `feat` - New feature
+- `fix` - Bug fix
+- `refactor` - Code refactoring
+- `docs` - Documentation changes
+- `style` - Code style changes (formatting)
+- `test` - Adding or updating tests
+- `chore` - Maintenance tasks
+- `perf` - Performance improvements
 
 #### Examples
 ```bash
@@ -105,168 +322,31 @@ feat: add scanner integration
 - Batch navigation state updates
 ```
 
-## Architecture
+## Testing
 
-### Navigation System
-- **NavigationStack-based routing** with path-based deep linking
-- **NavigationManager**: Centralized navigation state management
-- **NavigationRoute enum**: Type-safe route definitions
-- **URL scheme**: `cards://` for deep linking
+### Test Coverage
+- **NavigationTests** - 21 comprehensive tests covering route parsing, navigation flows, and deep linking
+- **Unit tests** - Individual component logic
+- **Integration tests** - Complete user journey validation
+- **UI tests** - End-to-end user scenarios
+- **Performance tests** - Launch time baselines
 
-### Navigation Paths
-- `/cards` - Main card list (ContentView)
-- `/cards/card/{code}` - Card detail view (CardItemView)
-- `/cards/card/{code}/edit` - Edit existing card (EditCardItemView)
-- `/cards/new` - Create new card (EditCardItemView)
-- `/cards/new/camera` - Camera scanner for new card
-
-### Key Technologies
-- **SwiftUI**: Main UI framework with NavigationStack
-- **SwiftData**: Persistence framework for card storage
-- **AVFoundation**: Camera access and barcode scanning
-- **RSBarcodes_Swift**: Barcode generation library
-
-## Project Structure
-
-### Navigation Components
-```
-Cards/Navigation/
-├── NavigationRoute.swift      # Route enum with path parsing
-└── NavigationManager.swift    # Centralized navigation state
-```
-
-### Core Views
-```
-Cards/
-├── ContentView.swift          # Main list with NavigationStack
-├── CardItemView.swift         # Card detail with barcode display
-├── EditCardItemView.swift     # Card creation/editing form
-├── CameraScannerView.swift    # Camera scanning interface
-└── BarcodeView.swift          # Barcode rendering component
-```
-
-### Models & Data
-```
-Cards/Models/
-├── CardItem.swift             # SwiftData model for cards
-└── BarcodeType.swift          # Barcode format definitions
-```
-
-## Implementation Details
-
-### NavigationManager Usage
-```swift
-// Navigate to specific card
-NavigationManager.shared.navigate(to: .card("123456"))
-
-// Handle deep links
-NavigationManager.shared.handleDeepLink(url)
-
-// Current route access
-@ObservedObject var navigationManager = NavigationManager.shared
-```
-
-### Deep Link Integration
-```swift
-// CardsApp.swift - Entry point
-private func handleDeepLink(_ url: URL) {
-    NavigationManager.shared.handleDeepLink(url)
-}
-
-// URL scheme registration in Info.plist
-// cards://card/123456 → NavigationRoute.card("123456")
-```
-
-### SwiftData Configuration
-```swift
-// CardsApp.swift
-.modelContainer(for: CardItem.self)
-
-// CardItem model with ordering
-@Model
-final class CardItem {
-    var timestamp: Date
-    var code: String
-    var name: String
-    var order: Int
-    var type: String
-}
-```
-
-### Testing Strategy
-- **NavigationTests.swift**: 21 comprehensive tests covering route parsing, navigation flows, and deep linking
-- **Unit tests**: Individual component logic
-- **Integration tests**: Complete user journey validation
-- **Manual testing**: End-to-end user scenarios
-
-## Development Commands
-
-### Build and Test
+### Running Tests
 ```bash
-# Build
-make build
-
-# Test
+# All tests
 make test
 
-# Using Fastlane
-fastlane build
+# Specific test
+xcodebuild test -scheme Cards -destination 'platform=iOS Simulator,name=iPhone 16'
+
+# With Fastlane
 fastlane test
 ```
 
-### Deployment
-```bash
-# Deploy to TestFlight
-fastlane beta
+## License
 
-# Deploy to App Store
-fastlane release
-```
+[Add your license here]
 
-See [DEPLOYMENT.md](docs/DEPLOYMENT.md) for full deployment pipeline documentation.
+## Contact
 
-## Development Workflow
-
-### Adding New Routes
-1. Update `NavigationRoute` enum with new case
-2. Add path parsing logic in `from(path:)` method
-3. Update `NavigationManager.navigate(to:)` handling
-4. Add destination view in ContentView's `navigationDestination`
-5. Write tests for new route and navigation flow
-
-### Testing New Features
-1. Write unit tests for individual components
-2. Create integration tests for complete flows
-3. Add manual test scenarios
-4. Verify all entry points are connected
-5. Check for old pattern usage with `grep -r "pattern" .`
-
-## Common Patterns
-
-### Navigation Flow Testing
-```swift
-func testNavigationFlow() {
-    let manager = NavigationManager()
-    manager.navigate(to: .card("123"))
-    XCTAssertEqual(manager.currentRoute, .card("123"))
-    XCTAssertEqual(manager.path.count, 1)
-}
-```
-
-### Deep Link Handling
-```swift
-func testDeepLinkHandling() {
-    let url = URL(string: "cards://card/123")!
-    let manager = NavigationManager()
-    manager.handleDeepLink(url)
-    XCTAssertEqual(manager.currentRoute, .card("123"))
-}
-```
-
-### Route Parsing
-```swift
-func testRouteParsing() {
-    let route = NavigationRoute.from(path: "/cards/card/123")
-    XCTAssertEqual(route, .card("123"))
-}
-```
+Created by Paul Serby - [GitHub](https://github.com/serby)

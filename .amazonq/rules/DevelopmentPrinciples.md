@@ -1,11 +1,6 @@
-# Cards App - Development Context
+# Development Principles
 
-## Project Overview
-Cards is a SwiftUI-based iOS application for barcode card management with camera scanning, deep linking, and comprehensive navigation.
-
-## Development Principles
-
-### System Integration Verification
+## System Integration Verification
 **Always verify complete system integration, not just individual components**
 
 **Mental Model**: Think in terms of **user journeys**, not isolated features
@@ -13,18 +8,18 @@ Cards is a SwiftUI-based iOS application for barcode card management with camera
 - URL scheme → Navigation handling → UI update
 - User action → Data flow → UI response
 
-### Architecture Patterns
+## Architecture Patterns
 
-**Singletons**
+### Singletons
 - Never use Singletons under any circumstance. Globalism is bad avoid at all costs!
 
-**Navigation Architecture**
+### Navigation Architecture
 - Path-based routing with NavigationStack
 - Centralized NavigationManager for state management
 - Type-safe route definitions with enums
 - Deep linking through URL scheme handling
 
-**State Management**
+### State Management
 - SwiftUI @ObservableObject for navigation state
 - SwiftData for persistent storage
 - Avoid @MainActor isolation in testable components
@@ -134,4 +129,4 @@ New Feature → Identify Touch Points → Update Each Point → Verify Integrati
 - [ ] **FINAL VERIFICATION**: All targets build successfully using commands from README.md
 - [ ] **FINAL VERIFICATION**: All tests pass using commands from README.md
 
-**Build Commands**: Use only the commands specified in README.md with iPhone 16 Pro iOS 18.4
+**Build Commands**: Use only the commands specified in README.md
