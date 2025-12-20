@@ -2,61 +2,17 @@
 
 A modern iOS application for managing barcode cards on your iPhone. Store loyalty cards, membership cards, and any barcode-based cards for quick access without carrying physical cards.
 
-## What It Does
-
-Cards is a SwiftUI-based barcode card manager that lets you:
-- Scan barcodes using your camera
-- Store cards with custom names
-- Display barcodes for scanning at stores
-- Organize cards with drag-and-drop reordering
-- Access cards quickly with deep linking
-
 ## Features
 
-### Card Management
 - **Scan barcodes** - Use camera to capture barcode values automatically
 - **Multiple barcode formats** - Supports QR, EAN-8, EAN-13, Code128, Code39, Code93, UPC-E, Aztec, PDF417
 - **Custom names** - Label cards with memorable names
 - **Drag to reorder** - Organize cards in your preferred order
 - **Swipe to delete** - Remove cards with a swipe gesture
-- **Search** - Quickly find cards (when enabled)
-
-### Barcode Display
 - **Full brightness** - Automatically increases screen brightness for better scanning
-- **Large display** - Shows barcode prominently for easy scanning
-- **Multiple formats** - Renders barcodes in the correct format for each card
-
-### User Interface
-- **SwiftUI** - Modern, native iOS interface
-- **Dark mode** - Full support for light and dark themes
-- **Accessibility** - VoiceOver support throughout
-- **Haptic feedback** - Tactile responses for interactions
-- **Hide toolbar on scroll** - Maximizes screen space when browsing
-
-### Navigation
 - **Deep linking** - Open specific cards via `cards://` URLs
-- **Tab-based** - Cards and Settings tabs
-- **Type-safe routing** - NavigationStack with route definitions
-
-### Data & Persistence
-- **SwiftData** - Modern data persistence
-- **Automatic saving** - Changes saved immediately
-- **Order preservation** - Card order maintained across launches
-
-### Performance
-- **Launch tracking** - Monitors cold and warm start times
-- **Optimized rendering** - Efficient barcode generation
-- **Background camera** - Camera starts on background thread
-
-## Contributing
-
-This project is open source and welcomes contributions! Feel free to:
-- Report bugs via GitHub Issues
-- Submit feature requests
-- Create pull requests with improvements
-- Suggest enhancements
-
-See the [Development Workflow](#development-workflow) section for guidelines on contributing code.
+- **SwiftUI** - Modern, native iOS interface with dark mode support
+- **SwiftData** - Modern data persistence with automatic saving
 
 ## Installation & Setup
 
@@ -67,46 +23,35 @@ See the [Development Workflow](#development-workflow) section for guidelines on 
 
 ### Clone and Build
 ```bash
-# Clone the repository
 git clone https://github.com/serby/Cards.git
 cd Cards
-
-# Open in Xcode
 open Cards.xcodeproj
-
-# Or build from command line
-make build
 ```
 
 ### Dependencies
-Dependencies are managed via Swift Package Manager and will be resolved automatically:
+Dependencies are managed via Swift Package Manager:
 - **RSBarcodes_Swift** - Barcode generation
 - **SwiftLintPlugins** - Code linting
 
 ## Build & Test
 
-### Using Make
-```bash
-# Build
-make build
-
-# Run tests
-make test
-
-# CI build (clean + build + test)
-make ci
-```
-
 ### Using Fastlane
 ```bash
-# Install Fastlane
+# Install dependencies
 brew install fastlane
+bundle install
 
-# Build
+# Build for testing
 fastlane build
 
 # Run tests
 fastlane test
+
+# Deploy to TestFlight
+fastlane beta
+
+# Deploy to App Store
+fastlane release
 ```
 
 ### Using Xcode
@@ -115,25 +60,79 @@ fastlane test
 3. Choose a simulator or device
 4. Press Cmd+B to build or Cmd+U to test
 
-## Deployment
+## CI/CD Pipeline
 
-### TestFlight
-```bash
-# Deploy to TestFlight
-fastlane beta
+### GitHub Actions Workflows
+
+#### CI Workflow (`.github/workflows/ci.yml`)
+Runs on every push to `main` and pull requests:
+
+- **Triggers**: Push to main, pull requests (ignores docs, fastlane, and config files)
+- **Runner**: macOS 26 with Xcode 26
+- **Steps**:
+  1. Checkout code
+  2. Show Xcode version
+  3. List available simulators
+  4. Build and test on iPhone 17 Pro Max simulator
+  5. Upload test results as artifacts
+
+```yaml
+# Runs clean build and test with:
+xcodebuild -scheme Cards \
+  -destination 'platform=iOS Simulator,name=iPhone 17 Pro Max,OS=26.1,arch=arm64' \
+  -skipPackagePluginValidation \
+  clean build test -quiet
 ```
 
-### App Store
-```bash
-# Deploy to App Store
-fastlane release
-```
+#### Deploy Workflow (`.github/workflows/deploy.yml`)
+Automated TestFlight deployment:
 
-See [DEPLOYMENT.md](docs/DEPLOYMENT.md) for complete CI/CD pipeline documentation including:
-- GitHub Actions workflows
-- Certificate management
-- Secrets configuration
-- Automated deployment
+- **Triggers**: 
+  - Manual dispatch
+  - Successful CI workflow completion on main
+  - Version tags (`v*`)
+- **Runner**: macOS 26
+- **Steps**:
+  1. Checkout code
+  2. Install Fastlane via Homebrew
+  3. Setup Ruby 3.2 with bundler cache
+  4. Deploy to TestFlight using `fastlane beta`
+
+**Required Secrets**:
+- `APPLE_ID` - Apple Developer account email
+- `ITC_TEAM_ID` - App Store Connect team ID
+- `TEAM_ID` - Apple Developer team ID
+- `APP_STORE_CONNECT_API_KEY` - App-specific password
+
+### Fastlane Configuration
+
+#### Available Lanes
+- `fastlane build` - Build for testing (Debug, no codesigning)
+- `fastlane test` - Run tests on iPhone 16 simulator
+- `fastlane beta` - Build and deploy to TestFlight
+- `fastlane release` - Build and deploy to App Store (manual review)
+
+#### Beta Deployment Process
+1. Increment build number automatically
+2. Build with Release configuration
+3. Export for App Store distribution
+4. Upload to TestFlight
+5. Skip waiting for build processing
+
+#### Release Deployment Process
+1. Increment build number automatically
+2. Build with Release configuration
+3. Upload to App Store Connect
+4. Requires manual review submission
+
+### Deployment Flow
+
+```
+Code Push → CI Tests → Manual/Auto Trigger → TestFlight → App Store
+     ↓           ↓              ↓              ↓           ↓
+   GitHub    Build & Test   Deploy Workflow  Beta Lane  Release Lane
+   Actions   on Simulator   (macOS runner)   (Fastlane) (Fastlane)
+```
 
 ## Architecture
 
@@ -196,7 +195,14 @@ Cards/
         └── ConditionalModifier.swift    # Conditional view modifiers
 ```
 
-## Development Workflow
+## Development
+
+### Contributing
+This project welcomes contributions! Please:
+- Report bugs via GitHub Issues
+- Submit feature requests
+- Create pull requests with improvements
+- Follow the coding style guide below
 
 ### Adding New Features
 1. Create feature branch from `main`
@@ -205,143 +211,28 @@ Cards/
 4. Update documentation
 5. Submit pull request
 
-### Adding New Routes
-1. Update `NavigationRoute` enum with new case
-2. Add path parsing logic in `from(path:)` method
-3. Update `NavigationManager.navigate(to:)` handling
-4. Add destination view in `navigationDestination`
-5. Write tests for new route and navigation flow
+### Coding Style Guide
 
-### Testing New Features
-1. Write unit tests for individual components
-2. Create integration tests for complete flows
-3. Add manual test scenarios
-4. Verify all entry points are connected
-5. Run full test suite before submitting PR
-
-## Coding Style Guide
-
-### Modern Swift Practices
-
-#### Concurrency
-- ✅ Use `async/await` for truly asynchronous operations
-- ✅ Use `Task` for background work (even with synchronous code)
-- ✅ Use `Task.sleep(for:)` for delays
-- ❌ Avoid `DispatchQueue.async` and `DispatchQueue.asyncAfter` (use `Task` instead)
-- ⚠️ Don't use `await` on non-async methods
-
-```swift
-// ✅ Preferred - async/await for delays
-.task {
-    try? await Task.sleep(for: .seconds(0.6))
-    isReady = true
-}
-
-// ✅ Preferred - Task for background work (no await needed)
-Task {
-    captureSession?.startRunning() // Synchronous but blocking
-}
-
-// ❌ Avoid - DispatchQueue
-.onAppear {
-    DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
-        isReady = true
-    }
-}
-
-// ❌ Wrong - await on non-async method
-Task {
-    await captureSession?.startRunning() // startRunning() is not async!
-}
-```
-
-#### State Management
-- ✅ Use `@State`, `@Binding`, `@ObservedObject`, `@StateObject` appropriately
-- ✅ Use `@FocusState` for keyboard focus management
-- ✅ Batch state updates with `objectWillChange.send()` to prevent multiple updates per frame
-
-```swift
-// ✅ Batch updates
-func navigate(to route: NavigationRoute) {
-    objectWillChange.send()
-    currentRoute = route
-    navigationPath = NavigationPath()
-}
-```
-
-#### SwiftUI
+#### Modern Swift Practices
+- ✅ Use `async/await` for asynchronous operations
+- ✅ Use `Task` for background work
+- ✅ Use `@State`, `@Binding`, `@ObservedObject` appropriately
 - ✅ Prefer SwiftUI over UIKit
-- ✅ Use `.task` modifier for async work in views
-- ✅ Use modern view modifiers and APIs
-- ❌ Only use UIKit when absolutely necessary (e.g., AVCaptureSession)
-
-#### Code Style
 - ✅ Minimal, focused implementations
-- ✅ Clear, descriptive naming
-- ✅ Use Swift's modern features (property wrappers, result builders)
-- ✅ Avoid verbose or unnecessary code
 
-### Git Commit Style
-
-Follow [Conventional Commits](https://www.conventionalcommits.org/) format:
-
+#### Git Commit Style
+Follow [Conventional Commits](https://www.conventionalcommits.org/):
 ```
-<type>(<scope>): <description>
-
-[optional body]
-
-[optional footer(s)]
-```
-
-#### Types
-- `feat` - New feature
-- `fix` - Bug fix
-- `refactor` - Code refactoring
-- `docs` - Documentation changes
-- `style` - Code style changes (formatting)
-- `test` - Adding or updating tests
-- `chore` - Maintenance tasks
-- `perf` - Performance improvements
-
-#### Examples
-```bash
-# Simple feature
 feat: add user authentication
-
-# Bug fix with scope
 fix(scanner): handle empty barcode values
-
-# Breaking change
-feat!: update navigation to use NavigationStack
-
-# With body
-feat: add scanner integration
-
-- Integrate camera scanner with new card form
-- Add auto-focus to name field
-- Batch navigation state updates
+docs: update README with CI/CD details
 ```
 
-## Testing
-
-### Test Coverage
-- **NavigationTests** - 21 comprehensive tests covering route parsing, navigation flows, and deep linking
+### Testing
+- **NavigationTests** - 21 comprehensive tests covering route parsing and navigation flows
 - **Unit tests** - Individual component logic
 - **Integration tests** - Complete user journey validation
 - **UI tests** - End-to-end user scenarios
-- **Performance tests** - Launch time baselines
-
-### Running Tests
-```bash
-# All tests
-make test
-
-# Specific test
-xcodebuild test -scheme Cards -destination 'platform=iOS Simulator,name=iPhone 16'
-
-# With Fastlane
-fastlane test
-```
 
 ## License
 

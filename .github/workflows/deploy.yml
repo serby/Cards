@@ -1,13 +1,13 @@
 name: Deploy to TestFlight
 
 on:
-  workflow_dispatch:
   workflow_run:
     workflows: ["CI/CD"]
     types:
       - completed
     branches:
       - main
+  workflow_dispatch:
   push:
     tags:
       - 'v*'
