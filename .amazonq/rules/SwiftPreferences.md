@@ -47,3 +47,27 @@
 ## Recent Learnings
 - Prefer `Task { await }` over `DispatchQueue.global().async` for background work
 - Use `static func dismantleUIViewController` in `UIViewControllerRepresentable` for proper cleanup
+
+### API Availability Checks
+- ✅ **Always use `#available` for iOS version checks** - Provides compile-time safety
+- ✅ Create availability-aware View extensions for version-specific modifiers
+- ❌ **Never use `ProcessInfo.processInfo.operatingSystemVersion` for API availability** - No compile-time safety, can crash on older OS versions
+
+```swift
+// ✅ Correct - Compile-time safe availability check
+extension View {
+    @ViewBuilder
+    func tabBarMinimizeBehaviorIfAvailable() -> some View {
+        if #available(iOS 26.0, *) {
+            self.tabBarMinimizeBehavior(.onScrollUp)
+        } else {
+            self
+        }
+    }
+}
+
+// ❌ Wrong - Runtime check with no compile-time safety
+.if(ProcessInfo.processInfo.operatingSystemVersion.majorVersion >= 26) { view in
+    view.tabBarMinimizeBehavior(.onScrollUp) // Will fail to compile or crash
+}
+```

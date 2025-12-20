@@ -27,9 +27,10 @@ struct SettingsView: View {
                    let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String {
                     HStack {
                         Text("Version")
+                            .foregroundColor(.primaryText)
                         Spacer()
                         Text("\(version) (\(build))")
-                            .foregroundStyle(.secondary)
+                            .foregroundColor(.secondaryText)
                     }
                 }
                 
@@ -37,9 +38,10 @@ struct SettingsView: View {
                     Link(destination: url) {
                         HStack {
                             Text("Created by Paul Serby")
+                                .foregroundColor(.primaryText)
                             Spacer()
                         Image(systemName: "arrow.up.forward.square")
-                            .foregroundStyle(.secondary)
+                            .foregroundColor(.accent)
                         }
                     }
                 }
@@ -47,27 +49,34 @@ struct SettingsView: View {
             
             Section {
                 Toggle("Brightness Boost", isOn: $brightnessBoost)
+                    .tint(.accent)
                 Text("Boosts brightness when viewing card to improve scannability")
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundColor(.tertiaryText)
             } header: {
                 Text("Display")
+                    .foregroundColor(.secondaryText)
             }
             
             Section("Data") {
                 Button("Export as JSON") {
                     showExportSheet = true
                 }
+                .foregroundColor(.accent)
                 
                 Button("Import JSON") {
                     showImportSheet = true
                 }
+                .foregroundColor(.accent)
                 
                 Button("Delete All Cards", role: .destructive) {
                     showDeleteConfirmation = true
                 }
             }
         }
+        .listStyle(.insetGrouped)
+        .scrollContentBackground(.hidden)
+        .background(Color.primaryBackground)
         .navigationTitle("Settings")
         .sheet(isPresented: $showExportSheet) {
             ShareSheet(items: [exportJSON()])

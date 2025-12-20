@@ -28,50 +28,29 @@ struct CardsApp: App {
     
     @ViewBuilder
     private var tabView: some View {
-        if #available(iOS 26.0, *) {
-            TabView {
-                Tab("Cards", systemImage: "barcode") {
-                    NavigationStack(path: $navigationManager.navigationPath) {
-                        CardListView()
-                            .environmentObject(navigationManager)
-                    }
-                    .onAppear {
-                        navigationManager.resetToRoot()
-                    }
+        TabView {
+            Tab("Cards", systemImage: "barcode") {
+                NavigationStack(path: $navigationManager.navigationPath) {
+                    CardListView()
+                        .environmentObject(navigationManager)
                 }
-                Tab("Settings", systemImage: "gearshape") {
-                    NavigationStack {
-                        SettingsView()
-                    }
+                .onAppear {
+                    navigationManager.resetToRoot()
                 }
             }
-            .onAppear {
-                performanceTracker.recordAppLaunch()
-            }
-            .onOpenURL(perform: navigationManager.handleDeepLink)
-            .tabBarMinimizeBehavior(.onScrollUp)
-        } else {
-            TabView {
-                Tab("Cards", systemImage: "barcode") {
-                    NavigationStack(path: $navigationManager.navigationPath) {
-                        CardListView()
-                            .environmentObject(navigationManager)
-                    }
-                    .onAppear {
-                        navigationManager.resetToRoot()
-                    }
-                }
-                Tab("Settings", systemImage: "gearshape") {
-                    NavigationStack {
-                        SettingsView()
-                    }
+            Tab("Settings", systemImage: "gearshape") {
+                NavigationStack {
+                    SettingsView()
                 }
             }
-            .onAppear {
-                performanceTracker.recordAppLaunch()
-            }
-            .onOpenURL(perform: navigationManager.handleDeepLink)
         }
+        .tint(.accent)
+        .background(Color.primaryBackground)
+        .onAppear {
+            performanceTracker.recordAppLaunch()
+        }
+        .onOpenURL(perform: navigationManager.handleDeepLink)
+        .tabBarMinimizeBehaviorIfAvailable()
     }
     
     var body: some Scene {

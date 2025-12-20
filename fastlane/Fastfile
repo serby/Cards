@@ -1,6 +1,20 @@
 default_platform(:ios)
 
 platform :ios do
+  desc "Build and run on simulator"
+  lane :sim do
+    build_app(
+      scheme: "Cards",
+      configuration: "Debug",
+      skip_archive: true,
+      skip_codesigning: true,
+      destination: "platform=iOS Simulator,id=5853D62C-B1F2-4FD1-B120-45C323725F94"
+    )
+    
+    sh("xcrun simctl install 5853D62C-B1F2-4FD1-B120-45C323725F94 ../Cards.app || true")
+    sh("xcrun simctl launch 5853D62C-B1F2-4FD1-B120-45C323725F94 net.serby.Cards")
+  end
+
   desc "Run tests"
   lane :test do
     run_tests(

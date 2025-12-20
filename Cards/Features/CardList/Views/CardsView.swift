@@ -16,7 +16,7 @@ struct CardRow: View {
         } label: {
             Text(cardItem.name)
                 .padding(.vertical)
-                .foregroundColor(.primary)
+                .foregroundColor(.primaryText)
         }
         .sensoryFeedback(trigger: trigger, { SensoryFeedback.impact(weight: .heavy) })
     }
@@ -44,7 +44,8 @@ struct CardListView: View {
             .onMove(perform: moveItems)
         }
         .listStyle(.plain)
-        .background(.ultraThinMaterial)
+        .scrollContentBackground(.hidden)
+        .background(Color.primaryBackground)
         .navigationTitle("Cards")
         .toolbar(toolbarVisible ? .visible : .hidden, for: .navigationBar)
         .toolbar {
@@ -55,6 +56,7 @@ struct CardListView: View {
                     } label: {
                         Image(systemName: "plus")
                     }
+                    .foregroundColor(.accent)
                     .accessibilityIdentifier("addCardButton")
                     .accessibilityLabel("Add Card")
                     
@@ -63,6 +65,7 @@ struct CardListView: View {
                     } label: {
                         Image(systemName: "barcode.viewfinder")
                     }
+                    .foregroundColor(.accent)
                     .accessibilityIdentifier("scanCodeButton")
                     .accessibilityLabel("Scan Code")
                 }
@@ -83,17 +86,6 @@ struct CardListView: View {
                 navigationManager.navigate(to: .newCard)
             }
         }
-//        .conditionalModifier { view in
-//            if searchable {
-//                view.searchable(
-//                    text: $searchText,
-//                    placement: .automatic,
-//                    prompt: "Type here to search"
-//                )
-//            } else {
-//                view
-//            }
-//        }
     }
     
     @ViewBuilder
