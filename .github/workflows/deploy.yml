@@ -20,14 +20,14 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    - name: Install Fastlane
-      run: brew install fastlane
-    
     - name: Setup Ruby
       uses: ruby/setup-ruby@v1
       with:
         ruby-version: '3.2'
         bundler-cache: true
+    
+    - name: Install dependencies
+      run: bundle install
     
     - name: Deploy to TestFlight
       env:
@@ -35,4 +35,4 @@ jobs:
         ITC_TEAM_ID: ${{ secrets.ITC_TEAM_ID }}
         TEAM_ID: ${{ secrets.TEAM_ID }}
         FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.APP_STORE_CONNECT_API_KEY }}
-      run: fastlane beta
+      run: bundle exec fastlane beta
