@@ -50,7 +50,8 @@ platform :ios do
     upload_to_testflight(
       skip_waiting_for_build_processing: false,
       distribute_external: true,
-      groups: ["Testers"]
+      groups: ["Testers"],
+      changelog: "Bug fixes and improvements"
     )
   end
 
