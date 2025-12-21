@@ -35,3 +35,4 @@ vendor/
 
 # macOS
 .DS_Store
+fastlane/.env
