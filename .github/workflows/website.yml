@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'Website/**'
+      - 'Website/src/**'
   workflow_dispatch:
 
 jobs:
@@ -16,8 +16,7 @@ jobs:
     - uses: actions/checkout@v4
     
     - name: Deploy to Cloudflare Pages
-      uses: cloudflare/wrangler-action@v3
-      with:
-        apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-        accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        command: pages deploy Website --project-name=card-barcodes
+      env:
+        CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      run: ./Website/deploy.sh

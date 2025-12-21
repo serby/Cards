@@ -10,6 +10,7 @@ on:
       - '.gitignore'
       - 'Gemfile'
       - 'Gemfile.lock'
+      - 'Website/**'
   pull_request:
     branches: [ main ]
     paths-ignore:
@@ -18,6 +19,7 @@ on:
       - 'docs/**'
       - '.gitignore'
       - 'Gemfile'
+      - 'Website/**'
       - 'Gemfile.lock'
 
 jobs:
