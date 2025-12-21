@@ -1,0 +1,212 @@
+[
+  {
+    "code": "5012345678901",
+    "name": "🛒 Tesco Clubcard",
+    "order": 0,
+    "timestamp": "2025-12-21T10:00:00Z",
+    "type": "EAN-13"
+  },
+  {
+    "code": "5098765432101",
+    "name": "🍊 Sainsbury's Nectar",
+    "order": 1,
+    "timestamp": "2025-12-21T10:01:00Z",
+    "type": "EAN-13"
+  },
+  {
+    "code": "9780123456789",
+    "name": "🛍️ Boots Advantage",
+    "order": 2,
+    "timestamp": "2025-12-21T10:02:00Z",
+    "type": "EAN-13"
+  },
+  {
+    "code": "6012345678905",
+    "name": "🏪 Co-op Membership",
+    "order": 3,
+    "timestamp": "2025-12-21T10:03:00Z",
+    "type": "EAN-13"
+  },
+  {
+    "code": "7501234567893",
+    "name": "🥗 Waitrose MyWaitrose",
+    "order": 4,
+    "timestamp": "2025-12-21T10:04:00Z",
+    "type": "EAN-13"
+  },
+  {
+    "code": "4012345678901",
+    "name": "🏋️ PureGym",
+    "order": 5,
+    "timestamp": "2025-12-21T10:05:00Z",
+    "type": "Code 128"
+  },
+  {
+    "code": "8901234567890",
+    "name": "🎾 David Lloyd Tennis",
+    "order": 6,
+    "timestamp": "2025-12-21T10:06:00Z",
+    "type": "Code 128"
+  },
+  {
+    "code": "2345678901234",
+    "name": "🧘 Yoga Studio",
+    "order": 7,
+    "timestamp": "2025-12-21T10:07:00Z",
+    "type": "Code 128"
+  },
+  {
+    "code": "3456789012345",
+    "name": "🧗 The Climbing Hangar",
+    "order": 8,
+    "timestamp": "2025-12-21T10:08:00Z",
+    "type": "Code 128"
+  },
+  {
+    "code": "5678901234567",
+    "name": "☕ Costa Coffee Club",
+    "order": 9,
+    "timestamp": "2025-12-21T10:09:00Z",
+    "type": "Code 128"
+  },
+  {
+    "code": "6789012345678",
+    "name": "🍕 Pizza Express",
+    "order": 10,
+    "timestamp": "2025-12-21T10:10:00Z",
+    "type": "Code 128"
+  },
+  {
+    "code": "7890123456789",
+    "name": "🍔 Nando's",
+    "order": 11,
+    "timestamp": "2025-12-21T10:11:00Z",
+    "type": "Code 128"
+  },
+  {
+    "code": "8901234567891",
+    "name": "📚 Waterstones",
+    "order": 12,
+    "timestamp": "2025-12-21T10:12:00Z",
+    "type": "Code 128"
+  },
+  {
+    "code": "9012345678902",
+    "name": "🎬 Odeon Premiere",
+    "order": 13,
+    "timestamp": "2025-12-21T10:13:00Z",
+    "type": "Code 128"
+  },
+  {
+    "code": "1234509876543",
+    "name": "🛠️ B&Q Club",
+    "order": 14,
+    "timestamp": "2025-12-21T10:14:00Z",
+    "type": "Code 128"
+  },
+  {
+    "code": "2345610987654",
+    "name": "🏠 IKEA Family",
+    "order": 15,
+    "timestamp": "2025-12-21T10:15:00Z",
+    "type": "Code 128"
+  },
+  {
+    "code": "3456721098765",
+    "name": "👕 M&S Sparks",
+    "order": 16,
+    "timestamp": "2025-12-21T10:16:00Z",
+    "type": "Code 128"
+  },
+  {
+    "code": "4567832109876",
+    "name": "👟 JD Sports",
+    "order": 17,
+    "timestamp": "2025-12-21T10:17:00Z",
+    "type": "Code 128"
+  },
+  {
+    "code": "5678943210987",
+    "name": "💄 Superdrug",
+    "order": 18,
+    "timestamp": "2025-12-21T10:18:00Z",
+    "type": "Code 128"
+  },
+  {
+    "code": "6789054321098",
+    "name": "🐕 Pets at Home",
+    "order": 19,
+    "timestamp": "2025-12-21T10:19:00Z",
+    "type": "Code 128"
+  },
+  {
+    "code": "7890165432109",
+    "name": "🍷 Majestic Wine",
+    "order": 20,
+    "timestamp": "2025-12-21T10:20:00Z",
+    "type": "Code 128"
+  },
+  {
+    "code": "8901276543210",
+    "name": "🥐 Greggs Rewards",
+    "order": 21,
+    "timestamp": "2025-12-21T10:21:00Z",
+    "type": "Code 128"
+  },
+  {
+    "code": "9012387654321",
+    "name": "🍦 Pret A Manger",
+    "order": 22,
+    "timestamp": "2025-12-21T10:22:00Z",
+    "type": "Code 128"
+  },
+  {
+    "code": "1098765432109",
+    "name": "🚗 Halfords",
+    "order": 23,
+    "timestamp": "2025-12-21T10:23:00Z",
+    "type": "Code 128"
+  },
+  {
+    "code": "2109876543210",
+    "name": "💊 Lloyds Pharmacy",
+    "order": 24,
+    "timestamp": "2025-12-21T10:24:00Z",
+    "type": "Code 128"
+  },
+  {
+    "code": "3210987654321",
+    "name": "🏊 Everyone Active",
+    "order": 25,
+    "timestamp": "2025-12-21T10:25:00Z",
+    "type": "Code 128"
+  },
+  {
+    "code": "4321098765432",
+    "name": "📖 Library Card",
+    "order": 26,
+    "timestamp": "2025-12-21T10:26:00Z",
+    "type": "Code 39"
+  },
+  {
+    "code": "5432109876543",
+    "name": "🎮 GAME Rewards",
+    "order": 27,
+    "timestamp": "2025-12-21T10:27:00Z",
+    "type": "Code 128"
+  },
+  {
+    "code": "6543210987654",
+    "name": "✈️ Avios",
+    "order": 28,
+    "timestamp": "2025-12-21T10:28:00Z",
+    "type": "Code 128"
+  },
+  {
+    "code": "7654321098765",
+    "name": "🚂 Trainline",
+    "order": 29,
+    "timestamp": "2025-12-21T10:29:00Z",
+    "type": "Code 128"
+  }
+]

@@ -1,0 +1,1 @@
+loyalty,cards,barcode,wallet,membership,scanner,qr,rewards,store,digital

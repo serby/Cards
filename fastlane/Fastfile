@@ -49,9 +49,33 @@ platform :ios do
     
     upload_to_testflight(
       skip_waiting_for_build_processing: false,
-      distribute_external: true,
-      groups: ["Testers"],
+      distribute_external: false,
       changelog: "Bug fixes and improvements"
+    )
+    # Note: To distribute to external testers, first set Beta App Information in App Store Connect:
+    # TestFlight > App Information > Test Information > fill in description and email
+  end
+
+  desc "Upload screenshots to App Store Connect"
+  lane :screenshots do
+    deliver(
+      app_version: "1.0",
+      skip_binary_upload: true,
+      skip_screenshots: false,
+      skip_metadata: true,
+      force: true,
+      overwrite_screenshots: true
+    )
+  end
+
+  desc "Upload app metadata to App Store Connect"
+  lane :metadata do
+    # Note: First set App Review Information in ASC manually (fastlane 2.230.0 bug)
+    deliver(
+      app_version: "1.0",
+      skip_binary_upload: true,
+      skip_screenshots: true,
+      force: true
     )
   end
 

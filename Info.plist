@@ -5,6 +5,11 @@
 	<!-- REQUIRED: Bundle identification -->
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
+	
+	<!-- Export compliance - no encryption used -->
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
+	
 	<key>CFBundleIdentifier</key>
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleExecutable</key>
@@ -16,7 +21,7 @@
 	<key>CFBundleShortVersionString</key>
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleVersion</key>
-	<string>15</string>
+	<string>28</string>
 	
 	<!-- REQUIRED: Display names -->
 	<key>CFBundleName</key>
