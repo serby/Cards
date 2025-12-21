@@ -36,8 +36,8 @@ platform :ios do
     )
   end
 
-  desc "Build and deploy to TestFlight"
-  lane :beta do
+  desc "Deploy to TestFlight for alpha testers"
+  lane :deploy_alpha do
     increment_build_number(xcodeproj: "Cards.xcodeproj")
     
     build_app(
@@ -48,7 +48,9 @@ platform :ios do
     )
     
     upload_to_testflight(
-      skip_waiting_for_build_processing: true
+      skip_waiting_for_build_processing: false,
+      distribute_external: true,
+      groups: ["Testers"]
     )
   end
 
