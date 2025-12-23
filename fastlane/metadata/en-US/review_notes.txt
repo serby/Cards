@@ -1,0 +1,12 @@
+To test the barcode and QR code scanning feature, please visit:
+https://cards.serby.net/demo.html
+
+This page contains:
+1. A sample barcode (EAN-13) - scan to add a test loyalty card
+2. A sample QR code - scan to add a test membership card
+
+Testing steps:
+1. Open the Cards app
+2. Tap the + button to add a new card
+3. Point the camera at either code on the demo page
+4. The app will detect and save the card
