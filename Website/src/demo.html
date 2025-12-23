@@ -68,7 +68,7 @@
       <div class="code-card">
         <h2>QR Code</h2>
         <p>Sample membership: CARDS-DEMO-2024</p>
-        <canvas id="qrcode"></canvas>
+        <div id="qrcode"></div>
       </div>
 
       <p style="color: var(--text-secondary); font-size: 0.9rem;">
@@ -78,10 +78,10 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
   <script>
     JsBarcode("#barcode", "5012345678900", { format: "EAN13", width: 2, height: 80 });
-    QRCode.toCanvas(document.getElementById("qrcode"), "CARDS-DEMO-2024", { width: 200 });
+    new QRCode(document.getElementById("qrcode"), { text: "CARDS-DEMO-2024", width: 200, height: 200 });
   </script>
 </body>
 </html>
