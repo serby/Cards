@@ -64,6 +64,30 @@ struct CardItemView: View {
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
+                Button {
+                    brightnessBoost.toggle()
+                    if brightnessBoost {
+                        originalBrightness = UIScreen.main.brightness
+                        Task {
+                            await fadeBrightness(to: 1.0, duration: 0.5)
+                        }
+                        UIAccessibility.post(notification: .announcement, argument: "Brightness boost on")
+                    } else {
+                        Task {
+                            await fadeBrightness(to: originalBrightness, duration: 0.2)
+                        }
+                        UIAccessibility.post(notification: .announcement, argument: "Brightness boost off")
+                    }
+                } label: {
+                    Image(systemName: brightnessBoost ? "sun.max.fill" : "sun.max")
+                        .foregroundStyle(brightnessBoost ? Color.accentColor : .primary)
+                }
+                .accessibilityIdentifier("brightnessToggleButton")
+                .accessibilityLabel("Brightness Boost")
+                .accessibilityHint("Toggles screen brightness to maximum for easier barcode scanning")
+            }
+            
+            ToolbarItem(placement: .navigationBarTrailing) {
                 Button("Edit") {
                     navigationManager.navigate(to: .editCard(item.code))
                 }
