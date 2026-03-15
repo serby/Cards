@@ -21,7 +21,7 @@ jobs:
     runs-on: macos-26
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
 
     - name: Install Bazelisk
       run: brew install bazelisk
@@ -30,14 +30,15 @@ jobs:
       id: sim
       run: |
         DEVICE=$(xcrun simctl list devices available -j | python3 -c "
-        import json,sys
+        import json, sys, re
         devs = json.load(sys.stdin)['devices']
         for rt, ds in devs.items():
           for d in ds:
             if 'iPhone' in d.get('name','') and d['isAvailable']:
-              parts = rt.rsplit('.', 1)[-1].replace('-', '.')
-              print(f\"{d['name']}|{parts}\")
-              sys.exit()
+              ver = re.search(r'(\d+(?:-\d+)*)$', rt)
+              if ver:
+                print(f\"{d['name']}|{ver.group(1).replace('-', '.')}\")
+                sys.exit()
         ")
         SIM_NAME="${DEVICE%%|*}"
         SIM_VERSION="${DEVICE##*|}"
