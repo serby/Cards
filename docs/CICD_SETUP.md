@@ -4,6 +4,7 @@
 - GitHub repository for the project
 - Apple Developer account
 - Xcode with valid signing certificate
+- [Bazelisk](https://github.com/bazelbuild/bazelisk) (`brew install bazelisk`)
 
 ## Step 1: Push Code to GitHub
 

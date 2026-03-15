@@ -1,51 +1,55 @@
-name: CI/CD
+name: CI
 
 on:
   push:
     branches: [ main ]
     paths-ignore:
       - '**.md'
-      - 'fastlane/**'
       - 'docs/**'
       - '.gitignore'
-      - 'Gemfile'
-      - 'Gemfile.lock'
       - 'Website/**'
   pull_request:
     branches: [ main ]
     paths-ignore:
       - '**.md'
-      - 'fastlane/**'
       - 'docs/**'
       - '.gitignore'
-      - 'Gemfile'
       - 'Website/**'
-      - 'Gemfile.lock'
 
 jobs:
   build-and-test:
     runs-on: macos-26
-    
+
     steps:
     - uses: actions/checkout@v4
-    
-    - name: Show Xcode version
-      run: xcodebuild -version
-    
-    - name: List available simulators
-      run: xcrun simctl list devices available | grep "iPhone 17 Pro Max"
-    
-    - name: Build and Test
+
+    - name: Install Bazelisk
+      run: brew install bazelisk
+
+    - name: Resolve simulator
+      id: sim
       run: |
-        xcodebuild -scheme Cards \
-          -destination 'platform=iOS Simulator,name=iPhone 17 Pro Max,OS=26.1,arch=arm64' \
-          -skipPackagePluginValidation \
-          clean build test -quiet
-    
-    - name: Upload test results
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: test-results
-        path: |
-          ~/Library/Developer/Xcode/DerivedData/*/Logs/Test/*.xcresult
+        DEVICE=$(xcrun simctl list devices available -j | python3 -c "
+        import json,sys
+        devs = json.load(sys.stdin)['devices']
+        for rt, ds in devs.items():
+          for d in ds:
+            if 'iPhone' in d.get('name','') and d['isAvailable']:
+              parts = rt.rsplit('.', 1)[-1].replace('-', '.')
+              print(f\"{d['name']}|{parts}\")
+              sys.exit()
+        ")
+        SIM_NAME="${DEVICE%%|*}"
+        SIM_VERSION="${DEVICE##*|}"
+        echo "device=$SIM_NAME" >> "$GITHUB_OUTPUT"
+        echo "version=$SIM_VERSION" >> "$GITHUB_OUTPUT"
+        echo "Using simulator: $SIM_NAME (iOS $SIM_VERSION)"
+
+    - name: Build
+      run: bazel build //Cards:Cards
+
+    - name: Test
+      run: |
+        bazel test //CardsTests:CardsTests \
+          --ios_simulator_device="${{ steps.sim.outputs.device }}" \
+          --ios_simulator_version="${{ steps.sim.outputs.version }}"

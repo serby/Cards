@@ -35,3 +35,9 @@ vendor/
 # macOS
 .DS_Store
 fastlane/.env
+
+# Swift Package Manager (used by rules_swift_package_manager)
+.build/
+
+# Bazel
+bazel-*

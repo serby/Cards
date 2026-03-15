@@ -21,20 +21,68 @@ A modern iOS application for managing barcode cards on your iPhone. Store loyalt
 - iOS 18.0+ deployment target
 - Apple Developer account (for device testing)
 - Ruby 3.2+ via asdf (see `.tool-versions`)
+- [Bazelisk](https://github.com/bazelbuild/bazelisk) (`brew install bazelisk`)
 
 ### Clone and Build
 ```bash
 git clone https://github.com/serby/Cards.git
 cd Cards
+
+# Generate the Xcode project from Bazel
+bazel run //:xcodeproj
+
+# Open in Xcode
 open Cards.xcodeproj
 ```
 
 ### Dependencies
-Dependencies are managed via Swift Package Manager:
+Dependencies are managed via Swift Package Manager and built by Bazel:
 - **RSBarcodes_Swift** - Barcode generation
-- **SwiftLintPlugins** - Code linting
+
+## Build System
+
+This project uses [Bazel](https://bazel.build/) as its build system, with [rules_xcodeproj](https://github.com/MobileNativeFoundation/rules_xcodeproj) generating an Xcode project for IDE use.
+
+### Command-line builds
+```bash
+# Build the app
+bazel build //Cards:Cards
+
+# Run tests
+bazel test //CardsTests:CardsTests
+
+# Regenerate Xcode project (after changing BUILD files)
+bazel run //:xcodeproj
+```
+
+### Xcode workflow
+1. Run `bazel run //:xcodeproj` to generate the project
+2. Open `Cards.xcodeproj` in Xcode
+3. Build and run as normal (Xcode delegates to Bazel)
+
+### Key Bazel files
+- `.bazelversion` - Pins Bazel version (managed by Bazelisk)
+- `MODULE.bazel` - External dependencies
+- `.bazelrc` - Build settings (disk cache, local performance)
+- `BUILD` - Root build file with xcodeproj target
+- `Cards/BUILD` - App target (swift_library + ios_application)
+- `CardsTests/BUILD` - Unit test target
+- `CardsUITests/BUILD` - UI test target
+- `Package.swift` / `Package.resolved` - SPM dependency declarations (consumed by rules_swift_package_manager)
 
 ## Build & Test
+
+### Using Bazel (recommended)
+```bash
+# Build the app
+bazel build //Cards:Cards
+
+# Run unit tests
+bazel test //CardsTests:CardsTests
+
+# Run UI tests
+bazel test //CardsUITests:CardsUITests
+```
 
 ### Using Fastlane
 ```bash
@@ -44,7 +92,7 @@ asdf install
 # Install dependencies
 bundle install
 
-# Build for testing
+# Build
 bundle exec fastlane build
 
 # Run tests
@@ -58,10 +106,11 @@ bundle exec fastlane release
 ```
 
 ### Using Xcode
-1. Open `Cards.xcodeproj`
-2. Select the Cards scheme
-3. Choose a simulator or device
-4. Press Cmd+B to build or Cmd+U to test
+1. Run `bazel run //:xcodeproj` to generate the project
+2. Open `Cards.xcodeproj`
+3. Select the Cards scheme
+4. Choose a simulator
+5. Press Cmd+B to build or Cmd+U to test
 
 ## CI/CD Pipeline
 

@@ -3,63 +3,34 @@ opt_out_usage
 default_platform(:ios)
 
 platform :ios do
-  desc "Build and run on simulator"
+  desc "Build and run on simulator (picks first booted or default)"
   lane :sim do
-    build_app(
-      scheme: "Cards",
-      configuration: "Debug",
-      skip_archive: true,
-      skip_codesigning: true,
-      destination: "platform=iOS Simulator,id=5853D62C-B1F2-4FD1-B120-45C323725F94"
-    )
-    
-    sh("xcrun simctl install 5853D62C-B1F2-4FD1-B120-45C323725F94 ../Cards.app || true")
-    sh("xcrun simctl launch 5853D62C-B1F2-4FD1-B120-45C323725F94 net.serby.Cards")
+    sh("bazel build //Cards:Cards")
+    # Find a booted simulator or boot the first available iPhone
+    sim_id = sh("xcrun simctl list devices booted -j | ruby -rjson -e 'puts JSON.parse(STDIN.read)[\"devices\"].values.flatten.select{|d| d[\"state\"]==\"Booted\"}.first&.dig(\"udid\") || \"\"'").strip
+    if sim_id.empty?
+      sim_id = sh("xcrun simctl list devices available -j | ruby -rjson -e 'puts JSON.parse(STDIN.read)[\"devices\"].values.flatten.select{|d| d[\"name\"].include?(\"iPhone\") && d[\"isAvailable\"]}.first[\"udid\"]'").strip
+      sh("xcrun simctl boot #{sim_id}")
+    end
+    sh("xcrun simctl install #{sim_id} ../bazel-bin/Cards/Cards.ipa")
+    sh("xcrun simctl launch #{sim_id} net.serby.Cards")
   end
 
-  desc "Run tests"
-  lane :test do
-    run_tests(
-      scheme: "Cards",
-      device: "iPhone 16",
-      clean: true
-    )
-  end
-
-  desc "Build for testing"
-  lane :build do
-    build_app(
-      scheme: "Cards",
-      configuration: "Debug",
-      skip_archive: true,
-      skip_codesigning: true
-    )
-  end
-
-  desc "Deploy to TestFlight for alpha testers"
+  desc "Deploy to TestFlight"
   lane :deploy_alpha do
-    increment_build_number(xcodeproj: "Cards.xcodeproj")
-    
-    build_app(
-      scheme: "Cards",
-      configuration: "Release",
-      export_method: "app-store",
-      xcargs: "-skipPackagePluginValidation -allowProvisioningUpdates"
-    )
-    
+    sh("bazel build //Cards:Cards --ios_multi_cpus=arm64")
+
     upload_to_testflight(
+      ipa: "bazel-bin/Cards/Cards.ipa",
       skip_waiting_for_build_processing: false,
       distribute_external: false,
       changelog: "Bug fixes and improvements"
     )
-    # Note: To distribute to external testers, first set Beta App Information in App Store Connect:
-    # TestFlight > App Information > Test Information > fill in description and email
   end
 
   desc "Upload screenshots to App Store Connect"
   lane :screenshots do
     deliver(
-      app_version: "1.0",
       skip_binary_upload: true,
       skip_screenshots: false,
       skip_metadata: true,
@@ -70,9 +41,7 @@ platform :ios do
 
   desc "Upload app metadata to App Store Connect"
   lane :metadata do
-    # Note: First set App Review Information in ASC manually (fastlane 2.230.0 bug)
     deliver(
-      app_version: "1.0",
       skip_binary_upload: true,
       skip_screenshots: true,
       force: true
@@ -81,15 +50,10 @@ platform :ios do
 
   desc "Deploy to App Store"
   lane :release do
-    increment_build_number(xcodeproj: "Cards.xcodeproj")
-    
-    build_app(
-      scheme: "Cards",
-      configuration: "Release",
-      export_method: "app-store"
-    )
-    
+    sh("bazel build //Cards:Cards --ios_multi_cpus=arm64")
+
     upload_to_app_store(
+      ipa: "bazel-bin/Cards/Cards.ipa",
       submit_for_review: false,
       automatic_release: false
     )

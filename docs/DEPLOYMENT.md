@@ -48,9 +48,10 @@ Configure these in GitHub repository settings → Secrets and variables → Acti
 
 ## Setup Instructions
 
-### 1. Install Fastlane
+### 1. Install Dependencies
 ```bash
 brew install fastlane
+brew install bazelisk
 ```
 
 ### 2. Export Certificates
@@ -86,14 +87,14 @@ Or trigger manually via GitHub Actions UI.
 
 ### Run Tests
 ```bash
-make test
+bazel test //CardsTests:CardsTests
 # or
 fastlane test
 ```
 
 ### Build
 ```bash
-make build
+bazel build //Cards:Cards
 # or
 fastlane build
 ```

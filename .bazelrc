@@ -1,0 +1,9 @@
+# Cache
+common --disk_cache=~/bazel_disk_cache
+
+# Local performance
+build --spawn_strategy=local
+build --worker_sandboxing=false
+
+# Announce rc on startup
+common --announce_rc

@@ -1,0 +1,18 @@
+module(name = "cards")
+
+bazel_dep(name = "apple_support", version = "1.24.5")
+bazel_dep(name = "rules_swift", version = "3.1.1")
+bazel_dep(name = "rules_apple", version = "4.3.3")
+bazel_dep(name = "bazel_skylib", version = "1.7.1")
+bazel_dep(name = "rules_xcodeproj", version = "3.6.0")
+bazel_dep(name = "rules_swift_package_manager", version = "1.13.0")
+
+swift_deps = use_extension(
+    "@rules_swift_package_manager//:extensions.bzl",
+    "swift_deps",
+)
+swift_deps.from_package(
+    resolved = "//:Package.resolved",
+    swift = "//:Package.swift",
+)
+use_repo(swift_deps, "swift_package", "swiftpkg_rsbarcodes_swift")
