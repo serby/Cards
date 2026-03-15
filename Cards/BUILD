@@ -20,7 +20,7 @@ expand_template(
     substitutions = {
         "$(PRODUCT_BUNDLE_IDENTIFIER)": "net.serby.Cards",
         "$(EXECUTABLE_NAME)": "Cards",
-        "$(MARKETING_VERSION)": "1.0",
+        "$(MARKETING_VERSION)": "1.1",
     },
     template = "//:Info.plist",
 )
@@ -30,6 +30,7 @@ ios_application(
     app_icons = glob(["Assets.xcassets/AppIcon.appiconset/**"]),
     bundle_id = "net.serby.Cards",
     bundle_name = "Cards",
+    entitlements = ":Cards.entitlements",
     families = ["iphone"],
     infoplists = [":InfoPlist"],
     minimum_os_version = "18.0",
