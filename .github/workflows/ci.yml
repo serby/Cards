@@ -54,3 +54,4 @@ jobs:
         bazel test //CardsTests:CardsTests \
           --ios_simulator_device="${{ steps.sim.outputs.device }}" \
           --ios_simulator_version="${{ steps.sim.outputs.version }}"
+
