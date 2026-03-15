@@ -41,3 +41,4 @@ fastlane/.env
 
 # Bazel
 bazel-*
+Cards.mobileprovision

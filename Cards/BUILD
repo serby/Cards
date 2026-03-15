@@ -33,6 +33,10 @@ ios_application(
     families = ["iphone"],
     infoplists = [":InfoPlist"],
     minimum_os_version = "18.0",
+    provisioning_profile = select({
+        "@apple_support//configs:any_device": "//:Cards.mobileprovision",
+        "//conditions:default": None,
+    }),
     resources = glob(["Assets.xcassets/**"]),
     visibility = [
         "//CardsTests:__pkg__",

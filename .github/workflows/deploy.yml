@@ -46,6 +46,7 @@ jobs:
         mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
         PROFILE_UUID=$(/usr/libexec/PlistBuddy -c "Print UUID" /dev/stdin <<< $(/usr/bin/security cms -D -i $PP_PATH))
         cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles/$PROFILE_UUID.mobileprovision
+        cp $PP_PATH $GITHUB_WORKSPACE/Cards.mobileprovision
 
     - name: Setup Ruby
       uses: ruby/setup-ruby@v1

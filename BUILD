@@ -1,6 +1,6 @@
 load("@rules_xcodeproj//xcodeproj:defs.bzl", "top_level_target", "xcodeproj")
 
-exports_files(["Info.plist"])
+exports_files(["Info.plist", "Cards.mobileprovision"])
 
 xcodeproj(
     name = "xcodeproj",
