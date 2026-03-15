@@ -53,7 +53,9 @@ jobs:
         APPLE_ID: ${{ secrets.APPLE_ID }}
         ITC_TEAM_ID: ${{ secrets.ITC_TEAM_ID }}
         TEAM_ID: ${{ secrets.TEAM_ID }}
-        FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.APP_STORE_CONNECT_API_KEY }}
+        ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+        ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+        ASC_KEY_CONTENT: ${{ secrets.ASC_KEY_CONTENT }}
       run: bundle exec fastlane release
 
     - name: Clean up keychain

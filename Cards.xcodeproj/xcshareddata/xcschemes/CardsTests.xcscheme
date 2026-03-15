@@ -14,9 +14,9 @@
                <EnvironmentBuildable>
                   <BuildableReference
                      BuildableIdentifier = "primary"
-                     BlueprintIdentifier = "0100B2C0EFBF000000000001"
-                     BuildableName = "Cards.app"
-                     BlueprintName = "Cards"
+                     BlueprintIdentifier = "0200979CF8F6000000000001"
+                     BuildableName = "CardsTests.xctest"
+                     BlueprintName = "CardsTests"
                      ReferencedContainer = "container:/Users/serbypau/Development/Swift/Cards/Cards.xcodeproj">
                   </BuildableReference>
                </EnvironmentBuildable>
@@ -30,9 +30,9 @@
                <EnvironmentBuildable>
                   <BuildableReference
                      BuildableIdentifier = "primary"
-                     BlueprintIdentifier = "0100B2C0EFBF000000000001"
-                     BuildableName = "Cards.app"
-                     BlueprintName = "Cards"
+                     BlueprintIdentifier = "0200979CF8F6000000000001"
+                     BuildableName = "CardsTests.xctest"
+                     BlueprintName = "CardsTests"
                      ReferencedContainer = "container:/Users/serbypau/Development/Swift/Cards/Cards.xcodeproj">
                   </BuildableReference>
                </EnvironmentBuildable>
@@ -41,16 +41,16 @@
       </PreActions>
       <BuildActionEntries>
          <BuildActionEntry
-            buildForTesting = "NO"
+            buildForTesting = "YES"
             buildForRunning = "YES"
-            buildForProfiling = "YES"
+            buildForProfiling = "NO"
             buildForArchiving = "NO"
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "0100B2C0EFBF000000000001"
-               BuildableName = "Cards.app"
-               BlueprintName = "Cards"
+               BlueprintIdentifier = "0200979CF8F6000000000001"
+               BuildableName = "CardsTests.xctest"
+               BlueprintName = "CardsTests"
                ReferencedContainer = "container:/Users/serbypau/Development/Swift/Cards/Cards.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -60,10 +60,59 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      shouldUseLaunchSchemeArgsEnv = "YES"
+      shouldUseLaunchSchemeArgsEnv = "NO"
       disableMainThreadChecker = "YES"
       disablePerformanceAntipatternChecker = "YES">
+      <PreActions>
+         <ExecutionAction
+            ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
+            <ActionContent
+               title = "Update .lldbinit and copy dSYMs"
+               scriptText = "&quot;$BAZEL_INTEGRATION_DIR/create_lldbinit.sh&quot;&#10;&quot;$BAZEL_INTEGRATION_DIR/copy_dsyms.sh&quot;&#10;">
+               <EnvironmentBuildable>
+                  <BuildableReference
+                     BuildableIdentifier = "primary"
+                     BlueprintIdentifier = "0200979CF8F6000000000001"
+                     BuildableName = "CardsTests.xctest"
+                     BlueprintName = "CardsTests"
+                     ReferencedContainer = "container:/Users/serbypau/Development/Swift/Cards/Cards.xcodeproj">
+                  </BuildableReference>
+               </EnvironmentBuildable>
+            </ActionContent>
+         </ExecutionAction>
+      </PreActions>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "0200979CF8F6000000000001"
+            BuildableName = "CardsTests.xctest"
+            BlueprintName = "CardsTests"
+            ReferencedContainer = "container:/Users/serbypau/Development/Swift/Cards/Cards.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
+      <EnvironmentVariables>
+         <EnvironmentVariable
+            key = "BUILD_WORKING_DIRECTORY"
+            value = "$(BUILT_PRODUCTS_DIR)"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "BUILD_WORKSPACE_DIRECTORY"
+            value = "$(BUILD_WORKSPACE_DIRECTORY)"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+      </EnvironmentVariables>
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "0200979CF8F6000000000001"
+               BuildableName = "CardsTests.xctest"
+               BlueprintName = "CardsTests"
+               ReferencedContainer = "container:/Users/serbypau/Development/Swift/Cards/Cards.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
@@ -78,81 +127,13 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
-      <PreActions>
-         <ExecutionAction
-            ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
-            <ActionContent
-               title = "Update .lldbinit and copy dSYMs"
-               scriptText = "&quot;$BAZEL_INTEGRATION_DIR/create_lldbinit.sh&quot;&#10;&quot;$BAZEL_INTEGRATION_DIR/copy_dsyms.sh&quot;&#10;">
-               <EnvironmentBuildable>
-                  <BuildableReference
-                     BuildableIdentifier = "primary"
-                     BlueprintIdentifier = "0100B2C0EFBF000000000001"
-                     BuildableName = "Cards.app"
-                     BlueprintName = "Cards"
-                     ReferencedContainer = "container:/Users/serbypau/Development/Swift/Cards/Cards.xcodeproj">
-                  </BuildableReference>
-               </EnvironmentBuildable>
-            </ActionContent>
-         </ExecutionAction>
-      </PreActions>
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "0100B2C0EFBF000000000001"
-            BuildableName = "Cards.app"
-            BlueprintName = "Cards"
-            ReferencedContainer = "container:/Users/serbypau/Development/Swift/Cards/Cards.xcodeproj">
-         </BuildableReference>
-      </BuildableProductRunnable>
-      <EnvironmentVariables>
-         <EnvironmentVariable
-            key = "BUILD_WORKING_DIRECTORY"
-            value = "$(BUILT_PRODUCTS_DIR)"
-            isEnabled = "YES">
-         </EnvironmentVariable>
-         <EnvironmentVariable
-            key = "BUILD_WORKSPACE_DIRECTORY"
-            value = "$(BUILD_WORKSPACE_DIRECTORY)"
-            isEnabled = "YES">
-         </EnvironmentVariable>
-      </EnvironmentVariables>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Debug"
-      shouldUseLaunchSchemeArgsEnv = "YES"
+      shouldUseLaunchSchemeArgsEnv = "NO"
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <PreActions>
-         <ExecutionAction
-            ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
-            <ActionContent
-               title = "Update .lldbinit and copy dSYMs"
-               scriptText = "&quot;$BAZEL_INTEGRATION_DIR/create_lldbinit.sh&quot;&#10;&quot;$BAZEL_INTEGRATION_DIR/copy_dsyms.sh&quot;&#10;">
-               <EnvironmentBuildable>
-                  <BuildableReference
-                     BuildableIdentifier = "primary"
-                     BlueprintIdentifier = "0100B2C0EFBF000000000001"
-                     BuildableName = "Cards.app"
-                     BlueprintName = "Cards"
-                     ReferencedContainer = "container:/Users/serbypau/Development/Swift/Cards/Cards.xcodeproj">
-                  </BuildableReference>
-               </EnvironmentBuildable>
-            </ActionContent>
-         </ExecutionAction>
-      </PreActions>
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "0100B2C0EFBF000000000001"
-            BuildableName = "Cards.app"
-            BlueprintName = "Cards"
-            ReferencedContainer = "container:/Users/serbypau/Development/Swift/Cards/Cards.xcodeproj">
-         </BuildableReference>
-      </BuildableProductRunnable>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
