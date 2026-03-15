@@ -24,7 +24,7 @@ jobs:
     - uses: actions/checkout@v5
 
     - name: Install Bazelisk
-      run: brew install bazelisk
+      run: brew list bazelisk &>/dev/null || brew install bazelisk
 
     - name: Resolve simulator
       id: sim
