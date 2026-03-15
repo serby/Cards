@@ -4,21 +4,22 @@
 //
 
 @testable import Cards
+import Foundation
 import SwiftData
-import XCTest
+import Testing
 
-final class SettingsViewTests: XCTestCase {
+struct SettingsViewTests {
 
-    func testDeleteAllCardsButtonIsDisabledWhenNoCards() throws {
+    @Test func deleteAllCardsButtonIsDisabledWhenNoCards() throws {
         let config = ModelConfiguration(isStoredInMemoryOnly: true)
         let container = try ModelContainer(for: CardItem.self, configurations: config)
         let context = ModelContext(container)
 
         let cards = try context.fetch(FetchDescriptor<CardItem>())
-        XCTAssertTrue(cards.isEmpty, "Button should be disabled — no cards exist")
+        #expect(cards.isEmpty, "Button should be disabled — no cards exist")
     }
 
-    func testDeleteAllCardsButtonIsEnabledWhenCardsExist() throws {
+    @Test func deleteAllCardsButtonIsEnabledWhenCardsExist() throws {
         let config = ModelConfiguration(isStoredInMemoryOnly: true)
         let container = try ModelContainer(for: CardItem.self, configurations: config)
         let context = ModelContext(container)
@@ -27,6 +28,6 @@ final class SettingsViewTests: XCTestCase {
         try context.save()
 
         let cards = try context.fetch(FetchDescriptor<CardItem>())
-        XCTAssertFalse(cards.isEmpty, "Button should be enabled — cards exist")
+        #expect(!cards.isEmpty, "Button should be enabled — cards exist")
     }
 }

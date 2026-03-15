@@ -4,9 +4,21 @@
 
 This project uses Bazel (via Bazelisk) as its primary build system. The Xcode project is generated from Bazel BUILD files using `rules_xcodeproj`.
 
+### Makefile (preferred for local dev)
+A `Makefile` wraps common Bazel commands with the correct simulator flags:
+
+| Command | What it does |
+|---------|-------------|
+| `make build` | `bazel build //Cards:Cards` |
+| `make test` | `bazel test //CardsTests:CardsTests` with `--ios_simulator_device="iPhone 16" --ios_simulator_version=26.0` |
+| `make sim` | Builds, boots iPhone 16 simulator, installs and launches the app |
+
+Always use `make test` instead of bare `bazel test` locally — it pins the correct simulator device and OS version to avoid test runner failures.
+
 ### Key Commands
-- `bazel build //Cards:Cards` - Build the app
-- `bazel test //CardsTests:CardsTests` - Run unit tests
+- `make build` - Build the app (preferred)
+- `make test` - Run unit tests on iPhone 16 / iOS 26.0 (preferred)
+- `make sim` - Build and launch in simulator
 - `bazel run //:xcodeproj` - Regenerate Xcode project
 - `swift package resolve` then `bazel mod tidy` - After changing SPM dependencies
 

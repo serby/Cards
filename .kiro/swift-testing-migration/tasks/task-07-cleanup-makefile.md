@@ -1,3 +1,12 @@
+# Task 07 — Delete CardsTests.swift + Update Makefile
+
+**Status:** done
+
+## CardsTests.swift
+Delete `CardsTests/CardsTests.swift` — trivial `assert(true)` example with no value.
+
+## Makefile
+```makefile
 .PHONY: test test-unit test-e2e build sim
 
 test-unit:
@@ -21,3 +30,7 @@ sim: build
 	open -a Simulator
 	xcrun simctl install $(SIM_ID) bazel-bin/Cards/Cards.ipa
 	xcrun simctl launch $(SIM_ID) net.serby.Cards
+```
+
+## project-context.md
+Update the Makefile table to document `test-unit` and `test-e2e`.
