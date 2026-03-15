@@ -30,12 +30,14 @@ This project uses Bazel (via Bazelisk) as its primary build system. The Xcode pr
 | Lane | Used By | Purpose |
 |------|---------|---------|
 | `deploy_alpha` | `.github/workflows/deploy.yml` | Deploy to TestFlight |
-| `build` | `.github/workflows/ci.yml` | Build via Bazel |
-| `test` | `.github/workflows/ci.yml` | Test via Bazel |
+| `sim` | Local dev only | Build via Bazel + install on simulator |
+| `screenshots` | Manual | Upload screenshots to App Store Connect |
+| `metadata` | Manual | Upload metadata to App Store Connect |
+| `release` | Manual | Deploy to App Store |
 
 ### GitHub Actions Workflows
-- `.github/workflows/ci.yml` - Runs on PR/push, installs Bazelisk, calls `fastlane build` and `fastlane test`
-- `.github/workflows/deploy.yml` - Runs after CI success on main, calls `fastlane deploy_alpha`
+- `.github/workflows/ci.yml` - Runs on PR/push, installs Bazelisk, calls `bazel build` and `bazel test` directly (no Fastlane)
+- `.github/workflows/deploy.yml` - Runs after CI success on main, installs Bazelisk, calls `fastlane deploy_alpha`
 
 ### Before Renaming Fastlane Lanes
 1. Search for lane name in `.github/workflows/`

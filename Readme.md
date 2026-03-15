@@ -92,14 +92,11 @@ asdf install
 # Install dependencies
 bundle install
 
-# Build
-bundle exec fastlane build
-
-# Run tests
-bundle exec fastlane test
+# Build and run on simulator
+bundle exec fastlane sim
 
 # Deploy to TestFlight
-bundle exec fastlane beta
+bundle exec fastlane deploy_alpha
 
 # Deploy to App Store
 bundle exec fastlane release
@@ -118,21 +115,21 @@ bundle exec fastlane release
 
 #### CI Workflow (`.github/workflows/ci.yml`)
 Runs on every push to `main` and pull requests:
-- Build and test on iPhone 17 Pro Max simulator (macOS 26, Xcode 26)
+- Build and test on iPhone simulator (macOS 26, Xcode 26)
+- Simulator device and iOS version resolved dynamically
 - Upload test results as artifacts
 
 #### Deploy Workflow (`.github/workflows/deploy.yml`)
 Automated TestFlight deployment:
 - Triggers on successful CI, manual dispatch, or version tags (`v*`)
 - Installs certificates and provisioning profiles from secrets
-- Deploys via `fastlane beta`
+- Deploys via `fastlane deploy_alpha`
 
 **Required Secrets**: `APPLE_ID`, `ITC_TEAM_ID`, `TEAM_ID`, `APP_STORE_CONNECT_API_KEY`, `BUILD_CERTIFICATE_BASE64`, `P12_PASSWORD`, `BUILD_PROVISION_PROFILE_BASE64`, `KEYCHAIN_PASSWORD`
 
 ### Fastlane Lanes
-- `fastlane build` - Debug build
-- `fastlane test` - Run tests
-- `fastlane beta` - Deploy to TestFlight
+- `fastlane sim` - Build and run on simulator
+- `fastlane deploy_alpha` - Deploy to TestFlight
 - `fastlane release` - Deploy to App Store
 
 ---
