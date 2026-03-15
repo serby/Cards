@@ -72,6 +72,7 @@ struct SettingsView: View {
                 Button("Delete All Cards", role: .destructive) {
                     showDeleteConfirmation = true
                 }
+                .disabled(cards.isEmpty)
             }
         }
         .listStyle(.insetGrouped)
