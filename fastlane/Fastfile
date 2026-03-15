@@ -54,8 +54,9 @@ platform :ios do
 
     upload_to_app_store(
       ipa: "bazel-bin/Cards/Cards.ipa",
-      submit_for_review: false,
-      automatic_release: false
+      submit_for_review: true,
+      automatic_release: true,
+      force: true
     )
   end
 end

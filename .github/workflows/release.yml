@@ -1,21 +1,11 @@
-name: Deploy to TestFlight
+name: Release to App Store
 
 on:
-  workflow_run:
-    workflows: ["CI"]
-    types:
-      - completed
-    branches:
-      - main
   workflow_dispatch:
-  push:
-    tags:
-      - 'v*'
 
 jobs:
-  deploy:
+  release:
     runs-on: macos-26
-    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'push' }}
 
     steps:
     - uses: actions/checkout@v5
@@ -58,13 +48,13 @@ jobs:
     - name: Install dependencies
       run: bundle install
 
-    - name: Deploy to TestFlight
+    - name: Release to App Store
       env:
         APPLE_ID: ${{ secrets.APPLE_ID }}
         ITC_TEAM_ID: ${{ secrets.ITC_TEAM_ID }}
         TEAM_ID: ${{ secrets.TEAM_ID }}
         FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.APP_STORE_CONNECT_API_KEY }}
-      run: bundle exec fastlane deploy_alpha
+      run: bundle exec fastlane release
 
     - name: Clean up keychain
       if: ${{ always() }}
