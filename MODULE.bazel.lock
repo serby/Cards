@@ -531,7 +531,7 @@
         "usagesDigest": "dm13iWfzWf5jtLV4lxQzAiMCyzYI411YM6E0mCtnkX4=",
         "recordedFileInputs": {
           "@@//Package.resolved": "cd0d08e8e4fd20464517c084e8a7b576a2d3aa994cdcf73724ebdfa4a9769657",
-          "@@//Package.swift": "53b45212d1b7ae042f8f878c5c6110545e5d8fc4c58a4a36aa8d88b3cae91162"
+          "@@//Package.swift": "05060475f6b93c0b80a6ff7763d580e60e419a9b4731367dbdc6deb0edbb8f46"
         },
         "recordedDirentsInputs": {},
         "envVariables": {},
@@ -542,6 +542,50 @@
             "attributes": {
               "env": {},
               "package": "/Package.swift"
+            }
+          },
+          "swiftpkg_cardscore": {
+            "bzlFile": "@@rules_swift_package_manager~//swiftpkg/internal:local_swift_package.bzl",
+            "ruleClassName": "local_swift_package",
+            "attributes": {
+              "bazel_package_name": "swiftpkg_cardscore",
+              "env": {},
+              "env_inherit": [],
+              "path": "/Users/serbypau/Development/Swift/Cards/Packages/CardsCore",
+              "cached_json_directory": ""
+            }
+          },
+          "swiftpkg_cardsui": {
+            "bzlFile": "@@rules_swift_package_manager~//swiftpkg/internal:local_swift_package.bzl",
+            "ruleClassName": "local_swift_package",
+            "attributes": {
+              "bazel_package_name": "swiftpkg_cardsui",
+              "env": {},
+              "env_inherit": [],
+              "path": "/Users/serbypau/Development/Swift/Cards/Packages/CardsUI",
+              "cached_json_directory": ""
+            }
+          },
+          "swiftpkg_cardsscanner": {
+            "bzlFile": "@@rules_swift_package_manager~//swiftpkg/internal:local_swift_package.bzl",
+            "ruleClassName": "local_swift_package",
+            "attributes": {
+              "bazel_package_name": "swiftpkg_cardsscanner",
+              "env": {},
+              "env_inherit": [],
+              "path": "/Users/serbypau/Development/Swift/Cards/Packages/CardsScanner",
+              "cached_json_directory": ""
+            }
+          },
+          "swiftpkg_cardsfeatures": {
+            "bzlFile": "@@rules_swift_package_manager~//swiftpkg/internal:local_swift_package.bzl",
+            "ruleClassName": "local_swift_package",
+            "attributes": {
+              "bazel_package_name": "swiftpkg_cardsfeatures",
+              "env": {},
+              "env_inherit": [],
+              "path": "/Users/serbypau/Development/Swift/Cards/Packages/CardsFeatures",
+              "cached_json_directory": ""
             }
           },
           "swiftpkg_rsbarcodes_swift": {
@@ -571,6 +615,10 @@
         },
         "moduleExtensionMetadata": {
           "explicitRootModuleDirectDeps": [
+            "swiftpkg_cardscore",
+            "swiftpkg_cardsui",
+            "swiftpkg_cardsscanner",
+            "swiftpkg_cardsfeatures",
             "swiftpkg_rsbarcodes_swift",
             "swift_package"
           ],

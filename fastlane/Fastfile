@@ -3,19 +3,6 @@ opt_out_usage
 default_platform(:ios)
 
 platform :ios do
-  desc "Build and run on simulator (picks first booted or default)"
-  lane :sim do
-    sh("bazel build //Cards:Cards")
-    # Find a booted simulator or boot the first available iPhone
-    sim_id = sh("xcrun simctl list devices booted -j | ruby -rjson -e 'puts JSON.parse(STDIN.read)[\"devices\"].values.flatten.select{|d| d[\"state\"]==\"Booted\"}.first&.dig(\"udid\") || \"\"'").strip
-    if sim_id.empty?
-      sim_id = sh("xcrun simctl list devices available -j | ruby -rjson -e 'puts JSON.parse(STDIN.read)[\"devices\"].values.flatten.select{|d| d[\"name\"].include?(\"iPhone\") && d[\"isAvailable\"]}.first[\"udid\"]'").strip
-      sh("xcrun simctl boot #{sim_id}")
-    end
-    sh("xcrun simctl install #{sim_id} ../bazel-bin/Cards/Cards.ipa")
-    sh("xcrun simctl launch #{sim_id} net.serby.Cards")
-  end
-
   desc "Deploy to TestFlight"
   lane :deploy_alpha do
     sh("bazel build //Cards:Cards --ios_multi_cpus=arm64 --compilation_mode=opt")

@@ -4,11 +4,12 @@ load("@rules_swift//swift:swift.bzl", "swift_library")
 
 swift_library(
     name = "Cards.library",
-    srcs = glob(["**/*.swift"]),
+    srcs = glob(["App/**/*.swift"]),
     module_name = "Cards",
     visibility = ["//visibility:public"],
     deps = [
-        "@swiftpkg_rsbarcodes_swift//:RSBarcodes_Swift",
+        "//Packages/CardsCore:CardsCore",
+        "//Packages/CardsFeatures:CardsFeatures",
     ],
 )
 

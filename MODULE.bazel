@@ -15,4 +15,4 @@ swift_deps.from_package(
     resolved = "//:Package.resolved",
     swift = "//:Package.swift",
 )
-use_repo(swift_deps, "swift_package", "swiftpkg_rsbarcodes_swift")
+use_repo(swift_deps, "swift_package", "swiftpkg_cardscore", "swiftpkg_cardsfeatures", "swiftpkg_cardsscanner", "swiftpkg_cardsui", "swiftpkg_rsbarcodes_swift")

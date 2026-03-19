@@ -1,23 +1,19 @@
-//
-//  CardsApp.swift
-//  Cards
-//
-//  Created by Serby, Paul on 18/12/2024.
-//
-
+import CardsCore
+import CardsFeatures
+import CardsUI
 import SwiftData
 import SwiftUI
 
 @main
 struct CardsApp: App {
     @Environment(\.scenePhase) private var scenePhase
-    @StateObject private var navigationManager = NavigationManager()
+    @State private var navigationManager = NavigationManager()
     private let performanceTracker = PerformanceTracker()
-    
+
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([CardItem.self])
         let isTesting = CommandLine.arguments.contains("-uiTesting")
-        
+
         do {
             let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: isTesting)
             return try ModelContainer(for: schema, configurations: [modelConfiguration])
@@ -25,14 +21,15 @@ struct CardsApp: App {
             fatalError("ModelContainer failed: \(error)")
         }
     }()
-    
+
     @ViewBuilder
     private var tabView: some View {
         TabView {
             Tab("Cards", systemImage: "barcode") {
-                NavigationStack(path: $navigationManager.navigationPath) {
+                let nav = Bindable(navigationManager)
+                NavigationStack(path: nav.navigationPath) {
                     CardListView()
-                        .environmentObject(navigationManager)
+                        .environment(navigationManager)
                 }
                 .onAppear {
                     navigationManager.resetToRoot()
@@ -52,7 +49,7 @@ struct CardsApp: App {
         .onOpenURL(perform: navigationManager.handleDeepLink)
         .tabBarMinimizeBehaviorIfAvailable()
     }
-    
+
     var body: some Scene {
         WindowGroup {
             tabView

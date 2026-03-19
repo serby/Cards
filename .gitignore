@@ -43,3 +43,5 @@ fastlane/.env
 bazel-*
 Cards.mobileprovision
 user.bazelrc
+Cards.xcodeproj/
+.kiro/

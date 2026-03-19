@@ -7,3 +7,7 @@ build --worker_sandboxing=false
 
 # Announce rc on startup
 common --announce_rc
+
+# Simulator — shared by CLI (make test-unit) and Xcode (rules_xcodeproj config)
+build:rules_xcodeproj --ios_simulator_device="iPhone 17"
+build:rules_xcodeproj --ios_simulator_version=26.3

@@ -6,7 +6,12 @@ swift_library(
     testonly = True,
     srcs = glob(["**/*.swift"]),
     module_name = "CardsTests",
-    deps = ["//Cards:Cards.library"],
+    deps = [
+        "//Packages/CardsCore:CardsCore",
+        "//Packages/CardsUI:CardsUI",
+        "//Packages/CardsScanner:CardsScanner",
+        "//Packages/CardsFeatures:CardsFeatures",
+    ],
 )
 
 ios_unit_test(
