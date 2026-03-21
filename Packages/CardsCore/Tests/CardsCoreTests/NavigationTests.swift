@@ -19,8 +19,11 @@ struct NavigationTests {
     @Test func navigationRouteFromPath_validPaths_returnsCorrectRoutes() throws {
         #expect(NavigationRoute.from(path: "/new") == .newCard)
         #expect(NavigationRoute.from(path: "/card/123") == .card("123"))
-        #expect(NavigationRoute.from(path: "/new/camera") == .camera)
         #expect(NavigationRoute.from(path: "/card/123/edit") == .editCard("123"))
+    }
+
+    @Test func navigationRouteFromPath_cameraPath_returnsCards() throws {
+        #expect(NavigationRoute.from(path: "/new/camera") == .cards)
     }
 
     @Test func navigationRouteFromPath_defaultCase_returnsCards() throws {
@@ -57,7 +60,6 @@ struct NavigationTests {
     @Test func navigationRoutePathProperty_allCases_returnCorrectPaths() throws {
         #expect(NavigationRoute.cards.path == "/cards")
         #expect(NavigationRoute.newCard.path == "/cards/new")
-        #expect(NavigationRoute.camera.path == "/cards/new/camera")
         #expect(NavigationRoute.card("123").path == "/cards/card/123")
         #expect(NavigationRoute.editCard("123").path == "/cards/card/123/edit")
     }
@@ -65,7 +67,6 @@ struct NavigationTests {
     @Test func navigationRouteId_allCases_returnCorrectIds() throws {
         #expect(NavigationRoute.cards.id == "cards")
         #expect(NavigationRoute.newCard.id == "newCard")
-        #expect(NavigationRoute.camera.id == "camera")
         #expect(NavigationRoute.card("123").id == "card-123")
         #expect(NavigationRoute.editCard("123").id == "editCard-123")
     }
@@ -94,10 +95,12 @@ struct NavigationTests {
         #expect(navigationManager.navigationPath.count == 1)
     }
 
-    @Test func navigateToCamera_setsCorrectPath() throws {
-        navigationManager.navigate(to: .camera)
-        #expect(navigationManager.currentRoute == .camera)
+    @Test func resetToRoot_resetsUnconditionally() throws {
+        navigationManager.navigate(to: .editCard("123"))
         #expect(navigationManager.navigationPath.count == 2)
+        navigationManager.resetToRoot()
+        #expect(navigationManager.navigationPath.count == 0)
+        #expect(navigationManager.currentRoute == .cards)
     }
 
     @Test func handleDeepLink_validCardsURL_navigatesCorrectly() throws {
@@ -116,12 +119,6 @@ struct NavigationTests {
         let url = try #require(URL(string: "cards://cards/card/123456/edit"))
         navigationManager.handleDeepLink(url)
         #expect(navigationManager.currentRoute == .editCard("123456"))
-    }
-
-    @Test func handleDeepLink_validCameraURL_navigatesCorrectly() throws {
-        let url = try #require(URL(string: "cards://cards/new/camera"))
-        navigationManager.handleDeepLink(url)
-        #expect(navigationManager.currentRoute == .camera)
     }
 
     @Test func handleDeepLink_invalidScheme_doesNotNavigate() throws {
@@ -180,18 +177,9 @@ struct NavigationTests {
         #expect(navigationManager.navigationPath.count == 0)
     }
 
-    @Test func navigationPath_cameraFlow_maintainsCorrectCounts() throws {
-        navigationManager.navigate(to: .newCard)
-        #expect(navigationManager.navigationPath.count == 1)
-        navigationManager.navigate(to: .camera)
-        #expect(navigationManager.navigationPath.count == 2)
-        navigationManager.navigate(to: .cards)
-        #expect(navigationManager.navigationPath.count == 0)
-    }
-
     @Test func navigationPath_allRoutes_clearPathCorrectly() throws {
         let routes: [NavigationRoute] = [
-            .cards, .card("test"), .editCard("test"), .newCard, .camera
+            .cards, .card("test"), .editCard("test"), .newCard
         ]
         for route in routes {
             navigationManager.navigate(to: route)
@@ -201,7 +189,7 @@ struct NavigationTests {
                 #expect(navigationManager.navigationPath.count == 0)
             case .card, .newCard:
                 #expect(navigationManager.navigationPath.count == 1)
-            case .editCard, .camera:
+            case .editCard:
                 #expect(navigationManager.navigationPath.count == 2)
             }
         }
@@ -219,7 +207,7 @@ struct NavigationTests {
 
     @Test func navigationRoute_identifiable_providesUniqueIds() throws {
         let routes: [NavigationRoute] = [
-            .cards, .card("123"), .editCard("123"), .newCard, .camera
+            .cards, .card("123"), .editCard("123"), .newCard
         ]
         let ids = routes.map { $0.id }
         let uniqueIds = Set(ids)

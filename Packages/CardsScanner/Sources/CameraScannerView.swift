@@ -14,10 +14,6 @@ public struct CameraScannerView: UIViewControllerRepresentable {
     public func makeUIViewController(context: Context) -> ScannerViewController {
         let scannerVC = ScannerViewController()
         scannerVC.delegate = context.coordinator
-        if let sheet = scannerVC.sheetPresentationController {
-            sheet.detents = [.medium()]
-            sheet.prefersGrabberVisible = true
-        }
         return scannerVC
     }
 
@@ -45,5 +41,27 @@ public struct CameraScannerView: UIViewControllerRepresentable {
             parent.scannedCode = code
             parent.barcodeType = BarcodeMapper.mapMetadataObjectTypeToBarcodeType(type)
         }
+    }
+}
+
+public struct ScannerOverlayView: View {
+    @Binding var scannedCode: String?
+    @Binding var barcodeType: BarcodeType?
+
+    public init(scannedCode: Binding<String?>, barcodeType: Binding<BarcodeType?>) {
+        _scannedCode = scannedCode
+        _barcodeType = barcodeType
+    }
+
+    public var body: some View {
+        CameraScannerView(scannedCode: $scannedCode, barcodeType: $barcodeType)
+            .overlay {
+                Rectangle()
+                    .fill(Color.red.opacity(0.8))
+                    .frame(height: 2)
+            }
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+            .accessibilityIdentifier("scannerView")
+            .accessibilityLabel("Barcode scanner")
     }
 }

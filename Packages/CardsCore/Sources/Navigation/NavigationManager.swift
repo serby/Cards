@@ -21,18 +21,12 @@ import SwiftUI
         case .newCard:
             navigationPath = NavigationPath()
             navigationPath.append(route)
-        case .camera:
-            navigationPath = NavigationPath()
-            navigationPath.append(NavigationRoute.newCard)
-            navigationPath.append(route)
         }
     }
 
     public func resetToRoot() {
-        if case .camera = currentRoute {
-            navigationPath = NavigationPath()
-            currentRoute = .cards
-        }
+        navigationPath = NavigationPath()
+        currentRoute = .cards
     }
 
     public func handleDeepLink(_ url: URL) {

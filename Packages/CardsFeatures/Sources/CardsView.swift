@@ -1,5 +1,4 @@
 import CardsCore
-import CardsScanner
 import CardsUI
 import SwiftData
 import SwiftUI
@@ -29,8 +28,6 @@ public struct CardListView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \CardItem.order) private var cardItems: [CardItem]
     @Environment(NavigationManager.self) private var navigationManager
-    @State private var scannedCode: String?
-    @State private var barcodeType: BarcodeType?
     @State var searchText: String = ""
     @State var searchable: Bool = false
     @State private var toolbarVisible = true
@@ -55,25 +52,14 @@ public struct CardListView: View {
         .toolbar(toolbarVisible ? .visible : .hidden, for: .navigationBar)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                HStack(spacing: 16) {
-                    Button {
-                        navigationManager.navigate(to: .newCard)
-                    } label: {
-                        Image(systemName: "plus")
-                    }
-                    .foregroundColor(.accent)
-                    .accessibilityIdentifier("addCardButton")
-                    .accessibilityLabel("Add Card")
-                    
-                    Button {
-                        navigationManager.navigate(to: .camera)
-                    } label: {
-                        Image(systemName: "barcode.viewfinder")
-                    }
-                    .foregroundColor(.accent)
-                    .accessibilityIdentifier("scanCodeButton")
-                    .accessibilityLabel("Scan Code")
+                Button {
+                    navigationManager.navigate(to: .newCard)
+                } label: {
+                    Image(systemName: "barcode.viewfinder")
                 }
+                .foregroundColor(.accent)
+                .accessibilityIdentifier("addCardButton")
+                .accessibilityLabel("Add Card")
             }
         }
         .onScrollGeometryChange(for: CGFloat.self) { geometry in
@@ -85,11 +71,6 @@ public struct CardListView: View {
         }
         .navigationDestination(for: NavigationRoute.self) { route in
             destinationView(for: route)
-        }
-        .onChange(of: scannedCode) { _, newCode in
-            if newCode != nil {
-                navigationManager.navigate(to: .newCard)
-            }
         }
     }
     
@@ -115,22 +96,17 @@ public struct CardListView: View {
             EditCardItemView(
                 cardItem: CardItem(
                     timestamp: Date(),
-                    code: scannedCode ?? "",
+                    code: "",
                     name: "",
-                    barcodeType: barcodeType
+                    barcodeType: nil
                 ),
                 navigationManager: navigationManager,
                 onSave: { updatedCard in
                     modelContext.insert(updatedCard)
-                    scannedCode = nil
-                    barcodeType = nil
                     navigationManager.navigate(to: .card(updatedCard.code))
                 }
             )
             .navigationTitle("Add Card")
-            .id("\(scannedCode ?? "")-\(barcodeType?.rawValue ?? "")")
-        case .camera:
-            CameraScannerView(scannedCode: $scannedCode, barcodeType: $barcodeType)
         }
     }
     

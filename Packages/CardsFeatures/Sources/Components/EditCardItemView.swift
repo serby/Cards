@@ -1,4 +1,5 @@
 import CardsCore
+import CardsScanner
 import SwiftUI
 
 public struct EditCardItemView: View {
@@ -6,15 +7,18 @@ public struct EditCardItemView: View {
     @State private var tempName: String
     @State private var tempCode: String
     @State private var selectedType: String
+    @State private var scannedCode: String?
+    @State private var scannedBarcodeType: BarcodeType?
     @FocusState private var focusedField: Field?
-    
+
     enum Field {
         case name, code
     }
-    
+
     let navigationManager: NavigationManager?
-    var onSave: ((CardItem) -> Void)? // Closure to be called on save
-    
+    var onSave: ((CardItem) -> Void)?
+    private var isNewCard: Bool { onSave != nil }
+
     public init(cardItem: CardItem, navigationManager: NavigationManager? = nil, onSave: ((CardItem) -> Void)? = nil) {
         self.cardItem = cardItem
         self.navigationManager = navigationManager
@@ -23,9 +27,18 @@ public struct EditCardItemView: View {
         _selectedType = State(initialValue: cardItem.type)
         self.onSave = onSave
     }
-    
+
     public var body: some View {
         Form {
+            if isNewCard {
+                Section {
+                    ScannerOverlayView(scannedCode: $scannedCode, barcodeType: $scannedBarcodeType)
+                        .frame(height: 250)
+                        .listRowInsets(EdgeInsets())
+                }
+                .accessibilityIdentifier("scannerSection")
+            }
+
             Section {
                 HStack {
                     Text("Name")
@@ -39,7 +52,7 @@ public struct EditCardItemView: View {
                         .accessibilityLabel("Card name")
                         .accessibilityHint("Enter the name of this card")
                 }
-                
+
                 HStack {
                     Text("Code")
                         .accessibilityIdentifier("codeLabel")
@@ -55,7 +68,7 @@ public struct EditCardItemView: View {
                 }
             }
             .accessibilityIdentifier("cardDetailsSection")
-            
+
             Section {
                 Picker("Barcode Type", selection: $selectedType) {
                     ForEach(BarcodeType.allCases, id: \.self) { type in
@@ -72,7 +85,18 @@ public struct EditCardItemView: View {
         }
         .navigationBarTitleDisplayMode(.inline)
         .accessibilityIdentifier("editCardForm")
+        .onChange(of: scannedCode) { _, newCode in
+            if let code = newCode {
+                tempCode = code
+            }
+        }
+        .onChange(of: scannedBarcodeType) { _, newType in
+            if let type = newType {
+                selectedType = type.rawValue
+            }
+        }
         .task {
+            guard !isNewCard else { return }
             try? await Task.sleep(for: .seconds(0.6))
             focusedField = .name
         }
@@ -82,7 +106,7 @@ public struct EditCardItemView: View {
                     cardItem.name = tempName
                     cardItem.code = tempCode
                     cardItem.type = selectedType
-                    
+
                     if let onSave = onSave {
                         onSave(cardItem)
                     } else {

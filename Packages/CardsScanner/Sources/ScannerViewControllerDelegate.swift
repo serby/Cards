@@ -78,7 +78,6 @@ public class ScannerViewController: UIViewController, AVCaptureMetadataOutputObj
                     captureSession?.stopRunning()
                     AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
                     delegate?.didFindScannedCode(code: scannedCode, type: readableObject.type)
-                    dismiss(animated: true)
                 } else {
                     AudioServicesPlaySystemSound(SystemSoundID(1_053))
                 }
