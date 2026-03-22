@@ -9,7 +9,7 @@ xcodeproj(
     top_level_targets = [
         top_level_target(
             "//Cards:Cards",
-            target_environments = ["simulator"],
+            target_environments = ["device", "simulator"],
         ),
         "//CardsTests:CardsTests",
         "//CardsUITests:CardsUITests",

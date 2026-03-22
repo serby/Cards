@@ -1,4 +1,4 @@
-.PHONY: test test-unit test-e2e build sim xcodeproj
+.PHONY: test test-unit test-e2e build sim xcodeproj device
 
 test-unit:
 	bazel test //CardsTests:CardsTests \
@@ -26,3 +26,10 @@ sim: build
 	open -a Simulator
 	xcrun simctl install $(SIM_ID) bazel-bin/Cards/Cards.ipa
 	xcrun simctl launch $(SIM_ID) net.serby.Cards
+
+device:
+	bazel build //Cards:Cards --ios_multi_cpus=arm64 --apple_platform_type=ios --define=apple.experimental.tree_artifact_outputs=1
+	$(eval DEVICE_ID := $(shell xcrun devicectl list devices --json-output /tmp/cards_devices.json >/dev/null 2>&1; python3 -c "import json; devs=[d for d in json.load(open('/tmp/cards_devices.json'))['result']['devices'] if 'iPhone' in d.get('hardwareProperties',{}).get('marketingName','') and d['connectionProperties']['tunnelState']=='connected']; print(devs[0]['identifier'])"))
+	@if [ -z "$(DEVICE_ID)" ]; then echo "No iPhone connected"; exit 1; fi
+	xcrun devicectl device install app --device $(DEVICE_ID) bazel-bin/Cards/Cards.app
+	xcrun devicectl device process launch --device $(DEVICE_ID) net.serby.Cards

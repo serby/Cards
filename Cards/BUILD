@@ -1,6 +1,8 @@
 load("@bazel_skylib//rules:expand_template.bzl", "expand_template")
 load("@rules_apple//apple:ios.bzl", "ios_application")
+load("@rules_apple//apple:apple.bzl", "local_provisioning_profile")
 load("@rules_swift//swift:swift.bzl", "swift_library")
+load("@rules_xcodeproj//xcodeproj:xcode_provisioning_profile.bzl", "xcode_provisioning_profile")
 
 swift_library(
     name = "Cards.library",
@@ -36,7 +38,7 @@ ios_application(
     infoplists = [":InfoPlist"],
     minimum_os_version = "18.0",
     provisioning_profile = select({
-        "@apple_support//configs:any_device": "//:Cards.mobileprovision",
+        "@apple_support//configs:any_device": ":xcode_profile",
         "//conditions:default": None,
     }),
     resources = glob(["Assets.xcassets/**"]),
@@ -46,4 +48,16 @@ ios_application(
         "@rules_xcodeproj//xcodeproj:generated",
     ],
     deps = [":Cards.library"],
+)
+
+xcode_provisioning_profile(
+    name = "xcode_profile",
+    managed_by_xcode = True,
+    provisioning_profile = ":local_profile",
+    team_id = "ZMBFPG86J4",
+)
+
+local_provisioning_profile(
+    name = "local_profile",
+    profile_name = "iOS Team Provisioning Profile: net.serby.Cards",
 )
