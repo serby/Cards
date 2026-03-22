@@ -65,4 +65,5 @@ xcode_provisioning_profile(
 local_provisioning_profile(
     name = "local_profile",
     profile_name = "iOS Team Provisioning Profile: net.serby.Cards",
+    tags = ["manual"],
 )

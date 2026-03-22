@@ -52,7 +52,6 @@ excluded:
   - Cards/GeneratedMocks.swift
   - "**/checkouts"
   - "**/.build"
-
 line_length:
   warning: 150
   error: 200

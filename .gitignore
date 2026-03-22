@@ -38,6 +38,8 @@ fastlane/.env
 
 # Swift Package Manager (used by rules_swift_package_manager)
 .build/
+**/.swiftpm/
+Packages/*/Package.resolved
 
 # Bazel
 bazel-*
