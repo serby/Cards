@@ -10,9 +10,9 @@ public class ScannerViewController: UIViewController, AVCaptureMetadataOutputObj
 
     public var captureSession: AVCaptureSession?
     public var previewLayer: AVCaptureVideoPreviewLayer?
-    public weak var delegate: ScannerViewControllerDelegate?
+    public weak var delegate: (any ScannerViewControllerDelegate)?
 
-    public override func viewDidLoad() {
+    override public func viewDidLoad() {
         super.viewDidLoad()
 
         view.backgroundColor = UIColor.black
@@ -56,35 +56,36 @@ public class ScannerViewController: UIViewController, AVCaptureMetadataOutputObj
         previewLayer = preview
     }
 
-    public override func viewDidAppear(_ animated: Bool) {
+    override public func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         if captureSession?.isRunning == false {
             Task { captureSession?.startRunning() }
         }
     }
 
-    public override func viewWillDisappear(_ animated: Bool) {
+    override public func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         if captureSession?.isRunning == true {
             captureSession?.stopRunning()
         }
     }
 
-    nonisolated public func metadataOutput(_ output: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection) {
+    nonisolated public func metadataOutput(
+        _ output: AVCaptureMetadataOutput,
+        didOutput metadataObjects: [AVMetadataObject],
+        from connection: AVCaptureConnection
+    ) {
+        guard let metadataObject = metadataObjects.first,
+              let readableObject = metadataObject as? AVMetadataMachineReadableCodeObject,
+              let scannedCode = readableObject.stringValue else { return }
+        let type = readableObject.type
         MainActor.assumeIsolated {
-            if let metadataObject = metadataObjects.first {
-                guard let readableObject = metadataObject as? AVMetadataMachineReadableCodeObject else { return }
-                if let scannedCode = readableObject.stringValue {
-                    captureSession?.stopRunning()
-                    AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
-                    delegate?.didFindScannedCode(code: scannedCode, type: readableObject.type)
-                } else {
-                    AudioServicesPlaySystemSound(SystemSoundID(1_053))
-                }
-            }
+            captureSession?.stopRunning()
+            AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
+            delegate?.didFindScannedCode(code: scannedCode, type: type)
         }
     }
 
-    public override var prefersStatusBarHidden: Bool { return true }
-    public override var supportedInterfaceOrientations: UIInterfaceOrientationMask { return .portrait }
+    override public var prefersStatusBarHidden: Bool { return true }
+    override public var supportedInterfaceOrientations: UIInterfaceOrientationMask { return .portrait }
 }

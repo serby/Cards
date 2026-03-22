@@ -13,6 +13,6 @@ let package = Package(
         .package(path: "../CardsScanner"),
     ],
     targets: [
-        .target(name: "CardsFeatures", dependencies: ["CardsCore", "CardsUI", "CardsScanner"], path: "Sources"),
+        .target(name: "CardsFeatures", dependencies: ["CardsCore", "CardsUI", "CardsScanner"]),
     ]
 )

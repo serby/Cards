@@ -1,8 +1,8 @@
 import AVFoundation
 @testable import CardsCore
+@testable import CardsUI
 import Foundation
 import RSBarcodes_Swift
-@testable import CardsUI
 import SwiftUI
 import Testing
 

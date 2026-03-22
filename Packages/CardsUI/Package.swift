@@ -15,7 +15,7 @@ let package = Package(
         .target(name: "CardsUI", dependencies: [
             "CardsCore",
             .product(name: "RSBarcodes_Swift", package: "RSBarcodes_Swift"),
-        ], path: "Sources"),
+        ]),
         .testTarget(name: "CardsUITests", dependencies: ["CardsUI"]),
     ]
 )

@@ -8,7 +8,7 @@ let package = Package(
         .library(name: "CardsCore", targets: ["CardsCore"]),
     ],
     targets: [
-        .target(name: "CardsCore", path: "Sources"),
+        .target(name: "CardsCore"),
         .testTarget(name: "CardsCoreTests", dependencies: ["CardsCore"]),
     ]
 )

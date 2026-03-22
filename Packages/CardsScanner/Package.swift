@@ -11,6 +11,6 @@ let package = Package(
         .package(path: "../CardsCore"),
     ],
     targets: [
-        .target(name: "CardsScanner", dependencies: ["CardsCore"], path: "Sources"),
+        .target(name: "CardsScanner", dependencies: ["CardsCore"]),
     ]
 )

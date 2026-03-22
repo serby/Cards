@@ -7,6 +7,11 @@ load("@rules_xcodeproj//xcodeproj:xcode_provisioning_profile.bzl", "xcode_provis
 swift_library(
     name = "Cards.library",
     srcs = glob(["App/**/*.swift"]),
+    copts = [
+        "-swift-version", "6",
+        "-warnings-as-errors",
+        "-enable-upcoming-feature", "ExistentialAny",
+    ],
     module_name = "Cards",
     visibility = ["//visibility:public"],
     deps = [

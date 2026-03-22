@@ -1,6 +1,6 @@
 import AVFoundation
-import Foundation
 @testable import CardsCore
+import Foundation
 import Testing
 
 struct BarcodeTypeTests {

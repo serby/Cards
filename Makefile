@@ -1,4 +1,4 @@
-.PHONY: test test-unit test-e2e build sim xcodeproj device
+.PHONY: test test-unit test-e2e build sim xcodeproj device test-tsan
 
 test-unit:
 	bazel test //CardsTests:CardsTests \
@@ -11,6 +11,13 @@ test-e2e:
 		--ios_simulator_version=26.3
 
 test: test-unit test-e2e
+
+test-tsan:
+	bazel test //CardsTests:CardsTests \
+		--swiftcopt=-sanitize=thread \
+		--linkopt=-fsanitize=thread \
+		--ios_simulator_device="iPhone 17" \
+		--ios_simulator_version=26.3
 
 build:
 	bazel build //Cards:Cards

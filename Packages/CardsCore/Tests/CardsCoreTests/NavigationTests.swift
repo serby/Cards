@@ -74,7 +74,7 @@ struct NavigationTests {
     @Test func navigateToCards_clearsPath() throws {
         navigationManager.navigate(to: .cards)
         #expect(navigationManager.currentRoute == .cards)
-        #expect(navigationManager.navigationPath.count == 0)
+        #expect(navigationManager.navigationPath.isEmpty)
     }
 
     @Test func navigateToCard_setsCorrectPath() throws {
@@ -99,7 +99,7 @@ struct NavigationTests {
         navigationManager.navigate(to: .editCard("123"))
         #expect(navigationManager.navigationPath.count == 2)
         navigationManager.resetToRoot()
-        #expect(navigationManager.navigationPath.count == 0)
+        #expect(navigationManager.navigationPath.isEmpty)
         #expect(navigationManager.currentRoute == .cards)
     }
 
@@ -168,13 +168,13 @@ struct NavigationTests {
 
     @Test func navigationPath_complexFlow_maintainsCorrectCounts() throws {
         navigationManager.navigate(to: .cards)
-        #expect(navigationManager.navigationPath.count == 0)
+        #expect(navigationManager.navigationPath.isEmpty)
         navigationManager.navigate(to: .card("123"))
         #expect(navigationManager.navigationPath.count == 1)
         navigationManager.navigate(to: .editCard("123"))
         #expect(navigationManager.navigationPath.count == 2)
         navigationManager.navigate(to: .cards)
-        #expect(navigationManager.navigationPath.count == 0)
+        #expect(navigationManager.navigationPath.isEmpty)
     }
 
     @Test func navigationPath_allRoutes_clearPathCorrectly() throws {
@@ -186,7 +186,7 @@ struct NavigationTests {
             #expect(navigationManager.currentRoute == route)
             switch route {
             case .cards:
-                #expect(navigationManager.navigationPath.count == 0)
+                #expect(navigationManager.navigationPath.isEmpty)
             case .card, .newCard:
                 #expect(navigationManager.navigationPath.count == 1)
             case .editCard:

@@ -30,7 +30,7 @@ public struct CameraScannerView: UIViewControllerRepresentable {
         Coordinator(self)
     }
 
-    public class Coordinator: NSObject, ScannerViewControllerDelegate {
+    public class Coordinator: NSObject, @preconcurrency ScannerViewControllerDelegate {
         var parent: CameraScannerView
 
         public init(_ parent: CameraScannerView) {

@@ -8,23 +8,31 @@ public enum NavigationRoute: Hashable, Identifiable, Codable {
 
     public var id: String {
         switch self {
-        case .cards:            return "cards"
-        case .card(let code):   return "card-\(code)"
-        case .editCard(let code): return "editCard-\(code)"
-        case .newCard:          return "newCard"
+        case .cards:
+            return "cards"
+        case .card(let code):
+            return "card-\(code)"
+        case .editCard(let code):
+            return "editCard-\(code)"
+        case .newCard:
+            return "newCard"
         }
     }
 
     public var path: String {
         switch self {
-        case .cards:            return "/cards"
-        case .card(let code):   return "/cards/card/\(code)"
-        case .editCard(let code): return "/cards/card/\(code)/edit"
-        case .newCard:          return "/cards/new"
+        case .cards:
+            return "/cards"
+        case .card(let code):
+            return "/cards/card/\(code)"
+        case .editCard(let code):
+            return "/cards/card/\(code)/edit"
+        case .newCard:
+            return "/cards/new"
         }
     }
 
-    public static func from(path: String) -> NavigationRoute? {
+    public static func from(path: String) -> Self? {
         let components = Array(path.components(separatedBy: "/").dropFirst())
         let hasUnexpectedEmptyElements = components.contains("")
         if hasUnexpectedEmptyElements { return .cards }

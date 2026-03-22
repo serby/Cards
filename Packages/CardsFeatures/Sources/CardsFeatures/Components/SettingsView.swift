@@ -38,6 +38,7 @@ public struct SettingsView: View {
                             Spacer()
                         Image(systemName: "arrow.up.forward.square")
                             .foregroundColor(.accent)
+                            .accessibilityLabel("External link")
                         }
                     }
                 }
