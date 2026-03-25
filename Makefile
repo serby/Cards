@@ -1,4 +1,4 @@
-.PHONY: test test-unit test-e2e build sim xcodeproj device test-tsan
+.PHONY: test test-unit test-e2e build sim xcodeproj device test-tsan deploy-testflight deploy-appstore upload-metadata upload-screenshots
 
 test-unit:
 	bazel test //CardsTests:CardsTests \
@@ -33,6 +33,18 @@ sim: build
 	open -a Simulator
 	xcrun simctl install $(SIM_ID) bazel-bin/Cards/Cards.ipa
 	xcrun simctl launch $(SIM_ID) net.serby.Cards
+
+deploy-testflight:
+	scripts/deploy-testflight.sh
+
+deploy-appstore:
+	scripts/deploy-appstore.sh
+
+upload-metadata:
+	scripts/upload-metadata.sh
+
+upload-screenshots:
+	scripts/upload-screenshots.sh
 
 device:
 	bazel build //Cards:Cards --ios_multi_cpus=arm64 --apple_platform_type=ios --define=apple.experimental.tree_artifact_outputs=1
