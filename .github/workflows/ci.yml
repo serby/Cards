@@ -37,14 +37,20 @@ jobs:
             if 'iPhone' in d.get('name','') and d['isAvailable']:
               ver = re.search(r'(\d+(?:-\d+)*)$', rt)
               if ver:
-                print(f\"{d['name']}|{ver.group(1).replace('-', '.')}\")
+                print(f\"{d['name']}|{ver.group(1).replace('-', '.')}|{d['udid']}\")
                 sys.exit()
         ")
         SIM_NAME="${DEVICE%%|*}"
-        SIM_VERSION="${DEVICE##*|}"
+        REST="${DEVICE#*|}"
+        SIM_VERSION="${REST%%|*}"
+        SIM_UDID="${REST#*|}"
         echo "device=$SIM_NAME" >> "$GITHUB_OUTPUT"
         echo "version=$SIM_VERSION" >> "$GITHUB_OUTPUT"
-        echo "Using simulator: $SIM_NAME (iOS $SIM_VERSION)"
+        echo "Using simulator: $SIM_NAME (iOS $SIM_VERSION) $SIM_UDID"
+        xcrun simctl boot "$SIM_UDID" 2>/dev/null || true
+        echo "Waiting for simulator to boot..."
+        xcrun simctl bootstatus "$SIM_UDID" -b
+        echo "Simulator booted."
 
     - name: Build
       run: bazel build //Cards:Cards
