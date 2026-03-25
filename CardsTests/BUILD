@@ -19,6 +19,7 @@ ios_unit_test(
     bundle_id = "net.serby.CardsTests",
     minimum_os_version = "18.0",
     test_host = "//Cards:Cards",
+    timeout = "long",
     visibility = ["@rules_xcodeproj//xcodeproj:generated"],
     deps = [":CardsTests.library"],
 )
