@@ -26,39 +26,23 @@ jobs:
     - name: Install Bazelisk
       run: brew list bazelisk &>/dev/null || brew install bazelisk
 
-    - name: Resolve simulator
+    # Pre-create the *exact* simulator name+runtime that rules_apple's test
+    # runner will spawn ("New-<DEVICE>-<VERSION>"). When this device already
+    # exists and is booted, the runner skips its own creation/boot logic that
+    # tends to time out on macos-26 runners.
+    - name: Resolve and warm simulator
       id: sim
       run: |
-        DEVICE=$(xcrun simctl list devices available -j | python3 -c "
-        import json, sys, re
-        devs = json.load(sys.stdin)['devices']
-        for rt, ds in devs.items():
-          for d in ds:
-            if 'iPhone' in d.get('name','') and d['isAvailable']:
-              ver = re.search(r'(\d+(?:-\d+)*)$', rt)
-              if ver:
-                print(f\"{d['name']}|{ver.group(1).replace('-', '.')}|{d['udid']}\")
-                sys.exit()
-        ")
-        SIM_NAME="${DEVICE%%|*}"
-        REST="${DEVICE#*|}"
-        SIM_VERSION="${REST%%|*}"
-        SIM_UDID="${REST#*|}"
-        echo "device=$SIM_NAME" >> "$GITHUB_OUTPUT"
-        echo "version=$SIM_VERSION" >> "$GITHUB_OUTPUT"
-        echo "Using simulator: $SIM_NAME (iOS $SIM_VERSION) $SIM_UDID"
-        xcrun simctl boot "$SIM_UDID" 2>/dev/null || true
-        echo "Waiting for simulator to boot..."
-        xcrun simctl bootstatus "$SIM_UDID" -b
-        echo "Simulator booted."
+        scripts/ci-resolve-sim.sh >> "$GITHUB_OUTPUT"
 
     - name: Build
-      run: bazel build //Cards:Cards
+      run: bazel build //Cards:Cards //CardsTests:CardsTests //CardsUITests:CardsUITests
 
     - name: Test
       run: |
-        bazel test //CardsTests:CardsTests \
+        bazel test //CardsTests:CardsTests //CardsUITests:CardsUITests \
           --ios_simulator_device="${{ steps.sim.outputs.device }}" \
           --ios_simulator_version="${{ steps.sim.outputs.version }}" \
+          --test_timeout=900 \
+          --flaky_test_attempts=2 \
           --test_output=errors
-

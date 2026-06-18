@@ -1,6 +1,9 @@
 name: Release to App Store
 
 on:
+  push:
+    tags:
+      - 'v*'
   workflow_dispatch:
 
 jobs:
@@ -12,6 +15,15 @@ jobs:
 
     - name: Install Bazelisk
       run: brew list bazelisk &>/dev/null || brew install bazelisk
+
+    # Bump CFBundleVersion to a strictly-increasing value (UTC seconds since
+    # 2026-01-01). Avoids the App Store Connect 409
+    # ENTITY_ERROR.ATTRIBUTE.INVALID.DUPLICATE we hit on the first attempt.
+    - name: Bump CFBundleVersion
+      run: |
+        BUILD=$(( ( $(date -u +%s) - 1767225600 ) / 60 ))
+        echo "Setting CFBundleVersion to $BUILD"
+        /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $BUILD" Info.plist
 
     - name: Install the Apple certificate and provisioning profile
       env:
