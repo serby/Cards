@@ -36,13 +36,30 @@ jobs:
         scripts/ci-resolve-sim.sh >> "$GITHUB_OUTPUT"
 
     - name: Build
-      run: bazel build //Cards:Cards //CardsTests:CardsTests //CardsUITests:CardsUITests
+      run: bazel build //Cards:Cards
+
+    # rules_apple's xctestrunner hangs with "Supported platforms ... is empty"
+    # on macos-26 + iOS 26.5 sim. xcodebuild test directly against the
+    # rules_xcodeproj output is the path that works locally and on CI.
+    - name: Generate Xcode project
+      run: |
+        bazel run //:xcodeproj
+        chmod -R u+w Cards.xcodeproj
 
     - name: Test
       run: |
-        bazel test //CardsTests:CardsTests //CardsUITests:CardsUITests \
-          --ios_simulator_device="${{ steps.sim.outputs.device }}" \
-          --ios_simulator_version="${{ steps.sim.outputs.version }}" \
-          --test_timeout=900 \
-          --flaky_test_attempts=2 \
-          --test_output=errors
+        rm -rf /tmp/CardsTests.xcresult
+        xcodebuild test \
+          -project Cards.xcodeproj \
+          -scheme Cards \
+          -destination "platform=iOS Simulator,name=${{ steps.sim.outputs.device }},OS=${{ steps.sim.outputs.version }}" \
+          -resultBundlePath /tmp/CardsTests.xcresult \
+          -retry-tests-on-failure \
+          -test-iterations 2
+
+    - name: Upload test result bundle
+      if: ${{ failure() }}
+      uses: actions/upload-artifact@v4
+      with:
+        name: CardsTests.xcresult
+        path: /tmp/CardsTests.xcresult
