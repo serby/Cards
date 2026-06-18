@@ -52,10 +52,11 @@ else
     echo "Reusing simulator $DEVICE_NAME ($UDID)" >&2
 fi
 
-xcrun simctl boot "$UDID" 2>/dev/null || true
-xcrun simctl bootstatus "$UDID" -b
+xcrun simctl boot "$UDID" 2>/dev/null >&2 || true
+xcrun simctl bootstatus "$UDID" -b 1>&2
 sleep 15
 xcrun simctl list devices booted >&2
 
+# ONLY the GITHUB_OUTPUT key=value pairs go to stdout.
 echo "device=$SIM_NAME"
 echo "version=$SIM_VERSION"
