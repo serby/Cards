@@ -6,9 +6,9 @@ on:
     types: [completed]
     branches: [main]
   workflow_dispatch:
-  push:
-    tags:
-      - 'v*'
+  # Tag pushes trigger release.yml (App Store) instead — we don't want both
+  # workflows uploading at once because App Store Connect rejects concurrent
+  # uploads with ENTITY_ERROR.RELATIONSHIP.INVALID.INVALID_STATE.
 
 jobs:
   deploy:
