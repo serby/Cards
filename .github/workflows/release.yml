@@ -39,24 +39,12 @@ jobs:
         cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles/$PROFILE_UUID.mobileprovision
         cp $PP_PATH $GITHUB_WORKSPACE/Cards.mobileprovision
 
-    - name: Setup Ruby
-      uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: '3.2'
-        bundler-cache: true
-
-    - name: Install dependencies
-      run: bundle install
-
     - name: Release to App Store
       env:
-        APPLE_ID: ${{ secrets.APPLE_ID }}
-        ITC_TEAM_ID: ${{ secrets.ITC_TEAM_ID }}
-        TEAM_ID: ${{ secrets.TEAM_ID }}
         ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
         ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
         ASC_KEY_CONTENT: ${{ secrets.ASC_KEY_CONTENT }}
-      run: bundle exec fastlane release
+      run: scripts/deploy-appstore.sh
 
     - name: Clean up keychain
       if: ${{ always() }}

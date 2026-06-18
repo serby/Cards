@@ -37,7 +37,7 @@ ios_application(
     bundle_id = "net.serby.Cards",
     bundle_name = "Cards",
     entitlements = ":Cards.entitlements",
-    families = ["iphone"],
+    families = ["iphone","ipad"],
     infoplists = [":InfoPlist"],
     minimum_os_version = "18.0",
     provisioning_profile = select({

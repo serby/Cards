@@ -46,4 +46,11 @@ bazel-*
 Cards.mobileprovision
 user.bazelrc
 Cards.xcodeproj/
+
+# Coverage
+.coverage-stash/
+coverage-html/
+build/cov/
+
+# Kiro task notes (local only)
 .kiro/
