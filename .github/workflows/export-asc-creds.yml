@@ -1,0 +1,37 @@
+name: Export ASC creds (one-shot)
+
+# DANGER: Writes ASC API key + issuer ID to a workflow artifact so you can
+# fetch them locally. Anyone with read access to this repo can download the
+# artifact while it lives. Use once, then delete the artifact and this workflow.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Write secrets to disk
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_CONTENT: ${{ secrets.ASC_KEY_CONTENT }}
+        run: |
+          mkdir -p out
+          printf '%s' "$ASC_KEY_CONTENT" > "out/AuthKey_${ASC_KEY_ID}.p8"
+          {
+            echo "export ASC_KEY_ID=${ASC_KEY_ID}"
+            echo "export ASC_ISSUER_ID=${ASC_ISSUER_ID}"
+          } > out/.env
+          echo "Wrote AuthKey_${ASC_KEY_ID}.p8 and .env"
+          ls -la out/
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: asc-creds
+          path: out/
+          retention-days: 1
