@@ -1,4 +1,4 @@
-.PHONY: test test-unit test-e2e test-coverage coverage-run coverage-report coverage-bazel coverage-clean build sim device-hub xcodeproj device test-tsan deploy-testflight deploy-appstore upload-metadata upload-screenshots
+.PHONY: test test-unit test-e2e test-coverage coverage-run coverage-report coverage-bazel coverage-clean build sim device-hub xcodeproj device test-tsan capture-screenshots validate-screenshots deploy-testflight deploy-appstore upload-metadata upload-screenshots
 
 XCODE_APP ?= /Applications/Xcode.27.1.app
 DEVELOPER_DIR := $(XCODE_APP)/Contents/Developer
@@ -73,6 +73,15 @@ sim: build
 	DEVELOPER_DIR="$(DEVELOPER_DIR)" xcrun simctl launch --terminate-running-process $(SIM_ID) net.serby.Cards
 
 device-hub: sim
+
+capture-screenshots:
+	scripts/capture-screenshots.sh "iPhone 16 Pro Max" en-US
+	scripts/capture-screenshots.sh "iPad Pro 13-inch (M4)" en-US
+	scripts/capture-screenshots.sh "iPhone 16 Pro Max" en-GB
+	scripts/capture-screenshots.sh "iPad Pro 13-inch (M4)" en-GB
+
+validate-screenshots:
+	python3 scripts/validate-screenshots.py
 
 deploy-testflight:
 	scripts/deploy-testflight.sh

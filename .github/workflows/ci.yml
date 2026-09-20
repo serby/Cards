@@ -26,14 +26,15 @@ jobs:
     - name: Install Bazelisk
       run: brew list bazelisk &>/dev/null || brew install bazelisk
 
-    # Pre-create the *exact* simulator name+runtime that rules_apple's test
-    # runner will spawn ("New-<DEVICE>-<VERSION>"). When this device already
-    # exists and is booted, the runner skips its own creation/boot logic that
-    # tends to time out on macos-26 runners.
+    - name: Validate checked-in screenshots
+      run: python3 scripts/validate-screenshots.py
+
+    # Pre-create and boot the exact simulator used by xcodebuild. This avoids
+    # CoreSimulator creation/boot races seen on macos-26 runners.
     - name: Resolve and warm simulator
       id: sim
       run: |
-        scripts/ci-resolve-sim.sh >> "$GITHUB_OUTPUT"
+        scripts/ci-resolve-sim.sh "iPhone 16 Pro Max" >> "$GITHUB_OUTPUT"
 
     - name: Build
       run: bazel build //Cards:Cards
@@ -53,13 +54,60 @@ jobs:
           -project Cards.xcodeproj \
           -scheme Cards \
           -destination "platform=iOS Simulator,name=${{ steps.sim.outputs.device }},OS=${{ steps.sim.outputs.version }}" \
+          -only-testing:CardsTests \
+          -only-testing:CardsUITests/CardsScreenshotTests \
           -resultBundlePath /tmp/CardsTests.xcresult \
+          -testLanguage en \
+          -testRegion US \
+          -enableCodeCoverage NO \
+          -collect-test-diagnostics never \
           -retry-tests-on-failure \
           -test-iterations 2
+
+    - name: Validate iPhone screenshot captures
+      run: |
+        rm -rf /tmp/CardsPhoneAttachments
+        xcrun xcresulttool export attachments \
+          --path /tmp/CardsTests.xcresult \
+          --output-path /tmp/CardsPhoneAttachments
+        python3 scripts/validate-screenshots.py \
+          --attachments /tmp/CardsPhoneAttachments \
+          --capture-set iphone
+
+    - name: Resolve and warm iPad simulator
+      id: ipad
+      run: |
+        scripts/ci-resolve-sim.sh "iPad Pro 13-inch (M4)" >> "$GITHUB_OUTPUT"
+
+    - name: Test iPad screenshot capture
+      run: |
+        rm -rf /tmp/CardsIPadTests.xcresult
+        xcodebuild test \
+          -project Cards.xcodeproj \
+          -scheme Cards \
+          -destination "platform=iOS Simulator,name=${{ steps.ipad.outputs.device }},OS=${{ steps.ipad.outputs.version }}" \
+          -only-testing:CardsUITests/CardsScreenshotTests/testCaptureScreenshots \
+          -testLanguage en \
+          -testRegion US \
+          -enableCodeCoverage NO \
+          -collect-test-diagnostics never \
+          -resultBundlePath /tmp/CardsIPadTests.xcresult
+
+    - name: Validate iPad screenshot capture
+      run: |
+        rm -rf /tmp/CardsIPadAttachments
+        xcrun xcresulttool export attachments \
+          --path /tmp/CardsIPadTests.xcresult \
+          --output-path /tmp/CardsIPadAttachments
+        python3 scripts/validate-screenshots.py \
+          --attachments /tmp/CardsIPadAttachments \
+          --capture-set ipad
 
     - name: Upload test result bundle
       if: ${{ failure() }}
       uses: actions/upload-artifact@v4
       with:
         name: CardsTests.xcresult
-        path: /tmp/CardsTests.xcresult
+        path: |
+          /tmp/CardsTests.xcresult
+          /tmp/CardsIPadTests.xcresult

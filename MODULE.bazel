@@ -7,6 +7,15 @@ bazel_dep(name = "bazel_skylib", version = "1.9.2")
 bazel_dep(name = "rules_xcodeproj", version = "4.1.0")
 bazel_dep(name = "rules_swift_package_manager", version = "1.24.1")
 
+# Xcode 27 requires TMPDIR to be absolute. rules_swift 4.1.0 passes its
+# macro-expansion directory to the Swift worker as an execroot-relative path.
+single_version_override(
+    module_name = "rules_swift",
+    patches = ["//patches:rules_swift-xcode27-tmpdir.patch"],
+    patch_strip = 1,
+    version = "4.1.0",
+)
+
 swift_deps = use_extension(
     "@rules_swift_package_manager//:extensions.bzl",
     "swift_deps",

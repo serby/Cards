@@ -82,6 +82,30 @@ Bazel commands are verbose (`bazel test //CardsTests:CardsTests --ios_simulator_
 | `make sim` | Build, boot iPhone Duo, open Device Hub, install and launch the app |
 | `make device-hub` | Alias for `make sim` |
 | `make xcodeproj` | Regenerate `Cards.xcodeproj` from BUILD files |
+| `make capture-screenshots` | Refresh en-US and en-GB iPhone/iPad App Store screenshots |
+| `make validate-screenshots` | Validate the checked-in screenshot set and image dimensions |
+
+## Screenshot Snapshots
+
+App Store screenshots are checked in under `screenshots/<locale>/`. Refresh the
+complete iPhone and iPad set with:
+
+```bash
+make capture-screenshots
+```
+
+The capture command seeds deterministic in-memory card data, fixes the simulator
+status bar, exports named XCTest attachments, and validates the resulting PNG
+set. To validate existing files without running a simulator:
+
+```bash
+make validate-screenshots
+```
+
+CI runs the screenshot test on an iPhone 16 Pro Max and iPad Pro 13-inch (M4),
+then compares the exported captures with every en-US and en-GB reference. It
+fails for missing files, wrong dimensions, invalid PNGs, or material visual
+differences.
 
 ## Fastlane Lanes
 
@@ -134,9 +158,10 @@ Feature views that compose the app's screens.
 Runs on every push to `main` and on pull requests. Uses `macos-26` runner.
 
 1. Installs Bazelisk
-2. Dynamically resolves an available iPhone simulator
-3. `bazel build //Cards:Cards`
-4. `bazel test //CardsTests:CardsTests`
+2. Validates the checked-in screenshot set
+3. Boots fixed iPhone and iPad device classes on compatible installed runtimes
+4. Runs the Bazel build and Xcode unit/UI tests
+5. Exports screenshot attachments and compares them with all references
 
 ### Deploy (`deploy.yml`)
 

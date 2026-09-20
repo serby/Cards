@@ -1,0 +1,14 @@
+diff --git a/tools/worker/swift_runner.cc b/tools/worker/swift_runner.cc
+index dba09b2..67db60c 100644
+--- a/tools/worker/swift_runner.cc
++++ b/tools/worker/swift_runner.cc
+@@ -654,7 +654,8 @@ bool SwiftRunner::ProcessArgument(
+       return true;
+     }
+     if (absl::ConsumePrefix(&wrapped_arg, "-macro-expansion-dir=")) {
+-      std::string macro_expansion_dir(wrapped_arg);
++      std::string macro_expansion_dir =
++          std::filesystem::absolute(std::string(wrapped_arg)).string();
+       std::filesystem::create_directories(macro_expansion_dir);
+ #if __APPLE__
+       job_env_["TMPDIR"] = macro_expansion_dir;
