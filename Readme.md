@@ -13,14 +13,14 @@ make build
 # Run unit tests
 make test-unit
 
-# Build and launch in simulator
+# Build and launch in Device Hub
 make sim
 
 # Generate Xcode project (run after changing BUILD files)
 make xcodeproj
 ```
 
-Requires Xcode 26+, [Bazelisk](https://github.com/bazelbuild/bazelisk), and iOS 18.0+ deployment target.
+Requires Xcode 27.1+, [Bazelisk](https://github.com/bazelbuild/bazelisk), and iOS 18.0+ deployment target.
 
 ## Architecture
 
@@ -69,17 +69,18 @@ Bazel produces the `.ipa` but has no concept of App Store Connect. Fastlane's `u
 
 ### Why a Makefile
 
-Bazel commands are verbose (`bazel test //CardsTests:CardsTests --ios_simulator_device="iPhone 17" --ios_simulator_version=26.3`). The Makefile wraps these into short commands (`make test-unit`) and pins the simulator device and OS version in one place.
+Bazel commands are verbose (`bazel test //CardsTests:CardsTests --ios_simulator_device="iPhone Duo" --ios_simulator_version=27.1`). The Makefile wraps these into short commands (`make test-unit`) and pins the Xcode, simulator device, and OS version in one place.
 
 ## Makefile Targets
 
 | Command | What it does |
 |---------|-------------|
 | `make build` | `bazel build //Cards:Cards` |
-| `make test-unit` | Run unit tests on iPhone 17 / iOS 26.3 |
-| `make test-e2e` | Run UI tests on iPhone 17 / iOS 26.3 |
+| `make test-unit` | Run unit tests on iPhone Duo / iOS 27.1 |
+| `make test-e2e` | Run UI tests on iPhone Duo / iOS 27.1 |
 | `make test` | Run both unit and UI tests |
-| `make sim` | Build, boot simulator, install and launch the app |
+| `make sim` | Build, boot iPhone Duo, open Device Hub, install and launch the app |
+| `make device-hub` | Alias for `make sim` |
 | `make xcodeproj` | Regenerate `Cards.xcodeproj` from BUILD files |
 
 ## Fastlane Lanes
