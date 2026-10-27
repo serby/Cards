@@ -6,7 +6,6 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
-IPA_PATH="$PROJECT_DIR/bazel-bin/Cards/Cards.ipa"
 KEY_DIR="${API_PRIVATE_KEYS_DIR:-$HOME/.appstoreconnect/private_keys}"
 KEY_FILE="$KEY_DIR/AuthKey_${ASC_KEY_ID}.p8"
 
@@ -19,7 +18,8 @@ fi
 
 echo "Building for distribution..."
 cd "$PROJECT_DIR"
-bazel build //Cards:Cards --ios_multi_cpus=arm64 --compilation_mode=opt
+IPA_PATH=$("$SCRIPT_DIR/build-ipa.sh")
+echo "Built: $IPA_PATH"
 
 echo "Uploading to TestFlight..."
 xcrun altool --upload-app \

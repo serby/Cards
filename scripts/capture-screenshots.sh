@@ -25,11 +25,6 @@ export DEVELOPER_DIR="$XCODE_APP/Contents/Developer"
 
 cd "$PROJECT_DIR"
 
-# Ensure the xcodeproj is current.
-echo "==> Generating Xcode project"
-bazel run //:xcodeproj
-chmod -R u+w Cards.xcodeproj
-
 echo "==> Resolving simulator"
 SIM_INFO=$("$SCRIPT_DIR/ci-resolve-sim.sh" "$DEVICE")
 SIM_NAME=$(printf '%s\n' "$SIM_INFO" | sed -n 's/^device=//p')

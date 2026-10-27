@@ -48,7 +48,7 @@ excluded:
   - .build
   - fastlane
   - vendor
-  - bazel-*
+  - build
   - Cards/GeneratedMocks.swift
   - "**/checkouts"
   - "**/.build"

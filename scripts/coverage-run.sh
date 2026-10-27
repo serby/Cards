@@ -20,6 +20,8 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 DD="$PROJECT_DIR/build/cov"
 STASH_DIR="$PROJECT_DIR/.coverage-stash"
+PHONE_SIM="${PHONE_SIM:-iPhone 16 Pro}"
+IPAD_SIM="${IPAD_SIM:-iPad Pro 13-inch (M4)}"
 mkdir -p "$STASH_DIR"
 
 # Allow extra xcodebuild args after `--`.
@@ -43,8 +45,8 @@ set +e
 xcodebuild test \
     -project Cards.xcodeproj \
     -scheme Cards \
-    -destination 'platform=iOS Simulator,name=iPhone 16' \
-    -destination 'platform=iOS Simulator,name=iPad Pro 13-inch (M5)' \
+    -destination "platform=iOS Simulator,name=$PHONE_SIM" \
+    -destination "platform=iOS Simulator,name=$IPAD_SIM" \
     -enableCodeCoverage YES \
     -derivedDataPath "$DD" \
     -resultBundlePath "$DD/result-$(date +%s).xcresult" \

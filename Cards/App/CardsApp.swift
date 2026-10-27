@@ -1,11 +1,5 @@
-import CardsCore
-import CardsFeatures
-import CardsUI
 import SwiftData
 import SwiftUI
-#if STORYBOOK
-import CardsStorybook
-#endif
 
 @main
 struct CardsApp: App {
@@ -63,7 +57,7 @@ struct CardsApp: App {
                     SettingsScreen()
                 }
             }
-            #if STORYBOOK
+            #if DEBUG
             Tab("Storybook", systemImage: "square.grid.2x2") {
                 StorybookView()
             }

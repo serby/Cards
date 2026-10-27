@@ -21,8 +21,7 @@ STASH_DIR="$PROJECT_DIR/.coverage-stash"
 EXCLUDE_SUBSTRINGS=(
     "/CardsTests/"
     "/CardsUITests/"
-    "/external/swiftpkg_"
-    "/external/rules_swift_package_manager"
+    "/SourcePackages/"
     ".generated.swift"
 )
 
@@ -77,10 +76,7 @@ fi
 # it to match the profdata's PGO hashes, so use the most recent build.
 BIN=$(find "$DD/Build/Products" -path '*Cards.app/Cards' -type f 2>/dev/null | head -n 1)
 if [[ -z "$BIN" ]]; then
-    BIN=$(find "$PROJECT_DIR/bazel-bin" -path '*Cards.app/Cards' -type f 2>/dev/null | head -n 1)
-fi
-if [[ -z "$BIN" ]]; then
-    echo "error: no Cards binary in $DD/Build/Products or bazel-bin" >&2
+    echo "error: no Cards binary in $DD/Build/Products" >&2
     echo "       (build the app first with ⌘U or 'make build')" >&2
     exit 1
 fi

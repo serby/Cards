@@ -1,21 +1,31 @@
 # Xcode
+# The project is checked in: track project.pbxproj, the shared scheme and the
+# SPM pin, but never per-user state. Each intermediate directory needs its own
+# un-ignore because git will not descend into an excluded directory.
 *.xcodeproj/*
 !*.xcodeproj/project.pbxproj
 !*.xcodeproj/xcshareddata/
 !*.xcodeproj/xcshareddata/xcschemes/
 !*.xcodeproj/xcshareddata/xcbaselines/
+!*.xcodeproj/project.xcworkspace/
+!*.xcodeproj/project.xcworkspace/contents.xcworkspacedata
+!*.xcodeproj/project.xcworkspace/xcshareddata/
+!*.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/
+!*.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
 *.xcworkspace/*
 !*.xcworkspace/contents.xcworkspacedata
 !*.xcworkspace/xcshareddata/
 DerivedData/
 *.xcuserstate
 *.xcuserdatad
+xcuserdata/
 
 # Fastlane
 fastlane/report.xml
 fastlane/Preview.html
 fastlane/test_output
 fastlane/README.md
+fastlane/derived_data/
 
 # Ruby
 Gemfile.lock
@@ -36,21 +46,19 @@ vendor/
 .DS_Store
 fastlane/.env
 
-# Swift Package Manager (used by rules_swift_package_manager)
+# Swift Package Manager
 .build/
 **/.swiftpm/
-Packages/*/Package.resolved
 
-# Bazel
-bazel-*
+# Signing
 Cards.mobileprovision
-user.bazelrc
-Cards.xcodeproj/
+
+# Build output (xcodebuild derived data and archives)
+build/
 
 # Coverage
 .coverage-stash/
 coverage-html/
-build/cov/
 
 # Kiro task notes (local only)
 .kiro/

@@ -23,9 +23,6 @@ jobs:
     steps:
     - uses: actions/checkout@v5
 
-    - name: Install Bazelisk
-      run: brew list bazelisk &>/dev/null || brew install bazelisk
-
     - name: Validate checked-in screenshots
       run: python3 scripts/validate-screenshots.py
 
@@ -37,15 +34,11 @@ jobs:
         scripts/ci-resolve-sim.sh "iPhone 16 Pro Max" >> "$GITHUB_OUTPUT"
 
     - name: Build
-      run: bazel build //Cards:Cards
-
-    # rules_apple's xctestrunner hangs with "Supported platforms ... is empty"
-    # on macos-26 + iOS 26.5 sim. xcodebuild test directly against the
-    # rules_xcodeproj output is the path that works locally and on CI.
-    - name: Generate Xcode project
       run: |
-        bazel run //:xcodeproj
-        chmod -R u+w Cards.xcodeproj
+        xcodebuild build \
+          -project Cards.xcodeproj \
+          -scheme Cards \
+          -destination "platform=iOS Simulator,name=${{ steps.sim.outputs.device }},OS=${{ steps.sim.outputs.version }}"
 
     - name: Test
       run: |

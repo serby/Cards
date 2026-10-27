@@ -3,7 +3,7 @@
 //  CardsTests
 //
 
-@testable import CardsCore
+@testable import Cards
 import Foundation
 import SwiftData
 import Testing

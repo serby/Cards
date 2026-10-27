@@ -4,7 +4,6 @@
 - GitHub repository for the project
 - Apple Developer account
 - Xcode with valid signing certificate
-- [Bazelisk](https://github.com/bazelbuild/bazelisk) (`brew install bazelisk`)
 
 ## Step 1: Push Code to GitHub
 
@@ -146,11 +145,11 @@ else
     echo "❌ No workflow files found"
 fi
 
-# Check if Fastlane is configured
-if [ -f "fastlane/Fastfile" ]; then
-    echo "✅ Fastlane configured"
+# Check the Xcode project is present
+if [ -f "Cards.xcodeproj/project.pbxproj" ]; then
+    echo "✅ Xcode project present"
 else
-    echo "❌ Fastlane not configured"
+    echo "❌ Cards.xcodeproj missing"
 fi
 
 echo ""

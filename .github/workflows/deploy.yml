@@ -21,9 +21,6 @@ jobs:
     steps:
     - uses: actions/checkout@v5
 
-    - name: Install Bazelisk
-      run: brew list bazelisk &>/dev/null || brew install bazelisk
-
     - name: Bump CFBundleVersion
       run: |
         BUILD=$(( ( $(date -u +%s) - 1767225600 ) / 60 ))

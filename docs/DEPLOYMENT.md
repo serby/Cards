@@ -1,6 +1,7 @@
 # Deployment Pipeline
 
-This project uses GitHub Actions and Fastlane for automated deployment.
+This project uses GitHub Actions driving plain `xcodebuild` and the shell
+scripts in `scripts/` for automated deployment.
 
 ## Infrastructure as Code
 
@@ -16,16 +17,19 @@ This project uses GitHub Actions and Fastlane for automated deployment.
 - Triggers on version tags (`v*`) or manual dispatch
 - Builds and deploys to TestFlight
 - Manages certificates and provisioning profiles
-- Uses Fastlane for deployment automation
+- Runs `scripts/deploy-testflight.sh`
 
-### Fastlane Configuration
+### Build and Deploy Scripts
 
-#### Fastfile
-Defines deployment lanes:
-- `test` - Run unit and UI tests
-- `build` - Build for testing
-- `beta` - Deploy to TestFlight
-- `release` - Deploy to App Store
+`scripts/build-ipa.sh` archives the app in Release and exports a signed `.ipa`,
+and the deploy scripts upload it with `xcrun altool`:
+- `scripts/deploy-testflight.sh` - archive, export, upload to TestFlight
+- `scripts/deploy-appstore.sh` - archive, export, upload to App Store Connect
+- `scripts/asc-submit.sh` - create the version and submit for review
+
+Signing defaults to manual against the "Card Codes Wallet App Store Profile"
+that CI installs into `~/Library/MobileDevice/Provisioning Profiles`. Override
+with `PROVISIONING_PROFILE_SPECIFIER`, `CODE_SIGN_IDENTITY` or `EXPORT_METHOD`.
 
 #### Appfile
 Configures app identifiers and team IDs via environment variables.
@@ -49,9 +53,10 @@ Configure these in GitHub repository settings → Secrets and variables → Acti
 ## Setup Instructions
 
 ### 1. Install Dependencies
+Only Xcode is required — the build is a plain Xcode project driven by
+`xcodebuild`, and the deploy scripts use `xcrun altool`.
 ```bash
-brew install fastlane
-brew install bazelisk
+xcode-select --install
 ```
 
 ### 2. Export Certificates
@@ -71,7 +76,7 @@ Add all required secrets to repository settings.
 
 #### Manual TestFlight Deployment
 ```bash
-fastlane beta
+make deploy-testflight
 ```
 
 #### Automated Deployment
@@ -87,16 +92,14 @@ Or trigger manually via GitHub Actions UI.
 
 ### Run Tests
 ```bash
-bazel test //CardsTests:CardsTests
-# or
-fastlane test
+make test          # unit + UI
+make test-unit     # CardsTests only
+make test-e2e      # CardsUITests only
 ```
 
 ### Build
 ```bash
-bazel build //Cards:Cards
-# or
-fastlane build
+make build
 ```
 
 ## Deployment Flow
@@ -105,7 +108,7 @@ fastlane build
 2. CI workflow runs tests
 3. On success, developer creates version tag
 4. Deploy workflow triggers automatically
-5. Fastlane builds and uploads to TestFlight
+5. The deploy workflow archives, exports and uploads to TestFlight
 6. Build appears in App Store Connect
 
 ## Troubleshooting
@@ -120,7 +123,7 @@ fastlane build
 - Verify all dependencies are resolved
 - Review build logs in GitHub Actions
 
-### Fastlane Errors
-- Run `fastlane update_fastlane` to update
+### Upload Errors
 - Check Apple Developer account status
-- Verify API keys and passwords are correct
+- Verify the ASC API key (`ASC_KEY_ID`, `ASC_ISSUER_ID`, `ASC_KEY_CONTENT`)
+- Confirm the exported profile matches the bundle identifier
