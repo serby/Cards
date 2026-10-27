@@ -1,6 +1,6 @@
 import AVFoundation
 
-public enum BarcodeType: String, Codable, CaseIterable, Hashable {
+public enum BarcodeType: String, Codable, CaseIterable, Hashable, Sendable {
     case code128 = "Code 128"
     case code39  = "Code 39"
     case qrCode  = "QR Code"

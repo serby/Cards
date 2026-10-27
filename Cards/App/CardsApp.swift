@@ -3,6 +3,9 @@ import CardsFeatures
 import CardsUI
 import SwiftData
 import SwiftUI
+#if STORYBOOK
+import CardsStorybook
+#endif
 
 @main
 struct CardsApp: App {
@@ -48,7 +51,7 @@ struct CardsApp: App {
             Tab("Cards", systemImage: "barcode") {
                 let nav = Bindable(navigationManager)
                 NavigationStack(path: nav.navigationPath) {
-                    CardListView()
+                    CardListScreen()
                         .environment(navigationManager)
                 }
                 .onAppear {
@@ -57,9 +60,14 @@ struct CardsApp: App {
             }
             Tab("Settings", systemImage: "gearshape") {
                 NavigationStack {
-                    SettingsView()
+                    SettingsScreen()
                 }
             }
+            #if STORYBOOK
+            Tab("Storybook", systemImage: "square.grid.2x2") {
+                StorybookView()
+            }
+            #endif
         }
         .tint(.accent)
         .background(Color.primaryBackground)

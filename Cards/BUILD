@@ -2,6 +2,13 @@ load("@bazel_skylib//rules:expand_template.bzl", "expand_template")
 load("@rules_apple//apple:ios.bzl", "ios_application")
 load("@rules_swift//swift:swift.bzl", "swift_library")
 
+# Release builds go through --compilation_mode=opt (see scripts/deploy-*.sh), so
+# the storybook is neither compiled in nor linked for anything we ship.
+config_setting(
+    name = "release",
+    values = {"compilation_mode": "opt"},
+)
+
 swift_library(
     name = "Cards.library",
     srcs = glob(["App/**/*.swift"]),
@@ -9,13 +16,19 @@ swift_library(
         "-swift-version", "6",
         "-warnings-as-errors",
         "-enable-upcoming-feature", "ExistentialAny",
-    ],
+    ] + select({
+        ":release": [],
+        "//conditions:default": ["-DSTORYBOOK"],
+    }),
     module_name = "Cards",
     visibility = ["//visibility:public"],
     deps = [
         "//Packages/CardsCore:CardsCore",
         "//Packages/CardsFeatures:CardsFeatures",
-    ],
+    ] + select({
+        ":release": [],
+        "//conditions:default": ["//Packages/CardsStorybook:CardsStorybook"],
+    }),
 )
 
 exports_files(["Cards.entitlements"])

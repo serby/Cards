@@ -24,26 +24,76 @@ Requires Xcode 27.1+, [Bazelisk](https://github.com/bazelbuild/bazelisk), and iO
 
 ## Architecture
 
-Four SPM packages under `Packages/`, each with its own `Package.swift` and Bazel `BUILD` file:
+Five SPM packages under `Packages/`, each with its own `Package.swift` and Bazel `BUILD` file:
 
 ```
 Packages/
   CardsCore/         Models, navigation, services (no UI dependencies)
-  CardsUI/           Reusable UI components, theme, barcode rendering
+  CardsUI/           All views, plus theme and barcode rendering
   CardsScanner/      Camera barcode scanning (AVFoundation)
-  CardsFeatures/     Feature views (card list, detail, edit, settings)
+  CardsFeatures/     Connectors binding SwiftData and navigation to the views
+  CardsStorybook/    Debug-only browser for every view (see Storybook below)
 ```
 
 Dependency graph:
 
 ```
-CardsFeatures → CardsCore, CardsUI, CardsScanner
-CardsUI       → CardsCore, RSBarcodes_Swift
-CardsScanner  → CardsCore
-CardsCore     → (Foundation, SwiftData, SwiftUI, AVFoundation)
+CardsStorybook → CardsCore, CardsUI
+CardsFeatures  → CardsCore, CardsUI, CardsScanner
+CardsUI        → CardsCore, RSBarcodes_Swift
+CardsScanner   → CardsCore
+CardsCore      → (Foundation, SwiftData, SwiftUI, AVFoundation)
 ```
 
 The app target lives in `Cards/App/CardsApp.swift` and imports `CardsCore` + `CardsFeatures`.
+
+### Views are detached from state
+
+Views in `CardsUI` never touch SwiftData, the camera, the pasteboard or screen
+brightness. Each one is a function of a value type plus a set of callbacks, so it
+can be rendered anywhere — previews, stories, tests — with no app running:
+
+- **View state** (`ViewState/`) — `CardSummary`, `CardDetail`, `CardDraft`,
+  `SettingsState`: plain `Sendable` structs, with shared fixtures in `SampleData.swift`.
+- **Actions** (`Actions/`) — `CardListActions` and friends: structs of closures,
+  every one defaulting to a no-op so a story supplies only what it exercises.
+- **Injected effects** (`Environment/`) — `ScreenBrightness` and
+  `AccessibilityAnnouncer` are environment values. The app gets `.system`; stories
+  get `.simulated(_:)` and `.silent`, so no story can change device brightness or
+  fire VoiceOver announcements.
+- **The camera is a view slot** — `CardEditView` is generic over its scanner
+  subview. `CardsFeatures` passes the real `ScannerOverlayView`; stories pass
+  `ScannerPlaceholderView`.
+
+`CardsFeatures` holds everything impure. Each `*Screen` reads `@Query` /
+`modelContext` / `NavigationManager`, maps models to view state, and wires the
+actions back to effects. Adding a screen means adding a pure view plus a
+connector, not threading a store through another view.
+
+```
+CardListScreen   → CardListView        CardDetailScreen → CardDetailView
+CardEditScreen   → CardEditView        SettingsScreen   → SettingsListView
+```
+
+### Storybook
+
+`CardsStorybook` is a Storybook-style browser for every view in `CardsUI`,
+reachable from a third tab in debug builds. Each story has:
+
+- an **Interactive** mode with live knobs (text, toggle, slider, option picker)
+- a **Gallery** mode stacking the fixed variants for a visual sweep
+- **display controls** applied to whichever story is showing — light/dark,
+  Dynamic Type from xSmall to Accessibility 5, and right-to-left layout
+
+The tab is gated on `--compilation_mode=opt`, which the deploy scripts use, so the
+storybook is neither compiled nor linked into anything shipped. Verify with:
+
+```sh
+bazel cquery 'deps(//Cards:Cards.library)' --compilation_mode=opt | grep -c Storybook  # 0
+```
+
+Adding a story is one entry in `Catalogue/ComponentStories.swift` or
+`Catalogue/ScreenStories.swift`.
 
 ## Build System
 
@@ -128,9 +178,14 @@ Foundation types shared across all modules.
 
 ### CardsUI
 
-Reusable UI components with no feature-level logic.
+Every view in the app, with no store, camera or device access. See
+"Views are detached from state" above.
 
-- `Components/` — `BarcodeView` (renders barcodes via RSBarcodes_Swift), `Spinner`
+- `Screens/` — `CardListView`, `CardDetailView`, `CardEditView`, `SettingsListView`
+- `ViewState/` — `CardSummary`, `CardDetail`, `CardDraft`, `SettingsState`, `SampleData`
+- `Actions/` — closure bundles raised by each screen
+- `Environment/` — `ScreenBrightness`, `AccessibilityAnnouncer` (injected effects)
+- `Components/` — `BarcodeView` (renders barcodes via RSBarcodes_Swift), `Spinner`, `ShareSheet`
 - `Modifiers/` — `ConditionalModifier`, `PortraitLockedView`
 - `Theme/` — `Colors` (adaptive light/dark palette)
 - `Extensions/` — `UIScreen.current` (replaces deprecated `UIScreen.main`)
@@ -144,12 +199,23 @@ Camera-based barcode scanning.
 
 ### CardsFeatures
 
-Feature views that compose the app's screens.
+Connectors that bind SwiftData and navigation to the `CardsUI` views. All the
+impure work lives here.
 
-- `CardsView.swift` — Card list with navigation, reordering, deletion
-- `Components/CardItemView.swift` — Card detail with brightness boost
-- `Components/EditCardItemView.swift` — Add/edit card form
-- `Components/SettingsView.swift` — App settings, import/export, delete all
+- `CardListScreen.swift` — `@Query` list, reordering, deletion, navigation destinations
+- `Components/CardDetailScreen.swift` — maps `CardItem` to `CardDetail`, owns the brightness preference
+- `Components/CardEditScreen.swift` — owns the draft, feeds the real scanner in, commits on save
+- `Components/SettingsScreen.swift` — version info, import/export, delete all, clipboard
+
+### CardsStorybook
+
+Debug-only story catalogue and browser. Depends on `CardsUI` only, never on
+`CardsFeatures` or `CardsScanner`.
+
+- `Story.swift` — `Story`, `StoryKnob`, `KnobValues`
+- `StorybookView.swift` — sidebar, Interactive/Gallery stage, knob controls
+- `DisplayOptions.swift` — colour scheme, Dynamic Type, layout direction
+- `Catalogue/` — the stories themselves
 
 ## CI/CD
 

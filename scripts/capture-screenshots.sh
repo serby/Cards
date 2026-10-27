@@ -9,7 +9,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
-XCODE_APP="${XCODE_APP:-/Applications/Xcode.27.1.app}"
+XCODE_APP="${XCODE_APP:-/Applications/Xcode27.1.app}"
 DEVICE="${1:-iPhone 16 Pro Max}"
 LOCALE="${2:-en-US}"
 OUT_DIR="$PROJECT_DIR/screenshots/$LOCALE"

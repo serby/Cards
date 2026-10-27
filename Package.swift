@@ -9,6 +9,7 @@ let package = Package(
         .package(path: "Packages/CardsUI"),
         .package(path: "Packages/CardsScanner"),
         .package(path: "Packages/CardsFeatures"),
+        .package(path: "Packages/CardsStorybook"),
         .package(url: "https://github.com/yeahdongcn/RSBarcodes_Swift.git", exact: "5.2.0"),
     ]
 )

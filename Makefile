@@ -1,6 +1,6 @@
 .PHONY: test test-unit test-e2e test-coverage coverage-run coverage-report coverage-bazel coverage-clean build sim device-hub xcodeproj device test-tsan capture-screenshots validate-screenshots deploy-testflight deploy-appstore upload-metadata upload-screenshots
 
-XCODE_APP ?= /Applications/Xcode.27.1.app
+XCODE_APP ?= /Applications/Xcode27.1.app
 DEVELOPER_DIR := $(XCODE_APP)/Contents/Developer
 DEVICE_HUB_APP ?= $(XCODE_APP)/Contents/Applications/DeviceHub.app
 SIMULATOR_DEVICE ?= iPhone Duo
