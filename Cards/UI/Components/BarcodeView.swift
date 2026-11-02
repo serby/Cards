@@ -15,18 +15,23 @@ public struct BarcodeView: View {
     }
 
     public var body: some View {
-        VStack {
-            if let barcodeImage = generateBarcode(from: barcodeString, type: barcodeType) {
-                Image(uiImage: barcodeImage)
-                    .resizable()
-                    .scaledToFit()
-                    .padding()
-            } else {
-                Text("Failed to generate barcode")
-                    .foregroundColor(.red)
+        Group {
+            Group {
+                if let barcodeImage = generateBarcode(from: barcodeString, type: barcodeType) {
+                    Image(uiImage: barcodeImage)
+                        .resizable()
+                        .scaledToFit()
+                } else {
+                    Text("Failed to generate barcode")
+                        .foregroundColor(.red)
+                    
+                }
             }
+            .padding()
+            .background(.white)
         }
-        .background(Color.white)
+        .padding(6)
+        .background(.gray.opacity(0.5), in: .rect(cornerRadius: 12))
         .accessibilityIdentifier("barcodeView")
         .accessibilityHint("This is a \(barcodeType.rawValue) barcode with code \(barcodeString)")
     }
@@ -44,4 +49,9 @@ public struct BarcodeView: View {
             targetSize: barCodeSize
         )
     }
+}
+
+#Preview {
+    BarcodeView(barcodeString: "123456", barcodeType: .code128)
+    BarcodeView(barcodeString: "", barcodeType: .ean13)
 }

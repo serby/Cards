@@ -23,35 +23,35 @@ public struct CardDetailView: View {
 
     public var body: some View {
         VStack {
-            Text(card.name)
-                .font(.title)
-                .foregroundStyle(.secondary)
-                .padding(.vertical)
-                .accessibilityIdentifier("cardNameText")
-                .accessibilityLabel("Card name: \(card.name)")
-                .accessibilityAddTraits(.isHeader)
-
-            BarcodeView(barcodeString: card.code, barcodeType: card.barcodeType)
-                .accessibilityLabel("Barcode for \(card.name)")
-
-            Spacer()
-
-            Text(card.code)
-                .font(.largeTitle)
-                .accessibilityIdentifier("cardCodeText")
-                .accessibilityLabel("Card code: \(card.code)")
-                .accessibilityAddTraits(.isStaticText)
-
-            Spacer()
-
-            Text("\(card.timestamp, format: Date.FormatStyle(date: .long, time: .complete))")
-                .foregroundStyle(.secondary)
-                .accessibilityIdentifier("cardTimestampText")
-                .accessibilityLabel("Created on \(card.timestamp, format: Date.FormatStyle(date: .long, time: .shortened))")
-                .accessibilityAddTraits(.isStaticText)
-
+            VStack {
+                Text(card.name)
+                    .font(.title.bold())
+                    .foregroundStyle(.secondary)
+                    .padding(.vertical)
+                    .accessibilityIdentifier("cardNameText")
+                    .accessibilityLabel("Card name: \(card.name)")
+                    .accessibilityAddTraits(.isHeader)
+                
+                BarcodeView(barcodeString: card.code, barcodeType: card.barcodeType)
+                    .accessibilityLabel("Barcode for \(card.name)")
+                Text(card.code)
+                    .font(.headline)
+                    .accessibilityIdentifier("cardCodeText")
+                    .accessibilityLabel("Card code: \(card.code)")
+                    .accessibilityAddTraits(.isStaticText)
+                
+                Text("\(card.timestamp, format: Date.FormatStyle(date: .abbreviated, time: .shortened))")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .accessibilityIdentifier("cardTimestampText")
+                    .accessibilityLabel("Created on \(card.timestamp, format: Date.FormatStyle(date: .long, time: .shortened))")
+                    .accessibilityAddTraits(.isStaticText)
+            }
+            .padding()
+            .background(.gray.opacity(0.25), in: .rect(cornerRadius: 24))
             Spacer()
         }
+        .padding()
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("cardDetailView")
         .task {
