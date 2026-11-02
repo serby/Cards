@@ -143,6 +143,10 @@ then compares the exported captures with every en-US and en-GB reference. It
 fails for missing files, wrong dimensions, invalid PNGs, or material visual
 differences.
 
+## App Icon
+
+`DesignAssets/Icon.svg` is the master artwork (light appearance). After editing it, run `scripts/generate-app-icons.sh` to render the light, dark and tinted 1024px PNGs into `Cards/Assets.xcassets/AppIcon.appiconset` and `DesignAssets/`, plus the 180px `Website/src/icon.png`. Dark and tinted are derived by swapping the two colours to a white glyph on black. Needs `brew install librsvg imagemagick`.
+
 ## Distribution
 
 `scripts/build-ipa.sh` archives and exports a signed `.ipa`;

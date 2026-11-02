@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Cards app icon: two loyalty cards, a barcode card behind a QR code card.
+  Master artwork for the light appearance. scripts/generate-app-icons.sh derives the
+  dark and tinted variants by swapping the two colours below, then renders the PNGs.
+    background  #FFFFFF  (also used for the codes and the gap around the front card)
+    glyph       #0A0A0A
+  Geometry: 1024 grid. Each card is 560 x 352 (radius 46) drawn about its own centre,
+  barcode unit 18, QR module 32. The front card's halo is the card grown by 24.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <rect id="background" width="1024" height="1024" fill="#FFFFFF"/>
+
+  <g id="back-card" transform="translate(457 400) rotate(-4)">
+    <path id="back-card-body" fill="#0A0A0A"
+          d="M-234 -176H234A46 46 0 0 1 280 -130V130A46 46 0 0 1 234 176H-234A46 46 0 0 1 -280 130V-130A46 46 0 0 1 -234 -176Z"/>
+    <path id="barcode" fill="#FFFFFF"
+          d="M-189 -116h54v134h-54Z
+             M-117 -116h18v134h-18Z
+             M-63 -116h36v134h-36Z
+             M-9 -116h18v134h-18Z
+             M27 -116h54v134h-54Z
+             M117 -116h18v134h-18Z
+             M153 -116h36v134h-36Z"/>
+  </g>
+
+  <g id="front-card" transform="translate(569 628) rotate(3)">
+    <path id="front-card-gap" fill="#FFFFFF"
+          d="M-234 -200H234A70 70 0 0 1 304 -130V130A70 70 0 0 1 234 200H-234A70 70 0 0 1 -304 130V-130A70 70 0 0 1 -234 -200Z"/>
+    <path id="front-card-body" fill="#0A0A0A"
+          d="M-234 -176H234A46 46 0 0 1 280 -130V130A46 46 0 0 1 234 176H-234A46 46 0 0 1 -280 130V-130A46 46 0 0 1 -234 -176Z"/>
+    <path id="qr-code" fill="#FFFFFF" fill-rule="evenodd"
+          d="M-102 -112H-26A10 10 0 0 1 -16 -102V-26A10 10 0 0 1 -26 -16H-102A10 10 0 0 1 -112 -26V-102A10 10 0 0 1 -102 -112Z
+             M-91 -96H-37A5 5 0 0 1 -32 -91V-37A5 5 0 0 1 -37 -32H-91A5 5 0 0 1 -96 -37V-91A5 5 0 0 1 -91 -96Z
+             M-80 -84H-48A4 4 0 0 1 -44 -80V-48A4 4 0 0 1 -48 -44H-80A4 4 0 0 1 -84 -48V-80A4 4 0 0 1 -80 -84Z
+             M26 -112H102A10 10 0 0 1 112 -102V-26A10 10 0 0 1 102 -16H26A10 10 0 0 1 16 -26V-102A10 10 0 0 1 26 -112Z
+             M37 -96H91A5 5 0 0 1 96 -91V-37A5 5 0 0 1 91 -32H37A5 5 0 0 1 32 -37V-91A5 5 0 0 1 37 -96Z
+             M48 -84H80A4 4 0 0 1 84 -80V-48A4 4 0 0 1 80 -44H48A4 4 0 0 1 44 -48V-80A4 4 0 0 1 48 -84Z
+             M-102 16H-26A10 10 0 0 1 -16 26V102A10 10 0 0 1 -26 112H-102A10 10 0 0 1 -112 102V26A10 10 0 0 1 -102 16Z
+             M-91 32H-37A5 5 0 0 1 -32 37V91A5 5 0 0 1 -37 96H-91A5 5 0 0 1 -96 91V37A5 5 0 0 1 -91 32Z
+             M-80 44H-48A4 4 0 0 1 -44 48V80A4 4 0 0 1 -48 84H-80A4 4 0 0 1 -84 80V48A4 4 0 0 1 -80 44Z
+             M22 16h20a6 6 0 0 1 6 6v20a6 6 0 0 1 -6 6h-20a6 6 0 0 1 -6 -6v-20a6 6 0 0 1 6 -6Z
+             M86 16h20a6 6 0 0 1 6 6v20a6 6 0 0 1 -6 6h-20a6 6 0 0 1 -6 -6v-20a6 6 0 0 1 6 -6Z
+             M54 48h20a6 6 0 0 1 6 6v20a6 6 0 0 1 -6 6h-20a6 6 0 0 1 -6 -6v-20a6 6 0 0 1 6 -6Z
+             M22 80h20a6 6 0 0 1 6 6v20a6 6 0 0 1 -6 6h-20a6 6 0 0 1 -6 -6v-20a6 6 0 0 1 6 -6Z
+             M86 80h20a6 6 0 0 1 6 6v20a6 6 0 0 1 -6 6h-20a6 6 0 0 1 -6 -6v-20a6 6 0 0 1 6 -6Z"/>
+  </g>
+</svg>
