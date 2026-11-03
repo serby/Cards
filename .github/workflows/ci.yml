@@ -26,6 +26,18 @@ jobs:
     - name: Validate checked-in screenshots
       run: python3 scripts/validate-screenshots.py
 
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 24
+
+    # Every language in knownRegions is complete in every catalogue, with
+    # matching placeholders and plural forms (scripts/l10n.ts).
+    - name: Check translations are complete
+      run: node scripts/l10n.ts check
+
+    - name: Test the translation tool
+      run: node --test scripts/l10n.test.ts
+
     # Pre-create and boot the exact simulator used by xcodebuild. This avoids
     # CoreSimulator creation/boot races seen on macos-26 runners.
     - name: Resolve and warm simulator
@@ -39,10 +51,6 @@ jobs:
           -project Cards.xcodeproj \
           -scheme Cards \
           -destination "platform=iOS Simulator,name=${{ steps.sim.outputs.device }},OS=${{ steps.sim.outputs.version }}"
-
-    - uses: actions/setup-node@v4
-      with:
-        node-version: 24
 
     # Development code (Cards/Development: Storybook, previews, sample data,
     # UI-test hooks) must never reach a release build.
