@@ -153,24 +153,20 @@ public struct LocationPickerView: View {
                 HStack {
                     Text("Radius")
                     Spacer()
-                    Text(radiusText)
+                    Text(radius.metres, format: .radius)
                         .monospacedDigit()
                         .foregroundStyle(.secondary)
                 }
                 .font(.subheadline)
                 Slider(value: $radius, in: Self.radiusRange, step: 25)
                     .accessibilityLabel("Radius")
-                    .accessibilityValue(radiusText)
+                    .accessibilityValue(Text(radius.metres, format: .radius))
             }
         }
         .padding(18)
         .background(.regularMaterial, in: .rect(cornerRadius: 24))
         .padding(.horizontal, 12)
         .padding(.bottom, 8)
-    }
-
-    private var radiusText: String {
-        radius.radiusText
     }
 
     private func search() {

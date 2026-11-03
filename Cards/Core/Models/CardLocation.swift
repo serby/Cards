@@ -38,16 +38,26 @@ public struct CardLocation: Codable, Hashable, Identifiable, Sendable {
 }
 
 public extension CLLocationDistance {
-    /// A distance to somewhere, in the user's units: "350 m", "0.4 mi".
-    var distanceText: String {
-        Measurement(value: self, unit: UnitLength.meters)
-            .formatted(.measurement(width: .abbreviated, usage: .road))
+    /// This distance as a measurement in metres, for `Text(_:format:)` with
+    /// `.distance` or `.radius`.
+    var metres: Measurement<UnitLength> {
+        Measurement(value: self, unit: .meters)
+    }
+}
+
+/// Views format with these rather than with ready-made strings, so the text
+/// follows the locale SwiftUI renders in (`\.locale`), not just the device's.
+public extension FormatStyle where Self == Measurement<UnitLength>.FormatStyle {
+    /// A distance to somewhere, in the units the locale uses for roads:
+    /// "350 m" and "1,5 km" in Germany, "400 yd" and "0.93 mi" in the UK.
+    static var distance: Self {
+        .measurement(width: .abbreviated, usage: .road)
     }
 
-    /// A radius as set on the slider, in metres: "200 m".
-    var radiusText: String {
-        Measurement(value: self, unit: UnitLength.meters)
-            .formatted(.measurement(width: .abbreviated, usage: .asProvided))
+    /// A radius as set on the slider, always in metres, as the slider steps
+    /// in metres: "200 m".
+    static var radius: Self {
+        .measurement(width: .abbreviated, usage: .asProvided)
     }
 }
 

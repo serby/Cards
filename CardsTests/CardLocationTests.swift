@@ -2,6 +2,7 @@
 import CoreLocation
 import Foundation
 import SwiftData
+import SwiftUI
 import Testing
 
 struct CardLocationTests {
@@ -51,6 +52,36 @@ struct CardLocationTests {
         let data = try JSONEncoder().encode([CardItemDTO(from: original)])
         let imported = try JSONDecoder().decode([CardItemDTO].self, from: data)
         #expect(imported.first?.toCardItem().locations == [westway])
+    }
+
+    @Test func distancesUseTheLocalesNumbersAndRoadUnits() {
+        let distance = CLLocationDistance(1_500).metres
+        let german = distance.formatted(.distance.locale(Locale(identifier: "de_DE")))
+        #expect(german.contains("1,5"), "German uses a decimal comma: \(german)")
+        #expect(german.hasSuffix("km"))
+        let british = distance.formatted(.distance.locale(Locale(identifier: "en_GB")))
+        #expect(british.contains("0.93"), "British English uses a decimal point: \(british)")
+        #expect(british.hasSuffix("mi"))
+        let saudi = distance.formatted(.distance.locale(Locale(identifier: "ar_SA")))
+        #expect(saudi.contains("١٫٥"), "Saudi Arabic uses Arabic-Indic digits: \(saudi)")
+    }
+
+    @Test(arguments: ["en_GB", "en_US", "de_DE", "ja_JP"])
+    func radiiStayInMetres(_ identifier: String) {
+        let radius = CLLocationDistance(200).metres.formatted(.radius.locale(Locale(identifier: identifier)))
+        #expect(radius.hasPrefix("200"))
+        #expect(radius.hasSuffix("m"))
+    }
+
+    /// Views format distances themselves, so the Storybook's locale (and any
+    /// `\.locale` set above them) reaches the number.
+    @Test @MainActor func viewsFormatDistancesInTheirLocale() {
+        let german = Locale(identifier: "de_DE")
+        let distance = CLLocationDistance(1_500).metres
+        let rendered = Snapshot.png(Text(distance, format: .distance).environment(\.locale, german))
+        let expected = Snapshot.png(Text(verbatim: distance.formatted(.distance.locale(german))))
+        #expect(rendered != nil)
+        #expect(rendered == expected)
     }
 
     @Test func exportWithoutLocationsImportsWithNone() throws {

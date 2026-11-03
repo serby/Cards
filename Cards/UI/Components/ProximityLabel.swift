@@ -15,7 +15,7 @@ public struct ProximityLabel: View {
         HStack(alignment: .firstTextBaseline, spacing: 4) {
             Image(systemName: proximity.isHere ? "location.fill" : "location")
                 .imageScale(.small)
-            Text(text)
+            text
         }
         .fontWeight(proximity.isHere ? .semibold : nil)
         .padding(.horizontal, proximity.isHere ? 8 : 0)
@@ -31,24 +31,43 @@ public struct ProximityLabel: View {
         .accessibilityLabel(accessibilityText)
     }
 
-    private var text: String {
+    private var text: Text {
         switch (proximity.isHere, showsPlace) {
         case (true, false):
-            "Here"
+            Text(
+                "Here",
+                comment: "Shown on a card in the list instead of a distance when the user is inside one of the card's locations. Keep it very short."
+            )
         case (true, true):
-            "At \(proximity.placeName)"
+            Text(
+                "At \(proximity.placeName)",
+                comment: "On a card's screen when the user is inside one of the card's locations. The argument is the place's name, such as Westway."
+            )
         case (false, false):
-            distance
+            Text(distance, format: .distance)
         case (false, true):
-            "\(distance) · \(proximity.placeName)"
+            Text(
+                "\(distance, format: .distance) · \(proximity.placeName)",
+                comment: "On a card's screen: the distance to the card's nearest location, then the place's name, as in “350 m · Westway”."
+            )
         }
     }
 
-    private var accessibilityText: String {
-        proximity.isHere ? "You're at \(proximity.placeName)" : "\(distance) from \(proximity.placeName)"
+    private var accessibilityText: Text {
+        if proximity.isHere {
+            Text(
+                "You're at \(proximity.placeName)",
+                comment: "VoiceOver label when the user is inside one of a card's locations. The argument is the place's name, such as Westway."
+            )
+        } else {
+            Text(
+                "\(distance, format: .distance) from \(proximity.placeName)",
+                comment: "VoiceOver label: how far the user is from a card's nearest location, as in “350 m from Westway”."
+            )
+        }
     }
 
-    private var distance: String {
-        proximity.distance.distanceText
+    private var distance: Measurement<UnitLength> {
+        proximity.distance.metres
     }
 }

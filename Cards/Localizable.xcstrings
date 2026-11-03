@@ -4,6 +4,17 @@
     "%@" : {
 
     },
+    "%@ · %@" : {
+      "comment" : "On a card's screen: the distance to the card's nearest location, then the place's name, as in “350 m · Westway”.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ · %2$@"
+          }
+        }
+      }
+    },
     "%@ (%@)" : {
       "localizations" : {
         "en" : {
@@ -14,8 +25,19 @@
         }
       }
     },
+    "%@ from %@" : {
+      "comment" : "VoiceOver label: how far the user is from a card's nearest location, as in “350 m from Westway”.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ from %2$@"
+          }
+        }
+      }
+    },
     "%@ radius" : {
-
+      "comment" : "Under a location's name in the card form: the size of the circle around the place, as in “200 m radius”."
     },
     "Add" : {
 
@@ -25,6 +47,9 @@
     },
     "Add Location" : {
 
+    },
+    "At %@" : {
+      "comment" : "On a card's screen when the user is inside one of the card's locations. The argument is the place's name, such as Westway."
     },
     "Aztec" : {
       "comment" : "Barcode format in the barcode type picker: the square 2D Aztec Code. Keep it unless your language writes it differently."
@@ -158,6 +183,9 @@
     "Green" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker."
     },
+    "Here" : {
+      "comment" : "Shown on a card in the list instead of a distance when the user is inside one of the card's locations. Keep it very short."
+    },
     "Import" : {
 
     },
@@ -266,6 +294,9 @@
     },
     "Yellow" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker."
+    },
+    "You're at %@" : {
+      "comment" : "VoiceOver label when the user is inside one of a card's locations. The argument is the place's name, such as Westway."
     }
   },
   "version" : "1.0"

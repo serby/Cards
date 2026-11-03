@@ -14,7 +14,10 @@ public struct CardLocationRow: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(location.name)
                     .lineLimit(1)
-                Text("\(location.radius.radiusText) radius")
+                Text(
+                    "\(location.radius.metres, format: .radius) radius",
+                    comment: "Under a location's name in the card form: the size of the circle around the place, as in “200 m radius”."
+                )
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .monospacedDigit()
