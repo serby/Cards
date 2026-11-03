@@ -80,11 +80,11 @@ public struct CardEditView<Scanner: View>: View {
                         .accessibilityHidden(true)
                     // Both fields wrap rather than cut a long name or code off at
                     // large text sizes; Return moves on to the next field.
+                    // The prompt wraps behind the field rather than being cut off.
                     TextField(
                         "Enter name",
                         text: $draft.name.singleLine { focusedField = .code },
-                        prompt: Text("Enter name", comment: "Placeholder in the empty card name field, such as Tesco Clubcard.")
-                            .foregroundStyle(Color.secondaryText),
+                        prompt: Text(verbatim: ""),
                         axis: .vertical
                     )
                     .submitLabel(.next)
@@ -94,6 +94,12 @@ public struct CardEditView<Scanner: View>: View {
                     .accessibilityIdentifier("nameTextField")
                     .accessibilityLabel(nameLabel)
                     .accessibilityHint(Text("Enter the name of this card", comment: "VoiceOver hint for the card name field in the card form."))
+                    .wrappingPrompt(
+                        Text("Enter name", comment: "Placeholder in the empty card name field, such as Tesco Clubcard."),
+                        isShown: draft.name.isEmpty,
+                        alignment: nameAlignment,
+                        onTap: { focusedField = .name }
+                    )
                 }
 
                 rowLayout {
@@ -102,8 +108,7 @@ public struct CardEditView<Scanner: View>: View {
                     TextField(
                         "Enter code",
                         text: $draft.code.singleLine { focusedField = nil },
-                        prompt: Text("Enter code", comment: "Placeholder in the empty field for the number or text that the barcode encodes.")
-                            .foregroundStyle(Color.secondaryText),
+                        prompt: Text(verbatim: ""),
                         axis: .vertical
                     )
                     .submitLabel(.done)
@@ -116,6 +121,14 @@ public struct CardEditView<Scanner: View>: View {
                     .accessibilityLabel(codeLabel)
                     .accessibilityHint(
                         Text("Enter the barcode number for this card", comment: "VoiceOver hint for the card's code field in the card form.")
+                    )
+                    // Outside readsLeftToRight(), so the prompt follows the
+                    // language, keeping to the same edge as the name's.
+                    .wrappingPrompt(
+                        Text("Enter code", comment: "Placeholder in the empty field for the number or text that the barcode encodes."),
+                        isShown: draft.code.isEmpty,
+                        alignment: nameAlignment,
+                        onTap: { focusedField = .code }
                     )
                 }
             }

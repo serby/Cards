@@ -209,11 +209,7 @@ public struct LocationPickerView: View {
                     TextField(
                         "Postcode",
                         text: $postcode.singleLine(onReturn: search),
-                        // The prompts are the fields' only visible labels, beside
-                        // their icons, so they take readable secondary text rather
-                        // than the system placeholder grey (1.7:1 on the field).
-                        prompt: Text("Postcode", comment: "Placeholder in the search field that moves the map to a postcode or address.")
-                            .foregroundStyle(Color.secondaryText),
+                        prompt: Text(verbatim: ""),
                         axis: .vertical
                     )
                     .textInputAutocapitalization(.characters)
@@ -221,6 +217,13 @@ public struct LocationPickerView: View {
                     .submitLabel(.search)
                     .focused($focusedField, equals: .postcode)
                     .accessibilityIdentifier("postcodeField")
+                    // The prompts are the fields' only visible labels, beside
+                    // their icons, so they wrap rather than being cut off, in
+                    // readable secondary text rather than the system
+                    // placeholder grey (1.7:1 on the field). Hidden from
+                    // VoiceOver there, they name the fields here instead.
+                    .accessibilityLabel(postcodePrompt)
+                    .wrappingPrompt(postcodePrompt, isShown: postcode.isEmpty, onTap: { focusedField = .postcode })
                     if isSearching {
                         ProgressView()
                             .accessibilityLabel(
@@ -254,15 +257,13 @@ public struct LocationPickerView: View {
             TextField(
                 "Name, e.g. Westway",
                 text: $name.singleLine { focusedField = nil },
-                prompt: Text(
-                    "Name, e.g. Westway",
-                    comment: "Placeholder for the new place's name. Westway is a London climbing centre; a typical local place name may read better."
-                )
-                .foregroundStyle(Color.secondaryText),
+                prompt: Text(verbatim: ""),
                 axis: .vertical
             )
             .submitLabel(.done)
             .focused($focusedField, equals: .name)
+            .accessibilityLabel(namePrompt)
+            .wrappingPrompt(namePrompt, isShown: name.isEmpty, onTap: { focusedField = .name })
             .pickerField("tag")
             .accessibilityIdentifier("locationNameField")
 
@@ -328,6 +329,17 @@ public struct LocationPickerView: View {
         }
     }
 
+    private var postcodePrompt: Text {
+        Text("Postcode", comment: "Placeholder in the search field that moves the map to a postcode or address.")
+    }
+
+    private var namePrompt: Text {
+        Text(
+            "Name, e.g. Westway",
+            comment: "Placeholder for the new place's name. Westway is a London climbing centre; a typical local place name may read better."
+        )
+    }
+
     /// Shown under the postcode field, and spoken, when nothing is found.
     private static func notFoundMessage(_ query: String) -> String {
         String(
@@ -374,6 +386,8 @@ private struct PickerField: ViewModifier {
             content
         }
         .padding(.horizontal, 14)
+        // Wrapped lines keep clear of the rounded edge; one line stays 44 pt.
+        .padding(.vertical, 10)
         .frame(minHeight: 44)
         .background(Color(UIColor.tertiarySystemFill), in: .rect(cornerRadius: 12))
     }
