@@ -247,6 +247,7 @@ Xcode 27 has no Simulator.app; `make sim` opens Device Hub to show the screen, a
 
 - The app ID `net.serby.Cards` and the iCloud container `iCloud.net.serby.Cards` belong to the paid Apple Developer team **"Paul Serby" (`ZMBFPG86J4`)**. Both build configurations of the app target must use that team, and so must anyone building to a device.
 - A **Personal Team cannot build this app**. Free teams do not support the iCloud capability, and the app ID belongs to another team, so Xcode fails with "Personal development teams … do not support the iCloud capability" and "doesn't include the iCloud capability".
+- Every Apple ID comes with a free Personal Team, so "Paul Serby (Personal Team)" in the team menu is not the paid team; it belongs to whichever Apple ID is signed in, which may be a work one. If the menu has no plain "Paul Serby", the Apple ID that owns the paid team is not signed in to Xcode.
 - To build to a device, sign in to Xcode (**Settings > Accounts**) with the Apple ID that is a member of `ZMBFPG86J4`, select that team in **Signing & Capabilities** for both configurations, and let Xcode register the device and create the development profile.
 - Never sign this app with a company team you happen to belong to.
 - `Cards/Cards.entitlements` points every configuration, Debug included, at the **Production** CloudKit environment. A debug build on a signed-in device reads and writes the real iCloud data, so test destructive changes on a simulator or a test Apple ID.
