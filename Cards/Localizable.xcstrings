@@ -124,6 +124,9 @@
     "Default" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker: the plain grey card that follows light and dark mode."
     },
+    "Delete" : {
+      "comment" : "Menu item that deletes a card in the list, or a place in the card form. A verb."
+    },
     "Delete All" : {
       "comment" : "Destructive button in the delete-all dialog that deletes every card."
     },
@@ -195,6 +198,12 @@
     },
     "Locations" : {
       "comment" : "Section heading in the card form for the places where the card is used."
+    },
+    "Move Down" : {
+      "comment" : "Menu item and VoiceOver action that moves a card one place down the list."
+    },
+    "Move Up" : {
+      "comment" : "Menu item and VoiceOver action that moves a card one place up the list."
     },
     "Name" : {
       "comment" : "Label beside the card's name field in the card form. A noun."

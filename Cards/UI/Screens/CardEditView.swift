@@ -115,6 +115,20 @@ public struct CardEditView<Scanner: View>: View {
             Section {
                 ForEach(draft.locations) { location in
                     CardLocationRow(location)
+                        // A way to remove a place without swiping.
+                        .contextMenu {
+                            Button(role: .destructive) {
+                                draft.locations.removeAll { $0.id == location.id }
+                            } label: {
+                                Label(
+                                    LocalizedStringResource(
+                                        "Delete",
+                                        comment: "Menu item that deletes a card in the list, or a place in the card form. A verb."
+                                    ),
+                                    systemImage: "trash"
+                                )
+                            }
+                        }
                 }
                 .onDelete { draft.locations.remove(atOffsets: $0) }
 

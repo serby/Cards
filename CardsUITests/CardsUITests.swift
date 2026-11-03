@@ -48,6 +48,57 @@ class CardsUITests: XCTestCase {
         let code = app.staticTexts["cardCodeText"]
         XCTAssertTrue(code.label.contains(testCode), "Code shows '\(code.label)'")
     }
+
+    /// Reordering and deleting do not need a drag or a swipe: each card's
+    /// menu does both, for pointer, keyboard, Voice Control and Switch
+    /// Control users.
+    @MainActor
+    func testMoveAndDeleteFromTheMenu() throws {
+        let app = XCUIApplication()
+        app.launchArguments += ["-uiTesting", "-screenshotSeed"] + Self.variantArguments
+        app.launchEnvironment["CARDS_SCREENSHOT_SEED"] = "1"
+        app.launch()
+
+        // The first two seeded cards.
+        let tesco = app.buttons["cardRow_634004024987531"]
+        let boots = app.buttons["cardRow_9780201379624"]
+        XCTAssertTrue(tesco.waitForExistence(timeout: 5))
+        XCTAssertLessThan(tesco.frame.minY, boots.frame.minY)
+
+        let moveDown = app.buttons["moveCardDownMenuItem"]
+        XCTAssertTrue(openMenu(on: tesco, showing: moveDown), "The card's menu did not open")
+        XCTAssertFalse(app.buttons["moveCardUpMenuItem"].exists, "The first card offered to move up")
+        moveDown.tap()
+        XCTAssertTrue(waitUntil { boots.frame.minY < tesco.frame.minY }, "Tesco did not move below Boots")
+
+        let delete = app.buttons["deleteCardMenuItem"]
+        XCTAssertTrue(openMenu(on: tesco, showing: delete), "The card's menu did not open")
+        delete.tap()
+        XCTAssertTrue(waitUntil { !tesco.exists }, "Tesco was not deleted")
+        XCTAssertTrue(boots.exists)
+    }
+
+    /// Long-presses `row` until its menu shows `item`. A press while the list
+    /// is still settling, after launch or a move, can miss, so it tries again.
+    @MainActor
+    private func openMenu(on row: XCUIElement, showing item: XCUIElement) -> Bool {
+        for _ in 0..<3 {
+            RunLoop.current.run(until: Date().addingTimeInterval(0.5))
+            row.press(forDuration: 1.2)
+            if item.waitForExistence(timeout: 3) { return true }
+        }
+        return false
+    }
+
+    @MainActor
+    private func waitUntil(timeout: TimeInterval = 5, _ condition: () -> Bool) -> Bool {
+        let deadline = Date().addingTimeInterval(timeout)
+        while Date() < deadline {
+            if condition() { return true }
+            RunLoop.current.run(until: Date().addingTimeInterval(0.2))
+        }
+        return condition()
+    }
 }
 
 /// Every test again in Arabic, right to left. Nothing is translated yet, but

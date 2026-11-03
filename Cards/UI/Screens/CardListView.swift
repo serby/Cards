@@ -50,7 +50,6 @@ public struct CardRowView: View {
 public struct CardListView: View {
     private let cards: [CardSummary]
     private let actions: CardListActions
-    @State private var toolbarVisible = true
     @State private var deleteTrigger = false
 
     public init(cards: [CardSummary], actions: CardListActions = CardListActions()) {
@@ -63,6 +62,26 @@ public struct CardListView: View {
             ForEach(cards) { card in
                 CardRowView(card: card) { actions.selectCard(card.id) }
                     .accessibilityIdentifier("cardRow_\(card.id)")
+                    // Swiping and dragging are not the only ways: the menu serves
+                    // pointer, keyboard, Voice Control and Switch Control, and the
+                    // actions VoiceOver, whose swipe-to-delete is already an action.
+                    .contextMenu {
+                        moveButtons(for: card)
+                        Divider()
+                        Button(role: .destructive) {
+                            delete(card)
+                        } label: {
+                            Label(
+                                LocalizedStringResource(
+                                    "Delete",
+                                    comment: "Menu item that deletes a card in the list, or a place in the card form. A verb."
+                                ),
+                                systemImage: "trash"
+                            )
+                        }
+                        .accessibilityIdentifier("deleteCardMenuItem")
+                    }
+                    .accessibilityActions { moveButtons(for: card) }
                     .listRowBackground(Color.clear)
                     .listRowSeparator(.hidden)
                     .listRowInsets(EdgeInsets(top: 5, leading: 16, bottom: 5, trailing: 16))
@@ -96,7 +115,6 @@ public struct CardListView: View {
         .background(Color.primaryBackground)
         .navigationTitle(Text("Cards", comment: "Title of the screen that lists the user's loyalty cards."))
         .sensoryFeedback(trigger: deleteTrigger, { SensoryFeedback.impact(weight: .medium) })
-        .toolbar(toolbarVisible ? .visible : .hidden, for: .navigationBar)
         .toolbar {
             // While the list is empty its own Add Card button is the one to use;
             // two buttons with one name would make Voice Control ask which.
@@ -113,12 +131,41 @@ public struct CardListView: View {
                 }
             }
         }
-        .onScrollGeometryChange(for: CGFloat.self) { geometry in
-            geometry.contentOffset.y
-        } action: { _, newValue in
-            withAnimation(.easeInOut(duration: 0.3)) {
-                toolbarVisible = newValue <= 0
+    }
+
+    /// Move Up and Move Down, where the card can move that way.
+    @ViewBuilder
+    private func moveButtons(for card: CardSummary) -> some View {
+        if let index = cards.firstIndex(of: card) {
+            if index > 0 {
+                Button {
+                    actions.moveCards(IndexSet(integer: index), index - 1)
+                } label: {
+                    Label(
+                        LocalizedStringResource("Move Up", comment: "Menu item and VoiceOver action that moves a card one place up the list."),
+                        systemImage: "arrow.up"
+                    )
+                }
+                .accessibilityIdentifier("moveCardUpMenuItem")
+            }
+            if index < cards.count - 1 {
+                Button {
+                    // Past the next card, as a List move counts its destination.
+                    actions.moveCards(IndexSet(integer: index), index + 2)
+                } label: {
+                    Label(
+                        LocalizedStringResource("Move Down", comment: "Menu item and VoiceOver action that moves a card one place down the list."),
+                        systemImage: "arrow.down"
+                    )
+                }
+                .accessibilityIdentifier("moveCardDownMenuItem")
             }
         }
+    }
+
+    private func delete(_ card: CardSummary) {
+        guard let index = cards.firstIndex(of: card) else { return }
+        deleteTrigger.toggle()
+        actions.deleteCards(IndexSet(integer: index))
     }
 }
