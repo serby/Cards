@@ -26,19 +26,26 @@ PLATFORM="IOS"
 : "${WHATS_NEW:?WHATS_NEW required (release notes text)}"
 
 source "$SCRIPT_DIR/asc-auth.sh"
+JWT_ISSUED=$(date +%s)
 
+# --globoff stops curl reading the [ ] in filter[...] as a URL pattern. The
+# token lasts 20 minutes and processing can take 30, so renew it after 15.
 api() {
+    if (( $(date +%s) - JWT_ISSUED > 900 )); then
+        source "$SCRIPT_DIR/asc-auth.sh"
+        JWT_ISSUED=$(date +%s)
+    fi
     local method="${1:-GET}"; shift
     local path="$1"; shift
     local data="${1:-}"
     if [[ -n "$data" ]]; then
-        curl --fail-with-body -sS -X "$method" \
+        curl --fail-with-body --globoff -sS -X "$method" \
             -H "Authorization: Bearer $ASC_JWT" \
             -H "Content-Type: application/json" \
             -d "$data" \
             "$ASC_API$path"
     else
-        curl --fail-with-body -sS -X "$method" \
+        curl --fail-with-body --globoff -sS -X "$method" \
             -H "Authorization: Bearer $ASC_JWT" \
             "$ASC_API$path"
     fi
@@ -56,7 +63,7 @@ echo "    App ID: $APP_ID"
 echo "==> Waiting for build $BUILD_VERSION to finish processing"
 BUILD_ID=""
 for attempt in $(seq 1 60); do
-    BUILDS=$(api GET "/apps/$APP_ID/builds?filter[version]=$BUILD_VERSION&limit=10")
+    BUILDS=$(api GET "/builds?filter[app]=$APP_ID&filter[version]=$BUILD_VERSION&filter[preReleaseVersion.version]=$MARKETING_VERSION&limit=10")
     BUILD_ID=$(echo "$BUILDS" | jq_py "
 data = json.load(sys.stdin).get('data', [])
 ready = [b for b in data if b['attributes'].get('processingState') == 'VALID']
