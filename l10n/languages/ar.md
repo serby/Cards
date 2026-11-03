@@ -8,7 +8,7 @@
 
 **Punctuation.** Use the Arabic comma ، semicolon ؛ and question mark ؟. Quote with « » in logical order: «%@». Full sentences, permission prompts included, end with a full stop. Keep placeholders in logical order and add no direction marks. Give a distance as على بُعد %1$@ من %2$@, because "X من Y" can read as "X of Y".
 
-**Plurals.** Every form must keep %lld. zero, one, many (11–99) and other (100+, 101, 102): singular, as in %lld بطاقة. two: the dual, as in %lld بطاقتين (بطاقتان when it is the subject). few (3–10): plural, as in %lld بطاقات. Never use the plural outside few.
+**Plurals.** one and two always mean exactly 1 and 2, so write the number as a word and leave out %lld: بطاقة واحدة, and the dual بطاقتين (بطاقتان when it is the subject). Every other form keeps %lld. zero, many (11–99) and other (100+, 101, 102): singular, as in %lld بطاقة. few (3–10): plural, as in %lld بطاقات. Never use the plural outside few.
 
 **Pitfalls.**
 - مسح on its own means erase or clear on iOS (مسح كل المحتوى). Always write ضوئيًا with scanning.
