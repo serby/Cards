@@ -37,6 +37,17 @@
     "%@ radius" : {
       "comment" : "Under a location's name in the card form: the size of the circle around the place, as in “200 m radius”."
     },
+    "%@, %@ radius" : {
+      "comment" : "VoiceOver value of the pin on the Add Location map: the name the place will get, then the circle's size, as in “Westway, 200 m radius”.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@, %2$@ radius"
+          }
+        }
+      }
+    },
     "Add" : {
       "comment" : "Toolbar button that adds the place under the map pin to the card. A verb."
     },
@@ -196,14 +207,47 @@
     "JSON to import" : {
       "comment" : "VoiceOver label for the text box in the import sheet. JSON is a file format; keep the name."
     },
+    "Loading" : {
+      "comment" : "VoiceOver label for a spinner shown while something loads."
+    },
     "Locations" : {
       "comment" : "Section heading in the card form for the places where the card is used."
+    },
+    "Map moved to %@" : {
+      "comment" : "VoiceOver announcement after a postcode search on the Add Location map finds a place. The argument is the place found."
+    },
+    "Map pin" : {
+      "comment" : "VoiceOver label for the pin in the middle of the Add Location map, which marks the place to add."
     },
     "Move Down" : {
       "comment" : "Menu item and VoiceOver action that moves a card one place down the list."
     },
+    "Move East" : {
+      "comment" : "VoiceOver action on the Add Location map pin: moves the place east by the circle's radius."
+    },
+    "Move North" : {
+      "comment" : "VoiceOver action on the Add Location map pin: moves the place north by the circle's radius."
+    },
+    "Move South" : {
+      "comment" : "VoiceOver action on the Add Location map pin: moves the place south by the circle's radius."
+    },
     "Move Up" : {
       "comment" : "Menu item and VoiceOver action that moves a card one place up the list."
+    },
+    "Move West" : {
+      "comment" : "VoiceOver action on the Add Location map pin: moves the place west by the circle's radius."
+    },
+    "Moved east" : {
+      "comment" : "VoiceOver announcement after the Move East action on the Add Location map pin."
+    },
+    "Moved north" : {
+      "comment" : "VoiceOver announcement after the Move North action on the Add Location map pin."
+    },
+    "Moved south" : {
+      "comment" : "VoiceOver announcement after the Move South action on the Add Location map pin."
+    },
+    "Moved west" : {
+      "comment" : "VoiceOver announcement after the Move West action on the Add Location map pin."
     },
     "Name" : {
       "comment" : "Label beside the card's name field in the card form. A noun."
@@ -273,6 +317,9 @@
     },
     "Scan the barcode on a loyalty card to add it." : {
       "comment" : "Under “No Cards Yet” on the empty card list."
+    },
+    "Searching" : {
+      "comment" : "VoiceOver label for the spinner beside the postcode field while a search runs."
     },
     "Select the type of barcode for this card" : {
       "comment" : "VoiceOver hint for the barcode format menu in the card form."

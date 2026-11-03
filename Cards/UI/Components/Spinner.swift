@@ -15,6 +15,7 @@ public struct Spinner: View {
         Group {
             if showSpinner {
                 ProgressView()
+                    .accessibilityLabel(Text("Loading", comment: "VoiceOver label for a spinner shown while something loads."))
             }
         }
         .task(id: isLoading) {

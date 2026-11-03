@@ -9,11 +9,15 @@ public struct LocationPickerView: View {
     private let onAdd: (CardLocation) -> Void
 
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.accessibilityAnnouncer) private var announcer
     @State private var position: MapCameraPosition
     /// The point under the pin. Kept as plain values so an unchanged camera
     /// never invalidates the view (MapKit reports camera changes generously).
     @State private var center: MapPoint?
     @State private var metresPerPoint: Double?
+    /// How far the camera is from the map, kept so moving the pin from an
+    /// accessibility action keeps the zoom.
+    @State private var cameraDistance: Double?
     @State private var mapWidth: CGFloat = 0
     @State private var radius = CardLocation.defaultRadius
     @State private var name = ""
@@ -30,6 +34,37 @@ public struct LocationPickerView: View {
     private struct MapPoint: Equatable {
         let latitude: CLLocationDegrees
         let longitude: CLLocationDegrees
+    }
+
+    /// Where the pin's accessibility actions move the place.
+    private enum Compass: CaseIterable {
+        case north, south, east, west
+
+        var actionName: Text {
+            switch self {
+            case .north:
+                Text("Move North", comment: "VoiceOver action on the Add Location map pin: moves the place north by the circle's radius.")
+            case .south:
+                Text("Move South", comment: "VoiceOver action on the Add Location map pin: moves the place south by the circle's radius.")
+            case .east:
+                Text("Move East", comment: "VoiceOver action on the Add Location map pin: moves the place east by the circle's radius.")
+            case .west:
+                Text("Move West", comment: "VoiceOver action on the Add Location map pin: moves the place west by the circle's radius.")
+            }
+        }
+
+        var announcement: String {
+            switch self {
+            case .north:
+                String(localized: "Moved north", comment: "VoiceOver announcement after the Move North action on the Add Location map pin.")
+            case .south:
+                String(localized: "Moved south", comment: "VoiceOver announcement after the Move South action on the Add Location map pin.")
+            case .east:
+                String(localized: "Moved east", comment: "VoiceOver announcement after the Move East action on the Add Location map pin.")
+            case .west:
+                String(localized: "Moved west", comment: "VoiceOver announcement after the Move West action on the Add Location map pin.")
+            }
+        }
     }
 
     private static let radiusRange: ClosedRange<CLLocationDistance> = 50...1_000
@@ -91,6 +126,7 @@ public struct LocationPickerView: View {
             let centre = context.region.center
             let point = MapPoint(latitude: centre.latitude, longitude: centre.longitude)
             if point != center { center = point }
+            if context.camera.distance != cameraDistance { cameraDistance = context.camera.distance }
             guard mapWidth > 0 else { return }
             let metres = context.rect.size.width * MKMetersPerMapPointAtLatitude(centre.latitude) / mapWidth
             if metres != metresPerPoint { metresPerPoint = metres }
@@ -117,9 +153,64 @@ public struct LocationPickerView: View {
                 // Lift the pin so its point, not its middle, marks the centre.
                 .offset(y: -17)
         }
+        // VoiceOver cannot see the map under the pin or drag it, so the pin says
+        // what will be added and moves by actions. Moving it changes only the
+        // camera, never the map's content (rule 7).
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(
+            Text("Map pin", comment: "VoiceOver label for the pin in the middle of the Add Location map, which marks the place to add.")
+        )
+        .accessibilityValue(
+            Text(
+                "\(pinName), \(radius.metres, format: .radius) radius",
+                comment: """
+                VoiceOver value of the pin on the Add Location map: the name the place will get, then the circle's size, \
+                as in “Westway, 200 m radius”.
+                """
+            )
+        )
+        .accessibilityActions {
+            ForEach(Compass.allCases, id: \.self) { direction in
+                Button {
+                    nudge(direction)
+                } label: {
+                    direction.actionName
+                }
+            }
+        }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .allowsHitTesting(false)
-        .accessibilityHidden(true)
+    }
+
+    /// The name the place will be saved with.
+    private var pinName: String {
+        let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        return trimmed.isEmpty
+            ? String(localized: "Pinned location", comment: "Name saved for a place added on the map without typing a name.")
+            : trimmed
+    }
+
+    /// Moves the map, and so the place under the pin, one radius `direction`.
+    private func nudge(_ direction: Compass) {
+        guard let center else { return }
+        let metresPerDegree = 111_320.0
+        let latitudeStep = radius / metresPerDegree
+        let longitudeStep = radius / (metresPerDegree * max(cos(center.latitude * .pi / 180), 0.01))
+        var target = CLLocationCoordinate2D(latitude: center.latitude, longitude: center.longitude)
+        switch direction {
+        case .north:
+            target.latitude += latitudeStep
+        case .south:
+            target.latitude -= latitudeStep
+        case .east:
+            target.longitude += longitudeStep
+        case .west:
+            target.longitude -= longitudeStep
+        }
+        withAnimation {
+            position = .camera(MapCamera(centerCoordinate: target, distance: cameraDistance ?? 1_500))
+        }
+        announcer.announce(direction.announcement)
     }
 
     private var controls: some View {
@@ -139,6 +230,9 @@ public struct LocationPickerView: View {
                     .accessibilityIdentifier("postcodeField")
                     if isSearching {
                         ProgressView()
+                            .accessibilityLabel(
+                                Text("Searching", comment: "VoiceOver label for the spinner beside the postcode field while a search runs.")
+                            )
                     } else if !postcode.isEmpty {
                         Button(action: search) {
                             Text("Find", comment: "Button beside the postcode field that moves the map to that postcode. A verb.")
@@ -206,8 +300,11 @@ public struct LocationPickerView: View {
         Task {
             let match = await findPlace(query)
             isSearching = false
+            // Both results are spoken: the message and the map's move are
+            // otherwise silent.
             guard let match else {
                 notFound = true
+                announcer.announce(Self.notFoundMessage(query))
                 return
             }
             radius = CardLocation.defaultRadius
@@ -217,18 +314,29 @@ public struct LocationPickerView: View {
                     MKCoordinateRegion(center: match.coordinate, latitudinalMeters: 1_200, longitudinalMeters: 1_200)
                 )
             }
+            announcer.announce(
+                String(
+                    localized: "Map moved to \(match.name)",
+                    comment: "VoiceOver announcement after a postcode search on the Add Location map finds a place. The argument is the place found."
+                )
+            )
         }
+    }
+
+    /// Shown under the postcode field, and spoken, when nothing is found.
+    private static func notFoundMessage(_ query: String) -> String {
+        String(
+            localized: "No place found for \u{201C}\(query)\u{201D}",
+            comment: "Under the postcode field when nothing is found. The argument is what was typed; use your language's quotation marks."
+        )
     }
 
     private func add() {
         guard let center else { return }
-        let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
         onAdd(
             CardLocation(
                 // Saved with the card, so it is resolved to a String now.
-                name: trimmed.isEmpty
-                    ? String(localized: "Pinned location", comment: "Name saved for a place added on the map without typing a name.")
-                    : trimmed,
+                name: pinName,
                 latitude: center.latitude,
                 longitude: center.longitude,
                 radius: radius
