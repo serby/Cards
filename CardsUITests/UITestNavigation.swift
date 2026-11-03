@@ -60,10 +60,17 @@ extension XCUIApplication {
         XCTAssertTrue(buttons["addLocationButton"].waitForExistence(timeout: 5), "The Add Location map did not open")
     }
 
+    /// The Settings tab. On iPhone it is the second button of the tab bar,
+    /// found by position as tab titles are translated; the order of the
+    /// elements stays the same right to left, only the drawing flips. From
+    /// iPadOS 18 the tab bar floats at the top, outside any tab bar, and its
+    /// buttons take their symbols' names as identifiers.
+    var settingsTab: XCUIElement {
+        tabBars.firstMatch.exists ? tabBars.buttons.element(boundBy: 1) : buttons["gearshape"]
+    }
+
     func openSettings() {
-        // By position, as tab titles are translated. The order of the elements
-        // stays the same right to left; only the drawing flips.
-        tabBars.buttons.element(boundBy: 1).tap()
+        settingsTab.tap()
         XCTAssertTrue(switches["brightnessBoostToggle"].waitForExistence(timeout: 5), "Settings did not open")
     }
 
