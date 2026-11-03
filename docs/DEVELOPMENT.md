@@ -1,0 +1,275 @@
+# Cards development guide
+
+How to build, change and ship Cards. It is written for people and for coding agents alike: the numbered rules in [section 4](#4-rules) are the contract every change is held to, and the recipes in [section 5](#5-recipes) show how to follow them for the common jobs.
+
+If something here turns out to be wrong, fix the guide in the same change.
+
+## Contents
+
+1. [Set up](#1-set-up)
+2. [The everyday loop](#2-the-everyday-loop)
+3. [Project layout](#3-project-layout)
+4. [Rules](#4-rules)
+5. [Recipes](#5-recipes)
+6. [Running and driving the simulator](#6-running-and-driving-the-simulator)
+7. [Signing, teams and iCloud](#7-signing-teams-and-icloud)
+8. [Releasing](#8-releasing)
+9. [Troubleshooting](#9-troubleshooting)
+
+## 1. Set up
+
+| Tool | Why | Notes |
+|------|-----|-------|
+| Xcode 27.1 | Builds, tests, simulators | The Makefile expects `/Applications/Xcode27.1.app`; override with `make XCODE_APP=/path/to/Xcode.app …` |
+| SwiftLint | Lint, run before every build | `.swiftlint.yml` at the root |
+| Node 24 | `scripts/check-release-clean.ts` | Runs TypeScript directly, no install step |
+| Python 3 | `scripts/validate-screenshots.py` | Ships with macOS |
+| librsvg, ImageMagick | App icon rendering only | `brew install librsvg imagemagick` |
+
+Open the project with `open Cards.xcodeproj`. There is no generator step: the project is checked in, and the app target reads every file under `Cards/` through a file system synchronised group, so a new file or folder on disk is in the build with nothing to add.
+
+The deployment target is iOS 18.0. The app is built with the iOS 27 SDK, so anything newer than iOS 18 must sit behind `if #available` (see `tabBarMinimizeBehaviorIfAvailable()` for the pattern).
+
+## 2. The everyday loop
+
+Run these in order after every change, and fix what fails before moving on:
+
+1. `swiftlint lint`
+2. `make build`
+3. `make test`, or `make test-unit` while iterating on logic
+4. `make check-release` whenever you add or move code in `Cards/Development`, touch `Cards/App/DevelopmentHooks.swift`, or add a preview
+5. `make capture-screenshots` whenever the list, the Add Card form or Settings change, then look at every changed PNG before committing it
+
+| Command | What it does |
+|---------|-------------|
+| `make build` | Build the app (Debug) for the simulator |
+| `make test` | Unit and UI tests |
+| `make test-unit` | `CardsTests` only |
+| `make test-e2e` | `CardsUITests` only |
+| `make test-tsan` | Unit tests under the thread sanitiser |
+| `make test-coverage` | Tests plus an HTML coverage report in `coverage-html/` |
+| `make check-release` | Build Release and fail if any development code reached it ([rule 1](#rule-1-development-code-never-ships)) |
+| `make sim` | Build, boot the simulator, install and launch |
+| `make device` | Build and install on a connected iPhone |
+| `make capture-screenshots` | Refresh the en-US and en-GB iPhone and iPad App Store screenshots |
+| `make validate-screenshots` | Check the committed screenshot set |
+| `make deploy-testflight`, `make deploy-appstore` | Archive, export and upload |
+
+Override `SIMULATOR_DEVICE` and `SIMULATOR_VERSION` on the command line to target another simulator.
+
+Xcode on this project writes build products to `fastlane/derived_data/Build/Products` (a custom build location preference), not to `-derivedDataPath`. Never guess the path; ask: `xcodebuild -project Cards.xcodeproj -scheme Cards -showBuildSettings | sed -n 's/^ *BUILT_PRODUCTS_DIR = //p'`.
+
+## 3. Project layout
+
+One app target, one Swift module. The folders are layers by convention, so the compiler will not stop a violation; the rules in section 4 do.
+
+```
+Cards/
+  App/           Entry point, and DevelopmentHooks: the only door into Development
+  Core/          Models, navigation and services. No SwiftUI views
+    Models/        CardItem (SwiftData), CardItemDTO, BarcodeType, CardColor, CardLocation
+    Navigation/    NavigationRoute, NavigationManager, deep links
+    Services/      LocationService, PostcodeLookup, PerformanceTracker
+  UI/            Every view, as a pure function of view state and actions
+    Screens/       CardListView, CardDetailView, CardEditView, LocationPickerView, SettingsListView
+    Components/    BarcodeView, BarcodeImage, CardColorPicker, CardLocationRow, ProximityLabel, …
+    ViewState/     CardSummary, CardDetail, CardDraft, SettingsState
+    Actions/       Closure bundles each screen raises
+    Environment/   Injected effects: ScreenBrightness, AccessibilityAnnouncer
+    Theme/         Colours, the card palette
+  Scanner/       Camera scanning (AVFoundation), pinch to zoom
+  Features/      Connectors: SwiftData, navigation, location and notifications in, view state out
+  Development/   Never in a release build. Storybook, previews, sample data, stand-ins, test seeds
+CardsTests/      Unit tests (Swift Testing)
+CardsUITests/    UI and screenshot tests (XCTest)
+```
+
+Dependencies point one way:
+
+```
+App ──▶ Features ──▶ UI ──▶ Core
+              └────▶ Core
+Development ──▶ anything          (nothing in production ──▶ Development, except DevelopmentHooks)
+```
+
+## 4. Rules
+
+### Rule 1: Development code never ships
+
+Development code is anything that exists to build, preview, test or demonstrate the app rather than to run it: the Storybook, `#Preview` blocks, sample data and fixtures, simulated effects (`ScreenBrightness.simulated`, `AccessibilityAnnouncer.silent`), stand-in views (`ScannerPlaceholderView`), UI-test switches and screenshot seed data, and debugging aids (`Loader`). None of it may reach a release build, and none of it may clutter production code with `#if DEBUG`.
+
+1. **It lives in `Cards/Development/`.** The Release configuration of the `Cards` target excludes that folder (`EXCLUDED_SOURCE_FILE_NAMES`), so files there are plain Swift with no `#if DEBUG` of their own. The patterns cover three folder levels below `Cards/Development`; add a pattern in the project if you ever need a fourth.
+2. **Previews live in `Cards/Development/Previews/<View>+Previews.swift`,** not beside the view. Release builds type-check `#Preview` bodies even though they strip them, so a preview next to a view would drag sample data into the release compile. Open the previews file next to the view in Xcode to get the canvas, or use the Storybook.
+3. **Production code reaches development code only through `Cards/App/DevelopmentHooks.swift`.** Each hook is one function or property whose body holds the `#if DEBUG` and returns something inert in release (`false`, nothing, an empty view). Call sites never contain `#if DEBUG`.
+4. **`#if DEBUG` appears nowhere else.** `grep -rn "#if DEBUG" Cards` must only list `DevelopmentHooks.swift`.
+5. **It is enforced.** A release build fails to compile if production code names anything in `Cards/Development` directly. On top of that, `make check-release` (and CI) builds Release and fails if any type or static member declared in `Cards/Development`, any SwiftUI preview, or a UI-testing launch key is in the binary.
+
+A hook looks like this; the caller just writes `DevelopmentHooks.isUITesting`:
+
+```swift
+static var isUITesting: Bool {
+    #if DEBUG
+    CommandLine.arguments.contains("-uiTesting")
+        || ProcessInfo.processInfo.environment["CARDS_UI_TESTING"] == "1"
+    #else
+    false
+    #endif
+}
+```
+
+Why: the shipped app carries no test-only behaviour switches, no fixtures and no tooling, so there is less to review and nothing that can be triggered by accident; production files read as production code.
+
+### Rule 2: Views are pure
+
+Views in `Cards/UI` never touch SwiftData, the camera, location, notifications, the pasteboard or screen brightness. Each view is a function of:
+
+- **View state** (`UI/ViewState`): plain `Sendable` value types such as `CardSummary` and `CardDetail`. Add a field here, with a default, rather than passing a model object.
+- **Actions** (`UI/Actions`): structs of closures, every one defaulting to a no-op, so a story or preview supplies only what it exercises.
+- **Injected effects** (`UI/Environment`): environment values whose default is the real thing (`.system`). Stories and previews swap in the substitutes from `Cards/Development/SimulatedEffects.swift`, so a story can never change the device's brightness or speak with VoiceOver.
+- **View slots** for anything device-bound: `CardEditView` is generic over its scanner, so the app passes the camera and stories pass `ScannerPlaceholderView`.
+
+If a view needs a new capability, add an action or an injected effect; never reach for a singleton or `@Environment(\.modelContext)` inside `Cards/UI`.
+
+### Rule 3: Impure work lives in connectors and services
+
+`Cards/Features` holds one connector per screen (`CardListScreen`, `CardDetailScreen`, `CardEditScreen`, `SettingsScreen`). A connector reads `@Query`, `modelContext`, `NavigationManager` and `LocationService`, maps models to view state, and wires actions back to effects. Long-lived device services (`LocationService`) live in `Core/Services` and are injected with `.environment` from `CardsApp`; integration glue that also needs UI code (`ArrivalNotifier`, which renders barcodes) lives in `Features`.
+
+Keep the logic of a service testable without the device: `ArrivalNotifier.plan` is a pure function, and the tests cover it rather than `UNUserNotificationCenter`.
+
+### Rule 4: Every view has a story, and every parameter has a knob
+
+Every view in `Cards/UI` has a story in `Cards/Development/Storybook/Catalogue`, and every parameter of that view has a knob. Use the knob kinds in `Story.swift` (toggle, text, number, options) and give the story a gallery of the fixed variants worth eyeballing.
+
+- Screens set `galleryLayout: .oneAtATime`. SwiftUI puts every visible screen's toolbar items in the Storybook's one navigation bar, so a list of screens would show one Edit button per variant.
+- Reuse the shared knobs rather than inventing new names: `ProximityKnobs` for anything that shows a distance.
+- Bindings to local state go through `Stateful`; bindings to knobs through `KnobValues.*Binding`.
+- A value read once at creation (a map's starting camera) needs `.id(knobValue)` so the story rebuilds when the knob changes.
+
+### Rule 5: Colours come from the palette and must stay readable
+
+Card faces use only `CardColor` swatches (`UI/Theme/CardPalette.swift`), each a fixed background with an ink. Never draw a card in an arbitrary colour. `CardColorTests` checks WCAG AA (4.5:1) for primary and secondary text on every swatch, for the tinted list row in light and dark mode, and for the accent on the system background. Adding a colour means adding a case, a swatch and a display name; the tests then cover it automatically. If a test fails, change the colour, never the threshold.
+
+### Rule 6: Models stay CloudKit- and export-compatible
+
+The SwiftData store syncs through CloudKit, and users keep JSON exports. So:
+
+- Every `@Model` property has a default value; no unique constraints; relationships optional.
+- Enums are stored by raw value with a tolerant reader (`CardColor.stored(_:)`, `CardItem.getBarcodeType()`), so an unknown value from a newer build falls back instead of failing.
+- New `CardItemDTO` fields are optional, and a test decodes an export from before the field existed.
+- Persisting a new kind of value gets a round-trip test through a real in-memory `ModelContainer` (`cloudKitDatabase: .none`).
+- Before a build with new fields ships, the CloudKit schema must be deployed to Production (see [section 8](#8-releasing)).
+
+### Rule 7: Swift 6, no warnings, clean lint
+
+The target builds in Swift 6 language mode with strict concurrency, `SWIFT_TREAT_WARNINGS_AS_ERRORS` and `ExistentialAny`. Patterns that keep it clean:
+
+- UI-facing services are `@MainActor`; delegate callbacks from Apple frameworks are `nonisolated` and hop back with `MainActor.assumeIsolated` when the framework calls on the main thread.
+- Keep non-`Sendable` framework values inside the function that made them; return your own `Sendable` struct (`PlaceMatch`) instead.
+- With several closures, use labelled closure arguments, not trailing closure syntax.
+- Silence a lint rule only on the line that needs it, with `// swiftlint:disable:next rule_name` and a comment saying why.
+- Never update `Map` content from `onMapCameraChange`: MapKit re-applies the camera and loops. Draw camera-relative overlays in screen space, as `LocationPickerView` does with its radius ring.
+
+### Rule 8: Accessibility is part of done
+
+- Every control a UI test touches has an `accessibilityIdentifier`; every meaningful control has a label in plain words.
+- Decorative images are hidden from VoiceOver; codes are read character by character (`speechSpellsOutCharacters()`).
+- Layouts survive the accessibility text sizes: switch from side by side to stacked with `AnyLayout` when `dynamicTypeSize.isAccessibilitySize`.
+- Check new UI in the Storybook in dark mode, at the largest text size and right to left before calling it finished.
+
+### Rule 9: Test the logic, the persistence and the promises
+
+- Unit tests use Swift Testing (`@Test`, parameterised with `arguments:`); UI and screenshot tests use XCTest.
+- Test pure logic directly (distances, the arrival plan, palette contrast) and persistence through a real in-memory container.
+- UI tests launch with `-uiTesting` for an in-memory store and the shipping UI; the screenshot test adds `-screenshotSeed`.
+- A UI change that shows up in the App Store screenshots must come with refreshed references, or CI fails.
+
+### Rule 10: Commits tell a story
+
+- One concern per commit, with a conventional prefix: `feat`, `fix`, `refactor`, `style`, `test`, `build`, `ci`, `docs`, `chore`.
+- The subject says what changed; the body says why, and anything a reviewer could trip over.
+- Each commit builds. Run the loop in section 2 before committing.
+- Someone else may be editing the tree: read `git status` and `git diff` before staging, and stage by hunk when a file mixes your change with theirs.
+- Write British English in prose, comments and UI copy ("colour"), and Swift's spelling in identifiers (`color`).
+
+## 5. Recipes
+
+### Add a view
+
+1. Write the view in `Cards/UI/Components` or `Cards/UI/Screens`, taking view state and actions ([rule 2](#rule-2-views-are-pure)).
+2. Add any sample data it needs to `Cards/Development/SampleData.swift`.
+3. Add a story with a knob for every parameter to `ComponentStories.swift` or `ScreenStories.swift`, and list it in that file's story array ([rule 4](#rule-4-every-view-has-a-story-and-every-parameter-has-a-knob)).
+4. Add previews, if you want them, in `Cards/Development/Previews/<View>+Previews.swift`.
+5. Run the loop, including `make check-release`.
+
+### Add a screen
+
+Do everything in "Add a view", then add a connector in `Cards/Features` that maps models to the view state and wires the actions, a route in `NavigationRoute` if it is navigable, and a case in `CardListScreen.destinationView(for:)`.
+
+### Add a field to a card
+
+1. Add the stored property to `CardItem` with a default, and an init parameter with a default.
+2. Add it to `CardItemDTO` as an optional, and map it both ways.
+3. Carry it through the view state types that need it, and set it in the connectors.
+4. Test: the default, a SwiftData round trip, and an import of an export without the field.
+5. Note it for the CloudKit schema deployment before release.
+
+### Add development-only code
+
+Put it under `Cards/Development` and reference it only from other development code. If production code has to reach it (a launch switch, a debug tab), add a hook to `DevelopmentHooks` with the `#if DEBUG` inside the hook, and call the hook. Then run `make check-release`.
+
+### Add a card colour
+
+Add a case to `CardColor`, a swatch and a display name in `CardPalette.swift`, run `make test-unit`, and adjust the colour until `CardColorTests` passes.
+
+### Add a package dependency
+
+In Xcode, **File > Add Package Dependencies**, add the product to the `Cards` target, and commit `project.pbxproj` with `Cards.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved`.
+
+### Change the app icon
+
+Edit `DesignAssets/Icon.svg`, run `scripts/generate-app-icons.sh`, and commit the SVG with the regenerated PNGs.
+
+### Refresh the App Store screenshots
+
+Run `make capture-screenshots` (about ten minutes for the four device and locale sets), look at every changed PNG under `screenshots/`, and commit them in their own `test:` commit.
+
+## 6. Running and driving the simulator
+
+Xcode 27 has no Simulator.app; `make sim` opens Device Hub to show the screen, and every `simctl` command works headless.
+
+- **Launch arguments:** `-uiTesting` gives an in-memory store and hides the Storybook tab; `-screenshotSeed` adds the six screenshot cards. The environment variables `CARDS_UI_TESTING=1` and `CARDS_SCREENSHOT_SEED=1` do the same. Both are ignored in release builds.
+- **Deep links:** `cards://cards/card/<code>`, `cards://cards/card/<code>/edit` and `cards://cards/new`. `xcrun simctl openurl` shows a confirmation prompt first.
+- **Location:** `xcrun simctl privacy <udid> grant location net.serby.Cards`, then `xcrun simctl location <udid> set 51.5203,-0.2094`.
+- **Arrival notifications:** give a card a location, send the app to the background, set the simulated location away and then back inside the circle; SpringBoard logs `Location trigger fired` when it delivers.
+- **Reinstalling:** uninstall before installing. `simctl install` over a running copy can keep the old binary, and you end up debugging a build you are not running.
+
+## 7. Signing, teams and iCloud
+
+- The app ID `net.serby.Cards` and the iCloud container `iCloud.net.serby.Cards` belong to the paid Apple Developer team **"Paul Serby" (`ZMBFPG86J4`)**. Both build configurations of the app target must use that team, and so must anyone building to a device.
+- A **Personal Team cannot build this app**. Free teams do not support the iCloud capability, and the app ID belongs to another team, so Xcode fails with "Personal development teams … do not support the iCloud capability" and "doesn't include the iCloud capability".
+- To build to a device, sign in to Xcode (**Settings > Accounts**) with the Apple ID that is a member of `ZMBFPG86J4`, select that team in **Signing & Capabilities** for both configurations, and let Xcode register the device and create the development profile.
+- Never sign this app with a company team you happen to belong to.
+- `Cards/Cards.entitlements` points every configuration, Debug included, at the **Production** CloudKit environment. A debug build on a signed-in device reads and writes the real iCloud data, so test destructive changes on a simulator or a test Apple ID.
+- `scripts/build-ipa.sh` passes `DEVELOPMENT_TEAM` (default `ZMBFPG86J4`) itself, so archives do not depend on the project's team setting.
+
+## 8. Releasing
+
+1. CI must be green: lint, build, tests, the release check and the screenshot comparison.
+2. If the build adds stored fields, deploy the CloudKit schema first. Production rejects fields it does not know, so run a build against the Development environment (set `com.apple.developer.icloud-container-environment` to `Development` temporarily), save a card that uses the new fields so CloudKit creates them, then **Deploy Schema Changes** to Production in the CloudKit Console for `iCloud.net.serby.Cards`.
+3. `make deploy-testflight` or `make deploy-appstore` archive with `scripts/build-ipa.sh` and upload with an App Store Connect API key (`ASC_KEY_ID`, `ASC_ISSUER_ID`, `ASC_KEY_CONTENT`). In CI, `deploy.yml` uploads to TestFlight after CI passes on `main`, and `release.yml` submits to the App Store on `v*` tags.
+4. `scripts/upload-metadata.sh` and `scripts/upload-screenshots.sh` push the store listing from `metadata/` and `screenshots/`.
+
+`.github/workflows/ci.yml`, `deploy.yml` and `release.yml` are the source of truth for the pipelines; `docs/CICD_SETUP.md` and `docs/DEPLOYMENT.md` cover the one-off account and secrets setup.
+
+## 9. Troubleshooting
+
+| Symptom | Cause and fix |
+|---------|---------------|
+| "Personal development teams … do not support the iCloud capability" | The project's team is a Personal Team. Use `ZMBFPG86J4` ([section 7](#7-signing-teams-and-icloud)) |
+| "Device … isn't registered in your developer account" | Building to a device or "My Mac (Designed for iPad)" with a team that has not registered it. Select `ZMBFPG86J4`; Xcode offers to register it |
+| Release build fails with "has no member 'sample'" or similar | Production code, often a preview left beside a view, names something in `Cards/Development`. Move the preview or go through `DevelopmentHooks` |
+| `make check-release` lists a declaration | That development type or member is reachable from production code. Find the reference and route it through a hook |
+| The app behaves like an older build | `simctl install` kept the old binary; uninstall, then install |
+| A build fails in `PrecompileModule` with "cannot find interface declaration" | Stale generated `*-Swift.h` headers after a type was deleted; delete them under `fastlane/derived_data/Build/Intermediates.noindex` and rebuild |
+| The map picker freezes the app | Something updates `Map` content from `onMapCameraChange` ([rule 7](#rule-7-swift-6-no-warnings-clean-lint)) |
+| A story shows several Edit buttons | The screen story is missing `galleryLayout: .oneAtATime` |
