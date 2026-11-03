@@ -3,7 +3,8 @@ import OSLog
 
 public protocol PerformanceTracking {
     func recordAppLaunch()
-    func recordWarmStart()
+    /// The warm start just measured in milliseconds, or nil if this was not one.
+    @discardableResult func recordWarmStart() -> Double?
     func recordBackgroundTransition()
     func recordForegroundTransition()
 }
@@ -12,6 +13,8 @@ public final class PerformanceTracker: PerformanceTracking {
     private static let log = Logger(subsystem: "net.serby.Cards", category: "Performance")
     private let appLaunchTime = Date()
     private var foregroundTime: Date?
+    /// The scene's first move to active is the end of launching, not a warm start.
+    private var hasLaunched = false
 
     public init() {}
 
@@ -20,11 +23,17 @@ public final class PerformanceTracker: PerformanceTracking {
         Self.log.info("Cold start: \(duration, format: .fixed(precision: 2)) ms")
     }
 
-    public func recordWarmStart() {
-        guard let foregroundTime = foregroundTime else { return }
+    @discardableResult
+    public func recordWarmStart() -> Double? {
+        defer { foregroundTime = nil }
+        guard hasLaunched else {
+            hasLaunched = true
+            return nil
+        }
+        guard let foregroundTime else { return nil }
         let duration = Date().timeIntervalSince(foregroundTime) * 1_000
         Self.log.info("Warm start: \(duration, format: .fixed(precision: 2)) ms")
-        self.foregroundTime = nil
+        return duration
     }
 
     public func recordBackgroundTransition() {}

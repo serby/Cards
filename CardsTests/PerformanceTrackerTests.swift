@@ -22,6 +22,27 @@ struct PerformanceTrackerTests {
         tracker.recordWarmStart()
     }
 
+    @Test func firstActivationIsPartOfLaunchNotAWarmStart() {
+        let tracker = PerformanceTracker()
+        tracker.recordForegroundTransition()
+        #expect(tracker.recordWarmStart() == nil)
+    }
+
+    @Test func returningFromTheBackgroundIsMeasuredAfterLaunch() {
+        let tracker = PerformanceTracker()
+        tracker.recordWarmStart()
+        tracker.recordForegroundTransition()
+        let duration = tracker.recordWarmStart()
+        #expect(duration != nil)
+        #expect((duration ?? -1) >= 0)
+    }
+
+    @Test func becomingActiveWithoutLeavingTheBackgroundIsNotAWarmStart() {
+        let tracker = PerformanceTracker()
+        tracker.recordWarmStart()
+        #expect(tracker.recordWarmStart() == nil)
+    }
+
     @Test func recordBackgroundTransition_completesWithoutCrashing() {
         let tracker = PerformanceTracker()
         tracker.recordBackgroundTransition()
