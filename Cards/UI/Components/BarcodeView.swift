@@ -21,6 +21,9 @@ public struct BarcodeView: View {
                     Image(uiImage: barcodeImage)
                         .resizable()
                         .scaledToFit()
+                        // A mirrored barcode will not scan, so it stays as drawn
+                        // in right-to-left languages too.
+                        .flipsForRightToLeftLayoutDirection(false)
                 } else {
                     Text(
                         "Failed to generate barcode",

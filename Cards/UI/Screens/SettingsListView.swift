@@ -36,6 +36,7 @@ public struct SettingsListView: View {
                         Spacer()
                         Text("\(version) (\(build))", comment: "The app's version and then its build number, as in “1.1 (42)”.")
                             .foregroundColor(.secondaryText)
+                            .readsLeftToRight()
                     }
                 }
 
@@ -175,6 +176,7 @@ public struct ImportCardsView: View {
             VStack {
                 TextEditor(text: $importText)
                     .font(.system(.body, design: .monospaced))
+                    .readsLeftToRight()
                     .autocorrectionDisabled()
                     .textInputAutocapitalization(.never)
                     .padding()

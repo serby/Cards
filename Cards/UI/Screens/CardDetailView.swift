@@ -58,6 +58,7 @@ public struct CardDetailView: View {
                     Text(card.code)
                         .font(.title3.monospaced().weight(.semibold))
                         .foregroundStyle(card.color.primaryInk)
+                        .readsLeftToRight()
                         .textSelection(.enabled)
                         .accessibilityIdentifier("cardCodeText")
                         .accessibilityLabel(

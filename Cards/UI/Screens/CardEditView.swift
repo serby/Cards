@@ -11,9 +11,17 @@ public struct CardEditView<Scanner: View>: View {
 
     @FocusState private var focusedField: Field?
     @State private var showsLocationPicker = false
+    @Environment(\.layoutDirection) private var layoutDirection
 
     private enum Field {
         case name, code
+    }
+
+    /// The code field is laid out left to right in every language, as codes are
+    /// written, so in a right-to-left form its text keeps to the same edge as the
+    /// name above it by aligning to its own leading (left) edge.
+    private var codeAlignment: TextAlignment {
+        layoutDirection == .rightToLeft ? .leading : .trailing
     }
 
     public init(
@@ -68,7 +76,8 @@ public struct CardEditView<Scanner: View>: View {
                         text: $draft.code,
                         prompt: Text("Enter code", comment: "Placeholder in the empty field for the number or text that the barcode encodes.")
                     )
-                    .multilineTextAlignment(.trailing)
+                    .multilineTextAlignment(codeAlignment)
+                    .readsLeftToRight()
                     .keyboardType(.default)
                     .autocorrectionDisabled()
                     .focused($focusedField, equals: .code)
