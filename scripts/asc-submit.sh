@@ -32,13 +32,13 @@ api() {
     local path="$1"; shift
     local data="${1:-}"
     if [[ -n "$data" ]]; then
-        curl -fsS -X "$method" \
+        curl --fail-with-body -sS -X "$method" \
             -H "Authorization: Bearer $ASC_JWT" \
             -H "Content-Type: application/json" \
             -d "$data" \
             "$ASC_API$path"
     else
-        curl -fsS -X "$method" \
+        curl --fail-with-body -sS -X "$method" \
             -H "Authorization: Bearer $ASC_JWT" \
             "$ASC_API$path"
     fi
@@ -135,19 +135,60 @@ print(json.dumps({
     echo "    $LOC_NAME updated"
 done
 
+# Submission uses review submissions: one open submission per platform holds
+# the items to review, and setting submitted=true sends it to App Review. (The
+# older appStoreVersionSubmissions endpoint is deprecated.)
 echo "==> Submitting version for review"
+SUBMISSION_ID=$(api GET "/reviewSubmissions?filter[app]=$APP_ID&filter[platform]=$PLATFORM&filter[state]=READY_FOR_REVIEW" \
+    | jq_py "
+data = json.load(sys.stdin).get('data', [])
+print(data[0]['id'] if data else '')
+")
+if [[ -z "$SUBMISSION_ID" ]]; then
+    PAYLOAD=$(python3 -c "
+import json
+print(json.dumps({
+  'data': {
+    'type': 'reviewSubmissions',
+    'attributes': {'platform': '$PLATFORM'},
+    'relationships': {'app': {'data': {'type': 'apps', 'id': '$APP_ID'}}}
+  }
+}))")
+    SUBMISSION_ID=$(api POST "/reviewSubmissions" "$PAYLOAD" \
+        | jq_py "print(json.load(sys.stdin)['data']['id'])")
+    echo "    Created review submission $SUBMISSION_ID"
+else
+    echo "    Reusing open review submission $SUBMISSION_ID"
+fi
+
 PAYLOAD=$(python3 -c "
 import json
 print(json.dumps({
   'data': {
-    'type': 'appStoreVersionSubmissions',
+    'type': 'reviewSubmissionItems',
     'relationships': {
+      'reviewSubmission': {'data': {'type': 'reviewSubmissions', 'id': '$SUBMISSION_ID'}},
       'appStoreVersion': {'data': {'type': 'appStoreVersions', 'id': '$VERSION_ID'}}
     }
   }
 }))")
+# A version already in this submission (a re-run) is fine, so a failure here
+# is reported but not fatal; the submit below fails loudly if nothing is in it.
+if ! api POST "/reviewSubmissionItems" "$PAYLOAD" > /tmp/submit-item.json 2>&1; then
+    echo "    Version not added (already in the submission?):"
+    cat /tmp/submit-item.json
+fi
 
-if api POST "/appStoreVersionSubmissions" "$PAYLOAD" > /tmp/submit-response.json 2>&1; then
+PAYLOAD=$(python3 -c "
+import json
+print(json.dumps({
+  'data': {
+    'type': 'reviewSubmissions',
+    'id': '$SUBMISSION_ID',
+    'attributes': {'submitted': True}
+  }
+}))")
+if api PATCH "/reviewSubmissions/$SUBMISSION_ID" "$PAYLOAD" > /tmp/submit-response.json 2>&1; then
     echo "    Submitted for review."
     echo "    Track at https://appstoreconnect.apple.com"
 else
