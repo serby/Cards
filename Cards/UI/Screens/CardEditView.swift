@@ -74,11 +74,10 @@ public struct CardEditView<Scanner: View>: View {
                 rowLayout {
                     // The field carries this label, so VoiceOver reads it once and
                     // "Tap Name" in Voice Control reaches the field.
+                    // No Spacer: the field fills the row itself, and a Spacer in an
+                    // AnyLayout does not know its axis, so it made the row taller.
                     nameLabel
                         .accessibilityHidden(true)
-                    if !stacksFields {
-                        Spacer()
-                    }
                     TextField(
                         "Enter name",
                         text: $draft.name,
@@ -96,9 +95,6 @@ public struct CardEditView<Scanner: View>: View {
                 rowLayout {
                     codeLabel
                         .accessibilityHidden(true)
-                    if !stacksFields {
-                        Spacer()
-                    }
                     TextField(
                         "Enter code",
                         text: $draft.code,
