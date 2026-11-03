@@ -5,6 +5,7 @@ public struct CardRowView: View {
     private let onTap: () -> Void
     @State private var trigger = false
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @Environment(\.colorSchemeContrast) private var colorSchemeContrast
 
     public init(card: CardSummary, onTap: @escaping () -> Void) {
         self.card = card
@@ -32,6 +33,13 @@ public struct CardRowView: View {
             .padding(.vertical, 20)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(card.color.rowFill, in: .rect(cornerRadius: 18))
+            // With Increase Contrast each row gets an edge, as its faint wash
+            // alone barely parts it from the background.
+            .overlay {
+                if colorSchemeContrast == .increased {
+                    RoundedRectangle(cornerRadius: 18).strokeBorder(Color.primaryText, lineWidth: 1)
+                }
+            }
             .contentShape(.rect(cornerRadius: 18))
         }
         .buttonStyle(.plain)

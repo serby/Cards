@@ -112,6 +112,38 @@ struct CardColorTests {
         }
     }
 
+    /// With Increase Contrast the app's own colours get stronger, never weaker,
+    /// on the surfaces they are drawn on.
+    @Test func increasedContrastIsAtLeastAsReadable() {
+        let light: [UInt32] = [0xFFFFFF, 0xF2F2F7]
+        let dark: [UInt32] = [0x000000, 0x1C1C1E]
+        struct Pair {
+            let name: String
+            let standard: UInt32
+            let increased: UInt32
+            let surfaces: [UInt32]
+        }
+        let pairs = [
+            Pair(
+                name: "secondary text, light",
+                standard: Color.secondaryTextLightRGB,
+                increased: Color.secondaryTextIncreasedLightRGB,
+                surfaces: light
+            ),
+            Pair(name: "secondary text, dark", standard: Color.secondaryTextDarkRGB, increased: Color.secondaryTextIncreasedDarkRGB, surfaces: dark),
+            Pair(name: "accent, light", standard: Color.accentLightRGB, increased: Color.accentIncreasedLightRGB, surfaces: light),
+            Pair(name: "accent, dark", standard: Color.accentDarkRGB, increased: Color.accentIncreasedDarkRGB, surfaces: dark),
+            Pair(name: "destructive, light", standard: Color.destructiveLightRGB, increased: Color.destructiveIncreasedLightRGB, surfaces: light),
+            Pair(name: "destructive, dark", standard: Color.destructiveDarkRGB, increased: Color.destructiveIncreasedDarkRGB, surfaces: dark)
+        ]
+        for pair in pairs {
+            for surface in pair.surfaces {
+                #expect(Contrast.ratio(pair.increased, surface) >= Contrast.ratio(pair.standard, surface), "\(pair.name)")
+                #expect(Contrast.ratio(pair.increased, surface) >= Self.minimumContrast, "\(pair.name)")
+            }
+        }
+    }
+
     @Test func storedValuesRoundTrip() {
         for color in CardColor.allCases {
             #expect(CardColor.stored(color.rawValue) == color)

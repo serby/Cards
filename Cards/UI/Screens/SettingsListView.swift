@@ -14,6 +14,7 @@ public struct SettingsListView: View {
     @State private var showImportSheet = false
     @State private var importText = ""
     @Environment(\.accessibilityAnnouncer) private var announcer
+    @Environment(\.colorSchemeContrast) private var colorSchemeContrast
 
     public init(
         state: SettingsState,
@@ -115,7 +116,9 @@ public struct SettingsListView: View {
             }
         }
         .listStyle(.insetGrouped)
-        .scrollContentBackground(.hidden)
+        // White cells on a white screen: with Increase Contrast the list keeps
+        // the grouped background, so each cell has an edge.
+        .scrollContentBackground(colorSchemeContrast == .increased ? .visible : .hidden)
         .background(Color.primaryBackground)
         .navigationTitle(Text("Settings", comment: "Title of the Settings screen."))
         .sheet(isPresented: $showImportSheet) {

@@ -12,6 +12,13 @@ public struct CardDetailView: View {
     @State private var originalBrightness: CGFloat?
     /// VoiceOver starts on the card's name, which also confirms a save.
     @AccessibilityFocusState private var nameFocused: Bool
+    @Environment(\.colorSchemeContrast) private var colorSchemeContrast
+
+    /// The distance and date: a lighter ink, or with Increase Contrast the
+    /// full ink of the name and code.
+    private var supportingInk: Color {
+        colorSchemeContrast == .increased ? card.color.primaryInk : card.color.secondaryInk
+    }
 
     public init(
         card: CardDetail,
@@ -42,7 +49,7 @@ public struct CardDetailView: View {
                     if let proximity = card.proximity {
                         ProximityLabel(proximity, showsPlace: true)
                             .font(.subheadline.weight(.medium))
-                            .foregroundStyle(card.color.secondaryInk)
+                            .foregroundStyle(supportingInk)
                             .accessibilityIdentifier("cardProximityText")
                     }
                 }
@@ -66,7 +73,7 @@ public struct CardDetailView: View {
 
                     Text(card.timestamp, format: Date.FormatStyle(date: .abbreviated, time: .shortened))
                         .font(.caption)
-                        .foregroundStyle(card.color.secondaryInk)
+                        .foregroundStyle(supportingInk)
                         .accessibilityIdentifier("cardTimestampText")
                         .accessibilityLabel(
                             Text(
@@ -85,6 +92,13 @@ public struct CardDetailView: View {
                 RoundedRectangle(cornerRadius: 24)
                     .fill(card.color.cardFill)
                     .shadow(color: .black.opacity(0.12), radius: 16, y: 8)
+            }
+            // With Increase Contrast the card gets an edge: the default grey card
+            // is barely lighter than the screen behind it.
+            .overlay {
+                if colorSchemeContrast == .increased {
+                    RoundedRectangle(cornerRadius: 24).strokeBorder(Color.primaryText, lineWidth: 1)
+                }
             }
             .keepsColoursWhenInverted()
             .padding()
