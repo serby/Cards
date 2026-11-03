@@ -10,6 +10,10 @@ public class ScannerViewController: UIViewController, AVCaptureMetadataOutputObj
     public var captureSession: AVCaptureSession?
     public var previewLayer: AVCaptureVideoPreviewLayer?
     public weak var delegate: (any ScannerViewControllerDelegate)?
+    private var videoDevice: AVCaptureDevice?
+    private var zoomAtPinchStart: CGFloat = 1
+    /// Beyond this the image is too soft to read a barcode.
+    private let maximumZoom: CGFloat = 8
 
     override public func viewDidLoad() {
         super.viewDidLoad()
@@ -22,6 +26,9 @@ public class ScannerViewController: UIViewController, AVCaptureMetadataOutputObj
             print("Unable to access the camera")
             return
         }
+
+        videoDevice = videoCaptureDevice
+        view.addGestureRecognizer(UIPinchGestureRecognizer(target: self, action: #selector(handlePinch)))
 
         do {
             let videoInput = try AVCaptureDeviceInput(device: videoCaptureDevice)
@@ -53,6 +60,28 @@ public class ScannerViewController: UIViewController, AVCaptureMetadataOutputObj
         preview.videoGravity = .resizeAspectFill
         view.layer.addSublayer(preview)
         previewLayer = preview
+    }
+
+    override public func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        previewLayer?.frame = view.layer.bounds
+    }
+
+    /// Pinch to zoom, starting from wherever the last pinch left off.
+    @objc private func handlePinch(_ pinch: UIPinchGestureRecognizer) {
+        guard let device = videoDevice else { return }
+        if pinch.state == .began {
+            zoomAtPinchStart = device.videoZoomFactor
+        }
+        let upperBound = min(device.maxAvailableVideoZoomFactor, maximumZoom)
+        let zoom = min(max(zoomAtPinchStart * pinch.scale, device.minAvailableVideoZoomFactor), upperBound)
+        do {
+            try device.lockForConfiguration()
+            device.videoZoomFactor = zoom
+            device.unlockForConfiguration()
+        } catch {
+            // Another client holds the device; skip this step of the pinch.
+        }
     }
 
     override public func viewDidAppear(_ animated: Bool) {
