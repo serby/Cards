@@ -90,9 +90,10 @@ private let cardRowStory = Story(
             view: AnyView(CardRowView(card: .longName) {})
         )
     ] + CardColor.allCases.map { color in
-        (
-            name: color.displayName,
-            view: AnyView(CardRowView(card: CardSummary(id: color.rawValue, name: color.displayName, color: color)) {})
+        let name = String(localized: color.displayName)
+        return (
+            name: name,
+            view: AnyView(CardRowView(card: CardSummary(id: color.rawValue, name: name, color: color)) {})
         )
     }
 ) { knobs in

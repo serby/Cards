@@ -26,6 +26,9 @@
     "Add Location" : {
 
     },
+    "Aztec" : {
+      "comment" : "Barcode format in the barcode type picker: the square 2D Aztec Code. Keep it unless your language writes it differently."
+    },
     "Barcode for %@" : {
 
     },
@@ -38,11 +41,17 @@
     "Barcode Type" : {
 
     },
+    "Blue" : {
+      "comment" : "Card colour name read by VoiceOver in the colour picker."
+    },
     "Boosts brightness when viewing card to improve scannability" : {
 
     },
     "Brightness Boost" : {
 
+    },
+    "Brown" : {
+      "comment" : "Card colour name read by VoiceOver in the colour picker."
     },
     "Cancel" : {
 
@@ -71,6 +80,15 @@
     "Code" : {
 
     },
+    "Code 39" : {
+      "comment" : "Barcode format in the barcode type picker. A standard name: keep it unless your language writes it differently."
+    },
+    "Code 93" : {
+      "comment" : "Barcode format in the barcode type picker. A standard name: keep it unless your language writes it differently."
+    },
+    "Code 128" : {
+      "comment" : "Barcode format in the barcode type picker. A standard name: keep it unless your language writes it differently."
+    },
     "Colour" : {
 
     },
@@ -83,6 +101,9 @@
     "Data" : {
 
     },
+    "Default" : {
+      "comment" : "Card colour name read by VoiceOver in the colour picker: the plain grey card that follows light and dark mode."
+    },
     "Delete All" : {
 
     },
@@ -91,6 +112,12 @@
     },
     "Display" : {
 
+    },
+    "EAN-8" : {
+      "comment" : "Barcode format in the barcode type picker. A standard name: keep it as it is."
+    },
+    "EAN-13" : {
+      "comment" : "Barcode format in the barcode type picker. A standard name: keep it as it is."
     },
     "Edit" : {
 
@@ -125,6 +152,12 @@
     "Find" : {
 
     },
+    "Graphite" : {
+      "comment" : "Card colour name read by VoiceOver in the colour picker: a dark blue-grey."
+    },
+    "Green" : {
+      "comment" : "Card colour name read by VoiceOver in the colour picker."
+    },
     "Import" : {
 
     },
@@ -133,6 +166,9 @@
     },
     "Import Result" : {
 
+    },
+    "Indigo" : {
+      "comment" : "Card colour name read by VoiceOver in the colour picker: a deep violet-blue."
     },
     "Locations" : {
 
@@ -152,14 +188,32 @@
     "OK" : {
 
     },
+    "Orange" : {
+      "comment" : "Card colour name read by VoiceOver in the colour picker."
+    },
     "Paste from Clipboard" : {
 
+    },
+    "PDF 417" : {
+      "comment" : "Barcode format in the barcode type picker: the stacked 2D PDF417 code, not a PDF file. Keep it as it is."
+    },
+    "Pink" : {
+      "comment" : "Card colour name read by VoiceOver in the colour picker: a deep raspberry pink."
     },
     "Postcode" : {
 
     },
+    "Purple" : {
+      "comment" : "Card colour name read by VoiceOver in the colour picker."
+    },
+    "QR Code" : {
+      "comment" : "Barcode format in the barcode type picker: the square 2D code. Use the usual name for a QR code in your language."
+    },
     "Radius" : {
 
+    },
+    "Red" : {
+      "comment" : "Card colour name read by VoiceOver in the colour picker."
     },
     "Save" : {
 
@@ -182,6 +236,9 @@
     "Tap to edit this card's details" : {
 
     },
+    "Teal" : {
+      "comment" : "Card colour name read by VoiceOver in the colour picker: a dark blue-green."
+    },
     "This is a %@ barcode with code %@" : {
       "localizations" : {
         "en" : {
@@ -198,11 +255,17 @@
     "Toggles screen brightness to maximum for easier barcode scanning" : {
 
     },
+    "UPC-E" : {
+      "comment" : "Barcode format in the barcode type picker. A standard name: keep it as it is."
+    },
     "Version" : {
 
     },
     "When you arrive at one of these places, the barcode appears on your Lock Screen." : {
 
+    },
+    "Yellow" : {
+      "comment" : "Card colour name read by VoiceOver in the colour picker."
     }
   },
   "version" : "1.0"

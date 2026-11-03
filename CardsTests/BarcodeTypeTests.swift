@@ -57,6 +57,19 @@ struct BarcodeTypeTests {
         #expect(BarcodeType(rawValue: "Invalid Type") == nil)
     }
 
+    @Test(arguments: BarcodeType.allCases)
+    func everyBarcodeTypeHasADisplayName(_ type: BarcodeType) {
+        #expect(!String(localized: type.displayName).isEmpty)
+    }
+
+    /// The picker used to show the stored raw value, so the English name must
+    /// stay the same for the English screens (and their App Store screenshots)
+    /// not to change. The raw value itself is storage and never translated.
+    @Test(arguments: BarcodeType.allCases)
+    func englishDisplayNameIsTheStoredName(_ type: BarcodeType) {
+        #expect(type.displayName.key == type.rawValue)
+    }
+
     @Test func barcodeTypeCaseIterable() {
         let allCases = BarcodeType.allCases
         #expect(allCases.count == 9)

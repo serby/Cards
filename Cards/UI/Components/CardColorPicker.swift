@@ -19,7 +19,7 @@ public struct CardColorPicker: View {
                 }
                 // Plain style gives each swatch its own hit area inside a Form row.
                 .buttonStyle(.plain)
-                .accessibilityLabel(color.displayName)
+                .accessibilityLabel(Text(color.displayName))
                 .accessibilityAddTraits(color == selection ? .isSelected : [])
                 .accessibilityIdentifier("cardColor_\(color.rawValue)")
             }

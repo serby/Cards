@@ -33,7 +33,7 @@ public struct BarcodeView: View {
         .padding(6)
         .background(.gray.opacity(0.5), in: .rect(cornerRadius: 12))
         .accessibilityIdentifier("barcodeView")
-        .accessibilityHint("This is a \(barcodeType.rawValue) barcode with code \(barcodeString)")
+        .accessibilityHint("This is a \(barcodeType.displayName) barcode with code \(barcodeString)")
     }
 
     public func generateBarcode(from code: String, type: BarcodeType) -> UIImage? {

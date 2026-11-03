@@ -58,8 +58,14 @@ struct CardColorTests {
     }
 
     @Test func displayNamesAreUnique() {
-        let names = CardColor.allCases.map(\.displayName)
+        let names = CardColor.allCases.map(\.displayName.key)
         #expect(Set(names).count == names.count)
+    }
+
+    @Test(arguments: CardColor.allCases)
+    func everyColourHasADisplayName(_ color: CardColor) {
+        #expect(!color.displayName.key.isEmpty)
+        #expect(!String(localized: color.displayName).isEmpty)
     }
 }
 

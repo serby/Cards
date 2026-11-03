@@ -67,35 +67,6 @@ public extension CardColor {
         }
     }
 
-    var displayName: String {
-        switch self {
-        case .standard:
-            "Default"
-        case .red:
-            "Red"
-        case .orange:
-            "Orange"
-        case .yellow:
-            "Yellow"
-        case .green:
-            "Green"
-        case .teal:
-            "Teal"
-        case .blue:
-            "Blue"
-        case .indigo:
-            "Indigo"
-        case .purple:
-            "Purple"
-        case .pink:
-            "Pink"
-        case .brown:
-            "Brown"
-        case .graphite:
-            "Graphite"
-        }
-    }
-
     /// The card face.
     var cardFill: AnyShapeStyle {
         swatch.map { AnyShapeStyle($0.backgroundColor) } ?? AnyShapeStyle(Color.gray.opacity(0.25))

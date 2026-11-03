@@ -221,7 +221,7 @@ Put it under `Cards/Development` and reference it only from other development co
 
 ### Add a card colour
 
-Add a case to `CardColor`, a swatch and a display name in `CardPalette.swift`, run `make test-unit`, and adjust the colour until `CardColorTests` passes.
+Add a case to `CardColor` with its display name and a translator comment (`Core/Models/CardColor.swift`) and a swatch in `CardPalette.swift`, run `make test-unit`, and adjust the colour until `CardColorTests` passes.
 
 ### Add a package dependency
 

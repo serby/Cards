@@ -74,7 +74,7 @@ public struct CardEditView<Scanner: View>: View {
             Section {
                 Picker("Barcode Type", selection: $draft.barcodeType) {
                     ForEach(BarcodeType.allCases, id: \.self) { type in
-                        Text(type.rawValue).tag(type)
+                        Text(type.displayName).tag(type)
                             .accessibilityIdentifier("barcodeType_\(type.rawValue.replacingOccurrences(of: " ", with: "_"))")
                     }
                 }
