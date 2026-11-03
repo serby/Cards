@@ -134,6 +134,9 @@ public struct LocationPickerView: View {
                 // Lift the pin so its point, not its middle, marks the centre.
                 .offset(y: -17)
         }
+        // At least a 44 pt target for VoiceOver and Switch Control, as the pin
+        // alone is a narrow 14 pt.
+        .frame(minWidth: 44, minHeight: 44)
         // VoiceOver cannot see the map under the pin or drag it, so the pin says
         // what will be added and moves by actions. Moving it changes only the
         // camera, never the map's content (rule 7).
@@ -228,6 +231,9 @@ public struct LocationPickerView: View {
                     } else if !postcode.isEmpty {
                         Button(action: search) {
                             Text("Find", comment: "Button beside the postcode field that moves the map to that postcode. A verb.")
+                                // The whole 44 pt square is the button, not just the word.
+                                .frame(minWidth: 44, minHeight: 44)
+                                .contentShape(.rect)
                         }
                         .font(.subheadline.weight(.semibold))
                     }
@@ -336,37 +342,6 @@ public struct LocationPickerView: View {
             )
         )
         dismiss()
-    }
-}
-
-/// Where the map pin's accessibility actions move the place.
-private enum Compass: CaseIterable {
-    case north, south, east, west
-
-    var actionName: Text {
-        switch self {
-        case .north:
-            Text("Move North", comment: "VoiceOver action on the Add Location map pin: moves the place north by the circle's radius.")
-        case .south:
-            Text("Move South", comment: "VoiceOver action on the Add Location map pin: moves the place south by the circle's radius.")
-        case .east:
-            Text("Move East", comment: "VoiceOver action on the Add Location map pin: moves the place east by the circle's radius.")
-        case .west:
-            Text("Move West", comment: "VoiceOver action on the Add Location map pin: moves the place west by the circle's radius.")
-        }
-    }
-
-    var announcement: String {
-        switch self {
-        case .north:
-            String(localized: "Moved north", comment: "VoiceOver announcement after the Move North action on the Add Location map pin.")
-        case .south:
-            String(localized: "Moved south", comment: "VoiceOver announcement after the Move South action on the Add Location map pin.")
-        case .east:
-            String(localized: "Moved east", comment: "VoiceOver announcement after the Move East action on the Add Location map pin.")
-        case .west:
-            String(localized: "Moved west", comment: "VoiceOver announcement after the Move West action on the Add Location map pin.")
-        }
     }
 }
 
