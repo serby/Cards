@@ -114,6 +114,12 @@ struct ArrivalNotifierTests {
         #expect(names == ["A", "B", "C"])
     }
 
+    @Test func arrivalMessageNamesThePlace() {
+        let message = ArrivalNotifier.message(at: "Westway")
+        #expect(message.contains("Westway"))
+        #expect(message != "Westway")
+    }
+
     @Test func nearestLocationsAreKeptWithinTheRegionLimit() {
         let places = (0..<30).map { place("P\($0)", latitude: 50 + Double($0) * 0.01) }
         let here = CLLocation(latitude: 50.295, longitude: 0)  // just north of P29, the furthest place from P0

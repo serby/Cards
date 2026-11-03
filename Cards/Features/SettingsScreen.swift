@@ -7,7 +7,7 @@ public struct SettingsScreen: View {
     @Query private var cards: [CardItem]
     @AppStorage("brightnessBoost") private var brightnessBoost = true
 
-    @State private var message: String?
+    @State private var message: LocalizedStringResource?
     @State private var showExportSheet = false
 
     public init() {}
@@ -54,7 +54,10 @@ public struct SettingsScreen: View {
 
         guard let data = text.data(using: .utf8),
               let dtos = try? decoder.decode([CardItemDTO].self, from: data) else {
-            message = "Invalid JSON format"
+            message = LocalizedStringResource(
+                "Invalid JSON format",
+                comment: "Import result alert when the pasted text is not a card export. JSON is a file format; keep the name."
+            )
             return
         }
 
@@ -63,7 +66,16 @@ public struct SettingsScreen: View {
         }
 
         try? modelContext.save()
-        message = "Successfully imported \(dtos.count) cards"
+        message = Self.importedMessage(count: dtos.count)
+    }
+
+    /// The import result after `count` cards were added, with a plural form
+    /// for each count.
+    static func importedMessage(count: Int) -> LocalizedStringResource {
+        LocalizedStringResource(
+            "Successfully imported \(count) cards",
+            comment: "Import result alert after cards are added from pasted JSON. The argument is how many cards were added."
+        )
     }
 
     private func deleteAllCards() {

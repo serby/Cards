@@ -73,6 +73,12 @@
     "Brightness Boost" : {
       "comment" : "Settings switch for the feature that turns the screen up while a card is shown, so scanners can read its barcode.\nVoiceOver label for the sun button on a card's screen, which turns the screen up so scanners can read the barcode."
     },
+    "Brightness boost off" : {
+      "comment" : "VoiceOver announcement after the sun button turns Brightness Boost off."
+    },
+    "Brightness boost on" : {
+      "comment" : "VoiceOver announcement after the sun button turns Brightness Boost on."
+    },
     "Brown" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker."
     },
@@ -196,6 +202,9 @@
     "Indigo" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker: a deep violet-blue."
     },
+    "Invalid JSON format" : {
+      "comment" : "Import result alert when the pasted text is not a card export. JSON is a file format; keep the name."
+    },
     "Locations" : {
       "comment" : "Section heading in the card form for the places where the card is used."
     },
@@ -226,6 +235,9 @@
     "Pink" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker: a deep raspberry pink."
     },
+    "Pinned location" : {
+      "comment" : "Name saved for a place added on the map without typing a name."
+    },
     "Postcode" : {
       "comment" : "Placeholder in the search field that moves the map to a postcode or address."
     },
@@ -253,11 +265,37 @@
     "Scan the barcode on a loyalty card to add it." : {
       "comment" : "Under “No Cards Yet” on the empty card list."
     },
+    "Screen brightness increased for better barcode visibility" : {
+      "comment" : "VoiceOver announcement when a card's screen opens with Brightness Boost on and turns the screen up."
+    },
     "Select the type of barcode for this card" : {
       "comment" : "VoiceOver hint for the barcode format menu in the card form."
     },
     "Settings" : {
       "comment" : "Tab bar item for the app's settings.\nTitle of the Settings screen."
+    },
+    "Successfully imported %lld cards" : {
+      "comment" : "Import result alert after cards are added from pasted JSON. The argument is how many cards were added.",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Successfully imported %lld card"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Successfully imported %lld cards"
+                }
+              }
+            }
+          }
+        }
+      }
     },
     "Tap to edit this card's details" : {
       "comment" : "VoiceOver hint for the Edit button on a card's screen."
@@ -316,6 +354,9 @@
     },
     "You're at %@" : {
       "comment" : "VoiceOver label when the user is inside one of a card's locations. The argument is the place's name, such as Westway."
+    },
+    "You're at %@. Your barcode is ready." : {
+      "comment" : "Lock Screen notification on arriving at one of a card's places, under the card's name. The argument is the place's name."
     }
   },
   "version" : "1.0"

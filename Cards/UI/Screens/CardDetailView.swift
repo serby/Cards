@@ -93,7 +93,12 @@ public struct CardDetailView: View {
         .task {
             guard brightnessBoost else { return }
             await boost()
-            announcer.announce("Screen brightness increased for better barcode visibility")
+            announcer.announce(
+                String(
+                    localized: "Screen brightness increased for better barcode visibility",
+                    comment: "VoiceOver announcement when a card's screen opens with Brightness Boost on and turns the screen up."
+                )
+            )
         }
         .onDisappear {
             guard let originalBrightness else { return }
@@ -145,10 +150,14 @@ public struct CardDetailView: View {
     private func applyToggle() async {
         if brightnessBoost {
             await boost()
-            announcer.announce("Brightness boost on")
+            announcer.announce(
+                String(localized: "Brightness boost on", comment: "VoiceOver announcement after the sun button turns Brightness Boost on.")
+            )
         } else {
             await screenBrightness.fade(to: originalBrightness ?? 0.5, duration: 0.2)
-            announcer.announce("Brightness boost off")
+            announcer.announce(
+                String(localized: "Brightness boost off", comment: "VoiceOver announcement after the sun button turns Brightness Boost off.")
+            )
         }
     }
 }

@@ -31,3 +31,31 @@ struct SettingsViewTests {
         #expect(!cards.isEmpty, "Button should be enabled — cards exist")
     }
 }
+
+/// The counts in Settings use the catalogue's English plural forms, so one
+/// card is never "1 cards".
+@MainActor
+struct SettingsCopyTests {
+    private func english(_ resource: LocalizedStringResource) -> String {
+        var resource = resource
+        resource.locale = Locale(identifier: "en_GB")
+        return String(localized: resource)
+    }
+
+    @Test func importResultCountsCards() {
+        #expect(english(SettingsScreen.importedMessage(count: 1)) == "Successfully imported 1 card")
+        #expect(english(SettingsScreen.importedMessage(count: 0)) == "Successfully imported 0 cards")
+        #expect(english(SettingsScreen.importedMessage(count: 12)) == "Successfully imported 12 cards")
+    }
+
+    @Test func deleteAllMessageCountsCards() {
+        #expect(
+            english(SettingsListView.deleteAllMessage(cardCount: 1))
+                == "This will permanently delete 1 card. This action cannot be undone."
+        )
+        #expect(
+            english(SettingsListView.deleteAllMessage(cardCount: 6))
+                == "This will permanently delete all 6 cards. This action cannot be undone."
+        )
+    }
+}

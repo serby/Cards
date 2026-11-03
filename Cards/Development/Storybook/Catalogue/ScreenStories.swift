@@ -275,10 +275,13 @@ private let settingsStory = Story(
         authorURL: URL(string: knobs.string("Author URL")),
         cardCount: knobs.integer("Card count")
     )
-    // An empty Message knob means no alert.
-    let message = Binding<String?>(
-        get: { knobs.string("Message").isEmpty ? nil : knobs.string("Message") },
-        set: { knobs.set($0 ?? "", for: "Message") }
+    // An empty Message knob means no alert. The knob's text is shown as it is.
+    let message = Binding<LocalizedStringResource?>(
+        get: {
+            let text = knobs.string("Message")
+            return text.isEmpty ? nil : LocalizedStringResource(String.LocalizationValue(text))
+        },
+        set: { knobs.set($0.map { String(localized: $0) } ?? "", for: "Message") }
     )
     return pushed {
         SettingsListView(

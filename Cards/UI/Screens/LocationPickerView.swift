@@ -223,7 +223,10 @@ public struct LocationPickerView: View {
         let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
         onAdd(
             CardLocation(
-                name: trimmed.isEmpty ? "Pinned location" : trimmed,
+                // Saved with the card, so it is resolved to a String now.
+                name: trimmed.isEmpty
+                    ? String(localized: "Pinned location", comment: "Name saved for a place added on the map without typing a name.")
+                    : trimmed,
                 latitude: center.latitude,
                 longitude: center.longitude,
                 radius: radius

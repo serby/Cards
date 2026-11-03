@@ -5,7 +5,9 @@ import SwiftUI
 public struct SettingsListView: View {
     private let state: SettingsState
     @Binding private var brightnessBoost: Bool
-    @Binding private var message: String?
+    /// The import result to show in an alert. A resource, not a `String`, so
+    /// the view resolves it in its own locale.
+    @Binding private var message: LocalizedStringResource?
     private let actions: SettingsActions
 
     @State private var showDeleteConfirmation = false
@@ -15,7 +17,7 @@ public struct SettingsListView: View {
     public init(
         state: SettingsState,
         brightnessBoost: Binding<Bool>,
-        message: Binding<String?> = .constant(nil),
+        message: Binding<LocalizedStringResource?> = .constant(nil),
         actions: SettingsActions = SettingsActions()
     ) {
         self.state = state
@@ -125,10 +127,7 @@ public struct SettingsListView: View {
                 Text("Cancel", comment: "Button in the delete-all dialog that keeps the cards.")
             }
         } message: {
-            Text(
-                "This will permanently delete all \(state.cardCount) cards. This action cannot be undone.",
-                comment: "Message in the delete-all dialog. The argument is how many cards there are, always at least one."
-            )
+            Text(Self.deleteAllMessage(cardCount: state.cardCount))
         }
         .alert(
             Text("Import Result", comment: "Title of the alert shown after importing cards from JSON, whether it worked or not."),
@@ -140,8 +139,18 @@ public struct SettingsListView: View {
                 Text("OK", comment: "Dismisses the import result alert.")
             }
         } message: {
-            Text(message ?? "")
+            if let message {
+                Text(message)
+            }
         }
+    }
+
+    /// The delete-all dialog's message, with a plural form for each count.
+    static func deleteAllMessage(cardCount: Int) -> LocalizedStringResource {
+        LocalizedStringResource(
+            "This will permanently delete all \(cardCount) cards. This action cannot be undone.",
+            comment: "Message in the delete-all dialog. The argument is how many cards there are, always at least one."
+        )
     }
 }
 

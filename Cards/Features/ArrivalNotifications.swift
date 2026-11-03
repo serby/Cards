@@ -73,7 +73,7 @@ public enum ArrivalNotifier {
     private static func request(for arrival: Arrival) -> UNNotificationRequest {
         let content = UNMutableNotificationContent()
         content.title = arrival.card.name
-        content.body = "You're at \(arrival.location.name). Your barcode is ready."
+        content.body = message(at: arrival.location.name)
         content.threadIdentifier = arrival.card.code
         content.userInfo = [codeKey: arrival.card.code]
         content.relevanceScore = 1
@@ -93,6 +93,17 @@ public enum ArrivalNotifier {
             identifier: "arrival.\(arrival.location.id.uuidString)",
             content: content,
             trigger: UNLocationNotificationTrigger(region: region, repeats: true)
+        )
+    }
+
+    /// The notification's text, under the card's name. Resolved now, in the
+    /// app's language, because iOS shows the notification long after it is
+    /// scheduled; every launch reschedules, so a change of language reaches
+    /// it the next time the app opens.
+    static func message(at placeName: String) -> String {
+        String(
+            localized: "You're at \(placeName). Your barcode is ready.",
+            comment: "Lock Screen notification on arriving at one of a card's places, under the card's name. The argument is the place's name."
         )
     }
 
