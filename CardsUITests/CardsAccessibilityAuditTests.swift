@@ -6,16 +6,11 @@ import XCTest
 /// runs every test again in Arabic, right to left, at the largest
 /// accessibility size. Elements are found by identifier, so both pass in
 /// any language. A screen taller than the display is audited, scrolled to
-/// its end, a second time.
+/// its end, a second time. The screens are reached through the shared
+/// helpers in `UITestNavigation.swift`.
 class CardsAccessibilityAuditTests: XCTestCase {
     /// Launch arguments for a variant of the whole suite.
     class var variantArguments: [String] { [] }
-
-    /// Seeded cards (user content, so never translated) by their codes.
-    private enum Seed {
-        static let tesco = "cardRow_634004024987531"
-        static let costa = "cardRow_1234567890128"
-    }
 
     override func setUpWithError() throws {
         // Collect every issue on a screen rather than stopping at the first.
@@ -26,14 +21,13 @@ class CardsAccessibilityAuditTests: XCTestCase {
     func testCardList() throws {
         let app = launch()
         try audit(app)
-        try audit(app, scrolledTo: app.buttons["cardRow_7350053850019"])
+        try audit(app, scrolledTo: app.buttons[SeededCard.ikea])
     }
 
     @MainActor
     func testCardDetail() throws {
         let app = launch()
-        app.buttons[Seed.costa].tap()
-        XCTAssertTrue(app.staticTexts["cardNameText"].waitForExistence(timeout: 5))
+        app.openCard(SeededCard.costa)
         try audit(app)
         try audit(app, scrolledTo: app.staticTexts["cardTimestampText"])
     }
@@ -43,16 +37,14 @@ class CardsAccessibilityAuditTests: XCTestCase {
     @MainActor
     func testCardDetailWithFailedBarcode() throws {
         let app = launch()
-        app.buttons[Seed.tesco].tap()
-        XCTAssertTrue(app.staticTexts["cardNameText"].waitForExistence(timeout: 5))
+        app.openCard(SeededCard.tesco)
         try audit(app)
     }
 
     @MainActor
     func testAddCard() throws {
         let app = launch()
-        app.buttons["addCardButton"].tap()
-        XCTAssertTrue(app.buttons["saveCardButton"].waitForExistence(timeout: 5))
+        app.openAddCard()
         try audit(app)
         try audit(app, scrolledTo: app.buttons["addLocationRowButton"])
     }
@@ -60,33 +52,24 @@ class CardsAccessibilityAuditTests: XCTestCase {
     @MainActor
     func testEditCard() throws {
         let app = launch()
-        app.buttons[Seed.costa].tap()
-        app.buttons["editCardButton"].tap()
-        XCTAssertTrue(app.buttons["saveCardButton"].waitForExistence(timeout: 5))
-        // The name field takes focus after a moment; audit the form, not the
+        // The helper puts the keyboard away, so this audits the form, not the
         // system keyboard.
-        dismissKeyboard(app)
+        app.openEditCard(SeededCard.costa)
         try audit(app)
     }
 
     @MainActor
     func testLocationPicker() throws {
         let app = launch()
-        app.buttons["addCardButton"].tap()
-        let addLocation = app.buttons["addLocationRowButton"]
-        XCTAssertTrue(reveal(addLocation, in: app))
-        addLocation.tap()
-        XCTAssertTrue(app.buttons["addLocationButton"].waitForExistence(timeout: 5))
-        dismissLocationPrompt()
+        app.openLocationPicker()
+        XCUIApplication.dismissLocationPrompt()
         try audit(app)
     }
 
     @MainActor
     func testSettings() throws {
         let app = launch()
-        // By position, as tab titles are translated.
-        app.tabBars.buttons.element(boundBy: 1).tap()
-        XCTAssertTrue(app.switches["brightnessBoostToggle"].waitForExistence(timeout: 5))
+        app.openSettings()
         try audit(app)
         try audit(app, scrolledTo: app.buttons["deleteAllCardsButton"])
     }
@@ -94,11 +77,7 @@ class CardsAccessibilityAuditTests: XCTestCase {
     @MainActor
     func testImportSheet() throws {
         let app = launch()
-        app.tabBars.buttons.element(boundBy: 1).tap()
-        let importButton = app.buttons["importJSONButton"]
-        XCTAssertTrue(reveal(importButton, in: app))
-        importButton.tap()
-        XCTAssertTrue(app.textViews["importTextEditor"].waitForExistence(timeout: 5))
+        app.openImportSheet()
         try audit(app)
     }
 
@@ -106,12 +85,7 @@ class CardsAccessibilityAuditTests: XCTestCase {
 
     @MainActor
     private func launch() -> XCUIApplication {
-        let app = XCUIApplication()
-        app.launchArguments += ["-uiTesting", "-screenshotSeed"] + Self.variantArguments
-        app.launchEnvironment["CARDS_SCREENSHOT_SEED"] = "1"
-        app.launch()
-        XCTAssertTrue(app.buttons["addCardButton"].waitForExistence(timeout: 5))
-        return app
+        XCUIApplication.launchForTesting(arguments: Self.variantArguments)
     }
 
     @MainActor
@@ -135,28 +109,9 @@ class CardsAccessibilityAuditTests: XCTestCase {
     /// had to scroll to show it.
     @MainActor
     private func audit(_ app: XCUIApplication, scrolledTo element: XCUIElement) throws {
-        guard !isOnScreen(element, in: app) else { return }
-        XCTAssertTrue(reveal(element, in: app), "Could not scroll to \(element)")
+        guard !app.isOnScreen(element) else { return }
+        XCTAssertTrue(app.reveal(element), "Could not scroll to \(element)")
         try audit(app)
-    }
-
-    /// Swipes up until `element` is fully on screen, clear of the tab bar.
-    @MainActor
-    @discardableResult
-    private func reveal(_ element: XCUIElement, in app: XCUIApplication) -> Bool {
-        for _ in 0..<8 {
-            if isOnScreen(element, in: app) { return true }
-            app.swipeUp(velocity: .slow)
-        }
-        return isOnScreen(element, in: app)
-    }
-
-    @MainActor
-    private func isOnScreen(_ element: XCUIElement, in app: XCUIApplication) -> Bool {
-        guard element.exists, element.isHittable else { return false }
-        let tabBar = app.tabBars.firstMatch
-        let bottom = tabBar.exists ? tabBar.frame.minY : app.frame.maxY
-        return element.frame.maxY <= bottom
     }
 
     @MainActor
@@ -165,26 +120,6 @@ class CardsAccessibilityAuditTests: XCTestCase {
         attachment.name = "\(name) audit"
         attachment.lifetime = .keepAlways
         add(attachment)
-    }
-
-    /// Return moves from the name to the code field and then ends editing.
-    @MainActor
-    private func dismissKeyboard(_ app: XCUIApplication) {
-        let keyboard = app.keyboards.firstMatch
-        guard keyboard.waitForExistence(timeout: 2) else { return }
-        for _ in 0..<3 where keyboard.exists {
-            app.typeText("\n")
-        }
-        XCTAssertFalse(keyboard.waitForExistence(timeout: 1), "The keyboard stayed up")
-    }
-
-    /// The picker asks for location access when it opens. Any answer will do;
-    /// the system prompt is not the app's to audit.
-    @MainActor
-    private func dismissLocationPrompt() {
-        let alert = XCUIApplication(bundleIdentifier: "com.apple.springboard").alerts.firstMatch
-        guard alert.waitForExistence(timeout: 3) else { return }
-        alert.buttons.element(boundBy: alert.buttons.count - 1).tap()
     }
 
     /// Elements the Dynamic Type check calls "partially unsupported" although

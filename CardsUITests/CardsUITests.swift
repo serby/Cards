@@ -60,34 +60,22 @@ class CardsUITests: XCTestCase {
         app.launch()
 
         // The first two seeded cards.
-        let tesco = app.buttons["cardRow_634004024987531"]
+        let tesco = app.buttons[SeededCard.tesco]
         let boots = app.buttons["cardRow_9780201379624"]
         XCTAssertTrue(tesco.waitForExistence(timeout: 5))
         XCTAssertLessThan(tesco.frame.minY, boots.frame.minY)
 
         let moveDown = app.buttons["moveCardDownMenuItem"]
-        XCTAssertTrue(openMenu(on: tesco, showing: moveDown), "The card's menu did not open")
+        XCTAssertTrue(app.openMenu(on: tesco, showing: moveDown), "The card's menu did not open")
         XCTAssertFalse(app.buttons["moveCardUpMenuItem"].exists, "The first card offered to move up")
         moveDown.tap()
         XCTAssertTrue(waitUntil { boots.frame.minY < tesco.frame.minY }, "Tesco did not move below Boots")
 
         let delete = app.buttons["deleteCardMenuItem"]
-        XCTAssertTrue(openMenu(on: tesco, showing: delete), "The card's menu did not open")
+        XCTAssertTrue(app.openMenu(on: tesco, showing: delete), "The card's menu did not open")
         delete.tap()
         XCTAssertTrue(waitUntil { !tesco.exists }, "Tesco was not deleted")
         XCTAssertTrue(boots.exists)
-    }
-
-    /// Long-presses `row` until its menu shows `item`. A press while the list
-    /// is still settling, after launch or a move, can miss, so it tries again.
-    @MainActor
-    private func openMenu(on row: XCUIElement, showing item: XCUIElement) -> Bool {
-        for _ in 0..<3 {
-            RunLoop.current.run(until: Date().addingTimeInterval(0.5))
-            row.press(forDuration: 1.2)
-            if item.waitForExistence(timeout: 3) { return true }
-        }
-        return false
     }
 
     @MainActor
