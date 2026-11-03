@@ -70,6 +70,7 @@ private struct StoryStage: View {
     @State private var knobs: KnobValues
     @State private var brightness = BrightnessBox()
     @State private var mode: StoryMode = .interactive
+    @State private var variant = 0
 
     init(story: Story, display: DisplayOptions) {
         self.story = story
@@ -116,6 +117,8 @@ private struct StoryStage: View {
         switch mode {
         case .interactive:
             story.interactive(knobs)
+        case .gallery where story.galleryLayout == .oneAtATime:
+            singleVariant
         case .gallery:
             ScrollView {
                 VStack(alignment: .leading, spacing: 24) {
@@ -132,6 +135,22 @@ private struct StoryStage: View {
                 }
                 .padding()
             }
+        }
+    }
+
+    private var singleVariant: some View {
+        let index = min(variant, story.gallery.count - 1)
+        return VStack(spacing: 0) {
+            Picker("Variant", selection: $variant) {
+                ForEach(story.gallery.indices, id: \.self) { Text(story.gallery[$0].name).tag($0) }
+            }
+            .pickerStyle(.menu)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 4)
+            .background(.bar)
+            Divider()
+            story.gallery[index].view
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
     }
 

@@ -107,6 +107,16 @@ public final class KnobValues {
     }
 }
 
+/// How a story's gallery shows its variants.
+public enum GalleryLayout {
+    /// Every variant in one scrolling column, to compare side by side.
+    case list
+    /// One variant at a time, picked from a menu. For screens: each has its own
+    /// navigation bar items, and SwiftUI puts every visible screen's items in
+    /// the Storybook's one bar, so a list would show several Edit buttons.
+    case oneAtATime
+}
+
 /// A single entry in the storybook: one knob-driven rendering, plus any number
 /// of fixed variants to eyeball side by side.
 @MainActor
@@ -117,11 +127,13 @@ public struct Story: Identifiable {
     public let knobs: [StoryKnob]
     public let interactive: @MainActor (KnobValues) -> AnyView
     public let gallery: [(name: String, view: AnyView)]
+    public let galleryLayout: GalleryLayout
 
     public init(
         id: String,
         title: String,
         section: String,
+        galleryLayout: GalleryLayout = .list,
         knobs: [StoryKnob] = [],
         gallery: [(name: String, view: AnyView)] = [],
         interactive: @escaping @MainActor (KnobValues) -> AnyView
@@ -131,6 +143,7 @@ public struct Story: Identifiable {
         self.section = section
         self.knobs = knobs
         self.gallery = gallery
+        self.galleryLayout = galleryLayout
         self.interactive = interactive
     }
 }

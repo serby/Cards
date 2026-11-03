@@ -5,7 +5,11 @@ import SwiftUI
 let componentStories: [Story] = [
     barcodeStory,
     spinnerStory,
-    cardRowStory
+    cardRowStory,
+    cardColorPickerStory,
+    proximityLabelStory,
+    cardLocationRowStory,
+    scannerPlaceholderStory
 ]
 
 @MainActor
@@ -70,21 +74,143 @@ private let cardRowStory = Story(
     title: "CardRowView",
     section: "Components",
     knobs: [
-        .text("Name", "Tesco Clubcard")
-    ],
+        .text("Name", "Tesco Clubcard"),
+        .options("Colour", CardColor.allNames, CardColor.blue.rawValue)
+    ] + ProximityKnobs.knobs(place: "Tesco Express"),
     gallery: [
         (
-            name: "Short name",
+            name: "Short name, here",
             view: AnyView(CardRowView(card: CardSummary.samples[0]) {})
+        ),
+        (
+            name: "Nearby",
+            view: AnyView(CardRowView(card: CardSummary.samples[2]) {})
         ),
         (
             name: "Long name",
             view: AnyView(CardRowView(card: .longName) {})
         )
+    ] + CardColor.allCases.map { color in
+        (
+            name: color.displayName,
+            view: AnyView(CardRowView(card: CardSummary(id: color.rawValue, name: color.displayName, color: color)) {})
+        )
+    }
+) { knobs in
+    AnyView(
+        CardRowView(
+            card: CardSummary(
+                id: "story",
+                name: knobs.string("Name"),
+                color: .named(knobs.option("Colour")),
+                proximity: knobs.proximity()
+            )
+        ) {}
+            .padding()
+    )
+}
+
+@MainActor
+private let cardColorPickerStory = Story(
+    id: "card-color-picker",
+    title: "CardColorPicker",
+    section: "Components",
+    knobs: [
+        .options("Colour", CardColor.allNames, CardColor.blue.rawValue)
+    ],
+    gallery: [
+        (
+            name: "In a form",
+            view: AnyView(
+                Stateful(CardColor.teal) { color in
+                    Form {
+                        Section("Colour") {
+                            CardColorPicker(selection: color)
+                        }
+                    }
+                }
+                .frame(height: 200)
+            )
+        )
     ]
 ) { knobs in
     AnyView(
-        CardRowView(card: CardSummary(id: "story", name: knobs.string("Name"))) {}
+        CardColorPicker(
+            selection: Binding(
+                get: { .named(knobs.option("Colour")) },
+                set: { knobs.select($0.rawValue, for: "Colour") }
+            )
+        )
+        .padding()
+    )
+}
+
+@MainActor
+private let proximityLabelStory = Story(
+    id: "proximity-label",
+    title: "ProximityLabel",
+    section: "Components",
+    knobs: ProximityKnobs.knobs(optional: false) + [
+        .toggle("Shows place", false)
+    ],
+    gallery: [
+        (name: "Here", view: AnyView(ProximityLabel(CardProximity(placeName: "Westway", distance: 0)))),
+        (
+            name: "Here, with place",
+            view: AnyView(ProximityLabel(CardProximity(placeName: "Westway", distance: 0), showsPlace: true))
+        ),
+        (name: "Nearby", view: AnyView(ProximityLabel(CardProximity(placeName: "Westway", distance: 350)))),
+        (
+            name: "Far, with place",
+            view: AnyView(ProximityLabel(CardProximity(placeName: "IKEA Wembley", distance: 6_800), showsPlace: true))
+        )
+    ]
+) { knobs in
+    AnyView(
+        knobs.proximity(optional: false).map { proximity in
+            ProximityLabel(proximity, showsPlace: knobs.bool("Shows place"))
+                .padding()
+        }
+    )
+}
+
+@MainActor
+private let cardLocationRowStory = Story(
+    id: "card-location-row",
+    title: "CardLocationRow",
+    section: "Components",
+    knobs: [
+        .text("Name", CardLocation.sample.name),
+        .number("Radius (m)", CardLocation.sample.radius, in: 50...1_000, step: 25)
+    ],
+    gallery: CardLocation.samples.map { location in
+        (name: location.name, view: AnyView(List { CardLocationRow(location) }.frame(height: 90)))
+    }
+) { knobs in
+    let location = CardLocation(
+        name: knobs.string("Name"),
+        latitude: CardLocation.sample.latitude,
+        longitude: CardLocation.sample.longitude,
+        radius: knobs.number("Radius (m)")
+    )
+    return AnyView(
+        List { CardLocationRow(location) }
+    )
+}
+
+@MainActor
+private let scannerPlaceholderStory = Story(
+    id: "scanner-placeholder",
+    title: "ScannerPlaceholderView",
+    section: "Components",
+    knobs: [],
+    gallery: [
+        (name: "Default", view: AnyView(ScannerPlaceholderView().frame(height: 250)))
+    ]
+) { _ in
+    AnyView(
+        ScannerPlaceholderView()
+            .frame(height: 250)
             .padding()
     )
 }
