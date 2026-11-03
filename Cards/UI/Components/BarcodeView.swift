@@ -22,8 +22,10 @@ public struct BarcodeView: View {
                         .resizable()
                         .scaledToFit()
                 } else {
-                    Text("Failed to generate barcode")
-                    
+                    Text(
+                        "Failed to generate barcode",
+                        comment: "Shown instead of the barcode when the card's code can't be drawn in the chosen barcode format."
+                    )
                 }
             }
             .frame(maxWidth: .infinity)
@@ -33,7 +35,12 @@ public struct BarcodeView: View {
         .padding(6)
         .background(.gray.opacity(0.5), in: .rect(cornerRadius: 12))
         .accessibilityIdentifier("barcodeView")
-        .accessibilityHint("This is a \(barcodeType.displayName) barcode with code \(barcodeString)")
+        .accessibilityHint(
+            Text(
+                "This is a \(barcodeType.displayName) barcode with code \(barcodeString)",
+                comment: "VoiceOver hint for a barcode. The first argument is its format, such as EAN-13; the second is the card's code."
+            )
+        )
     }
 
     public func generateBarcode(from code: String, type: BarcodeType) -> UIImage? {

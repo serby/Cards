@@ -76,18 +76,23 @@ public struct CardListView: View {
         .overlay {
             if cards.isEmpty {
                 ContentUnavailableView {
-                    Label("No Cards Yet", systemImage: "barcode.viewfinder")
+                    Label(
+                        LocalizedStringResource("No Cards Yet", comment: "Title of the empty card list, before the user has added a card."),
+                        systemImage: "barcode.viewfinder"
+                    )
                 } description: {
-                    Text("Scan the barcode on a loyalty card to add it.")
+                    Text("Scan the barcode on a loyalty card to add it.", comment: "Under “No Cards Yet” on the empty card list.")
                 } actions: {
-                    Button("Add Card", action: actions.addCard)
-                        .buttonStyle(.borderedProminent)
+                    Button(action: actions.addCard) {
+                        Text("Add Card", comment: "Button on the empty card list that opens the form for a new card.")
+                    }
+                    .buttonStyle(.borderedProminent)
                 }
             }
         }
         .scrollContentBackground(.hidden)
         .background(Color.primaryBackground)
-        .navigationTitle("Cards")
+        .navigationTitle(Text("Cards", comment: "Title of the screen that lists the user's loyalty cards."))
         .sensoryFeedback(trigger: deleteTrigger, { SensoryFeedback.impact(weight: .medium) })
         .toolbar(toolbarVisible ? .visible : .hidden, for: .navigationBar)
         .toolbar {
@@ -97,7 +102,9 @@ public struct CardListView: View {
                 }
                 .foregroundColor(.accent)
                 .accessibilityIdentifier("addCardButton")
-                .accessibilityLabel("Add Card")
+                .accessibilityLabel(
+                    Text("Add Card", comment: "VoiceOver label for the toolbar button, a barcode scanner icon, that adds a new card.")
+                )
             }
         }
         .onScrollGeometryChange(for: CGFloat.self) { geometry in

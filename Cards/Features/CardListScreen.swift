@@ -52,14 +52,14 @@ public struct CardListScreen: View {
             if let card = findCard(by: code) {
                 CardDetailScreen(item: card, navigationManager: navigationManager)
             } else {
-                Text("Card not found")
+                Text("Card not found", comment: "Shown when a link or notification opens a card that has since been deleted.")
             }
         case .editCard(let code):
             if let card = findCard(by: code) {
                 CardEditScreen(cardItem: card, navigationManager: navigationManager)
-                    .navigationTitle("Edit Card")
+                    .navigationTitle(Text("Edit Card", comment: "Title of the form for changing an existing card."))
             } else {
-                Text("Card not found")
+                Text("Card not found", comment: "Shown when a link or notification opens a card that has since been deleted.")
             }
         case .newCard:
             CardEditScreen(
@@ -75,7 +75,7 @@ public struct CardListScreen: View {
                     navigationManager.navigate(to: .card(updatedCard.code))
                 }
             )
-            .navigationTitle("Add Card")
+            .navigationTitle(Text("Add Card", comment: "Title of the form for adding a new card."))
         }
     }
 

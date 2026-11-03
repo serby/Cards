@@ -54,17 +54,25 @@ public struct LocationPickerView: View {
             }
             .safeAreaInset(edge: .bottom) { controls }
             .mapScope(mapScope)
-                .navigationTitle("Add Location")
+                .navigationTitle(
+                    Text("Add Location", comment: "Title of the map sheet for adding a place where a card is used.")
+                )
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbarBackground(.visible, for: .navigationBar)
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) {
-                        Button("Cancel") { dismiss() }
+                        Button {
+                            dismiss()
+                        } label: {
+                            Text("Cancel", comment: "Closes the Add Location sheet without adding a place.")
+                        }
                     }
                     ToolbarItem(placement: .confirmationAction) {
-                        Button("Add", action: add)
-                            .disabled(center == nil)
-                            .accessibilityIdentifier("addLocationButton")
+                        Button(action: add) {
+                            Text("Add", comment: "Toolbar button that adds the place under the map pin to the card. A verb.")
+                        }
+                        .disabled(center == nil)
+                        .accessibilityIdentifier("addLocationButton")
                     }
                 }
         }
@@ -118,18 +126,24 @@ public struct LocationPickerView: View {
         VStack(spacing: 14) {
             HStack(spacing: 10) {
                 HStack(spacing: 10) {
-                    TextField("Postcode", text: $postcode)
-                        .textInputAutocapitalization(.characters)
-                        .autocorrectionDisabled()
-                        .submitLabel(.search)
-                        .focused($focusedField, equals: .postcode)
-                        .onSubmit(search)
-                        .accessibilityIdentifier("postcodeField")
+                    TextField(
+                        "Postcode",
+                        text: $postcode,
+                        prompt: Text("Postcode", comment: "Placeholder in the search field that moves the map to a postcode or address.")
+                    )
+                    .textInputAutocapitalization(.characters)
+                    .autocorrectionDisabled()
+                    .submitLabel(.search)
+                    .focused($focusedField, equals: .postcode)
+                    .onSubmit(search)
+                    .accessibilityIdentifier("postcodeField")
                     if isSearching {
                         ProgressView()
                     } else if !postcode.isEmpty {
-                        Button("Find", action: search)
-                            .font(.subheadline.weight(.semibold))
+                        Button(action: search) {
+                            Text("Find", comment: "Button beside the postcode field that moves the map to that postcode. A verb.")
+                        }
+                        .font(.subheadline.weight(.semibold))
                     }
                 }
                 .pickerField("magnifyingglass")
@@ -138,20 +152,30 @@ public struct LocationPickerView: View {
             }
 
             if notFound {
-                Text("No place found for \u{201C}\(postcode)\u{201D}")
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                Text(
+                    "No place found for \u{201C}\(postcode)\u{201D}",
+                    comment: "Under the postcode field when nothing is found. The argument is what was typed; use your language's quotation marks."
+                )
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
 
-            TextField("Name, e.g. Westway", text: $name)
-                .focused($focusedField, equals: .name)
-                .pickerField("tag")
-                .accessibilityIdentifier("locationNameField")
+            TextField(
+                "Name, e.g. Westway",
+                text: $name,
+                prompt: Text(
+                    "Name, e.g. Westway",
+                    comment: "Placeholder for the new place's name. Westway is a London climbing centre; a typical local place name may read better."
+                )
+            )
+            .focused($focusedField, equals: .name)
+            .pickerField("tag")
+            .accessibilityIdentifier("locationNameField")
 
             VStack(spacing: 6) {
                 HStack {
-                    Text("Radius")
+                    Text("Radius", comment: "Label above the slider that sets how far around the pin counts as being at the place.")
                     Spacer()
                     Text(radius.metres, format: .radius)
                         .monospacedDigit()
@@ -159,7 +183,9 @@ public struct LocationPickerView: View {
                 }
                 .font(.subheadline)
                 Slider(value: $radius, in: Self.radiusRange, step: 25)
-                    .accessibilityLabel("Radius")
+                    .accessibilityLabel(
+                        Text("Radius", comment: "VoiceOver label for the slider that sets how far around the pin counts as being at the place.")
+                    )
                     .accessibilityValue(Text(radius.metres, format: .radius))
             }
         }

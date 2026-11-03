@@ -40,7 +40,8 @@ struct CardsApp: App {
     @ViewBuilder
     private var tabView: some View {
         TabView {
-            Tab("Cards", systemImage: "barcode") {
+            // Tab's own title-and-image initialisers that take a comment need iOS 26.
+            Tab {
                 let nav = Bindable(navigationManager)
                 NavigationStack(path: nav.navigationPath) {
                     CardListScreen()
@@ -49,11 +50,18 @@ struct CardsApp: App {
                 .onAppear {
                     navigationManager.resetToRoot()
                 }
+            } label: {
+                Label(
+                    LocalizedStringResource("Cards", comment: "Tab bar item for the list of the user's loyalty cards."),
+                    systemImage: "barcode"
+                )
             }
-            Tab("Settings", systemImage: "gearshape") {
+            Tab {
                 NavigationStack {
                     SettingsScreen()
                 }
+            } label: {
+                Label(LocalizedStringResource("Settings", comment: "Tab bar item for the app's settings."), systemImage: "gearshape")
             }
             DevelopmentHooks.tabs
         }

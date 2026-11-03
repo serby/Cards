@@ -30,7 +30,12 @@ public struct CardDetailView: View {
                         .multilineTextAlignment(.center)
                         .foregroundStyle(card.color.primaryInk)
                         .accessibilityIdentifier("cardNameText")
-                        .accessibilityLabel("Card name: \(card.name)")
+                        .accessibilityLabel(
+                            Text(
+                                "Card name: \(card.name)",
+                                comment: "VoiceOver label for the name at the top of a card's screen. The argument is a name, such as Tesco."
+                            )
+                        )
                         .accessibilityAddTraits(.isHeader)
 
                     if let proximity = card.proximity {
@@ -42,7 +47,12 @@ public struct CardDetailView: View {
                 }
 
                 BarcodeView(barcodeString: card.code, barcodeType: card.barcodeType)
-                    .accessibilityLabel("Barcode for \(card.name)")
+                    .accessibilityLabel(
+                        Text(
+                            "Barcode for \(card.name)",
+                            comment: "VoiceOver label for the barcode image on a card's screen. The argument is the card's name."
+                        )
+                    )
 
                 VStack(spacing: 4) {
                     Text(card.code)
@@ -50,14 +60,24 @@ public struct CardDetailView: View {
                         .foregroundStyle(card.color.primaryInk)
                         .textSelection(.enabled)
                         .accessibilityIdentifier("cardCodeText")
-                        .accessibilityLabel(Text("Card code: ") + Text(card.code).speechSpellsOutCharacters())
+                        .accessibilityLabel(
+                            Text(
+                                "Card code: \(Text(card.code).speechSpellsOutCharacters())",
+                                comment: "VoiceOver label for the code under the barcode, which VoiceOver spells out character by character."
+                            )
+                        )
                         .accessibilityAddTraits(.isStaticText)
 
-                    Text("\(card.timestamp, format: Date.FormatStyle(date: .abbreviated, time: .shortened))")
+                    Text(card.timestamp, format: Date.FormatStyle(date: .abbreviated, time: .shortened))
                         .font(.caption)
                         .foregroundStyle(card.color.secondaryInk)
                         .accessibilityIdentifier("cardTimestampText")
-                        .accessibilityLabel("Created on \(card.timestamp, format: Date.FormatStyle(date: .long, time: .shortened))")
+                        .accessibilityLabel(
+                            Text(
+                                "Created on \(card.timestamp, format: Date.FormatStyle(date: .long, time: .shortened))",
+                                comment: "VoiceOver label for when the card was added. The argument is a date and time: 14 November 2023 at 22:13."
+                            )
+                        )
                         .accessibilityAddTraits(.isStaticText)
                 }
             }
@@ -90,15 +110,27 @@ public struct CardDetailView: View {
                         .foregroundStyle(brightnessBoost ? Color.accent : .primary)
                 }
                 .accessibilityIdentifier("brightnessToggleButton")
-                .accessibilityLabel("Brightness Boost")
-                .accessibilityHint("Toggles screen brightness to maximum for easier barcode scanning")
+                .accessibilityLabel(
+                    Text(
+                        "Brightness Boost",
+                        comment: "VoiceOver label for the sun button on a card's screen, which turns the screen up so scanners can read the barcode."
+                    )
+                )
+                .accessibilityHint(
+                    Text(
+                        "Toggles screen brightness to maximum for easier barcode scanning",
+                        comment: "VoiceOver hint for the Brightness Boost button on a card's screen."
+                    )
+                )
             }
 
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button("Edit", action: actions.editCard)
-                    .accessibilityIdentifier("editCardButton")
-                    .accessibilityLabel("Edit card")
-                    .accessibilityHint("Tap to edit this card's details")
+                Button(action: actions.editCard) {
+                    Text("Edit", comment: "Toolbar button on a card's screen that opens the card for editing. A verb.")
+                }
+                .accessibilityIdentifier("editCardButton")
+                .accessibilityLabel(Text("Edit card", comment: "VoiceOver label for the Edit button on a card's screen."))
+                .accessibilityHint(Text("Tap to edit this card's details", comment: "VoiceOver hint for the Edit button on a card's screen."))
             }
         }
     }

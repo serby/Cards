@@ -29,10 +29,10 @@ public struct SettingsListView: View {
             Section {
                 if let version = state.appVersion, let build = state.appBuild {
                     HStack {
-                        Text("Version")
+                        Text("Version", comment: "Settings row label for the app's version number.")
                             .foregroundColor(.primaryText)
                         Spacer()
-                        Text("\(version) (\(build))")
+                        Text("\(version) (\(build))", comment: "The app's version and then its build number, as in “1.1 (42)”.")
                             .foregroundColor(.secondaryText)
                     }
                 }
@@ -40,47 +40,68 @@ public struct SettingsListView: View {
                 if let url = state.authorURL {
                     Link(destination: url) {
                         HStack {
-                            Text("Created by \(state.authorName)")
-                                .foregroundColor(.primaryText)
+                            Text(
+                                "Created by \(state.authorName)",
+                                comment: "Settings row that opens the author's website. The argument is the author's name."
+                            )
+                            .foregroundColor(.primaryText)
                             Spacer()
                             Image(systemName: "arrow.up.forward.square")
                                 .foregroundColor(.accent)
-                                .accessibilityLabel("External link")
+                                .accessibilityLabel(
+                                    Text("External link", comment: "VoiceOver label for the arrow showing that a Settings row opens a website.")
+                                )
                         }
                     }
                 }
             }
 
             Section {
-                Toggle("Brightness Boost", isOn: $brightnessBoost)
-                    .tint(.accent)
-                Text("Boosts brightness when viewing card to improve scannability")
-                    .font(.caption)
-                    .foregroundColor(.tertiaryText)
+                Toggle(isOn: $brightnessBoost) {
+                    Text(
+                        "Brightness Boost",
+                        comment: "Settings switch for the feature that turns the screen up while a card is shown, so scanners can read its barcode."
+                    )
+                }
+                .tint(.accent)
+                Text(
+                    "Boosts brightness when viewing card to improve scannability",
+                    comment: "Explains the Brightness Boost switch above it in Settings."
+                )
+                .font(.caption)
+                .foregroundColor(.tertiaryText)
             } header: {
-                Text("Display")
+                Text("Display", comment: "Settings section heading for how cards are displayed.")
                     .foregroundColor(.secondaryText)
             }
 
-            Section("Data") {
-                Button("Export as JSON", action: actions.exportCards)
-                    .foregroundColor(.accent)
-
-                Button("Import JSON") {
-                    showImportSheet = true
+            Section {
+                Button(action: actions.exportCards) {
+                    Text("Export as JSON", comment: "Settings button that shares all cards as a JSON file. JSON is a file format; keep the name.")
                 }
                 .foregroundColor(.accent)
 
-                Button("Delete All Cards", role: .destructive) {
+                Button {
+                    showImportSheet = true
+                } label: {
+                    Text("Import JSON", comment: "Settings button that opens a sheet for pasting cards exported as JSON.")
+                }
+                .foregroundColor(.accent)
+
+                Button(role: .destructive) {
                     showDeleteConfirmation = true
+                } label: {
+                    Text("Delete All Cards", comment: "Settings button that deletes every card after asking for confirmation.")
                 }
                 .disabled(state.cardCount == 0)
+            } header: {
+                Text("Data", comment: "Settings section heading for exporting, importing and deleting cards.")
             }
         }
         .listStyle(.insetGrouped)
         .scrollContentBackground(.hidden)
         .background(Color.primaryBackground)
-        .navigationTitle("Settings")
+        .navigationTitle(Text("Settings", comment: "Title of the Settings screen."))
         .sheet(isPresented: $showImportSheet) {
             ImportCardsView(
                 importText: $importText,
@@ -92,14 +113,32 @@ public struct SettingsListView: View {
                 }
             )
         }
-        .confirmationDialog("Delete All Cards", isPresented: $showDeleteConfirmation, titleVisibility: .visible) {
-            Button("Delete All", role: .destructive, action: actions.deleteAllCards)
-            Button("Cancel", role: .cancel) {}
+        .confirmationDialog(
+            Text("Delete All Cards", comment: "Title of the dialog that asks the user to confirm deleting every card."),
+            isPresented: $showDeleteConfirmation,
+            titleVisibility: .visible
+        ) {
+            Button(role: .destructive, action: actions.deleteAllCards) {
+                Text("Delete All", comment: "Destructive button in the delete-all dialog that deletes every card.")
+            }
+            Button(role: .cancel) {} label: {
+                Text("Cancel", comment: "Button in the delete-all dialog that keeps the cards.")
+            }
         } message: {
-            Text("This will permanently delete all \(state.cardCount) cards. This action cannot be undone.")
+            Text(
+                "This will permanently delete all \(state.cardCount) cards. This action cannot be undone.",
+                comment: "Message in the delete-all dialog. The argument is how many cards there are, always at least one."
+            )
         }
-        .alert("Import Result", isPresented: Binding(get: { message != nil }, set: { if !$0 { message = nil } })) {
-            Button("OK") { message = nil }
+        .alert(
+            Text("Import Result", comment: "Title of the alert shown after importing cards from JSON, whether it worked or not."),
+            isPresented: Binding(get: { message != nil }, set: { if !$0 { message = nil } })
+        ) {
+            Button {
+                message = nil
+            } label: {
+                Text("OK", comment: "Dismisses the import result alert.")
+            }
         } message: {
             Text(message ?? "")
         }
@@ -131,23 +170,31 @@ public struct ImportCardsView: View {
                     .textInputAutocapitalization(.never)
                     .padding()
 
-                Button("Paste from Clipboard") {
+                Button {
                     if let clipboard = readClipboard() {
                         importText = clipboard
                     }
+                } label: {
+                    Text("Paste from Clipboard", comment: "Button in the import sheet that fills the text box with what was last copied.")
                 }
                 .buttonStyle(.bordered)
                 .padding()
             }
-            .navigationTitle("Import JSON")
+            .navigationTitle(Text("Import JSON", comment: "Title of the sheet for pasting cards exported as JSON."))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { dismiss() }
+                    Button {
+                        dismiss()
+                    } label: {
+                        Text("Cancel", comment: "Closes the import sheet without importing.")
+                    }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Import", action: onImport)
-                        .disabled(importText.isEmpty)
+                    Button(action: onImport) {
+                        Text("Import", comment: "Toolbar button in the import sheet that adds the pasted cards. A verb.")
+                    }
+                    .disabled(importText.isEmpty)
                 }
             }
         }

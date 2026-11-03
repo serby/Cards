@@ -1,9 +1,6 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "%@" : {
-
-    },
     "%@ · %@" : {
       "comment" : "On a card's screen: the distance to the card's nearest location, then the place's name, as in “350 m · Westway”.",
       "localizations" : {
@@ -16,6 +13,7 @@
       }
     },
     "%@ (%@)" : {
+      "comment" : "The app's version and then its build number, as in “1.1 (42)”.",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -40,13 +38,13 @@
       "comment" : "Under a location's name in the card form: the size of the circle around the place, as in “200 m radius”."
     },
     "Add" : {
-
+      "comment" : "Toolbar button that adds the place under the map pin to the card. A verb."
     },
     "Add Card" : {
-
+      "comment" : "Button on the empty card list that opens the form for a new card.\nTitle of the form for adding a new card.\nVoiceOver label for the toolbar button, a barcode scanner icon, that adds a new card."
     },
     "Add Location" : {
-
+      "comment" : "Button in the card form that opens a map for adding a place where the card is used.\nTitle of the map sheet for adding a place where a card is used."
     },
     "At %@" : {
       "comment" : "On a card's screen when the user is inside one of the card's locations. The argument is the place's name, such as Westway."
@@ -55,55 +53,55 @@
       "comment" : "Barcode format in the barcode type picker: the square 2D Aztec Code. Keep it unless your language writes it differently."
     },
     "Barcode for %@" : {
-
+      "comment" : "VoiceOver label for the barcode image on a card's screen. The argument is the card's name."
     },
     "Barcode scanner" : {
-
+      "comment" : "VoiceOver label for the live camera view at the top of the new card form."
     },
     "Barcode type" : {
-
+      "comment" : "VoiceOver label for the barcode format menu in the card form."
     },
     "Barcode Type" : {
-
+      "comment" : "Label of the menu for choosing the card's barcode format, such as EAN-13 or QR Code."
     },
     "Blue" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker."
     },
     "Boosts brightness when viewing card to improve scannability" : {
-
+      "comment" : "Explains the Brightness Boost switch above it in Settings."
     },
     "Brightness Boost" : {
-
+      "comment" : "Settings switch for the feature that turns the screen up while a card is shown, so scanners can read its barcode.\nVoiceOver label for the sun button on a card's screen, which turns the screen up so scanners can read the barcode."
     },
     "Brown" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker."
     },
     "Cancel" : {
-
+      "comment" : "Button in the delete-all dialog that keeps the cards.\nCloses the Add Location sheet without adding a place.\nCloses the import sheet without importing."
     },
     "Card code" : {
-
+      "comment" : "VoiceOver label for the card's code field in the card form."
     },
-    "Card code: " : {
-
+    "Card code: %@" : {
+      "comment" : "VoiceOver label for the code under the barcode, which VoiceOver spells out character by character."
     },
     "Card colour" : {
-
+      "comment" : "VoiceOver label for the grid of colour swatches in the card form."
     },
     "Card name" : {
-
+      "comment" : "VoiceOver label for the card name field in the card form."
     },
     "Card name: %@" : {
-
+      "comment" : "VoiceOver label for the name at the top of a card's screen. The argument is a name, such as Tesco."
     },
     "Card not found" : {
-
+      "comment" : "Shown when a link or notification opens a card that has since been deleted."
     },
     "Cards" : {
-
+      "comment" : "Tab bar item for the list of the user's loyalty cards.\nTitle of the screen that lists the user's loyalty cards."
     },
     "Code" : {
-
+      "comment" : "Label beside the field for the number or text that the barcode encodes. A noun."
     },
     "Code 39" : {
       "comment" : "Barcode format in the barcode type picker. A standard name: keep it unless your language writes it differently."
@@ -115,28 +113,28 @@
       "comment" : "Barcode format in the barcode type picker. A standard name: keep it unless your language writes it differently."
     },
     "Colour" : {
-
+      "comment" : "Section heading above the colour swatches in the card form. A noun."
     },
     "Created by %@" : {
-
+      "comment" : "Settings row that opens the author's website. The argument is the author's name."
     },
     "Created on %@" : {
-
+      "comment" : "VoiceOver label for when the card was added. The argument is a date and time: 14 November 2023 at 22:13."
     },
     "Data" : {
-
+      "comment" : "Settings section heading for exporting, importing and deleting cards."
     },
     "Default" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker: the plain grey card that follows light and dark mode."
     },
     "Delete All" : {
-
+      "comment" : "Destructive button in the delete-all dialog that deletes every card."
     },
     "Delete All Cards" : {
-
+      "comment" : "Settings button that deletes every card after asking for confirmation.\nTitle of the dialog that asks the user to confirm deleting every card."
     },
     "Display" : {
-
+      "comment" : "Settings section heading for how cards are displayed."
     },
     "EAN-8" : {
       "comment" : "Barcode format in the barcode type picker. A standard name: keep it as it is."
@@ -145,37 +143,37 @@
       "comment" : "Barcode format in the barcode type picker. A standard name: keep it as it is."
     },
     "Edit" : {
-
+      "comment" : "Toolbar button on a card's screen that opens the card for editing. A verb."
     },
     "Edit card" : {
-
+      "comment" : "VoiceOver label for the Edit button on a card's screen."
     },
     "Edit Card" : {
-
+      "comment" : "Title of the form for changing an existing card."
     },
     "Enter code" : {
-
+      "comment" : "Placeholder in the empty field for the number or text that the barcode encodes."
     },
     "Enter name" : {
-
+      "comment" : "Placeholder in the empty card name field, such as Tesco Clubcard."
     },
     "Enter the barcode number for this card" : {
-
+      "comment" : "VoiceOver hint for the card's code field in the card form."
     },
     "Enter the name of this card" : {
-
+      "comment" : "VoiceOver hint for the card name field in the card form."
     },
     "Export as JSON" : {
-
+      "comment" : "Settings button that shares all cards as a JSON file. JSON is a file format; keep the name."
     },
     "External link" : {
-
+      "comment" : "VoiceOver label for the arrow showing that a Settings row opens a website."
     },
     "Failed to generate barcode" : {
-
+      "comment" : "Shown instead of the barcode when the card's code can't be drawn in the chosen barcode format."
     },
     "Find" : {
-
+      "comment" : "Button beside the postcode field that moves the map to that postcode. A verb."
     },
     "Graphite" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker: a dark blue-grey."
@@ -187,40 +185,40 @@
       "comment" : "Shown on a card in the list instead of a distance when the user is inside one of the card's locations. Keep it very short."
     },
     "Import" : {
-
+      "comment" : "Toolbar button in the import sheet that adds the pasted cards. A verb."
     },
     "Import JSON" : {
-
+      "comment" : "Settings button that opens a sheet for pasting cards exported as JSON.\nTitle of the sheet for pasting cards exported as JSON."
     },
     "Import Result" : {
-
+      "comment" : "Title of the alert shown after importing cards from JSON, whether it worked or not."
     },
     "Indigo" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker: a deep violet-blue."
     },
     "Locations" : {
-
+      "comment" : "Section heading in the card form for the places where the card is used."
     },
     "Name" : {
-
+      "comment" : "Label beside the card's name field in the card form. A noun."
     },
     "Name, e.g. Westway" : {
-
+      "comment" : "Placeholder for the new place's name. Westway is a London climbing centre; a typical local place name may read better."
     },
     "No Cards Yet" : {
-
+      "comment" : "Title of the empty card list, before the user has added a card."
     },
     "No place found for “%@”" : {
-
+      "comment" : "Under the postcode field when nothing is found. The argument is what was typed; use your language's quotation marks."
     },
     "OK" : {
-
+      "comment" : "Dismisses the import result alert."
     },
     "Orange" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker."
     },
     "Paste from Clipboard" : {
-
+      "comment" : "Button in the import sheet that fills the text box with what was last copied."
     },
     "PDF 417" : {
       "comment" : "Barcode format in the barcode type picker: the stacked 2D PDF417 code, not a PDF file. Keep it as it is."
@@ -229,7 +227,7 @@
       "comment" : "Card colour name read by VoiceOver in the colour picker: a deep raspberry pink."
     },
     "Postcode" : {
-
+      "comment" : "Placeholder in the search field that moves the map to a postcode or address."
     },
     "Purple" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker."
@@ -238,36 +236,37 @@
       "comment" : "Barcode format in the barcode type picker: the square 2D code. Use the usual name for a QR code in your language."
     },
     "Radius" : {
-
+      "comment" : "Label above the slider that sets how far around the pin counts as being at the place.\nVoiceOver label for the slider that sets how far around the pin counts as being at the place."
     },
     "Red" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker."
     },
     "Save" : {
-
+      "comment" : "Toolbar button that saves the card form. A verb."
     },
     "Save card" : {
-
+      "comment" : "VoiceOver label for the Save button in the card form."
     },
     "Save changes to this card" : {
-
+      "comment" : "VoiceOver hint for the Save button in the card form."
     },
     "Scan the barcode on a loyalty card to add it." : {
-
+      "comment" : "Under “No Cards Yet” on the empty card list."
     },
     "Select the type of barcode for this card" : {
-
+      "comment" : "VoiceOver hint for the barcode format menu in the card form."
     },
     "Settings" : {
-
+      "comment" : "Tab bar item for the app's settings.\nTitle of the Settings screen."
     },
     "Tap to edit this card's details" : {
-
+      "comment" : "VoiceOver hint for the Edit button on a card's screen."
     },
     "Teal" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker: a dark blue-green."
     },
     "This is a %@ barcode with code %@" : {
+      "comment" : "VoiceOver hint for a barcode. The first argument is its format, such as EAN-13; the second is the card's code.",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -278,19 +277,39 @@
       }
     },
     "This will permanently delete all %lld cards. This action cannot be undone." : {
-
+      "comment" : "Message in the delete-all dialog. The argument is how many cards there are, always at least one.",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "This will permanently delete %lld card. This action cannot be undone."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "This will permanently delete all %lld cards. This action cannot be undone."
+                }
+              }
+            }
+          }
+        }
+      }
     },
     "Toggles screen brightness to maximum for easier barcode scanning" : {
-
+      "comment" : "VoiceOver hint for the Brightness Boost button on a card's screen."
     },
     "UPC-E" : {
       "comment" : "Barcode format in the barcode type picker. A standard name: keep it as it is."
     },
     "Version" : {
-
+      "comment" : "Settings row label for the app's version number."
     },
     "When you arrive at one of these places, the barcode appears on your Lock Screen." : {
-
+      "comment" : "Footer under the card's places in the card form, explaining the arrival notification."
     },
     "Yellow" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker."

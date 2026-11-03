@@ -61,6 +61,8 @@ public struct ScannerOverlayView: View {
             }
             .clipShape(RoundedRectangle(cornerRadius: 12))
             .accessibilityIdentifier("scannerView")
-            .accessibilityLabel("Barcode scanner")
+            .accessibilityLabel(
+                Text("Barcode scanner", comment: "VoiceOver label for the live camera view at the top of the new card form.")
+            )
     }
 }

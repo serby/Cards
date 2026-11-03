@@ -27,7 +27,7 @@ public struct CardColorPicker: View {
         .padding(.vertical, 6)
         .sensoryFeedback(.selection, trigger: selection)
         .accessibilityElement(children: .contain)
-        .accessibilityLabel("Card colour")
+        .accessibilityLabel(Text("Card colour", comment: "VoiceOver label for the grid of colour swatches in the card form."))
     }
 
     private func swatch(for color: CardColor) -> some View {
