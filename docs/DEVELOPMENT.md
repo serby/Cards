@@ -237,11 +237,12 @@ Run `make capture-screenshots` (about ten minutes for the four device and locale
 
 Xcode 27 has no Simulator.app; `make sim` opens Device Hub to show the screen, and every `simctl` command works headless.
 
-- **Launch arguments:** `-uiTesting` gives an in-memory store and hides the Storybook tab; `-screenshotSeed` adds the six screenshot cards. The environment variables `CARDS_UI_TESTING=1` and `CARDS_SCREENSHOT_SEED=1` do the same. Both are ignored in release builds.
+- **Launch arguments:** `-uiTesting` gives an in-memory store and hides the Storybook tab; `-screenshotSeed` adds the six screenshot cards; `-initializeCloudKitSchema` creates the CloudKit schema in the Development environment ([section 8](#8-releasing)). The environment variables `CARDS_UI_TESTING=1` and `CARDS_SCREENSHOT_SEED=1` do the same as the first two. All of them are ignored in release builds.
 - **Deep links:** `cards://cards/card/<code>`, `cards://cards/card/<code>/edit` and `cards://cards/new`. `xcrun simctl openurl` shows a confirmation prompt first.
 - **Location:** `xcrun simctl privacy <udid> grant location net.serby.Cards`, then `xcrun simctl location <udid> set 51.5203,-0.2094`.
 - **Arrival notifications:** give a card a location, send the app to the background, set the simulated location away and then back inside the circle; SpringBoard logs `Location trigger fired` when it delivers.
 - **Reinstalling:** uninstall before installing. `simctl install` over a running copy can keep the old binary, and you end up debugging a build you are not running.
+- **On an iPhone:** build with `xcodebuild … -destination 'id=<udid>' -allowProvisioningUpdates build`, install with `xcrun devicectl device install app --device <udid> <path to Cards.app>`, and run with `DEVICECTL_CHILD_OS_ACTIVITY_DT_MODE=enable xcrun devicectl device process launch --console --terminate-existing --device <udid> net.serby.Cards`. `OS_ACTIVITY_DT_MODE` copies the app's system log into the console, as Xcode does. Put app arguments after `--` (`… net.serby.Cards -- -initializeCloudKitSchema`), or devicectl reads them as its own options. The phone must be unlocked.
 
 ## 7. Signing, teams and iCloud
 
@@ -250,13 +251,14 @@ Xcode 27 has no Simulator.app; `make sim` opens Device Hub to show the screen, a
 - Every Apple ID comes with a free Personal Team, so "Paul Serby (Personal Team)" in the team menu is not the paid team; it belongs to whichever Apple ID is signed in, which may be a work one. If the menu has no plain "Paul Serby", the Apple ID that owns the paid team is not signed in to Xcode.
 - To build to a device, sign in to Xcode (**Settings > Accounts**) with the Apple ID that is a member of `ZMBFPG86J4`, select that team in **Signing & Capabilities** for both configurations, and let Xcode register the device and create the development profile.
 - Never sign this app with a company team you happen to belong to.
-- `Cards/Cards.entitlements` points every configuration, Debug included, at the **Production** CloudKit environment. A debug build on a signed-in device reads and writes the real iCloud data, so test destructive changes on a simulator or a test Apple ID.
+- Debug builds use `Cards/Cards.Debug.entitlements`, which points at the **Development** CloudKit environment, and Release builds use `Cards/Cards.entitlements`, which points at **Production**. A debug build on your own iPhone therefore syncs a separate set of cards from the App Store app, and can never damage the live data.
+- CloudKit change pushes are not enabled yet: the app has neither the `remote-notification` background mode nor the Push Notifications capability, so other devices' changes arrive when the app is opened rather than straight away (CloudKit logs "BUG IN CLIENT OF CLOUDKIT: … require the 'remote-notification' background mode"). Enabling it changes the App ID, which means regenerating the App Store provisioning profile and the `BUILD_PROVISION_PROFILE_BASE64` secret CI signs with.
 - `scripts/build-ipa.sh` passes `DEVELOPMENT_TEAM` (default `ZMBFPG86J4`) itself, so archives do not depend on the project's team setting.
 
 ## 8. Releasing
 
 1. CI must be green: lint, build, tests, the release check and the screenshot comparison.
-2. If the build adds stored fields, deploy the CloudKit schema first. Production rejects fields it does not know, so run a build against the Development environment (set `com.apple.developer.icloud-container-environment` to `Development` temporarily), save a card that uses the new fields so CloudKit creates them, then **Deploy Schema Changes** to Production in the CloudKit Console for `iCloud.net.serby.Cards`.
+2. If the build adds stored fields, deploy the CloudKit schema first; Production rejects records whose type or fields it does not have, with "Cannot create new type … in production schema" or "Cannot create or modify field …". Launch a Debug build once with `-initializeCloudKitSchema`, on a device or simulator signed in to iCloud, and wait for the log line "CloudKit schema initialised in the Development environment". Then open the [CloudKit Console](https://icloud.developer.apple.com/dashboard/), choose `iCloud.net.serby.Cards`, and use **Deploy Schema Changes** to copy the Development schema to Production.
 3. `make deploy-testflight` or `make deploy-appstore` archive with `scripts/build-ipa.sh` and upload with an App Store Connect API key (`ASC_KEY_ID`, `ASC_ISSUER_ID`, `ASC_KEY_CONTENT`). In CI, `deploy.yml` uploads to TestFlight after CI passes on `main`, and `release.yml` submits to the App Store on `v*` tags.
 4. `scripts/upload-metadata.sh` and `scripts/upload-screenshots.sh` push the store listing from `metadata/` and `screenshots/`.
 
@@ -272,5 +274,6 @@ Xcode 27 has no Simulator.app; `make sim` opens Device Hub to show the screen, a
 | `make check-release` lists a declaration | That development type or member is reachable from production code. Find the reference and route it through a hook |
 | The app behaves like an older build | `simctl install` kept the old binary; uninstall, then install |
 | A build fails in `PrecompileModule` with "cannot find interface declaration" | Stale generated `*-Swift.h` headers after a type was deleted; delete them under `fastlane/derived_data/Build/Intermediates.noindex` and rebuild |
+| "Cannot create new type CD_CardItem in production schema" in the log | The Production CloudKit schema is missing the model; deploy it ([section 8](#8-releasing)) |
 | The map picker freezes the app | Something updates `Map` content from `onMapCameraChange` ([rule 7](#rule-7-swift-6-no-warnings-clean-lint)) |
 | A story shows several Edit buttons | The screen story is missing `galleryLayout: .oneAtATime` |
