@@ -11,27 +11,49 @@ public struct CardLocationRow: View {
     }
 
     public var body: some View {
-        Label {
-            VStack(alignment: .leading, spacing: 2) {
-                Text(location.name)
-                    // The whole name at accessibility sizes, where one line holds
-                    // only a few letters.
-                    .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 1)
-                Text(
-                    "\(location.radius.metres, format: .radius) radius",
-                    comment: "Under a location's name in the card form: the size of the circle around the place, as in “200 m radius”."
-                )
-                    .font(.subheadline)
-                    .foregroundStyle(Color.secondaryText)
-                    .monospacedDigit()
+        Group {
+            if dynamicTypeSize.isAccessibilitySize {
+                // At these sizes a Label runs text after its first line back
+                // under the icon, which started the radius part-way along one
+                // line and at the edge on the next. A column of its own keeps
+                // every line of both at one edge.
+                HStack(alignment: .firstTextBaseline, spacing: 12) {
+                    icon
+                    text
+                        .alignmentGuide(.listRowSeparatorLeading) { $0[.leading] }
+                }
+            } else {
+                Label {
+                    text
+                } icon: {
+                    icon
+                }
             }
-        } icon: {
-            Image(systemName: "mappin.circle.fill")
-                .foregroundStyle(Color.accent)
-                .accessibilityHidden(true)
         }
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Self.spokenDescription(name: location.name, radius: location.radius))
+    }
+
+    private var text: some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text(location.name)
+                // The whole name at accessibility sizes, where one line holds
+                // only a few letters.
+                .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 1)
+            Text(
+                "\(location.radius.metres, format: .radius) radius",
+                comment: "Under a location's name in the card form: the size of the circle around the place, as in “200 m radius”."
+            )
+                .font(.subheadline)
+                .foregroundStyle(Color.secondaryText)
+                .monospacedDigit()
+        }
+    }
+
+    private var icon: some View {
+        Image(systemName: "mappin.circle.fill")
+            .foregroundStyle(Color.accent)
+            .accessibilityHidden(true)
     }
 
     /// A place as VoiceOver reads it, with the unit in words, as "200 m" is
