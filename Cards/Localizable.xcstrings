@@ -209,7 +209,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "距離%2$@ %1$@"
+            "value" : "距離 %2$@ %1$@"
           }
         }
       }
@@ -605,7 +605,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已加入%@"
+            "value" : "已加入 %@"
           }
         }
       }
@@ -735,7 +735,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "位於%@"
+            "value" : "位於 %@"
           }
         }
       }
@@ -2750,7 +2750,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已刪除%@"
+            "value" : "已刪除 %@"
           }
         }
       }
@@ -4310,7 +4310,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "地圖已移至%@"
+            "value" : "地圖已移至 %@"
           }
         }
       }
@@ -7432,7 +7432,7 @@
               "other" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "這將永久刪除全部 %lld 張卡片。此動作無法還原。"
+                  "value" : "這將永久刪除 %lld 張卡片。此動作無法還原。"
                 }
               }
             }
@@ -7500,7 +7500,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "將螢幕亮度調到最高，讓條碼更容易掃描"
+            "value" : "開啟或關閉最高亮度，讓條碼更容易掃描"
           }
         }
       }
@@ -7695,7 +7695,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "當你抵達這些地點時，條碼會顯示在鎖定畫面上。"
+            "value" : "當你抵達其中一個地點時，條碼會顯示在鎖定畫面上。"
           }
         }
       }
