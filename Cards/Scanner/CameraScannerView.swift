@@ -4,10 +4,16 @@ import SwiftUI
 public struct CameraScannerView: UIViewControllerRepresentable {
     @Binding public var scannedCode: String?
     @Binding public var barcodeType: BarcodeType?
+    @Binding public var availability: CameraAvailability
 
-    public init(scannedCode: Binding<String?>, barcodeType: Binding<BarcodeType?>) {
+    public init(
+        scannedCode: Binding<String?>,
+        barcodeType: Binding<BarcodeType?>,
+        availability: Binding<CameraAvailability> = .constant(.unknown)
+    ) {
         _scannedCode = scannedCode
         _barcodeType = barcodeType
+        _availability = availability
     }
 
     public func makeUIViewController(context: Context) -> ScannerViewController {
@@ -16,7 +22,9 @@ public struct CameraScannerView: UIViewControllerRepresentable {
         return scannerVC
     }
 
-    public func updateUIViewController(_ uiViewController: ScannerViewController, context: Context) {}
+    public func updateUIViewController(_ uiViewController: ScannerViewController, context: Context) {
+        context.coordinator.parent = self
+    }
 
     public static func dismantleUIViewController(_ uiViewController: ScannerViewController, coordinator: Coordinator) {
         uiViewController.captureSession?.stopRunning()
@@ -40,12 +48,17 @@ public struct CameraScannerView: UIViewControllerRepresentable {
             parent.scannedCode = code
             parent.barcodeType = BarcodeMapper.mapMetadataObjectTypeToBarcodeType(type)
         }
+
+        @MainActor public func cameraAvailabilityChanged(_ availability: CameraAvailability) {
+            parent.availability = availability
+        }
     }
 }
 
 public struct ScannerOverlayView: View {
     @Binding var scannedCode: String?
     @Binding var barcodeType: BarcodeType?
+    @State private var availability = CameraAvailability.unknown
 
     public init(scannedCode: Binding<String?>, barcodeType: Binding<BarcodeType?>) {
         _scannedCode = scannedCode
@@ -53,16 +66,69 @@ public struct ScannerOverlayView: View {
     }
 
     public var body: some View {
-        CameraScannerView(scannedCode: $scannedCode, barcodeType: $barcodeType)
+        CameraScannerView(scannedCode: $scannedCode, barcodeType: $barcodeType, availability: $availability)
             .overlay {
-                Rectangle()
-                    .fill(Color.red.opacity(0.8))
-                    .frame(height: 2)
+                if availability == .denied {
+                    // Without access the camera view is black, so say why and
+                    // what to do instead.
+                    VStack(spacing: 8) {
+                        Image(systemName: "video.slash")
+                            .font(.title2)
+                            .accessibilityHidden(true)
+                        Text(
+                            "Camera access is off. Type the code below, or allow camera access in Settings.",
+                            comment: "Shown over the black camera view at the top of the new card form when the app may not use the camera."
+                        )
+                        .font(.subheadline)
+                        .multilineTextAlignment(.center)
+                    }
+                    .foregroundStyle(.white)
+                    .padding()
+                } else {
+                    Rectangle()
+                        .fill(Color.red.opacity(0.8))
+                        .frame(height: 2)
+                }
             }
             .clipShape(RoundedRectangle(cornerRadius: 12))
+            .accessibilityElement(children: .ignore)
             .accessibilityIdentifier("scannerView")
             .accessibilityLabel(
                 Text("Barcode scanner", comment: "VoiceOver label for the live camera view at the top of the new card form.")
             )
+            .modifier(ScannerAccessibility(availability: availability))
+    }
+}
+
+/// What VoiceOver says about the scanner, which depends on whether the
+/// camera is running.
+private struct ScannerAccessibility: ViewModifier {
+    let availability: CameraAvailability
+
+    func body(content: Content) -> some View {
+        switch availability {
+        case .unknown, .available:
+            content
+                .accessibilityHint(
+                    Text(
+                        "Point the camera at the barcode. The code is filled in when it is read.",
+                        comment: "VoiceOver hint for the live camera view at the top of the new card form."
+                    )
+                )
+                // So VoiceOver users can pinch to zoom, as touches go straight
+                // to the camera view.
+                .accessibilityAddTraits(.allowsDirectInteraction)
+        case .denied:
+            content.accessibilityValue(
+                Text(
+                    "Camera access is off. Type the code below, or allow camera access in Settings.",
+                    comment: "Shown over the black camera view at the top of the new card form when the app may not use the camera."
+                )
+            )
+        case .unavailable:
+            content.accessibilityValue(
+                Text("Camera not available", comment: "VoiceOver value of the camera view in the new card form when there is no camera to use.")
+            )
+        }
     }
 }

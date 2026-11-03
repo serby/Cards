@@ -93,6 +93,12 @@
     "Brown" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker."
     },
+    "Camera access is off. Type the code below, or allow camera access in Settings." : {
+      "comment" : "Shown over the black camera view at the top of the new card form when the app may not use the camera."
+    },
+    "Camera not available" : {
+      "comment" : "VoiceOver value of the camera view in the new card form when there is no camera to use."
+    },
     "Cancel" : {
       "comment" : "Button in the delete-all dialog that keeps the cards.\nCloses the Add Location sheet without adding a place.\nCloses the import sheet without importing."
     },
@@ -294,6 +300,9 @@
     "Pinned location" : {
       "comment" : "Name saved for a place added on the map without typing a name."
     },
+    "Point the camera at the barcode. The code is filled in when it is read." : {
+      "comment" : "VoiceOver hint for the live camera view at the top of the new card form."
+    },
     "Postcode" : {
       "comment" : "Placeholder in the search field that moves the map to a postcode or address."
     },
@@ -317,6 +326,20 @@
     },
     "Scan the barcode on a loyalty card to add it." : {
       "comment" : "Under “No Cards Yet” on the empty card list."
+    },
+    "Scanned %@ code %@" : {
+      "comment" : "VoiceOver announcement after the camera reads a barcode. The arguments are its format, such as EAN-13, then the code.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Scanned %1$@ code %2$@"
+          }
+        }
+      }
+    },
+    "Scanned code %@" : {
+      "comment" : "VoiceOver announcement after the camera reads a barcode of a format the app does not name. The argument is the code."
     },
     "Searching" : {
       "comment" : "VoiceOver label for the spinner beside the postcode field while a search runs."

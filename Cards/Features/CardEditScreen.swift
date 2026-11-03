@@ -5,6 +5,7 @@ public struct CardEditScreen: View {
     private let navigationManager: NavigationManager?
     private let onSave: ((CardItem) -> Void)?
     @Environment(LocationService.self) private var locationService
+    @Environment(\.accessibilityAnnouncer) private var announcer
 
     @State private var draft: CardDraft
     @State private var scannedCode: String?
@@ -36,6 +37,9 @@ public struct CardEditScreen: View {
             .onChange(of: scannedCode) { _, newCode in
                 if let code = newCode {
                     draft.code = code
+                    // The scan fills the form silently, and an iPad cannot even
+                    // vibrate, so say what was read.
+                    announcer.announce(Self.scanAnnouncement(code: code, type: scannedBarcodeType))
                 }
             }
             .onChange(of: scannedBarcodeType) { _, newType in
@@ -70,6 +74,26 @@ public struct CardEditScreen: View {
             requestLocationAccess: locationService.requestAccess,
             findPlace: PostcodeLookup.find
         )
+    }
+
+    /// What VoiceOver says after a scan, with the code spelled out character
+    /// by character, as everywhere else.
+    static func scanAnnouncement(code: String, type: BarcodeType?) -> AttributedString {
+        var message = if let type {
+            AttributedString(
+                localized: "Scanned \(String(localized: type.displayName)) code \(code)",
+                comment: "VoiceOver announcement after the camera reads a barcode. The arguments are its format, such as EAN-13, then the code."
+            )
+        } else {
+            AttributedString(
+                localized: "Scanned code \(code)",
+                comment: "VoiceOver announcement after the camera reads a barcode of a format the app does not name. The argument is the code."
+            )
+        }
+        if let range = message.range(of: code, options: .backwards) {
+            message[range].accessibilitySpeechSpellsOutCharacters = true
+        }
+        return message
     }
 
     private func save() {

@@ -49,16 +49,28 @@ public extension EnvironmentValues {
     }
 }
 
-/// Posts VoiceOver announcements, injected so stories do not emit them.
+/// Posts VoiceOver announcements, injected so stories do not emit them. An
+/// attributed message carries speech attributes, such as a code spelled out
+/// character by character.
 public struct AccessibilityAnnouncer: Sendable {
-    public var announce: @MainActor @Sendable (String) -> Void
+    public var post: @MainActor @Sendable (AttributedString) -> Void
 
-    public init(announce: @escaping @MainActor @Sendable (String) -> Void) {
-        self.announce = announce
+    public init(post: @escaping @MainActor @Sendable (AttributedString) -> Void) {
+        self.post = post
     }
 
     public static let system = Self { message in
-        UIAccessibility.post(notification: .announcement, argument: message)
+        AccessibilityNotification.Announcement(message).post()
+    }
+
+    @MainActor
+    public func announce(_ message: String) {
+        post(AttributedString(message))
+    }
+
+    @MainActor
+    public func announce(_ message: AttributedString) {
+        post(message)
     }
 }
 
