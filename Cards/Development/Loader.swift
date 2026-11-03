@@ -9,7 +9,7 @@ public final class Loader {
     public static let shared = Loader()
     public private(set) var isLoading = false
 
-    private static let signpostLog = OSLog(subsystem: "com.amazon.testing.serby.cards", category: "Loader")
+    private static let signpostLog = OSLog(subsystem: "net.serby.Cards", category: "Loader")
 
     private init() {}
 
