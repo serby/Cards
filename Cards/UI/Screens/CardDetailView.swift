@@ -79,9 +79,14 @@ public struct CardDetailView: View {
             }
             .padding(20)
             .frame(maxWidth: .infinity)
-            .background(card.color.cardFill, in: .rect(cornerRadius: 24))
+            // The shadow belongs to the card's shape alone. On the whole card it
+            // fell on every glyph too, haloing the text and lowering its contrast.
+            .background {
+                RoundedRectangle(cornerRadius: 24)
+                    .fill(card.color.cardFill)
+                    .shadow(color: .black.opacity(0.12), radius: 16, y: 8)
+            }
             .keepsColoursWhenInverted()
-            .shadow(color: .black.opacity(0.12), radius: 16, y: 8)
             .padding()
         }
         .scrollBounceBehavior(.basedOnSize)
