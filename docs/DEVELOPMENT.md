@@ -230,6 +230,17 @@ Add a case to `CardColor` with its display name and a translator comment (`Core/
 
 In Xcode, **File > Add Package Dependencies**, add the product to the `Cards` target, and commit `project.pbxproj` with `Cards.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved`.
 
+### Add or change copy
+
+Every word the app shows or speaks comes from `Cards/Localizable.xcstrings`, or from `Cards/InfoPlist.xcstrings` for the app name and the permission prompts iOS shows. English is the source, and the App Store screenshots pin its wording.
+
+1. **Write it where it is shown.** In a view, `Text("Edit", comment: "…")`. Where an API takes a title, give it a `Text` (`.navigationTitle(Text(…))`, `Button { … } label: { Text(…) }`, `Section { … } header: { Text(…) }`, a text field's `prompt:`), or a `LocalizedStringResource` where it also takes an image (`Label(LocalizedStringResource(…), systemImage:)`). Text that SwiftUI resolves itself follows the `\.locale` it renders in, which is how the Storybook switches language. Core cannot import SwiftUI, so its names are `LocalizedStringResource` (`BarcodeType.displayName`), and a view parameter that carries copy is a `LocalizedStringResource` or `LocalizedStringKey`. Use `String(localized:)` only where it has to be a `String`: notifications, VoiceOver announcements, a name saved into a card.
+2. **Comment every string** with where it appears and what it does, and say "a verb" or "a noun" when English could be either. The translator sees only the key and the comment.
+3. **Format values in the view**, never as a ready-made string: `Text(date, format: …)`, `Text(radius.metres, format: .radius)`, or interpolated into the key (`"\(distance, format: .distance) from \(place)"`). A count gets English `one` and `other` forms in the catalogue.
+4. **User content stays a `String`.** Card names, codes and place names show as typed and are never looked up. Development copy (the Storybook, previews, samples) uses `Text(verbatim:)` or `String` values, or a Debug build would extract it into the catalogue and it would ship.
+5. **Codes read left to right.** Card codes, version numbers and JSON take `.readsLeftToRight()`, and a barcode never mirrors. Check the screen right to left in the Storybook.
+6. **Fill the catalogue.** `make build` compiles the catalogues but never writes to them, so run `xcodebuild -exportLocalizations -project Cards.xcodeproj -localizationPath /tmp/cards-l10n -exportLanguage en` (with `DEVELOPER_DIR` pointing at Xcode 27.1, as the Makefile sets it). Like a build in Xcode, it adds new keys with their comments, removes unused keys that have no translations, marks unused translated keys `stale`, and fills `InfoPlist.xcstrings` from `Info.plist`. Add any plural forms, then commit the catalogue with the code and translate as below.
+
 ### Translate the app, or add a language
 
 The String Catalogues under `Cards/` hold the British English source, and `scripts/l10n.ts` translates them with AI into every language in the project's `knownRegions`. There is no other list of languages.
@@ -292,3 +303,6 @@ Xcode 27 has no Simulator.app; `make sim` opens Device Hub to show the screen, a
 | "Cannot create new type CD_CardItem in production schema" in the log | The Production CloudKit schema is missing the model; deploy it ([section 8](#8-releasing)) |
 | The map picker freezes the app | Something updates `Map` content from `onMapCameraChange` ([rule 7](#rule-7-swift-6-no-warnings-clean-lint)) |
 | A story shows several Edit buttons | The screen story is missing `galleryLayout: .oneAtATime` |
+| New copy is missing from `Localizable.xcstrings` | Command-line builds never write to catalogues; run `xcodebuild -exportLocalizations` ([Add or change copy](#add-or-change-copy)) |
+| Storybook or preview text turns up in `Localizable.xcstrings` | A literal reached a `LocalizedStringKey` in `Cards/Development`; make it `Text(verbatim:)` or a `String` |
+| An English device shows a translation | `Info.plist` must keep `CFBundleDevelopmentRegion`: catalogues compile no `en.lproj` for unchanged English, so without it iOS picks one of the translations |
