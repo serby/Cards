@@ -5,12 +5,20 @@ public struct CardListScreen: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \CardItem.order) private var cardItems: [CardItem]
     @Environment(NavigationManager.self) private var navigationManager
+    @Environment(LocationService.self) private var locationService
 
     public init() {}
 
     public var body: some View {
         CardListView(
-            cards: cardItems.map { CardSummary(id: $0.code, name: $0.name) },
+            cards: cardItems.map { item in
+                CardSummary(
+                    id: item.code,
+                    name: item.name,
+                    color: item.getColor(),
+                    proximity: item.locations.proximity(to: locationService.current)
+                )
+            },
             actions: CardListActions(
                 selectCard: { code in navigationManager.navigate(to: .card(code)) },
                 addCard: { navigationManager.navigate(to: .newCard) },
@@ -20,6 +28,18 @@ public struct CardListScreen: View {
         )
         .navigationDestination(for: NavigationRoute.self) { route in
             destinationView(for: route)
+        }
+        .task(id: arrivals) {
+            if arrivals.contains(where: { !$0.locations.isEmpty }) {
+                locationService.start()
+            }
+            await ArrivalNotifier.reschedule(arrivals, near: locationService.current)
+        }
+    }
+
+    private var arrivals: [ArrivalNotifier.Card] {
+        cardItems.map {
+            ArrivalNotifier.Card(name: $0.name, code: $0.code, barcodeType: $0.getBarcodeType(), locations: $0.locations)
         }
     }
 
@@ -94,6 +114,7 @@ public struct CardListScreen: View {
     NavigationStack {
         CardListScreen()
             .environment(NavigationManager())
+            .environment(LocationService())
     }
     .modelContainer(for: CardItem.self, inMemory: true)
 }

@@ -61,6 +61,41 @@ struct CardItemTests {
         #expect(cardItem.getBarcodeType() == .code128)
     }
 
+    @Test func colourDefaultsToStandard() {
+        let cardItem = CardItem(timestamp: Date(), code: "1234567890", name: "Test Card")
+        #expect(cardItem.getColor() == .standard)
+        #expect(cardItem.color == CardColor.standard.rawValue)
+    }
+
+    @Test func colourIsStoredByRawValue() {
+        let cardItem = CardItem(timestamp: Date(), code: "1234567890", name: "Test Card", color: .teal)
+        #expect(cardItem.color == "teal")
+        #expect(cardItem.getColor() == .teal)
+    }
+
+    @Test func unknownStoredColourFallsBackToStandard() {
+        let cardItem = CardItem(timestamp: Date(), code: "1234567890", name: "Test Card", color: .red)
+        cardItem.color = "chartreuse"
+        #expect(cardItem.getColor() == .standard)
+    }
+
+    @Test func exportRoundTripKeepsColour() throws {
+        let original = CardItem(timestamp: Date(timeIntervalSince1970: 0), code: "42", name: "Costa", color: .red)
+        let data = try JSONEncoder().encode([CardItemDTO(from: original)])
+        let imported = try JSONDecoder().decode([CardItemDTO].self, from: data)
+        #expect(imported.first?.toCardItem().getColor() == .red)
+    }
+
+    @Test func exportWithoutColourStillImports() throws {
+        let legacy = """
+        [{"code":"42","name":"Costa","order":0,"timestamp":0,"type":"EAN-13"}]
+        """
+        let imported = try JSONDecoder().decode([CardItemDTO].self, from: Data(legacy.utf8))
+        let card = try #require(imported.first?.toCardItem())
+        #expect(card.getColor() == .standard)
+        #expect(card.getBarcodeType() == .ean13)
+    }
+
     @Test func identifiableConformance() {
         let cardItem = CardItem(timestamp: Date(), code: "1234567890", name: "Test Card")
         _ = cardItem.id

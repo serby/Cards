@@ -23,32 +23,48 @@ public struct CardDetailView: View {
 
     public var body: some View {
         VStack {
-            VStack {
-                Text(card.name)
-                    .font(.title.bold())
-                    .foregroundStyle(.secondary)
-                    .padding(.vertical)
-                    .accessibilityIdentifier("cardNameText")
-                    .accessibilityLabel("Card name: \(card.name)")
-                    .accessibilityAddTraits(.isHeader)
-                
+            VStack(spacing: 16) {
+                VStack(spacing: 6) {
+                    Text(card.name)
+                        .font(.title2.bold())
+                        .multilineTextAlignment(.center)
+                        .foregroundStyle(card.color.primaryInk)
+                        .accessibilityIdentifier("cardNameText")
+                        .accessibilityLabel("Card name: \(card.name)")
+                        .accessibilityAddTraits(.isHeader)
+
+                    if let proximity = card.proximity {
+                        ProximityLabel(proximity, showsPlace: true)
+                            .font(.subheadline.weight(.medium))
+                            .foregroundStyle(card.color.secondaryInk)
+                            .accessibilityIdentifier("cardProximityText")
+                    }
+                }
+
                 BarcodeView(barcodeString: card.code, barcodeType: card.barcodeType)
                     .accessibilityLabel("Barcode for \(card.name)")
-                Text(card.code)
-                    .font(.headline)
-                    .accessibilityIdentifier("cardCodeText")
-                    .accessibilityLabel("Card code: \(card.code)")
-                    .accessibilityAddTraits(.isStaticText)
-                
-                Text("\(card.timestamp, format: Date.FormatStyle(date: .abbreviated, time: .shortened))")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .accessibilityIdentifier("cardTimestampText")
-                    .accessibilityLabel("Created on \(card.timestamp, format: Date.FormatStyle(date: .long, time: .shortened))")
-                    .accessibilityAddTraits(.isStaticText)
+
+                VStack(spacing: 4) {
+                    Text(card.code)
+                        .font(.title3.monospaced().weight(.semibold))
+                        .foregroundStyle(card.color.primaryInk)
+                        .textSelection(.enabled)
+                        .accessibilityIdentifier("cardCodeText")
+                        .accessibilityLabel(Text("Card code: ") + Text(card.code).speechSpellsOutCharacters())
+                        .accessibilityAddTraits(.isStaticText)
+
+                    Text("\(card.timestamp, format: Date.FormatStyle(date: .abbreviated, time: .shortened))")
+                        .font(.caption)
+                        .foregroundStyle(card.color.secondaryInk)
+                        .accessibilityIdentifier("cardTimestampText")
+                        .accessibilityLabel("Created on \(card.timestamp, format: Date.FormatStyle(date: .long, time: .shortened))")
+                        .accessibilityAddTraits(.isStaticText)
+                }
             }
-            .padding()
-            .background(.gray.opacity(0.25), in: .rect(cornerRadius: 24))
+            .padding(20)
+            .frame(maxWidth: .infinity)
+            .background(card.color.cardFill, in: .rect(cornerRadius: 24))
+            .shadow(color: .black.opacity(0.12), radius: 16, y: 8)
             Spacer()
         }
         .padding()
@@ -71,7 +87,7 @@ public struct CardDetailView: View {
                     Task { await applyToggle() }
                 } label: {
                     Image(systemName: brightnessBoost ? "sun.max.fill" : "sun.max")
-                        .foregroundStyle(brightnessBoost ? Color.accentColor : .primary)
+                        .foregroundStyle(brightnessBoost ? Color.accent : .primary)
                 }
                 .accessibilityIdentifier("brightnessToggleButton")
                 .accessibilityLabel("Brightness Boost")

@@ -1,17 +1,34 @@
 import SwiftData
 import SwiftUI
+import UserNotifications
 
 @main
 struct CardsApp: App {
     @Environment(\.scenePhase) private var scenePhase
-    @State private var navigationManager = NavigationManager()
+    @State private var navigationManager: NavigationManager
+    @State private var locationService = LocationService()
     private let performanceTracker = PerformanceTracker()
+    private let arrivalRouter: ArrivalNotificationRouter
+
+    init() {
+        let navigationManager = NavigationManager()
+        _navigationManager = State(initialValue: navigationManager)
+        // Set before launch finishes so a tap that launched the app is not missed.
+        arrivalRouter = ArrivalNotificationRouter { code in
+            navigationManager.navigate(to: .card(code))
+        }
+        UNUserNotificationCenter.current().delegate = arrivalRouter
+    }
+
+    /// UI tests drive the shipping UI, so debug-only extras such as the
+    /// Storybook tab stay out of their way and out of the App Store screenshots.
+    private static let isUITesting = CommandLine.arguments.contains("-uiTesting")
+        || ProcessInfo.processInfo.environment["CARDS_UI_TESTING"] == "1"
 
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([CardItem.self])
         let environment = ProcessInfo.processInfo.environment
-        let isTesting = CommandLine.arguments.contains("-uiTesting")
-            || environment["CARDS_UI_TESTING"] == "1"
+        let isTesting = Self.isUITesting
         let seedScreenshots = CommandLine.arguments.contains("-screenshotSeed")
             || environment["CARDS_SCREENSHOT_SEED"] == "1"
 
@@ -20,17 +37,15 @@ struct CardsApp: App {
             let container = try ModelContainer(for: schema, configurations: [modelConfiguration])
             if seedScreenshots {
                 let context = container.mainContext
-                let seeds: [(String, String, BarcodeType)] = [
-                    ("Tesco Clubcard", "634004024987531", .ean13),
-                    ("Boots Advantage", "9780201379624", .ean13),
-                    ("Costa Coffee", "1234567890128", .ean13),
-                    ("Nectar", "9988776655443", .code128),
-                    ("Sainsbury's Nectar", "5012345678900", .ean13),
-                    ("IKEA Family", "7350053850019", .code128),
+                let seeds = [
+                    CardItem(code: "634004024987531", name: "Tesco Clubcard", barcodeType: .ean13, order: 0, color: .blue),
+                    CardItem(code: "9780201379624", name: "Boots Advantage", barcodeType: .ean13, order: 1, color: .indigo),
+                    CardItem(code: "1234567890128", name: "Costa Coffee", barcodeType: .ean13, order: 2, color: .red),
+                    CardItem(code: "9988776655443", name: "Nectar", barcodeType: .code128, order: 3, color: .purple),
+                    CardItem(code: "5012345678900", name: "Sainsbury's Nectar", barcodeType: .ean13, order: 4, color: .orange),
+                    CardItem(code: "7350053850019", name: "IKEA Family", barcodeType: .code128, order: 5, color: .yellow)
                 ]
-                for (index, seed) in seeds.enumerated() {
-                    context.insert(CardItem(code: seed.1, name: seed.0, barcodeType: seed.2, order: index))
-                }
+                seeds.forEach(context.insert)
                 try context.save()
             }
             return container
@@ -58,12 +73,15 @@ struct CardsApp: App {
                 }
             }
             #if DEBUG
-            Tab("Storybook", systemImage: "square.grid.2x2") {
-                StorybookView()
+            if !Self.isUITesting {
+                Tab("Storybook", systemImage: "square.grid.2x2") {
+                    StorybookView()
+                }
             }
             #endif
         }
         .tint(.accent)
+        .environment(locationService)
         .background(Color.primaryBackground)
         .onAppear {
             performanceTracker.recordAppLaunch()

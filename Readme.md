@@ -143,6 +143,14 @@ then compares the exported captures with every en-US and en-GB reference. It
 fails for missing files, wrong dimensions, invalid PNGs, or material visual
 differences.
 
+## Card Colours and Locations
+
+Each card has a colour from a fixed palette (`UI/Theme/CardPalette.swift`). Only palette colours can be picked, and `CardColorTests` checks every one meets WCAG AA contrast for the card's text and for the tinted list row in light and dark mode.
+
+A card can also have any number of locations: a circle picked on the map from your current location, or found by postcode with a 200 m default radius. The list and detail screens show how far you are from the nearest one (`LocationService`, When In Use permission only). Each location is scheduled as a location-triggered local notification carrying the barcode image (`Features/ArrivalNotifications.swift`), so the barcode appears on the Lock Screen when you arrive. iOS watches the regions itself, so there is no background location or server; iOS allows 20 regions per app, so the nearest 20 are kept.
+
+Both fields sync through CloudKit, and `Cards/Cards.entitlements` points every configuration at the Production environment, which rejects fields its schema does not have. Before shipping, run a build against the Development environment (set `com.apple.developer.icloud-container-environment` to `Development` temporarily) and save a card with a colour and a location, so CloudKit adds the new `CD_CardItem` fields, then deploy the schema to Production in the CloudKit Console for `iCloud.net.serby.Cards`.
+
 ## App Icon
 
 `DesignAssets/Icon.svg` is the master artwork (light appearance). After editing it, run `scripts/generate-app-icons.sh` to render the light, dark and tinted 1024px PNGs into `Cards/Assets.xcassets/AppIcon.appiconset` and `DesignAssets/`, plus the 180px `Website/src/icon.png`. Dark and tinted are derived by swapping the two colours to a white glyph on black. Needs `brew install librsvg imagemagick`.
@@ -160,9 +168,9 @@ only a build-output location now — there are no lanes.
 Everything below is one module, so there are no imports between folders.
 
 ### `Cards/Core`
-- `Models/` — `CardItem` (SwiftData model), `BarcodeType`, `CardItemDTO`
+- `Models/` — `CardItem` (SwiftData model), `BarcodeType`, `CardColor`, `CardLocation`, `CardItemDTO`
 - `Navigation/` — `NavigationRoute`, `NavigationManager` (@Observable)
-- `Services/` — `PerformanceTracker` (cold/warm start timing), `Loader`
+- `Services/` — `PerformanceTracker` (cold/warm start timing), `Loader`, `LocationService`, `PostcodeLookup`
 
 ### `Cards/UI`
 Every view, with no store, camera or device access. See "Views are detached from

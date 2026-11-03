@@ -4,6 +4,7 @@ public struct CardEditScreen: View {
     private let cardItem: CardItem
     private let navigationManager: NavigationManager?
     private let onSave: ((CardItem) -> Void)?
+    @Environment(LocationService.self) private var locationService
 
     @State private var draft: CardDraft
     @State private var scannedCode: String?
@@ -23,7 +24,9 @@ public struct CardEditScreen: View {
             initialValue: CardDraft(
                 name: cardItem.name,
                 code: cardItem.code,
-                barcodeType: cardItem.getBarcodeType()
+                barcodeType: cardItem.getBarcodeType(),
+                color: cardItem.getColor(),
+                locations: cardItem.locations
             )
         )
     }
@@ -47,7 +50,7 @@ public struct CardEditScreen: View {
         if isNewCard {
             CardEditView(
                 draft: $draft,
-                actions: CardEditActions(save: save),
+                actions: actions,
                 scanner: {
                     ScannerOverlayView(scannedCode: $scannedCode, barcodeType: $scannedBarcodeType)
                 }
@@ -55,16 +58,26 @@ public struct CardEditScreen: View {
         } else {
             CardEditView(
                 draft: $draft,
-                actions: CardEditActions(save: save),
+                actions: actions,
                 autofocusesName: true
             )
         }
+    }
+
+    private var actions: CardEditActions {
+        CardEditActions(
+            save: save,
+            requestLocationAccess: locationService.requestAccess,
+            findPlace: PostcodeLookup.find
+        )
     }
 
     private func save() {
         cardItem.name = draft.name
         cardItem.code = draft.code
         cardItem.type = draft.barcodeType.rawValue
+        cardItem.color = draft.color.rawValue
+        cardItem.locations = draft.locations
 
         if let onSave {
             onSave(cardItem)
@@ -84,5 +97,6 @@ public struct CardEditScreen: View {
     NavigationStack {
         CardEditScreen(cardItem: sampleCardItem, navigationManager: NavigationManager())
     }
+    .environment(LocationService())
     .modelContainer(for: CardItem.self, inMemory: true)
 }

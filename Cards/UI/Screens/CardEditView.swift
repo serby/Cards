@@ -10,6 +10,7 @@ public struct CardEditView<Scanner: View>: View {
     private let scanner: () -> Scanner
 
     @FocusState private var focusedField: Field?
+    @State private var showsLocationPicker = false
 
     private enum Field {
         case name, code
@@ -83,6 +84,37 @@ public struct CardEditView<Scanner: View>: View {
                 .accessibilityHint("Select the type of barcode for this card")
             }
             .accessibilityIdentifier("barcodeTypeSection")
+
+            Section("Colour") {
+                CardColorPicker(selection: $draft.color)
+            }
+            .accessibilityIdentifier("cardColorSection")
+
+            Section {
+                ForEach(draft.locations) { location in
+                    CardLocationRow(location)
+                }
+                .onDelete { draft.locations.remove(atOffsets: $0) }
+
+                Button {
+                    showsLocationPicker = true
+                } label: {
+                    Label("Add Location", systemImage: "mappin.and.ellipse")
+                }
+                .accessibilityIdentifier("addLocationRowButton")
+            } header: {
+                Text("Locations")
+            } footer: {
+                Text("When you arrive at one of these places, the barcode appears on your Lock Screen.")
+            }
+            .accessibilityIdentifier("cardLocationsSection")
+        }
+        .sheet(isPresented: $showsLocationPicker) {
+            LocationPickerView(
+                findPlace: actions.findPlace,
+                onAppear: actions.requestLocationAccess,
+                onAdd: { draft.locations.append($0) }
+            )
         }
         .navigationBarTitleDisplayMode(.inline)
         .accessibilityIdentifier("editCardForm")

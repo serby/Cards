@@ -4,10 +4,16 @@ import Foundation
 public struct CardSummary: Identifiable, Hashable, Sendable {
     public let id: String
     public let name: String
+    public let color: CardColor
+    /// Distance to the nearest location, when the card has any and the user's
+    /// location is known.
+    public let proximity: CardProximity?
 
-    public init(id: String, name: String) {
+    public init(id: String, name: String, color: CardColor = .standard, proximity: CardProximity? = nil) {
         self.id = id
         self.name = name
+        self.color = color
+        self.proximity = proximity
     }
 }
 
@@ -18,13 +24,25 @@ public struct CardDetail: Identifiable, Hashable, Sendable {
     public let code: String
     public let barcodeType: BarcodeType
     public let timestamp: Date
+    public let color: CardColor
+    public let proximity: CardProximity?
 
-    public init(id: String, name: String, code: String, barcodeType: BarcodeType, timestamp: Date) {
+    public init(
+        id: String,
+        name: String,
+        code: String,
+        barcodeType: BarcodeType,
+        timestamp: Date,
+        color: CardColor = .standard,
+        proximity: CardProximity? = nil
+    ) {
         self.id = id
         self.name = name
         self.code = code
         self.barcodeType = barcodeType
         self.timestamp = timestamp
+        self.color = color
+        self.proximity = proximity
     }
 }
 
@@ -33,11 +51,21 @@ public struct CardDraft: Hashable, Sendable {
     public var name: String
     public var code: String
     public var barcodeType: BarcodeType
+    public var color: CardColor
+    public var locations: [CardLocation]
 
-    public init(name: String = "", code: String = "", barcodeType: BarcodeType = .code128) {
+    public init(
+        name: String = "",
+        code: String = "",
+        barcodeType: BarcodeType = .code128,
+        color: CardColor = .standard,
+        locations: [CardLocation] = []
+    ) {
         self.name = name
         self.code = code
         self.barcodeType = barcodeType
+        self.color = color
+        self.locations = locations
     }
 }
 

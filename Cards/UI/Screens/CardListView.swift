@@ -4,6 +4,7 @@ public struct CardRowView: View {
     private let card: CardSummary
     private let onTap: () -> Void
     @State private var trigger = false
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     public init(card: CardSummary, onTap: @escaping () -> Void) {
         self.card = card
@@ -15,11 +16,33 @@ public struct CardRowView: View {
             trigger.toggle()
             onTap()
         } label: {
-            Text(card.name)
-                .padding(.vertical)
-                .foregroundColor(.primaryText)
+            layout {
+                Text(card.name)
+                    .font(.headline)
+                    .foregroundStyle(Color.primaryText)
+                    .multilineTextAlignment(.leading)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                if let proximity = card.proximity {
+                    ProximityLabel(proximity)
+                        .font(.subheadline)
+                        .foregroundStyle(proximity.isHere ? Color.primaryText : Color.secondaryText)
+                }
+            }
+            .padding(.horizontal, 18)
+            .padding(.vertical, 20)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(card.color.rowFill, in: .rect(cornerRadius: 18))
+            .contentShape(.rect(cornerRadius: 18))
         }
+        .buttonStyle(.plain)
         .sensoryFeedback(trigger: trigger, { SensoryFeedback.impact(weight: .heavy) })
+    }
+
+    /// Name and distance side by side, stacked at accessibility text sizes.
+    private var layout: AnyLayout {
+        dynamicTypeSize.isAccessibilitySize
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: 6))
+            : AnyLayout(HStackLayout(alignment: .firstTextBaseline, spacing: 12))
     }
 }
 
@@ -40,8 +63,8 @@ public struct CardListView: View {
             ForEach(cards) { card in
                 CardRowView(card: card) { actions.selectCard(card.id) }
                     .listRowBackground(Color.clear)
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 4)
+                    .listRowSeparator(.hidden)
+                    .listRowInsets(EdgeInsets(top: 5, leading: 16, bottom: 5, trailing: 16))
             }
             .onDelete { offsets in
                 deleteTrigger.toggle()
@@ -50,6 +73,18 @@ public struct CardListView: View {
             .onMove(perform: actions.moveCards)
         }
         .listStyle(.plain)
+        .overlay {
+            if cards.isEmpty {
+                ContentUnavailableView {
+                    Label("No Cards Yet", systemImage: "barcode.viewfinder")
+                } description: {
+                    Text("Scan the barcode on a loyalty card to add it.")
+                } actions: {
+                    Button("Add Card", action: actions.addCard)
+                        .buttonStyle(.borderedProminent)
+                }
+            }
+        }
         .scrollContentBackground(.hidden)
         .background(Color.primaryBackground)
         .navigationTitle("Cards")

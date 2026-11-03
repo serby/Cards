@@ -34,9 +34,18 @@ public struct CardDetailActions {
 @MainActor
 public struct CardEditActions {
     public var save: () -> Void
+    /// Called when the location picker opens, so the map can show where you are.
+    public var requestLocationAccess: () -> Void
+    public var findPlace: (String) async -> PlaceMatch?
 
-    public init(save: @escaping () -> Void = {}) {
+    public init(
+        save: @escaping () -> Void = {},
+        requestLocationAccess: @escaping () -> Void = {},
+        findPlace: @escaping (String) async -> PlaceMatch? = { _ in nil }
+    ) {
         self.save = save
+        self.requestLocationAccess = requestLocationAccess
+        self.findPlace = findPlace
     }
 }
 
