@@ -76,7 +76,7 @@ function projectCopy(): string {
 function cli(root: string, args: string[], env: Record<string, string> = {}) {
     const result = spawnSync(process.execPath, [tool, "--root", root, ...args], {
         encoding: "utf8",
-        env: { ...process.env, L10N_AI_COMMAND: `"${process.execPath}" "${fakeAI}"`, ...env },
+        env: { ...process.env, L10N_AI_BACKOFF_MS: "0", L10N_AI_COMMAND: `"${process.execPath}" "${fakeAI}"`, ...env },
     });
     return { status: result.status, stdout: result.stdout, stderr: result.stderr };
 }

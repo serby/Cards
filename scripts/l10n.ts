@@ -703,6 +703,17 @@ function killGroup(pid: number, signal: NodeJS.Signals): void {
     }
 }
 
+const tail = (output: string): string => output.trim().split("\n").slice(-5).join(" ");
+
+/// Waits before asking again after the AI command itself failed. Failures under
+/// load are usually throttling, so back off: about 10 s, then 20 s, plus jitter.
+/// L10N_AI_BACKOFF_MS scales it (0 in tests).
+const backoff = (attempt: number): Promise<void> => {
+    const base = Number(process.env.L10N_AI_BACKOFF_MS ?? 10_000);
+    const delay = base * 2 ** (attempt - 1) * (0.75 + Math.random() / 2);
+    return new Promise((resolveDelay) => setTimeout(resolveDelay, delay));
+};
+
 /// Runs a shell command with the prompt on stdin and returns its stdout. The
 /// command runs in its own process group so a timeout (macOS has no GNU
 /// timeout) or Ctrl-C stops everything it started.
@@ -737,7 +748,8 @@ export function runCommand(command: string, input: string, timeoutMs: number, cw
             clearTimeout(timer);
             runningGroups.delete(pid);
             if (timedOut) reject(new Error(`timed out after ${Math.round(timeoutMs / 1000)} s`));
-            else if (code !== 0) reject(new Error(`exited with ${code ?? signal}: ${stderr.trim().split("\n").slice(-5).join(" ") || "no output"}`));
+            // Some CLIs (claude -p among them) report API errors on stdout, so fall back to it.
+            else if (code !== 0) reject(new Error(`exited with ${code ?? signal}: ${tail(stderr) || tail(stdout) || "no output"}`));
             else resolvePromise(stdout);
         });
         child.stdin.end(input);
@@ -807,6 +819,7 @@ async function translateBatch(units: Unit[], lang: string, label: string, option
             // The command failed, so there is no reply to give feedback on: ask again as before.
             lastFailure = `the AI command failed: ${(error as Error).message}`;
             options.log(`${label}: ${lastFailure}`);
+            if (attempt < 3) await backoff(attempt);
             continue;
         }
         let replyUnits: ReplyUnit[];
