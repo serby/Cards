@@ -197,7 +197,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$@ de %2$@"
+            "value" : "A %1$@ de %2$@"
           }
         },
         "zh-Hans" : {
@@ -593,7 +593,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Adicionado: %@"
+            "value" : "Você adicionou %@"
           }
         },
         "zh-Hans" : {
@@ -918,7 +918,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Escâner de código de barras"
+            "value" : "Leitor de código de barras"
           }
         },
         "zh-Hans" : {
@@ -1113,7 +1113,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aumenta o brilho ao exibir um cartão para facilitar o escaneamento"
+            "value" : "Aumenta o brilho ao exibir um cartão para facilitar a leitura do código de barras"
           }
         },
         "zh-Hans" : {
@@ -2738,7 +2738,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Apagado: %@"
+            "value" : "Você apagou %@"
           }
         },
         "zh-Hans" : {
@@ -3453,7 +3453,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Falha ao gerar o código de barras"
+            "value" : "Não foi possível gerar o código de barras"
           }
         },
         "zh-Hans" : {
@@ -6644,7 +6644,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Código %2$@ do tipo %1$@ escaneado"
+            "value" : "%1$@ escaneado: %2$@"
           }
         },
         "zh-Hans" : {
@@ -6709,7 +6709,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Código %@ escaneado"
+            "value" : "Código escaneado: %@"
           }
         },
         "zh-Hans" : {
@@ -7104,7 +7104,7 @@
               "many" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld cartões importados com sucesso"
+                  "value" : "%lld de cartões importados com sucesso"
                 }
               },
               "one" : {
@@ -7396,7 +7396,7 @@
               "many" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Isto apagará permanentemente todos os %lld cartões. Esta ação não pode ser desfeita."
+                  "value" : "Isto apagará permanentemente todos os %lld de cartões. Esta ação não pode ser desfeita."
                 }
               },
               "one" : {
@@ -7488,7 +7488,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Alterna o brilho da tela para o máximo para facilitar o escaneamento do código de barras"
+            "value" : "Ativa ou desativa o Brilho Máximo para facilitar a leitura do código de barras"
           }
         },
         "zh-Hans" : {
