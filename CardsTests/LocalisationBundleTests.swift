@@ -89,39 +89,12 @@ private struct SourceCatalogue {
     let keys: Set<String>
     let languages: Set<String>
 
-    private struct File: Decodable {
-        let sourceLanguage: String
-        let strings: [String: Entry]
-    }
-
-    /// A catalogue leaves out what is the default: translatable, extracted,
-    /// no translations.
-    private struct Entry: Decodable {
-        let shouldTranslate: Bool
-        let extractionState: String?
-        let localizations: [String: Localization]
-
-        private enum CodingKeys: String, CodingKey {
-            case shouldTranslate, extractionState, localizations
-        }
-
-        init(from decoder: any Decoder) throws {
-            let container = try decoder.container(keyedBy: CodingKeys.self)
-            shouldTranslate = try container.decodeIfPresent(Bool.self, forKey: .shouldTranslate) ?? true
-            extractionState = try container.decodeIfPresent(String.self, forKey: .extractionState)
-            localizations = try container.decodeIfPresent([String: Localization].self, forKey: .localizations) ?? [:]
-        }
-    }
-
-    /// Only which languages an entry has matters here, not what they say.
-    private struct Localization: Decodable {}
-
     static func load(_ name: String, testFile: String = #filePath) throws -> Self {
         let url = URL(filePath: testFile)
             .deletingLastPathComponent()
             .deletingLastPathComponent()
             .appending(components: "Cards", "\(name).xcstrings")
-        let file = try JSONDecoder().decode(File.self, from: Data(contentsOf: url))
+        let file = try JSONDecoder().decode(CatalogueFile.self, from: Data(contentsOf: url))
         // Stale keys are no longer in the code, and untranslatable ones stay
         // in the source language.
         let entries = file.strings.filter { _, entry in
@@ -131,3 +104,30 @@ private struct SourceCatalogue {
         return Self(keys: Set(entries.keys), languages: Set(languages).subtracting([file.sourceLanguage]))
     }
 }
+
+private struct CatalogueFile: Decodable {
+    let sourceLanguage: String
+    let strings: [String: CatalogueEntry]
+}
+
+/// A catalogue leaves out what is the default: translatable, extracted, no
+/// translations.
+private struct CatalogueEntry: Decodable {
+    let shouldTranslate: Bool
+    let extractionState: String?
+    let localizations: [String: CatalogueLocalization]
+
+    private enum CodingKeys: String, CodingKey {
+        case shouldTranslate, extractionState, localizations
+    }
+
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        shouldTranslate = try container.decodeIfPresent(Bool.self, forKey: .shouldTranslate) ?? true
+        extractionState = try container.decodeIfPresent(String.self, forKey: .extractionState)
+        localizations = try container.decodeIfPresent([String: CatalogueLocalization].self, forKey: .localizations) ?? [:]
+    }
+}
+
+/// Only which languages an entry has matters here, not what they say.
+private struct CatalogueLocalization: Decodable {}
