@@ -157,7 +157,7 @@ public struct LocationPickerView: View {
                     comment: "Under the postcode field when nothing is found. The argument is what was typed; use your language's quotation marks."
                 )
                 .font(.footnote)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Color.secondaryText)
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
 
@@ -179,7 +179,7 @@ public struct LocationPickerView: View {
                     Spacer()
                     Text(radius.metres, format: .radius)
                         .monospacedDigit()
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(Color.secondaryText)
                 }
                 .font(.subheadline)
                 Slider(value: $radius, in: Self.radiusRange, step: 25)

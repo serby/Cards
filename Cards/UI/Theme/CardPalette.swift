@@ -17,8 +17,9 @@ public enum CardInk: Sendable {
 }
 
 /// A fixed card background and the ink drawn on it. `CardColorTests` checks every
-/// swatch meets WCAG AA (4.5:1) for both primary and secondary text, and that the
-/// list-row hint keeps the system label readable in light and dark mode.
+/// card face, swatch or `.standard`, meets WCAG AA (4.5:1) for both primary and
+/// secondary text, and that the list-row hint keeps its text readable in light
+/// and dark mode.
 public struct CardSwatch: Hashable, Sendable {
     /// Opacity of secondary text (card name, date) relative to the ink.
     public static let secondaryInkOpacity = 0.85
@@ -67,20 +68,25 @@ public extension CardColor {
         }
     }
 
+    /// The `.standard` card face in light and dark mode: an opaque neutral grey
+    /// that follows the system appearance.
+    static let standardFaceLightRGB: UInt32 = 0xE3E3E4
+    static let standardFaceDarkRGB: UInt32 = 0x242425
+
     /// The card face.
-    var cardFill: AnyShapeStyle {
-        swatch.map { AnyShapeStyle($0.backgroundColor) } ?? AnyShapeStyle(Color.gray.opacity(0.25))
+    var cardFill: Color {
+        swatch?.backgroundColor
+            ?? Color(light: Color(rgb: Self.standardFaceLightRGB), dark: Color(rgb: Self.standardFaceDarkRGB))
     }
 
-    /// Text on the card face: the code.
-    var primaryInk: AnyShapeStyle {
-        swatch.map { AnyShapeStyle($0.inkColor) } ?? AnyShapeStyle(.primary)
+    /// Text on the card face: the name and the code.
+    var primaryInk: Color {
+        swatch?.inkColor ?? .primaryText
     }
 
-    /// Supporting text on the card face: the name and date.
-    var secondaryInk: AnyShapeStyle {
-        swatch.map { AnyShapeStyle($0.inkColor.opacity(CardSwatch.secondaryInkOpacity)) }
-            ?? AnyShapeStyle(.secondary)
+    /// Supporting text on the card face: the distance and the date.
+    var secondaryInk: Color {
+        primaryInk.opacity(CardSwatch.secondaryInkOpacity)
     }
 
     /// A list row: a faint wash of the card colour, or the grouped background
@@ -92,6 +98,13 @@ public extension CardColor {
                 dark: swatch.backgroundColor.opacity(Self.hintOpacityDark)
             )
         } ?? .secondaryBackground
+    }
+
+    /// Text on a list row, the name and the distance alike. The wash is too
+    /// strong for a grey to stay readable on it, so the distance stands apart
+    /// by its icon and smaller size rather than by a lighter colour.
+    var rowInk: Color {
+        .primaryText
     }
 }
 

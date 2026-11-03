@@ -60,22 +60,24 @@ public struct SettingsListView: View {
             }
 
             Section {
+                // The explanation is the switch's subtitle, so VoiceOver reads it
+                // with the switch it explains.
                 Toggle(isOn: $brightnessBoost) {
                     Text(
                         "Brightness Boost",
                         comment: "Settings switch for the feature that turns the screen up while a card is shown, so scanners can read its barcode."
                     )
+                    Text(
+                        "Boosts brightness when viewing card to improve scannability",
+                        comment: "Explains the Brightness Boost switch above it in Settings."
+                    )
+                    .foregroundStyle(Color.secondaryText)
                 }
                 .tint(.accent)
-                Text(
-                    "Boosts brightness when viewing card to improve scannability",
-                    comment: "Explains the Brightness Boost switch above it in Settings."
-                )
-                .font(.caption)
-                .foregroundColor(.tertiaryText)
+                .accessibilityIdentifier("brightnessBoostToggle")
             } header: {
                 Text("Display", comment: "Settings section heading for how cards are displayed.")
-                    .foregroundColor(.secondaryText)
+                    .foregroundStyle(Color.secondaryText)
             }
 
             Section {
@@ -99,6 +101,7 @@ public struct SettingsListView: View {
                 .disabled(state.cardCount == 0)
             } header: {
                 Text("Data", comment: "Settings section heading for exporting, importing and deleting cards.")
+                    .foregroundStyle(Color.secondaryText)
             }
         }
         .listStyle(.insetGrouped)

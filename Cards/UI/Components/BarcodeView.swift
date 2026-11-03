@@ -5,6 +5,13 @@ import SwiftUI
 public let pointsWidth: CGFloat = 400
 
 public struct BarcodeView: View {
+    /// The plate the bars sit on. Always white, whatever the appearance, as
+    /// scanners expect dark bars on a light ground.
+    static let plate = Color.white
+    /// Text drawn on the plate, the same in light and dark mode because the
+    /// plate is.
+    static let plateInk = Color(rgb: CardInk.dark.rgb)
+
     public let barcodeString: String
     public let barcodeType: BarcodeType
     @Environment(\.displayScale) private var displayScale
@@ -29,11 +36,12 @@ public struct BarcodeView: View {
                         "Failed to generate barcode",
                         comment: "Shown instead of the barcode when the card's code can't be drawn in the chosen barcode format."
                     )
+                    .foregroundStyle(Self.plateInk)
                 }
             }
             .frame(maxWidth: .infinity)
             .padding()
-            .background(.white)
+            .background(Self.plate)
         }
         .padding(6)
         .background(.gray.opacity(0.5), in: .rect(cornerRadius: 12))

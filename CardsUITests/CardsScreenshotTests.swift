@@ -67,7 +67,7 @@ final class CardsScreenshotTests: XCTestCase {
         XCTAssertTrue(app.buttons["addCardButton"].waitForExistence(timeout: 3))
 
         app.tabBars.buttons["Settings"].tap()
-        XCTAssertTrue(app.switches["Brightness Boost"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.switches["brightnessBoostToggle"].waitForExistence(timeout: 5))
         attach(app, name: "03_Settings")
     }
 

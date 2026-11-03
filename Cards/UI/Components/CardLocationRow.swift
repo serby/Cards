@@ -19,7 +19,7 @@ public struct CardLocationRow: View {
                     comment: "Under a location's name in the card form: the size of the circle around the place, as in “200 m radius”."
                 )
                     .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.secondaryText)
                     .monospacedDigit()
             }
         } icon: {

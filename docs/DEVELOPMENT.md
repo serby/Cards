@@ -150,7 +150,9 @@ Every view in `Cards/UI` has a story in `Cards/Development/Storybook/Catalogue`,
 
 ### Rule 5: Colours come from the palette and must stay readable
 
-Card faces use only `CardColor` swatches (`UI/Theme/CardPalette.swift`), each a fixed background with an ink. Never draw a card in an arbitrary colour. `CardColorTests` checks WCAG AA (4.5:1) for primary and secondary text on every swatch, for the tinted list row in light and dark mode, and for the accent on the system background. Adding a colour means adding a case, a swatch and a display name; the tests then cover it automatically. If a test fails, change the colour, never the threshold.
+Card faces use only `CardColor` swatches (`UI/Theme/CardPalette.swift`), each a fixed background with an ink. Never draw a card in an arbitrary colour. `CardColorTests` checks WCAG AA (4.5:1), in light and dark mode, for primary and secondary text on every card face (`.standard` included), for the name and distance on every tinted list row, for `Color.secondaryText` on every surface it is drawn on, for the text on the white barcode plate, and for the accent on the system and secondary backgrounds. It resolves the colours the views actually use (`CardColor.cardFill`, `primaryInk`, `secondaryInk`, `rowFill`, `rowInk`), so system colours are measured too. Adding a colour means adding a case, a swatch and a display name; the tests then cover it automatically. If a test fails, change the colour, never the threshold.
+
+- Draw supporting text in `Color.secondaryText`, not the system's `.secondary`, `secondaryLabel` or `tertiaryLabel`, which measure 1.7 to 3.4:1 on white. New text on a new surface gets a line in `secondaryTextIsReadableOnEverySurface`.
 
 ### Rule 6: Models stay CloudKit- and export-compatible
 
