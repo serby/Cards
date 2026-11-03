@@ -178,6 +178,7 @@ The target builds in Swift 6 language mode with strict concurrency, `SWIFT_TREAT
 
 - Every control a UI test touches has an `accessibilityIdentifier`; every meaningful control has a label in plain words.
 - Decorative images are hidden from VoiceOver; codes are read character by character (`speechSpellsOutCharacters()`).
+- Barcodes, card faces and colour swatches take `.keepsColoursWhenInverted()`, so Smart Invert leaves a barcode scannable and a red card red. `SmartInvertTests` checks they keep it.
 - Layouts survive the accessibility text sizes: switch from side by side to stacked with `AnyLayout` when `dynamicTypeSize.isAccessibilitySize`.
 - Check new UI in the Storybook in dark mode, at the largest text size and right to left before calling it finished.
 

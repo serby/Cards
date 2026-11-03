@@ -30,7 +30,9 @@ public struct CardColorPicker: View {
         .accessibilityLabel(Text("Card colour", comment: "VoiceOver label for the grid of colour swatches in the card form."))
     }
 
-    private func swatch(for color: CardColor) -> some View {
+    /// One swatch. Internal rather than private so `SmartInvertTests` can
+    /// look inside it.
+    func swatch(for color: CardColor) -> some View {
         let isSelected = color == selection
         return Circle()
             .fill(color.cardFill)
@@ -48,6 +50,9 @@ public struct CardColorPicker: View {
                         .accessibilityHidden(true)
                 }
             }
+            // The swatch shows the card as it will look, so Smart Invert must not
+            // turn it into another colour.
+            .keepsColoursWhenInverted()
             .padding(4)
             .overlay {
                 Circle()

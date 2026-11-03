@@ -52,6 +52,7 @@ public struct BarcodeView: View {
                 comment: "VoiceOver hint for a barcode. The first argument is its format, such as EAN-13; the second is the card's code."
             )
         )
+        .keepsColoursWhenInverted()
     }
 
     public func generateBarcode(from code: String, type: BarcodeType) -> UIImage? {
