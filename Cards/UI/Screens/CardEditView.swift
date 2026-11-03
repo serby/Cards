@@ -78,12 +78,16 @@ public struct CardEditView<Scanner: View>: View {
                     // AnyLayout does not know its axis, so it made the row taller.
                     nameLabel
                         .accessibilityHidden(true)
+                    // Both fields wrap rather than cut a long name or code off at
+                    // large text sizes; Return moves on to the next field.
                     TextField(
                         "Enter name",
-                        text: $draft.name,
+                        text: $draft.name.singleLine { focusedField = .code },
                         prompt: Text("Enter name", comment: "Placeholder in the empty card name field, such as Tesco Clubcard.")
-                            .foregroundStyle(Color.secondaryText)
+                            .foregroundStyle(Color.secondaryText),
+                        axis: .vertical
                     )
+                    .submitLabel(.next)
                     .multilineTextAlignment(nameAlignment)
                     .autocorrectionDisabled()
                     .focused($focusedField, equals: .name)
@@ -97,10 +101,12 @@ public struct CardEditView<Scanner: View>: View {
                         .accessibilityHidden(true)
                     TextField(
                         "Enter code",
-                        text: $draft.code,
+                        text: $draft.code.singleLine { focusedField = nil },
                         prompt: Text("Enter code", comment: "Placeholder in the empty field for the number or text that the barcode encodes.")
-                            .foregroundStyle(Color.secondaryText)
+                            .foregroundStyle(Color.secondaryText),
+                        axis: .vertical
                     )
+                    .submitLabel(.done)
                     .multilineTextAlignment(codeAlignment)
                     .readsLeftToRight()
                     .keyboardType(.default)

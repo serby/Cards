@@ -208,20 +208,22 @@ public struct LocationPickerView: View {
         VStack(spacing: 14) {
             HStack(spacing: 10) {
                 HStack(spacing: 10) {
+                    // Both fields wrap rather than cut their text off at large
+                    // text sizes; Return searches, or ends editing.
                     TextField(
                         "Postcode",
-                        text: $postcode,
+                        text: $postcode.singleLine(onReturn: search),
                         // The prompts are the fields' only visible labels, beside
                         // their icons, so they take readable secondary text rather
                         // than the system placeholder grey (1.7:1 on the field).
                         prompt: Text("Postcode", comment: "Placeholder in the search field that moves the map to a postcode or address.")
-                            .foregroundStyle(Color.secondaryText)
+                            .foregroundStyle(Color.secondaryText),
+                        axis: .vertical
                     )
                     .textInputAutocapitalization(.characters)
                     .autocorrectionDisabled()
                     .submitLabel(.search)
                     .focused($focusedField, equals: .postcode)
-                    .onSubmit(search)
                     .accessibilityIdentifier("postcodeField")
                     if isSearching {
                         ProgressView()
@@ -255,13 +257,15 @@ public struct LocationPickerView: View {
 
             TextField(
                 "Name, e.g. Westway",
-                text: $name,
+                text: $name.singleLine { focusedField = nil },
                 prompt: Text(
                     "Name, e.g. Westway",
                     comment: "Placeholder for the new place's name. Westway is a London climbing centre; a typical local place name may read better."
                 )
-                .foregroundStyle(Color.secondaryText)
+                .foregroundStyle(Color.secondaryText),
+                axis: .vertical
             )
+            .submitLabel(.done)
             .focused($focusedField, equals: .name)
             .pickerField("tag")
             .accessibilityIdentifier("locationNameField")
