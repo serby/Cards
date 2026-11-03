@@ -140,3 +140,17 @@ l10n-add-language:
 
 l10n-test:
 	node --test scripts/l10n.test.ts
+
+# Screenshots of every screen per language and text size, for checking the
+# translations by eye (scripts/capture-l10n.ts), on the default simulator.
+# Writes $(L10N_QA_OUT)/<language>/<size>/<screen>.png. Not part of `make test`.
+#   make capture-l10n                                  en and every translation, at large and AX5
+#   make capture-l10n LANGS="ar ja" SIZES="large AX5"
+#   make capture-l10n LANGS="ar de" SIMULATOR_DEVICE="iPad Pro 13-inch (M4)" L10N_QA_OUT=/tmp/cards-l10n-qa/ipad
+.PHONY: capture-l10n
+
+L10N_QA_OUT ?= /tmp/cards-l10n-qa
+
+capture-l10n:
+	node scripts/capture-l10n.ts --device "$(SIMULATOR_DEVICE)" --os $(SIMULATOR_VERSION) --out "$(L10N_QA_OUT)" \
+		$(foreach code,$(LANGS),--lang $(code)) $(foreach size,$(SIZES),--size $(size))

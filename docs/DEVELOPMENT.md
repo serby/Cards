@@ -58,6 +58,7 @@ Run these in order after every change, and fix what fails before moving on:
 | `make deploy-testflight`, `make deploy-appstore` | Archive, export and upload |
 | `make l10n-status`, `make l10n-check` | Translation counts per catalogue and language; fail if any language is incomplete |
 | `make l10n-translate` | Translate the String Catalogues with AI (`LANGS="ja fr"` for some languages only) |
+| `make capture-l10n` | Screenshot every screen in every language at the default and largest text sizes, for checking translations by eye ([recipe](#check-the-translations-on-screen)) |
 
 Override `SIMULATOR_DEVICE` and `SIMULATOR_VERSION` on the command line to target another simulator.
 
@@ -266,6 +267,12 @@ The String Catalogues under `Cards/` hold the British English source, and `scrip
 3. The AI works from `l10n/context.md`, the translator brief, plus `l10n/languages/<code>.md` for a language if that file exists. When the app gains a term, add it to the brief's glossary.
 4. For a person or another AI to translate or review, run `node scripts/l10n.ts export --lang <code> --out <file>` (add `--force` for every string), fill in the `translation` fields, and run `node scripts/l10n.ts import --lang <code> <file>`.
 5. The tool writes catalogues byte for byte as Xcode's catalogue editor does, so Xcode re-saving them changes nothing; `node scripts/l10n.ts normalise` puts a catalogue in that format. `make l10n-test` runs the tool's tests.
+
+### Check the translations on screen
+
+`make capture-l10n` runs `CardsLocalisationScreenshotTests` once per language and text size and writes `/tmp/cards-l10n-qa/<language>/<size>/<screen>.png`: the list, a card's menu, the empty list, a card (and one whose barcode fails), Add Card, Edit Card, the location prompt and map, a place in the form, Settings, the delete-all confirmation and the import sheet, each again scrolled to its end when it scrolls. It visits the screens through the accessibility audit's helpers (`CardsUITests/UITestNavigation.swift`), so a screen added to one belongs in the other. Narrow it with `LANGS="ar ja"` and `SIZES="large AX5"` (`xs` to `xxxl`, `AX1` to `AX5`); `SIMULATOR_DEVICE="iPad Pro 13-inch (M4)" L10N_QA_OUT=/tmp/cards-l10n-qa/ipad` captures on an iPad. Each language runs in its own region (`en` in GB, `ar` in SA, `zh-Hant` in TW), as `-testLanguage` and `-testRegion` would set it. Outside the script the test skips itself, so `make test` never runs it.
+
+Look at every picture for cut-off or overlapping text, controls pushed off screen, English left untranslated, raw keys or `%@`, mirroring right to left (codes and barcodes must not mirror), number and distance formats, and line breaks in Chinese and Japanese. Fix layout in the views; send wording that is wrong or too long back through the tool (`export` and `import`), never by shortening the English.
 
 ### Change the app icon
 

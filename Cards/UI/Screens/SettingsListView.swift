@@ -144,6 +144,7 @@ public struct SettingsListView: View {
             } label: {
                 Text("Delete All", comment: "Destructive button in the delete-all dialog that deletes every card.")
             }
+            .accessibilityIdentifier("confirmDeleteAllButton")
             Button(role: .cancel) {} label: {
                 Text("Cancel", comment: "Button in the delete-all dialog that keeps the cards.")
             }
