@@ -10,6 +10,7 @@ public struct LocationPickerView: View {
 
     @Environment(\.dismiss) private var dismiss
     @Environment(\.accessibilityAnnouncer) private var announcer
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var position: MapCameraPosition
     /// The point under the pin. Kept as plain values so an unchanged camera
     /// never invalidates the view (MapKit reports camera changes generously).
@@ -159,6 +160,13 @@ public struct LocationPickerView: View {
         .allowsHitTesting(false)
     }
 
+    /// The map flies to a new place, unless Reduce Motion is on, when it
+    /// cuts straight there: a long camera move is the kind of motion that
+    /// setting exists to stop.
+    private var mapAnimation: Animation? {
+        reduceMotion ? nil : .default
+    }
+
     /// The name the place will be saved with.
     private var pinName: String {
         let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -184,7 +192,7 @@ public struct LocationPickerView: View {
         case .west:
             target.longitude -= longitudeStep
         }
-        withAnimation {
+        withAnimation(mapAnimation) {
             position = .camera(MapCamera(centerCoordinate: target, distance: cameraDistance ?? 1_500))
         }
         announcer.announce(direction.announcement)
@@ -286,7 +294,7 @@ public struct LocationPickerView: View {
             }
             radius = CardLocation.defaultRadius
             if name.isEmpty { name = match.name }
-            withAnimation {
+            withAnimation(mapAnimation) {
                 position = .region(
                     MKCoordinateRegion(center: match.coordinate, latitudinalMeters: 1_200, longitudinalMeters: 1_200)
                 )
