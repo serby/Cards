@@ -1107,7 +1107,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "카드를 볼 때 밝기를 높여 바코드를 쉽게 스캔할 수 있도록 합니다"
+            "value" : "카드를 볼 때 화면을 최대 밝기로 높여 바코드가 쉽게 스캔되도록 합니다."
           }
         },
         "pt-BR" : {
@@ -1237,7 +1237,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "밝기 부스트"
+            "value" : "최대 밝기"
           }
         },
         "pt-BR" : {
@@ -1302,7 +1302,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "밝기 부스트 꺼짐"
+            "value" : "최대 밝기 꺼짐"
           }
         },
         "pt-BR" : {
@@ -1367,7 +1367,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "밝기 부스트 켜짐"
+            "value" : "최대 밝기 켜짐"
           }
         },
         "pt-BR" : {
@@ -5722,7 +5722,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "내보낸 JSON을 여기에 붙여넣으십시오"
+            "value" : "내보낸 JSON을 여기에 붙여넣기"
           }
         },
         "pt-BR" : {
@@ -5917,7 +5917,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "핑크색"
+            "value" : "분홍색"
           }
         },
         "pt-BR" : {
@@ -5982,7 +5982,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "핀으로 표시된 위치"
+            "value" : "핀 위치"
           }
         },
         "pt-BR" : {
@@ -7384,7 +7384,7 @@
               "other" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "카드 %lld장이 모두 영구적으로 삭제됩니다. 이 동작은 실행 취소할 수 없습니다."
+                  "value" : "카드 %lld장이 영구적으로 삭제됩니다. 이 동작은 실행 취소할 수 없습니다."
                 }
               }
             }
@@ -7482,7 +7482,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "바코드를 쉽게 스캔할 수 있도록 화면 밝기를 최대로 전환합니다."
+            "value" : "바코드가 쉽게 스캔되도록 최대 밝기를 켜거나 끕니다."
           }
         },
         "pt-BR" : {
