@@ -33,7 +33,10 @@ public struct BarcodeView: View {
                         // in right-to-left languages too.
                         .flipsForRightToLeftLayoutDirection(false)
                 } else {
+                    // Centred on the plate when it wraps, as it does in longer
+                    // languages and at large text sizes.
                     failureText
+                        .multilineTextAlignment(.center)
                         .foregroundStyle(Self.plateInk)
                 }
             }

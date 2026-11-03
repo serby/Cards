@@ -56,9 +56,12 @@ public struct CardDetailView: View {
 
                 BarcodeView(barcodeString: card.code, barcodeType: card.barcodeType)
 
+                // Centred like the name above when they wrap, as at the largest
+                // text sizes, rather than each line at the leading edge.
                 VStack(spacing: 4) {
                     Text(card.code)
                         .font(.title3.monospaced().weight(.semibold))
+                        .multilineTextAlignment(.center)
                         .foregroundStyle(card.color.primaryInk)
                         .readsLeftToRight()
                         .textSelection(.enabled)
@@ -73,6 +76,7 @@ public struct CardDetailView: View {
 
                     Text(card.timestamp, format: Date.FormatStyle(date: .abbreviated, time: .shortened))
                         .font(.caption)
+                        .multilineTextAlignment(.center)
                         .foregroundStyle(supportingInk)
                         .accessibilityIdentifier("cardTimestampText")
                         .accessibilityLabel(
