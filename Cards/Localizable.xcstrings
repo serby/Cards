@@ -492,7 +492,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ort hinzufügen"
+            "value" : "Neuer Ort"
           }
         },
         "es" : {
@@ -735,7 +735,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "位於 %@"
+            "value" : "你在 %@"
           }
         }
       }
@@ -1119,7 +1119,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "查看卡片时提高亮度，便于扫描。"
+            "value" : "查看卡片时，提高亮度以便扫描。"
           }
         },
         "zh-Hant" : {
@@ -1231,7 +1231,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "明るさブースト"
+            "value" : "明るさブ⁠ー⁠ス⁠ト"
           }
         },
         "ko" : {
@@ -2289,13 +2289,13 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "由 %@ 开发"
+            "value" : "开发者：%@"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "由 %@ 製作"
+            "value" : "製作者：%@"
           }
         }
       }
@@ -3719,7 +3719,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在此"
+            "value" : "已到达"
           }
         },
         "zh-Hant" : {
@@ -3807,7 +3807,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "JSON importieren"
+            "value" : "Import"
           }
         },
         "es" : {
@@ -5113,7 +5113,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nombre, p. ej. Westway"
+            "value" : "Nombre, p. ej., Westway"
           }
         },
         "fr" : {
@@ -5125,7 +5125,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nome, ad es. Westway"
+            "value" : "Nome, ad es. Westway"
           }
         },
         "ja" : {
@@ -5190,7 +5190,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ancora nessuna carta"
+            "value" : "Nessuna carta"
           }
         },
         "ja" : {
@@ -5757,7 +5757,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aus Zwischenablage einsetzen"
+            "value" : "Einsetzen"
           }
         },
         "es" : {
@@ -5976,7 +5976,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ピンの場所"
+            "value" : "マークした場所"
           }
         },
         "ko" : {
@@ -6531,7 +6531,7 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "امسح الرمز الشريطي لبطاقة ولاء ضوئيًا لإضافتها."
+            "value" : "امسح الرمز الشريطي ضوئيًا على بطاقة ولاء لإضافتها."
           }
         },
         "de" : {
@@ -7128,7 +7128,7 @@
               "other" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "已成功导入 %lld 张卡片"
+                  "value" : "已成功导入 %lld 张卡片"
                 }
               }
             }
@@ -7140,7 +7140,7 @@
               "other" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "已成功輸入 %lld 張卡片"
+                  "value" : "已成功輸入 %lld 張卡片"
                 }
               }
             }
@@ -7420,7 +7420,7 @@
               "other" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "这将永久删除 %lld 张卡片。此操作无法撤销。"
+                  "value" : "这将永久删除 %lld 张卡片。此操作无法撤销。"
                 }
               }
             }
@@ -7432,7 +7432,7 @@
               "other" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "這將永久刪除 %lld 張卡片。此動作無法還原。"
+                  "value" : "這將永久刪除 %lld 張卡片。此動作無法還原。"
                 }
               }
             }
@@ -7647,7 +7647,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wenn du an einem dieser Orte ankommst, erscheint der Barcode auf deinem Sperrbildschirm."
+            "value" : "Wenn du an einem dieser Orte ankommst, erscheint der Barcode auf dem Sperrbildschirm."
           }
         },
         "es" : {
@@ -7689,7 +7689,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "当你到达其中一个地点时，条形码会显示在锁定屏幕上。"
+            "value" : "一到这些地点，条形码就会显示在锁定屏幕上。"
           }
         },
         "zh-Hant" : {
