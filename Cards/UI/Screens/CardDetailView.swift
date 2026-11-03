@@ -47,12 +47,6 @@ public struct CardDetailView: View {
                 }
 
                 BarcodeView(barcodeString: card.code, barcodeType: card.barcodeType)
-                    .accessibilityLabel(
-                        Text(
-                            "Barcode for \(card.name)",
-                            comment: "VoiceOver label for the barcode image on a card's screen. The argument is the card's name."
-                        )
-                    )
 
                 VStack(spacing: 4) {
                     Text(card.code)
@@ -92,15 +86,11 @@ public struct CardDetailView: View {
         .padding()
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("cardDetailView")
+        // No announcement here: it would cut across VoiceOver reading the new
+        // screen every time it opens. The button says whether the boost is on.
         .task {
             guard brightnessBoost else { return }
             await boost()
-            announcer.announce(
-                String(
-                    localized: "Screen brightness increased for better barcode visibility",
-                    comment: "VoiceOver announcement when a card's screen opens with Brightness Boost on and turns the screen up."
-                )
-            )
         }
         .onDisappear {
             guard let originalBrightness else { return }
@@ -122,6 +112,13 @@ public struct CardDetailView: View {
                         "Brightness Boost",
                         comment: "VoiceOver label for the sun button on a card's screen, which turns the screen up so scanners can read the barcode."
                     )
+                )
+                // The state is otherwise only the icon's fill and tint.
+                .accessibilityAddTraits(.isToggle)
+                .accessibilityValue(
+                    brightnessBoost
+                        ? Text("On", comment: "VoiceOver value of the Brightness Boost button on a card's screen when the boost is on.")
+                        : Text("Off", comment: "VoiceOver value of the Brightness Boost button on a card's screen when the boost is off.")
                 )
                 .accessibilityHint(
                     Text(

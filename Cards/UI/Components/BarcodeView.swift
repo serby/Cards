@@ -22,9 +22,10 @@ public struct BarcodeView: View {
     }
 
     public var body: some View {
+        let barcodeImage = generateBarcode(from: barcodeString, type: barcodeType)
         Group {
             Group {
-                if let barcodeImage = generateBarcode(from: barcodeString, type: barcodeType) {
+                if let barcodeImage {
                     Image(uiImage: barcodeImage)
                         .resizable()
                         .scaledToFit()
@@ -32,11 +33,8 @@ public struct BarcodeView: View {
                         // in right-to-left languages too.
                         .flipsForRightToLeftLayoutDirection(false)
                 } else {
-                    Text(
-                        "Failed to generate barcode",
-                        comment: "Shown instead of the barcode when the card's code can't be drawn in the chosen barcode format."
-                    )
-                    .foregroundStyle(Self.plateInk)
+                    failureText
+                        .foregroundStyle(Self.plateInk)
                 }
             }
             .frame(maxWidth: .infinity)
@@ -45,14 +43,26 @@ public struct BarcodeView: View {
         }
         .padding(6)
         .background(.gray.opacity(0.5), in: .rect(cornerRadius: 12))
-        .accessibilityIdentifier("barcodeView")
-        .accessibilityHint(
-            Text(
-                "This is a \(barcodeType.displayName) barcode with code \(barcodeString)",
-                comment: "VoiceOver hint for a barcode. The first argument is its format, such as EAN-13; the second is the card's code."
-            )
+        // One element that says what is shown: the barcode and its format, or
+        // the failure, never "barcode" over a message. The code itself is read
+        // out, spelled, by the line under the barcode.
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(
+            barcodeImage == nil
+                ? failureText
+                : Text("Barcode", comment: "VoiceOver label for the barcode on a card's screen. Its format, such as EAN-13, is read after it.")
         )
+        .accessibilityValue(Text(barcodeType.displayName))
+        .accessibilityAddTraits(barcodeImage == nil ? [] : .isImage)
+        .accessibilityIdentifier("barcodeView")
         .keepsColoursWhenInverted()
+    }
+
+    private var failureText: Text {
+        Text(
+            "Failed to generate barcode",
+            comment: "Shown instead of the barcode when the card's code can't be drawn in the chosen barcode format."
+        )
     }
 
     public func generateBarcode(from code: String, type: BarcodeType) -> UIImage? {

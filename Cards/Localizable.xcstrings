@@ -52,8 +52,8 @@
     "Aztec" : {
       "comment" : "Barcode format in the barcode type picker: the square 2D Aztec Code. Keep it unless your language writes it differently."
     },
-    "Barcode for %@" : {
-      "comment" : "VoiceOver label for the barcode image on a card's screen. The argument is the card's name."
+    "Barcode" : {
+      "comment" : "VoiceOver label for the barcode on a card's screen. Its format, such as EAN-13, is read after it."
     },
     "Barcode scanner" : {
       "comment" : "VoiceOver label for the live camera view at the top of the new card form."
@@ -220,8 +220,14 @@
     "No place found for “%@”" : {
       "comment" : "Under the postcode field when nothing is found. The argument is what was typed; use your language's quotation marks."
     },
+    "Off" : {
+      "comment" : "VoiceOver value of the Brightness Boost button on a card's screen when the boost is off."
+    },
     "OK" : {
       "comment" : "Dismisses the import result alert."
+    },
+    "On" : {
+      "comment" : "VoiceOver value of the Brightness Boost button on a card's screen when the boost is on."
     },
     "Orange" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker."
@@ -265,9 +271,6 @@
     "Scan the barcode on a loyalty card to add it." : {
       "comment" : "Under “No Cards Yet” on the empty card list."
     },
-    "Screen brightness increased for better barcode visibility" : {
-      "comment" : "VoiceOver announcement when a card's screen opens with Brightness Boost on and turns the screen up."
-    },
     "Select the type of barcode for this card" : {
       "comment" : "VoiceOver hint for the barcode format menu in the card form."
     },
@@ -302,17 +305,6 @@
     },
     "Teal" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker: a dark blue-green."
-    },
-    "This is a %@ barcode with code %@" : {
-      "comment" : "VoiceOver hint for a barcode. The first argument is its format, such as EAN-13; the second is the card's code.",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "This is a %1$@ barcode with code %2$@"
-          }
-        }
-      }
     },
     "This will permanently delete all %lld cards. This action cannot be undone." : {
       "comment" : "Message in the delete-all dialog. The argument is how many cards there are, always at least one.",
