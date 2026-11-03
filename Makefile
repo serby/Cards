@@ -1,4 +1,4 @@
-.PHONY: check-release test test-unit test-e2e test-coverage coverage-run coverage-report coverage-clean build clean sim device-hub device test-tsan capture-screenshots validate-screenshots deploy-testflight deploy-appstore upload-metadata upload-screenshots
+.PHONY: check-release test test-unit test-e2e test-a11y test-coverage coverage-run coverage-report coverage-clean build clean sim device-hub device test-tsan capture-screenshots validate-screenshots deploy-testflight deploy-appstore upload-metadata upload-screenshots
 
 XCODE_APP ?= /Applications/Xcode27.1.app
 DEVELOPER_DIR := $(XCODE_APP)/Contents/Developer
@@ -31,6 +31,13 @@ test-unit:
 
 test-e2e:
 	$(XCODEBUILD) test -destination '$(DESTINATION)' -only-testing:CardsUITests
+
+# Xcode's accessibility audit on every screen, in English and in Arabic at the
+# largest text size. Part of `make test` too.
+test-a11y:
+	$(XCODEBUILD) test -destination '$(DESTINATION)' \
+		-only-testing:CardsUITests/CardsAccessibilityAuditTests \
+		-only-testing:CardsUITests/CardsArabicLargeTextAuditTests
 
 test:
 	$(XCODEBUILD) test -destination '$(DESTINATION)'

@@ -113,6 +113,7 @@ public struct SettingsListView: View {
             } header: {
                 Text("Data", comment: "Settings section heading for exporting, importing and deleting cards.")
                     .foregroundStyle(Color.secondaryText)
+                    .accessibilityIdentifier("dataSectionHeader")
             }
         }
         .listStyle(.insetGrouped)

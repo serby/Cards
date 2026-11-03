@@ -192,6 +192,7 @@ public struct CardEditView<Scanner: View>: View {
                     comment: "Footer under the card's places in the card form, explaining the arrival notification."
                 )
                 .foregroundStyle(Color.secondaryText)
+                .accessibilityIdentifier("locationsFooter")
             }
         }
         .sheet(isPresented: $showsLocationPicker) {

@@ -47,6 +47,7 @@ Run these in order after every change, and fix what fails before moving on:
 | `make test` | Unit and UI tests |
 | `make test-unit` | `CardsTests` only |
 | `make test-e2e` | `CardsUITests` only |
+| `make test-a11y` | The accessibility audit on every screen, in English and in Arabic at the largest text size |
 | `make test-tsan` | Unit tests under the thread sanitiser |
 | `make test-coverage` | Tests plus an HTML coverage report in `coverage-html/` |
 | `make check-release` | Build Release and fail if any development code reached it ([rule 1](#rule-1-development-code-never-ships)) |
@@ -185,7 +186,13 @@ The target builds in Swift 6 language mode with strict concurrency, `SWIFT_TREAT
 - UI tests find elements by identifier, or tabs by position, never by their text, so they pass in any language. `CardsArabicUITests` runs `CardsUITests` again right to left. A language with no translation runs in English, left to right, so a right-to-left run also passes `-AppleTextDirection YES -NSForceRightToLeftWritingDirection YES`.
 - Decorative images are hidden from VoiceOver; codes are read character by character (`speechSpellsOutCharacters()`).
 - Barcodes, card faces and colour swatches take `.keepsColoursWhenInverted()`, so Smart Invert leaves a barcode scannable and a red card red. `SmartInvertTests` checks they keep it.
-- Layouts survive the accessibility text sizes: switch from side by side to stacked with `AnyLayout` when `dynamicTypeSize.isAccessibilitySize`.
+- Layouts survive the accessibility text sizes: switch from side by side to stacked with `AnyLayout` when `dynamicTypeSize.isAccessibilitySize`, with no `Spacer` inside the `AnyLayout` (it does not know its axis there). A screen whose content can outgrow the display scrolls; text fields take `axis: .vertical` with a `.singleLine()` binding so long text wraps; a symbol's column or a swatch grows with `@ScaledMetric`.
+- Every tappable thing is at least 44 by 44 pt, including what VoiceOver alone acts on, such as the map pin.
+- Speech gets words, not abbreviations: format a distance or radius in an accessibility label with `.spokenDistance` or `.spokenRadius` ("350 metres"), and a value shown as "350 m" with `.distance` or `.radius`.
+- Large movements honour `accessibilityReduceMotion`: animate them with `nil` when it is on.
+- With Increase Contrast (`colorSchemeContrast == .increased`) secondary ink becomes primary, rows, cards and cells get an edge, and the app's own colours take their stronger variant (`Color(lightRGB:darkRGB:increasedLightRGB:increasedDarkRGB:)`).
+- Main actions have keyboard shortcuts: ⌘N adds a card, ⌘E edits, ⌘S saves, ⌘Return confirms a sheet and Escape cancels it; Return moves to the next field.
+- `CardsAccessibilityAuditTests` runs Xcode's accessibility audit (`performAccessibilityAudit`) on every screen, and `CardsArabicLargeTextAuditTests` again in Arabic, right to left, at the largest text size (`make test-a11y`, or part of `make test`). A new screen gets a test in both. Fix what it finds; add to `isKnownFalsePositive` only an issue you have confirmed is not the app's, with the evidence in a comment.
 - Check new UI in the Storybook in dark mode, at the largest text size and right to left (Arabic once it is translated, or Direction set to Right to left) before calling it finished.
 
 ### Rule 9: Test the logic, the persistence and the promises
