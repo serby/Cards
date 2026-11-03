@@ -170,7 +170,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La cámara se usa para escanear los códigos de barras de tus tarjetas de fidelidad y de socio"
+            "value" : "La cámara se usa para escanear los códigos de barras de tus tarjetas de fidelización y de socio."
           }
         },
         "fr" : {
@@ -242,7 +242,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tu ubicación muestra a qué distancia estás de los lugares donde usas tus tarjetas y pone el código de barras correcto en tu pantalla bloqueada cuando llegas."
+            "value" : "Tu ubicación se usa para mostrar a qué distancia estás de los lugares donde usas tus tarjetas y para que el código de barras adecuado aparezca en la pantalla bloqueada cuando llegues."
           }
         },
         "fr" : {

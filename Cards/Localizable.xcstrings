@@ -3423,7 +3423,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No se pudo generar el código de barras"
+            "value" : "No se ha podido generar el código de barras"
           }
         },
         "fr" : {
@@ -5243,7 +5243,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No se encontró ningún lugar para “%@”"
+            "value" : "No se ha encontrado ningún lugar para «%@»"
           }
         },
         "fr" : {
@@ -5373,7 +5373,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "OK"
+            "value" : "Aceptar"
           }
         },
         "fr" : {
@@ -5958,7 +5958,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ubicación fijada"
+            "value" : "Ubicación marcada"
           }
         },
         "fr" : {
@@ -6023,7 +6023,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Apunta la cámara al código de barras. El código se rellena al leerlo."
+            "value" : "Apunta la cámara al código de barras. El código se rellenará cuando se lea."
           }
         },
         "fr" : {
@@ -6614,7 +6614,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Código %1$@ escaneado: %2$@"
+            "value" : "%1$@ escaneado: %2$@"
           }
         },
         "fr" : {
@@ -7008,7 +7008,7 @@
               "many" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Se han importado %lld tarjetas correctamente"
+                  "value" : "Se han importado %lld de tarjetas correctamente"
                 }
               },
               "one" : {
@@ -7300,7 +7300,7 @@
               "many" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Se eliminarán de forma permanente las %lld tarjetas. Esta acción no se puede deshacer."
+                  "value" : "Se eliminarán de forma permanente %lld de tarjetas. Esta acción no se puede deshacer."
                 }
               },
               "one" : {
@@ -7458,7 +7458,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Activa o desactiva el brillo máximo de la pantalla para facilitar la lectura del código de barras"
+            "value" : "Activa o desactiva el brillo máximo de la pantalla para facilitar el escaneo del código de barras"
           }
         },
         "fr" : {
