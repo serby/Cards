@@ -120,6 +120,10 @@ public struct LocationPickerView: View {
 
     private var pinAndRing: some View {
         ZStack {
+            // At least a 44 pt target for VoiceOver and Switch Control, as the
+            // pin alone is a narrow 14 pt; the element is the union of these.
+            Color.clear
+                .frame(width: 44, height: 44)
             if let metresPerPoint {
                 let diameter = 2 * radius / metresPerPoint
                 Circle()
@@ -134,9 +138,6 @@ public struct LocationPickerView: View {
                 // Lift the pin so its point, not its middle, marks the centre.
                 .offset(y: -17)
         }
-        // At least a 44 pt target for VoiceOver and Switch Control, as the pin
-        // alone is a narrow 14 pt.
-        .frame(minWidth: 44, minHeight: 44)
         // VoiceOver cannot see the map under the pin or drag it, so the pin says
         // what will be added and moves by actions. Moving it changes only the
         // camera, never the map's content (rule 7).
