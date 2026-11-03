@@ -13,6 +13,7 @@ public struct SettingsListView: View {
     @State private var showDeleteConfirmation = false
     @State private var showImportSheet = false
     @State private var importText = ""
+    @Environment(\.accessibilityAnnouncer) private var announcer
 
     public init(
         state: SettingsState,
@@ -132,7 +133,10 @@ public struct SettingsListView: View {
             isPresented: $showDeleteConfirmation,
             titleVisibility: .visible
         ) {
-            Button(role: .destructive, action: actions.deleteAllCards) {
+            Button(role: .destructive) {
+                actions.deleteAllCards()
+                announcer.announce(Announcements.allCardsDeleted)
+            } label: {
                 Text("Delete All", comment: "Destructive button in the delete-all dialog that deletes every card.")
             }
             Button(role: .cancel) {} label: {

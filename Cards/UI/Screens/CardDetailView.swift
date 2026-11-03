@@ -10,6 +10,8 @@ public struct CardDetailView: View {
     @Environment(\.screenBrightness) private var screenBrightness
     @Environment(\.accessibilityAnnouncer) private var announcer
     @State private var originalBrightness: CGFloat?
+    /// VoiceOver starts on the card's name, which also confirms a save.
+    @AccessibilityFocusState private var nameFocused: Bool
 
     public init(
         card: CardDetail,
@@ -32,6 +34,7 @@ public struct CardDetailView: View {
                         .accessibilityIdentifier("cardNameText")
                         // The name alone, so the headings rotor lists cards by name.
                         .accessibilityAddTraits(.isHeader)
+                        .accessibilityFocused($nameFocused)
 
                     if let proximity = card.proximity {
                         ProximityLabel(proximity, showsPlace: true)
@@ -86,6 +89,11 @@ public struct CardDetailView: View {
         .task {
             guard brightnessBoost else { return }
             await boost()
+        }
+        .task {
+            // After the push settles, or VoiceOver moves focus to the bar.
+            try? await Task.sleep(for: .seconds(0.5))
+            nameFocused = true
         }
         .onDisappear {
             guard let originalBrightness else { return }

@@ -57,6 +57,12 @@
     "Add Location" : {
       "comment" : "Button in the card form that opens a map for adding a place where the card is used.\nTitle of the map sheet for adding a place where a card is used."
     },
+    "Added %@" : {
+      "comment" : "VoiceOver announcement after a place is added to the card in the card form. The argument is the place's name."
+    },
+    "All cards deleted" : {
+      "comment" : "VoiceOver announcement after Delete All in Settings deletes every card."
+    },
     "At %@" : {
       "comment" : "On a card's screen when the user is inside one of the card's locations. The argument is the place's name, such as Westway."
     },
@@ -149,6 +155,9 @@
     },
     "Delete All Cards" : {
       "comment" : "Settings button that deletes every card after asking for confirmation.\nTitle of the dialog that asks the user to confirm deleting every card."
+    },
+    "Deleted %@" : {
+      "comment" : "VoiceOver announcement after deleting cards from the list or a place from a card. The argument is a name, or a list of names."
     },
     "Display" : {
       "comment" : "Settings section heading for how cards are displayed."

@@ -51,6 +51,7 @@ public struct CardListView: View {
     private let cards: [CardSummary]
     private let actions: CardListActions
     @State private var deleteTrigger = false
+    @Environment(\.accessibilityAnnouncer) private var announcer
 
     public init(cards: [CardSummary], actions: CardListActions = CardListActions()) {
         self.cards = cards
@@ -86,10 +87,7 @@ public struct CardListView: View {
                     .listRowSeparator(.hidden)
                     .listRowInsets(EdgeInsets(top: 5, leading: 16, bottom: 5, trailing: 16))
             }
-            .onDelete { offsets in
-                deleteTrigger.toggle()
-                actions.deleteCards(offsets)
-            }
+            .onDelete(perform: delete)
             .onMove(perform: actions.moveCards)
         }
         .listStyle(.plain)
@@ -165,7 +163,15 @@ public struct CardListView: View {
 
     private func delete(_ card: CardSummary) {
         guard let index = cards.firstIndex(of: card) else { return }
+        delete(IndexSet(integer: index))
+    }
+
+    /// Deletes with a haptic, and says which cards went, as the row just
+    /// disappears.
+    private func delete(_ offsets: IndexSet) {
+        let names = offsets.map { cards[$0].name }
         deleteTrigger.toggle()
-        actions.deleteCards(IndexSet(integer: index))
+        actions.deleteCards(offsets)
+        announcer.announce(Announcements.deleted(names))
     }
 }

@@ -12,6 +12,8 @@ public struct CardEditView<Scanner: View>: View {
     @FocusState private var focusedField: Field?
     @State private var showsLocationPicker = false
     @Environment(\.layoutDirection) private var layoutDirection
+    @Environment(\.accessibilityVoiceOverEnabled) private var voiceOverEnabled
+    @Environment(\.accessibilityAnnouncer) private var announcer
 
     private enum Field {
         case name, code
@@ -119,6 +121,7 @@ public struct CardEditView<Scanner: View>: View {
                         .contextMenu {
                             Button(role: .destructive) {
                                 draft.locations.removeAll { $0.id == location.id }
+                                announcer.announce(Announcements.deleted([location.name]))
                             } label: {
                                 Label(
                                     LocalizedStringResource(
@@ -130,7 +133,11 @@ public struct CardEditView<Scanner: View>: View {
                             }
                         }
                 }
-                .onDelete { draft.locations.remove(atOffsets: $0) }
+                .onDelete { offsets in
+                    let names = offsets.map { draft.locations[$0].name }
+                    draft.locations.remove(atOffsets: offsets)
+                    announcer.announce(Announcements.deleted(names))
+                }
 
                 Button {
                     showsLocationPicker = true
@@ -157,12 +164,17 @@ public struct CardEditView<Scanner: View>: View {
             LocationPickerView(
                 findPlace: actions.findPlace,
                 onAppear: actions.requestLocationAccess,
-                onAdd: { draft.locations.append($0) }
+                onAdd: { location in
+                    draft.locations.append(location)
+                    announcer.announce(Announcements.added(location.name))
+                }
             )
         }
         .navigationBarTitleDisplayMode(.inline)
         .task {
-            guard autofocusesName else { return }
+            // With VoiceOver on, jumping to the field would cut across it reading
+            // the new screen; VoiceOver users reach the field themselves.
+            guard autofocusesName, !voiceOverEnabled else { return }
             try? await Task.sleep(for: .seconds(0.6))
             focusedField = .name
         }
