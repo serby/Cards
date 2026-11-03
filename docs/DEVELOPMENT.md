@@ -183,8 +183,10 @@ The target builds in Swift 6 language mode with strict concurrency, `SWIFT_TREAT
 - UI tests launch with `-uiTesting` for an in-memory store and the shipping UI; the screenshot test adds `-screenshotSeed`.
 - A UI change that shows up in the App Store screenshots must come with refreshed references, or CI fails.
 
-### Rule 10: Commits tell a story
+### Rule 10: Commits tell a story, straight on `main`
 
+- **Work on `main`.** Cards has one contributor, so there are no feature branches and no pull requests: commit to `main` and push. Pushing is the release step, because a push to `main` runs CI and, when CI passes, `deploy.yml` uploads a TestFlight build. Push when the change is ready for testers, and run the loop in section 2 first so CI is a formality.
+- **Build numbers are automatic.** The deploy job stamps `CFBundleVersion` from the time on the runner and commits nothing back, so `main` never moves under you.
 - One concern per commit, with a conventional prefix: `feat`, `fix`, `refactor`, `style`, `test`, `build`, `ci`, `docs`, `chore`.
 - The subject says what changed; the body says why, and anything a reviewer could trip over.
 - Each commit builds. Run the loop in section 2 before committing.
@@ -257,7 +259,7 @@ Xcode 27 has no Simulator.app; `make sim` opens Device Hub to show the screen, a
 
 ## 8. Releasing
 
-1. CI must be green: lint, build, tests, the release check and the screenshot comparison.
+1. Push to `main` (rule 10). CI runs lint, the build, the release check, the tests and the screenshot comparison, and when it is green `deploy.yml` uploads to TestFlight.
 2. If the build adds stored fields, deploy the CloudKit schema first; Production rejects records whose type or fields it does not have, with "Cannot create new type … in production schema" or "Cannot create or modify field …". Launch a Debug build once with `-initializeCloudKitSchema`, on a device or simulator signed in to iCloud, and wait for the log line "CloudKit schema initialised in the Development environment". Then open the [CloudKit Console](https://icloud.developer.apple.com/dashboard/), choose `iCloud.net.serby.Cards`, and use **Deploy Schema Changes** to copy the Development schema to Production.
 3. `make deploy-testflight` or `make deploy-appstore` archive with `scripts/build-ipa.sh` and upload with an App Store Connect API key (`ASC_KEY_ID`, `ASC_ISSUER_ID`, `ASC_KEY_CONTENT`). In CI, `deploy.yml` uploads to TestFlight after CI passes on `main`, and `release.yml` submits to the App Store on `v*` tags.
 4. `scripts/upload-metadata.sh` and `scripts/upload-screenshots.sh` push the store listing from `metadata/` and `screenshots/`.

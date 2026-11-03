@@ -11,6 +11,6 @@ Read [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) before changing anything. Its nu
 7. **Swift 6, no warnings, clean lint.**
 8. **Accessibility is part of done.**
 9. **Test logic, persistence and promises;** refresh screenshot references when the screens they show change.
-10. **One concern per commit,** conventional prefix, body says why; stage by hunk around other people's edits.
+10. **One concern per commit, straight on `main`:** no branches or pull requests (one contributor). Conventional prefix, body says why. A push to `main` runs CI and then uploads to TestFlight, so run the validation loop first.
 
 Validation loop after every change: `swiftlint lint`, `make build`, `make test`, plus `make check-release` when touching `Cards/Development` or the hooks.
