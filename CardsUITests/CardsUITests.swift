@@ -101,10 +101,16 @@ class CardsUITests: XCTestCase {
     }
 }
 
-/// Every test again in Arabic, right to left. Nothing is translated yet, but
-/// the layout direction is real, and the tests must not depend on the text.
+/// Every test again in Arabic, right to left, as the tests must not depend on
+/// the text or its direction. Until the app has an Arabic translation iOS runs
+/// it in its development language, English, laid out left to right, so the
+/// last two arguments force right-to-left layout as Xcode's right-to-left
+/// pseudolanguage does.
 final class CardsArabicUITests: CardsUITests {
     override static var variantArguments: [String] {
-        ["-AppleLanguages", "(ar)", "-AppleLocale", "ar_SA"]
+        [
+            "-AppleLanguages", "(ar)", "-AppleLocale", "ar_SA",
+            "-AppleTextDirection", "YES", "-NSForceRightToLeftWritingDirection", "YES"
+        ]
     }
 }

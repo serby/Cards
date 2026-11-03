@@ -182,7 +182,7 @@ The target builds in Swift 6 language mode with strict concurrency, `SWIFT_TREAT
 - Never put an identifier on a `Section` or a `Form`: it replaces the identifier of every control inside.
 - When something changes without a new screen (a scan, a search, a delete), say so through the injected `accessibilityAnnouncer`, with the message in `Announcements` if a view shares it. Never announce on appearing, which cuts across VoiceOver reading the screen; move focus with `@AccessibilityFocusState` instead, as the card screen does to its name.
 - Nothing needs a gesture: whatever a swipe, drag or pinch does is also a context menu item or a named accessibility action (`accessibilityActions`), as the card list's Move Up, Move Down and Delete are. Controls never hide while assistive technology may need them.
-- UI tests find elements by identifier, or tabs by position, never by their text, so they pass in any language. `CardsArabicUITests` runs `CardsUITests` again right to left.
+- UI tests find elements by identifier, or tabs by position, never by their text, so they pass in any language. `CardsArabicUITests` runs `CardsUITests` again right to left. A language with no translation runs in English, left to right, so a right-to-left run also passes `-AppleTextDirection YES -NSForceRightToLeftWritingDirection YES`.
 - Decorative images are hidden from VoiceOver; codes are read character by character (`speechSpellsOutCharacters()`).
 - Barcodes, card faces and colour swatches take `.keepsColoursWhenInverted()`, so Smart Invert leaves a barcode scannable and a red card red. `SmartInvertTests` checks they keep it.
 - Layouts survive the accessibility text sizes: switch from side by side to stacked with `AnyLayout` when `dynamicTypeSize.isAccessibilitySize`.
