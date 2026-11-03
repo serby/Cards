@@ -23,10 +23,10 @@ public struct BarcodeView: View {
                         .scaledToFit()
                 } else {
                     Text("Failed to generate barcode")
-                        .foregroundColor(.red)
                     
                 }
             }
+            .frame(maxWidth: .infinity)
             .padding()
             .background(.white)
         }
