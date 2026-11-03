@@ -18,6 +18,17 @@ enum DevelopmentHooks {
         #endif
     }
 
+    /// Creates the CloudKit schema in the Development environment when launched
+    /// with `-initializeCloudKitSchema`, before SwiftData opens the store at
+    /// `storeURL`. Does nothing in release.
+    static func initializeCloudKitSchemaIfRequested(storeURL: URL) throws {
+        #if DEBUG
+        if CommandLine.arguments.contains("-initializeCloudKitSchema") {
+            try CloudKitSchema.initialize(storeURL: storeURL)
+        }
+        #endif
+    }
+
     /// Inserts the App Store screenshot cards when launched with
     /// `-screenshotSeed` (or `CARDS_SCREENSHOT_SEED=1`). Does nothing in release.
     static func seedScreenshotCards(into container: ModelContainer) throws {
