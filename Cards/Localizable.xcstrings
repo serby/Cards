@@ -179,7 +179,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$@ da %2$@"
+            "value" : "A %1$@ da %2$@"
           }
         },
         "ja" : {
@@ -2460,7 +2460,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Default"
+            "value" : "Predefinito"
           }
         },
         "ja" : {
@@ -4150,7 +4150,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Caricamento"
+            "value" : "Caricamento in corso"
           }
         },
         "ja" : {
@@ -5320,7 +5320,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Disattivato"
+            "value" : "Disattivata"
           }
         },
         "ja" : {
@@ -5450,7 +5450,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Attivato"
+            "value" : "Attivata"
           }
         },
         "ja" : {
@@ -6035,7 +6035,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Inquadra il codice a barre con la fotocamera. Il codice viene inserito quando viene letto."
+            "value" : "Inquadra il codice a barre con la fotocamera. Il codice viene inserito appena letto."
           }
         },
         "ja" : {
@@ -6626,7 +6626,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Scansionato codice %2$@ di tipo %1$@"
+            "value" : "Codice %1$@ scansionato: %2$@"
           }
         },
         "ja" : {
@@ -6691,7 +6691,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Scansionato codice %@"
+            "value" : "Codice scansionato: %@"
           }
         },
         "ja" : {

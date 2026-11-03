@@ -182,7 +182,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La fotocamera è usata per scansionare i codici a barre delle tue carte fedeltà e tessere"
+            "value" : "La fotocamera viene usata per scansionare i codici a barre delle tue carte fedeltà e tessere."
           }
         },
         "ja" : {
@@ -254,7 +254,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La tua posizione mostra quanto sei lontano dai luoghi in cui usi le carte e mostra il codice a barre giusto sulla schermata di blocco al tuo arrivo."
+            "value" : "La tua posizione indica quanto disti dai luoghi in cui usi le carte e, al tuo arrivo, mostra il codice a barre giusto sulla schermata di blocco."
           }
         },
         "ja" : {
