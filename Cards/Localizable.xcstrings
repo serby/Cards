@@ -81,8 +81,8 @@
     "Blue" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker."
     },
-    "Boosts brightness when viewing card to improve scannability" : {
-      "comment" : "Explains the Brightness Boost switch above it in Settings."
+    "Boosts brightness when viewing a card to improve scannability" : {
+      "comment" : "Under the Brightness Boost switch in Settings: the screen turns up while a card is open, so it scans more easily."
     },
     "Brightness" : {
       "comment" : "A name Voice Control users can say for the Brightness Boost button on a card's screen."
@@ -90,10 +90,10 @@
     "Brightness Boost" : {
       "comment" : "Settings switch for the feature that turns the screen up while a card is shown, so scanners can read its barcode.\nVoiceOver label for the sun button on a card's screen, which turns the screen up so scanners can read the barcode."
     },
-    "Brightness boost off" : {
+    "Brightness Boost off" : {
       "comment" : "VoiceOver announcement after the sun button turns Brightness Boost off."
     },
-    "Brightness boost on" : {
+    "Brightness Boost on" : {
       "comment" : "VoiceOver announcement after the sun button turns Brightness Boost on."
     },
     "Brown" : {

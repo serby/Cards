@@ -75,8 +75,8 @@ public struct SettingsListView: View {
                         comment: "Settings switch for the feature that turns the screen up while a card is shown, so scanners can read its barcode."
                     )
                     Text(
-                        "Boosts brightness when viewing card to improve scannability",
-                        comment: "Explains the Brightness Boost switch above it in Settings."
+                        "Boosts brightness when viewing a card to improve scannability",
+                        comment: "Under the Brightness Boost switch in Settings: the screen turns up while a card is open, so it scans more easily."
                     )
                     .foregroundStyle(Color.secondaryText)
                 }

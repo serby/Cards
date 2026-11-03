@@ -185,12 +185,12 @@ public struct CardDetailView: View {
         if brightnessBoost {
             await boost()
             announcer.announce(
-                String(localized: "Brightness boost on", comment: "VoiceOver announcement after the sun button turns Brightness Boost on.")
+                String(localized: "Brightness Boost on", comment: "VoiceOver announcement after the sun button turns Brightness Boost on.")
             )
         } else {
             await screenBrightness.fade(to: originalBrightness ?? 0.5, duration: 0.2)
             announcer.announce(
-                String(localized: "Brightness boost off", comment: "VoiceOver announcement after the sun button turns Brightness Boost off.")
+                String(localized: "Brightness Boost off", comment: "VoiceOver announcement after the sun button turns Brightness Boost off.")
             )
         }
     }
