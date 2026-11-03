@@ -157,6 +157,7 @@ public struct CardEditView<Scanner: View>: View {
                 // placeholder grey 1.9:1.
                 Text("Colour", comment: "Section heading above the colour swatches in the card form. A noun.")
                     .foregroundStyle(Color.secondaryText)
+                    .accessibilityIdentifier("colourSectionHeader")
             }
 
             Section {
@@ -199,6 +200,7 @@ public struct CardEditView<Scanner: View>: View {
             } header: {
                 Text("Locations", comment: "Section heading in the card form for the places where the card is used.")
                     .foregroundStyle(Color.secondaryText)
+                    .accessibilityIdentifier("locationsSectionHeader")
             } footer: {
                 Text(
                     "When you arrive at one of these places, the barcode appears on your Lock Screen.",

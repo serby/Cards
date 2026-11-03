@@ -42,6 +42,9 @@ private struct WrappingPrompt: ViewModifier {
                     .contentShape(.rect)
                     .onTapGesture(perform: onTap)
                     .accessibilityHidden(true)
+                    // XCUITest and its accessibility audit still see it, and
+                    // the audit tells it apart by this.
+                    .accessibilityIdentifier("wrappingPrompt")
             }
             content
         }

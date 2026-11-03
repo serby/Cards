@@ -262,10 +262,12 @@ public struct LocationPickerView: View {
             )
             .submitLabel(.done)
             .focused($focusedField, equals: .name)
+            // On the field, as on the postcode field: on the row it replaced
+            // the identifiers of everything in it, the prompt and icon too.
+            .accessibilityIdentifier("locationNameField")
             .accessibilityLabel(namePrompt)
             .wrappingPrompt(namePrompt, isShown: name.isEmpty, onTap: { focusedField = .name })
             .pickerField("tag")
-            .accessibilityIdentifier("locationNameField")
 
             VStack(spacing: 6) {
                 HStack {

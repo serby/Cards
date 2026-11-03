@@ -105,12 +105,18 @@ class CardsAccessibilityAuditTests: XCTestCase {
         }
     }
 
-    /// Audits again once `element` has been scrolled into view, if the screen
-    /// had to scroll to show it.
+    /// Audits again at the screen's end, `element` included, if the screen
+    /// scrolls at all. Stopping as soon as `element` showed, or not scrolling
+    /// because it already showed, left whatever follows it under the tab bar
+    /// unaudited: the Locations footer below Add Location.
     @MainActor
     private func audit(_ app: XCUIApplication, scrolledTo element: XCUIElement) throws {
-        guard !app.isOnScreen(element) else { return }
-        XCTAssertTrue(app.reveal(element), "Could not scroll to \(element)")
+        let start = app.layoutSignature
+        if !app.isOnScreen(element) {
+            XCTAssertTrue(app.reveal(element), "Could not scroll to \(element)")
+        }
+        app.scrollToEnd()
+        guard app.layoutSignature != start else { return }
         try audit(app)
     }
 
@@ -129,6 +135,19 @@ class CardsAccessibilityAuditTests: XCTestCase {
     /// on the audit's screenshots; the check reports these rows of a List only.
     private static let growsInFull: Set<String> = [
         "importJSONButton", "deleteAllCardsButton", "dataSectionHeader", "locationsFooter"
+    ]
+
+    /// Section headings, which the contrast check measures below AA when they
+    /// are short words at the default text size: German ANZEIGE, FARBE and
+    /// ORTE, Arabic العرض and اللون, but never English DISPLAY, COLOUR or
+    /// LOCATIONS, nor any of them at the largest size. All are
+    /// `Color.secondaryText`, 6.0:1 on the white of Settings and 5.4:1 on the
+    /// form's grouped background (`CardColorTests`), and the darkest pixels of
+    /// their glyphs in the screenshots are exactly that colour (#636366) in all
+    /// three languages. Most likely the check samples the full-width heading,
+    /// where a short word leaves little text to measure.
+    private static let shortHeadings: Set<String> = [
+        "colourSectionHeader", "locationsSectionHeader", "displaySectionHeader", "dataSectionHeader"
     ]
 
     /// Issues the audit raises that are not the app's to fix. Each case says
@@ -157,12 +176,27 @@ class CardsAccessibilityAuditTests: XCTestCase {
             // A disabled control, such as Import with nothing pasted: WCAG 1.4.3
             // exempts inactive controls.
             if !element.isEnabled { return true }
+            if shortHeadings.contains(element.identifier) { return true }
             // Text in or partly under a translucent bar is measured against the
             // bar's blur of whatever is scrolled beneath it: the camera view under
             // Add Card's bar, cards and headings under the tab bar. Pixels taken
             // from the screenshots give the accent 4.75:1 on the bar itself, and
             // CardColorTests covers every colour the app draws there.
             return bars.contains { $0.frame.intersects(frame) }
+        case .textClipped:
+            // An empty field's prompt (`wrappingPrompt`), which the check says
+            // may be clipped at larger sizes because it is one line tall at
+            // this one: German "Name, z. B. Westway" on the Add Location map.
+            // It wraps in a stack that grows with it, and the AX5 captures
+            // show it whole in every language.
+            if element.identifier == "wrappingPrompt" { return true }
+            // Text running under the tab bar before the screen is scrolled: the
+            // List cuts its frame off at the bar's top edge (the Locations
+            // footer ends at exactly y 791 on the iPhone 16 Pro in English and
+            // Arabic alike), and the second audit, at the screen's end, sees it
+            // whole. Arabic's taller lines leave more of it under the bar.
+            let tabBar = app.tabBars.firstMatch
+            return tabBar.exists && abs(frame.maxY - tabBar.frame.minY) < 1
         case .hitRegion:
             // MapKit's own Legal link, drawn and sized by the map.
             return app.maps.allElementsBoundByIndex.contains { $0.frame.contains(frame) }

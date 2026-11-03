@@ -159,7 +159,7 @@ final class CardsLocalisationScreenshotTests: XCTestCase {
     private func capturePages(_ app: XCUIApplication, _ name: String) {
         capture(name)
         for page in 2...10 {
-            let before = layout(of: app)
+            let before = app.layoutSignature
             // At the screen's edge, in the margin beside the rows, so the drag
             // never starts on a control: on the barcode type menu it opened the
             // menu instead of scrolling.
@@ -168,21 +168,8 @@ final class CardsLocalisationScreenshotTests: XCTestCase {
             // Slowly and held, so the content moves with the finger and does not fling.
             start.press(forDuration: 0.1, thenDragTo: end, withVelocity: .slow, thenHoldForDuration: 0.3)
             RunLoop.current.run(until: Date().addingTimeInterval(0.5))
-            guard layout(of: app) != before else { return }
+            guard app.layoutSignature != before else { return }
             capture("\(name)-\(page)")
         }
-    }
-
-    /// Every element on screen with its frame: equal when nothing has moved.
-    /// Without the snapshot's memory addresses, which differ each time, and
-    /// without "Other" elements: a drag shows the scroll bars, which are those,
-    /// even when the content cannot move, and their labels are translated.
-    @MainActor
-    private func layout(of app: XCUIApplication) -> String {
-        app.debugDescription
-            .split(separator: "\n")
-            .filter { !$0.trimmingCharacters(in: .whitespaces).hasPrefix("Other,") }
-            .joined(separator: "\n")
-            .replacingOccurrences(of: "0x[0-9a-fA-F]+", with: "", options: .regularExpression)
     }
 }

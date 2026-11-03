@@ -86,6 +86,7 @@ public struct SettingsListView: View {
             } header: {
                 Text("Display", comment: "Settings section heading for how cards are displayed.")
                     .foregroundStyle(Color.secondaryText)
+                    .accessibilityIdentifier("displaySectionHeader")
             }
 
             Section {

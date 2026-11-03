@@ -103,6 +103,28 @@ extension XCUIApplication {
         return isOnScreen(element)
     }
 
+    /// Swipes up until the screen stops moving, so whatever comes after the
+    /// last control, such as a section's footer, is clear of the tab bar too.
+    func scrollToEnd() {
+        for _ in 0..<8 {
+            let before = layoutSignature
+            swipeUp(velocity: .slow)
+            if layoutSignature == before { return }
+        }
+    }
+
+    /// Every element on screen with its frame: equal when nothing has moved.
+    /// Without the snapshot's memory addresses, which differ each time, and
+    /// without "Other" elements: a drag shows the scroll bars, which are those,
+    /// even when the content cannot move, and their labels are translated.
+    var layoutSignature: String {
+        debugDescription
+            .split(separator: "\n")
+            .filter { !$0.trimmingCharacters(in: .whitespaces).hasPrefix("Other,") }
+            .joined(separator: "\n")
+            .replacingOccurrences(of: "0x[0-9a-fA-F]+", with: "", options: .regularExpression)
+    }
+
     func isOnScreen(_ element: XCUIElement) -> Bool {
         guard element.exists, element.isHittable else { return false }
         let tabBar = tabBars.firstMatch
