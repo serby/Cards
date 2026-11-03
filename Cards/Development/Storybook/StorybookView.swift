@@ -75,6 +75,9 @@ private struct StoryStage: View {
     @State private var brightness = BrightnessBox()
     @State private var mode: StoryMode = .interactive
     @State private var variant = 0
+    // The Storybook's own, which System and Automatic keep.
+    @Environment(\.locale) private var inheritedLocale
+    @Environment(\.layoutDirection) private var inheritedDirection
 
     init(story: Story, display: DisplayOptions) {
         self.story = story
@@ -86,13 +89,23 @@ private struct StoryStage: View {
         story.gallery.isEmpty ? [.interactive] : StoryMode.allCases
     }
 
+    private var layoutDirection: LayoutDirection {
+        display.layoutDirection(inherited: inheritedDirection)
+    }
+
     var body: some View {
         VStack(spacing: 0) {
             stage
+                // Changing the direction of a List already on screen leaves its
+                // rows mirrored, glyphs and all (seen on iOS 18.1), so each
+                // direction gets a fresh stage. Knobs, mode and variant live
+                // here, outside it, and survive.
+                .id(layoutDirection)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .environment(\.screenBrightness, .simulated(brightness))
                 .environment(\.accessibilityAnnouncer, .silent)
-                .environment(\.layoutDirection, display.layoutDirection)
+                .environment(\.locale, display.locale(inherited: inheritedLocale))
+                .environment(\.layoutDirection, layoutDirection)
                 .dynamicTypeSize(display.typeSize)
                 .preferredColorScheme(display.colourScheme.preferred)
 
@@ -237,36 +250,75 @@ private struct KnobRow: View {
 
 private struct DisplayOptionsMenu: View {
     let display: DisplayOptions
+    @Environment(\.layoutDirection) private var inheritedDirection
 
+    // One submenu per option, each showing its current value, so the top level
+    // stays four rows: at the accessibility text sizes the options listed
+    // inline ran off the screen.
     var body: some View {
         Menu {
             Picker(selection: Binding(
                 get: { display.colourScheme },
                 set: { display.colourScheme = $0 }
             )) {
-                ForEach(ColourSchemeChoice.allCases) { Text($0.rawValue).tag($0) }
+                ForEach(ColourSchemeChoice.allCases) { Text(verbatim: $0.rawValue).tag($0) }
             } label: {
-                Text(verbatim: "Appearance")
+                optionLabel("Appearance", display.colourScheme.rawValue)
             }
+            .pickerStyle(.menu)
 
             Picker(selection: Binding(
                 get: { display.typeSize },
                 set: { display.typeSize = $0 }
             )) {
-                ForEach(DisplayOptions.typeSizes, id: \.self) { Text($0.label).tag($0) }
+                ForEach(DisplayOptions.typeSizes, id: \.self) { Text(verbatim: $0.label).tag($0) }
             } label: {
-                Text(verbatim: "Text size")
+                optionLabel("Text size", display.typeSize.label)
             }
+            .pickerStyle(.menu)
 
-            Toggle(isOn: Binding(
-                get: { display.rightToLeft },
-                set: { display.rightToLeft = $0 }
+            Picker(selection: Binding(
+                get: { display.language },
+                set: { display.language = $0 }
             )) {
-                Text(verbatim: "Right to left")
+                Text(verbatim: "System").tag(StoryLanguage?.none)
+                ForEach(display.languages) { language in
+                    // VoiceOver reads the English name alone: a native name
+                    // in another script, read in the Storybook's voice, is noise.
+                    Text(verbatim: language.title)
+                        .accessibilityLabel(Text(verbatim: language.englishName))
+                        .tag(Optional(language))
+                }
+            } label: {
+                optionLabel("Language", display.language?.englishName ?? "System")
             }
+            .pickerStyle(.menu)
+
+            Picker(selection: Binding(
+                get: { display.direction },
+                set: { display.direction = $0 }
+            )) {
+                ForEach(StoryDirection.allCases) { direction in
+                    Text(verbatim: directionTitle(direction)).tag(direction)
+                }
+            } label: {
+                optionLabel("Direction", directionTitle(display.direction))
+            }
+            .pickerStyle(.menu)
         } label: {
             Image(systemName: "slider.horizontal.3")
                 .accessibilityLabel(Text(verbatim: "Display options"))
         }
+    }
+
+    /// A submenu's title with its current value beneath, as a menu subtitle.
+    @ViewBuilder
+    private func optionLabel(_ title: String, _ value: String) -> some View {
+        Text(verbatim: title)
+        Text(verbatim: value)
+    }
+
+    private func directionTitle(_ direction: StoryDirection) -> String {
+        direction.title(for: display.language, inherited: inheritedDirection)
     }
 }
