@@ -15,6 +15,7 @@ public struct SettingsListView: View {
     @State private var importText = ""
     @Environment(\.accessibilityAnnouncer) private var announcer
     @Environment(\.colorSchemeContrast) private var colorSchemeContrast
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     public init(
         state: SettingsState,
@@ -32,10 +33,12 @@ public struct SettingsListView: View {
         List {
             Section {
                 if let version = state.appVersion, let build = state.appBuild {
-                    HStack {
+                    // Side by side, or the number under its label at accessibility
+                    // sizes, where both wrapped ("Versio- / n", "1.1 / (30)").
+                    rowLayout {
                         Text("Version", comment: "Settings row label for the app's version number.")
                             .foregroundColor(.primaryText)
-                        Spacer()
+                            .frame(maxWidth: .infinity, alignment: .leading)
                         Text("\(version) (\(build))", comment: "The app's version and then its build number, as in “1.1 (42)”.")
                             .foregroundColor(.secondaryText)
                             .readsLeftToRight()
@@ -47,8 +50,10 @@ public struct SettingsListView: View {
                 if let url = state.authorURL {
                     Link(destination: url) {
                         HStack {
+                            // A name breaks between lines as a whole, not between
+                            // its words ("Paul / Serby").
                             Text(
-                                "Created by \(state.authorName)",
+                                "Created by \(state.authorName.replacingOccurrences(of: " ", with: "\u{00A0}"))",
                                 comment: "Settings row that opens the author's website. The argument is the author's name."
                             )
                             .foregroundColor(.primaryText)
@@ -67,21 +72,17 @@ public struct SettingsListView: View {
             }
 
             Section {
-                // The explanation is the switch's subtitle, so VoiceOver reads it
-                // with the switch it explains.
-                Toggle(isOn: $brightnessBoost) {
-                    Text(
-                        "Brightness Boost",
-                        comment: "Settings switch for the feature that turns the screen up while a card is shown, so scanners can read its barcode."
-                    )
-                    Text(
-                        "Boosts brightness when viewing a card to improve scannability",
-                        comment: "Under the Brightness Boost switch in Settings: the screen turns up while a card is open, so it scans more easily."
-                    )
-                    .foregroundStyle(Color.secondaryText)
+                // Side by side, or the switch under its text at accessibility
+                // sizes, where beside it the text had a third of the row and ran
+                // a word or two to a line. The row draws the text in both
+                // layouts, so nothing is swapped as the text size changes.
+                rowLayout {
+                    brightnessBoostLabel
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .accessibilityHidden(true)
+                    brightnessBoostToggle
+                        .labelsHidden()
                 }
-                .tint(.accent)
-                .accessibilityIdentifier("brightnessBoostToggle")
             } header: {
                 Text("Display", comment: "Settings section heading for how cards are displayed.")
                     .foregroundStyle(Color.secondaryText)
@@ -172,6 +173,52 @@ public struct SettingsListView: View {
         LocalizedStringResource(
             "This will permanently delete all \(cardCount) cards. This action cannot be undone.",
             comment: "Message in the delete-all dialog. The argument is how many cards there are, always at least one."
+        )
+    }
+}
+
+private extension SettingsListView {
+    /// A label and its value or control side by side, or stacked at
+    /// accessibility text sizes. No Spacer inside: the label fills the row.
+    var rowLayout: AnyLayout {
+        dynamicTypeSize.isAccessibilitySize
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: 4))
+            : AnyLayout(HStackLayout())
+    }
+
+    /// The explanation is the switch's subtitle, so VoiceOver reads it with
+    /// the switch it explains. The label is hidden, as the row draws it.
+    var brightnessBoostToggle: some View {
+        Toggle(isOn: $brightnessBoost) {
+            brightnessBoostTitle
+            brightnessBoostSubtitle
+                .foregroundStyle(Color.secondaryText)
+        }
+        .tint(.accent)
+        .accessibilityIdentifier("brightnessBoostToggle")
+    }
+
+    /// The switch's title and subtitle, laid out as a switch lays them out.
+    var brightnessBoostLabel: some View {
+        VStack(alignment: .leading, spacing: 2) {
+            brightnessBoostTitle
+            brightnessBoostSubtitle
+                .font(.subheadline)
+                .foregroundStyle(Color.secondaryText)
+        }
+    }
+
+    var brightnessBoostTitle: Text {
+        Text(
+            "Brightness Boost",
+            comment: "Settings switch for the feature that turns the screen up while a card is shown, so scanners can read its barcode."
+        )
+    }
+
+    var brightnessBoostSubtitle: Text {
+        Text(
+            "Boosts brightness when viewing a card to improve scannability",
+            comment: "Under the Brightness Boost switch in Settings: the screen turns up while a card is open, so it scans more easily."
         )
     }
 }
