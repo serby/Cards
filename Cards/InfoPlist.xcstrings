@@ -206,7 +206,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "相机用于扫描你会员卡上的条形码"
+            "value" : "相机用于扫描你的会员卡上的条形码。"
           }
         },
         "zh-Hant" : {
@@ -278,7 +278,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "你的位置用于显示你距使用卡片的地点有多远，并在你到达时在锁定屏幕上显示相应的条形码。"
+            "value" : "你的位置用于显示你离卡片使用地点有多远，并在你到达时将相应的条形码显示在锁定屏幕上。"
           }
         },
         "zh-Hant" : {

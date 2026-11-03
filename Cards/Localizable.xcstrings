@@ -203,7 +203,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "距%2$@ %1$@"
+            "value" : "距 %2$@ %1$@"
           }
         },
         "zh-Hant" : {
@@ -599,7 +599,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已添加%@"
+            "value" : "已添加 %@"
           }
         },
         "zh-Hant" : {
@@ -729,7 +729,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "位于%@"
+            "value" : "你在 %@"
           }
         },
         "zh-Hant" : {
@@ -1119,7 +1119,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "查看卡片时提高亮度，便于扫描"
+            "value" : "查看卡片时提高亮度，便于扫描。"
           }
         },
         "zh-Hant" : {
@@ -2354,7 +2354,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "创建于%@"
+            "value" : "创建于 %@"
           }
         },
         "zh-Hant" : {
@@ -2744,7 +2744,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已删除%@"
+            "value" : "已删除 %@"
           }
         },
         "zh-Hant" : {
@@ -3134,7 +3134,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "输入代码"
+            "value" : "输入卡号"
           }
         },
         "zh-Hant" : {
@@ -3264,7 +3264,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "输入这张卡片的条形码代码"
+            "value" : "输入这张卡片的卡号"
           }
         },
         "zh-Hant" : {
@@ -4304,7 +4304,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "地图已移至%@"
+            "value" : "地图已移至 %@"
           }
         },
         "zh-Hant" : {
@@ -6059,7 +6059,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "将相机对准条形码。读取后会自动填入代码。"
+            "value" : "将相机对准条形码。读取后会自动填入卡号。"
           }
         },
         "zh-Hant" : {
@@ -6650,7 +6650,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已扫描%1$@条形码，号码为%2$@"
+            "value" : "已扫描 %1$@，卡号为 %2$@"
           }
         },
         "zh-Hant" : {
@@ -6715,7 +6715,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已扫描号码%@"
+            "value" : "已扫描，卡号为 %@"
           }
         },
         "zh-Hant" : {
@@ -6845,7 +6845,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "选择此卡片的条形码类型"
+            "value" : "选择这张卡片的条形码类型"
           }
         },
         "zh-Hant" : {
@@ -7128,7 +7128,7 @@
               "other" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "已成功导入%lld张卡片"
+                  "value" : "已成功导入 %lld 张卡片"
                 }
               }
             }
@@ -7202,7 +7202,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "青色"
+            "value" : "深青色"
           }
         },
         "zh-Hant" : {
@@ -7420,7 +7420,7 @@
               "other" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "这将永久删除全部%lld张卡片。此操作无法撤销。"
+                  "value" : "这将永久删除 %lld 张卡片。此操作无法撤销。"
                 }
               }
             }
@@ -7494,7 +7494,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "将屏幕亮度调到最高，便于扫描条形码"
+            "value" : "打开或关闭最高屏幕亮度，便于扫描条形码"
           }
         },
         "zh-Hant" : {
@@ -7819,7 +7819,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "你在%@"
+            "value" : "你在 %@"
           }
         },
         "zh-Hant" : {
@@ -7884,7 +7884,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "你在%@。你的条形码已就绪。"
+            "value" : "你已到达 %@。条形码已准备好。"
           }
         },
         "zh-Hant" : {
