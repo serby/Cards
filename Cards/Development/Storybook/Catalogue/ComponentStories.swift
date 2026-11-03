@@ -123,8 +123,10 @@ private let cardColorPickerStory = Story(
             view: AnyView(
                 Stateful(CardColor.teal) { color in
                     Form {
-                        Section("Colour") {
+                        Section {
                             CardColorPicker(selection: color)
+                        } header: {
+                            Text(verbatim: "Colour")
                         }
                     }
                 }

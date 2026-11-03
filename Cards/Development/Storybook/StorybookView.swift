@@ -39,17 +39,22 @@ public struct StorybookView: View {
                     }
                 }
             }
-            .navigationTitle("Storybook")
+            .navigationTitle(Text(verbatim: "Storybook"))
         } detail: {
             if let story = stories.first(where: { $0.id == selection }) {
                 StoryStage(story: story, display: display)
                     .id(story.id)
             } else {
-                ContentUnavailableView(
-                    "Select a story",
-                    systemImage: "square.grid.2x2",
-                    description: Text("Every CardsUI view, with live parameters.")
-                )
+                ContentUnavailableView {
+                    Label {
+                        Text(verbatim: "Select a story")
+                    } icon: {
+                        Image(systemName: "square.grid.2x2")
+                            .accessibilityHidden(true)
+                    }
+                } description: {
+                    Text(verbatim: "Every CardsUI view, with live parameters.")
+                }
             }
         }
     }
@@ -99,8 +104,10 @@ private struct StoryStage: View {
         .toolbar {
             if modes.count > 1 {
                 ToolbarItem(placement: .principal) {
-                    Picker("Mode", selection: $mode) {
+                    Picker(selection: $mode) {
                         ForEach(modes) { Text($0.rawValue).tag($0) }
+                    } label: {
+                        Text(verbatim: "Mode")
                     }
                     .pickerStyle(.segmented)
                 }
@@ -140,8 +147,10 @@ private struct StoryStage: View {
     private var singleVariant: some View {
         let index = min(variant, story.gallery.count - 1)
         return VStack(spacing: 0) {
-            Picker("Variant", selection: $variant) {
+            Picker(selection: $variant) {
                 ForEach(story.gallery.indices, id: \.self) { Text(story.gallery[$0].name).tag($0) }
+            } label: {
+                Text(verbatim: "Variant")
             }
             .pickerStyle(.menu)
             .frame(maxWidth: .infinity)
@@ -158,22 +167,28 @@ private struct StoryStage: View {
         VStack(spacing: 0) {
             if mode == .interactive, !story.knobs.isEmpty {
                 Form {
-                    Section("Parameters") {
+                    Section {
                         ForEach(story.knobs) { KnobRow(knob: $0, knobs: knobs) }
+                    } header: {
+                        Text(verbatim: "Parameters")
                     }
                 }
                 .frame(maxHeight: 260)
             }
 
             HStack {
-                Label(
-                    "Simulated brightness \(brightness.level, format: .number.precision(.fractionLength(2)))",
-                    systemImage: "sun.max"
-                )
+                Label {
+                    Text(verbatim: "Simulated brightness \(Double(brightness.level).formatted(.number.precision(.fractionLength(2))))")
+                } icon: {
+                    Image(systemName: "sun.max")
+                        .accessibilityHidden(true)
+                }
                 Spacer()
-                Button("Reset") {
+                Button {
                     knobs.reset(to: story.knobs)
                     brightness.level = 0.5
+                } label: {
+                    Text(verbatim: "Reset")
                 }
             }
             .font(.caption)
@@ -225,27 +240,33 @@ private struct DisplayOptionsMenu: View {
 
     var body: some View {
         Menu {
-            Picker("Appearance", selection: Binding(
+            Picker(selection: Binding(
                 get: { display.colourScheme },
                 set: { display.colourScheme = $0 }
             )) {
                 ForEach(ColourSchemeChoice.allCases) { Text($0.rawValue).tag($0) }
+            } label: {
+                Text(verbatim: "Appearance")
             }
 
-            Picker("Text size", selection: Binding(
+            Picker(selection: Binding(
                 get: { display.typeSize },
                 set: { display.typeSize = $0 }
             )) {
                 ForEach(DisplayOptions.typeSizes, id: \.self) { Text($0.label).tag($0) }
+            } label: {
+                Text(verbatim: "Text size")
             }
 
-            Toggle("Right to left", isOn: Binding(
+            Toggle(isOn: Binding(
                 get: { display.rightToLeft },
                 set: { display.rightToLeft = $0 }
-            ))
+            )) {
+                Text(verbatim: "Right to left")
+            }
         } label: {
             Image(systemName: "slider.horizontal.3")
-                .accessibilityLabel("Display options")
+                .accessibilityLabel(Text(verbatim: "Display options"))
         }
     }
 }

@@ -169,7 +169,7 @@ private let cardEditStory = Story(
         ) {
             ScannerPlaceholderView()
         }
-        .navigationTitle("Card")
+        .navigationTitle(Text(verbatim: "Card"))
     }
 }
 

@@ -4,7 +4,7 @@ import SwiftUI
     @Previewable @State var draft = CardDraft.sample
     NavigationStack {
         CardEditView(draft: $draft)
-            .navigationTitle("Edit Card")
+            .navigationTitle(Text(verbatim: "Edit Card"))
     }
 }
 
@@ -12,6 +12,6 @@ import SwiftUI
     @Previewable @State var draft = CardDraft.empty
     NavigationStack {
         CardEditView(draft: $draft) { ScannerPlaceholderView() }
-            .navigationTitle("Add Card")
+            .navigationTitle(Text(verbatim: "Add Card"))
     }
 }

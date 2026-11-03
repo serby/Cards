@@ -7,7 +7,7 @@ public struct ScannerPlaceholderView: View {
     public var body: some View {
         ZStack {
             Rectangle().fill(.black)
-            Text("Camera preview")
+            Text(verbatim: "Camera preview")
                 .font(.caption)
                 .foregroundStyle(.white.opacity(0.6))
             Rectangle()
@@ -16,6 +16,6 @@ public struct ScannerPlaceholderView: View {
         }
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .accessibilityIdentifier("scannerView")
-        .accessibilityLabel("Barcode scanner")
+        .accessibilityLabel(Text(verbatim: "Barcode scanner"))
     }
 }

@@ -52,11 +52,15 @@ enum DevelopmentHooks {
     static var tabs: some TabContent<Never> {
         // A tab builder cannot be empty, so release keeps the tab and drops it here.
         if showsStorybook {
-            Tab("Storybook", systemImage: "square.grid.2x2") {
+            Tab(storybookTitle, systemImage: "square.grid.2x2") {
                 storybook
             }
         }
     }
+
+    /// A plain `String`, not a literal key, so the development-only tab title
+    /// stays out of the string catalogue and is never sent for translation.
+    private static let storybookTitle = "Storybook"
 
     private static var showsStorybook: Bool {
         #if DEBUG
