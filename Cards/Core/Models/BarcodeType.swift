@@ -10,6 +10,11 @@ public enum BarcodeType: String, Codable, CaseIterable, Hashable, Sendable {
     case upce    = "UPC-E"
     case aztec   = "Aztec"
     case pdf417  = "PDF 417"
+
+    /// 2D codes that are square rather than a wide strip of bars.
+    public var isSquare: Bool {
+        self == .qrCode || self == .aztec
+    }
 }
 
 public struct BarcodeMapper {

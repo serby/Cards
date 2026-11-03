@@ -37,17 +37,9 @@ public struct BarcodeView: View {
     }
 
     public func generateBarcode(from code: String, type: BarcodeType) -> UIImage? {
-        guard let metadataType = BarcodeMapper.mapBarcodeTypeToMetadataObjectType(type) else {
-            return nil
-        }
-        let pixelWidth = pointsWidth * displayScale
-        let pixelHeight = (pointsWidth / 3) * displayScale
-        let barCodeSize = CGSize(width: pixelWidth, height: pixelHeight)
-        return RSUnifiedCodeGenerator.shared.generateCode(
-            code,
-            machineReadableCodeObjectType: metadataType.rawValue,
-            targetSize: barCodeSize
-        )
+        let height = type.isSquare ? pointsWidth : pointsWidth / 3
+        let size = CGSize(width: pointsWidth * displayScale, height: height * displayScale)
+        return BarcodeImage.make(code, type: type, size: size)
     }
 }
 
