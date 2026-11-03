@@ -28,7 +28,7 @@ final class CardsScreenshotTests: XCTestCase {
             "Costa Coffee",
             "Nectar",
             "Sainsbury's Nectar",
-            "IKEA Family",
+            "IKEA Family"
         ]
         for cardName in expectedCards {
             XCTAssertTrue(
@@ -45,12 +45,11 @@ final class CardsScreenshotTests: XCTestCase {
         attach(app, name: "01_CardList")
 
         app.buttons["addCardButton"].tap()
-        XCTAssertTrue(app.navigationBars["Add Card"].waitForExistence(timeout: 5))
-        let nameField = app.textFields["Card name"]
+        let nameField = app.textFields["nameTextField"]
         XCTAssertTrue(nameField.waitForExistence(timeout: 5))
         attach(app, name: "02_AddCard")
 
-        let codeField = app.textFields["Card code"]
+        let codeField = app.textFields["codeTextField"]
         let testName = "Snapshot Test Card"
         let testCode = "9876543210987"
         nameField.tap()
@@ -58,15 +57,19 @@ final class CardsScreenshotTests: XCTestCase {
         codeField.tap()
         codeField.typeText(testCode)
         app.buttons["saveCardButton"].tap()
-        XCTAssertTrue(app.staticTexts["Card name: \(testName)"].waitForExistence(timeout: 5))
-        XCTAssertTrue(app.staticTexts["Card code: \(testCode)"].waitForExistence(timeout: 5))
+        let name = app.staticTexts["cardNameText"]
+        XCTAssertTrue(name.waitForExistence(timeout: 5))
+        XCTAssertTrue(name.label.contains(testName))
+        XCTAssertTrue(app.staticTexts["cardCodeText"].label.contains(testCode))
 
         let backButton = app.navigationBars.buttons.firstMatch
         XCTAssertTrue(backButton.waitForExistence(timeout: 3))
         backButton.tap()
         XCTAssertTrue(app.buttons["addCardButton"].waitForExistence(timeout: 3))
 
-        app.tabBars.buttons["Settings"].tap()
+        // By position, as tab titles are translated. The order of the elements
+        // stays the same right to left; only the drawing flips.
+        app.tabBars.buttons.element(boundBy: 1).tap()
         XCTAssertTrue(app.switches["brightnessBoostToggle"].waitForExistence(timeout: 5))
         attach(app, name: "03_Settings")
     }

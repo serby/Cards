@@ -85,6 +85,7 @@ public struct SettingsListView: View {
                     Text("Export as JSON", comment: "Settings button that shares all cards as a JSON file. JSON is a file format; keep the name.")
                 }
                 .foregroundColor(.accent)
+                .accessibilityIdentifier("exportJSONButton")
 
                 Button {
                     showImportSheet = true
@@ -92,6 +93,7 @@ public struct SettingsListView: View {
                     Text("Import JSON", comment: "Settings button that opens a sheet for pasting cards exported as JSON.")
                 }
                 .foregroundColor(.accent)
+                .accessibilityIdentifier("importJSONButton")
 
                 Button(role: .destructive) {
                     showDeleteConfirmation = true
@@ -99,6 +101,7 @@ public struct SettingsListView: View {
                     Text("Delete All Cards", comment: "Settings button that deletes every card after asking for confirmation.")
                 }
                 .disabled(state.cardCount == 0)
+                .accessibilityIdentifier("deleteAllCardsButton")
             } header: {
                 Text("Data", comment: "Settings section heading for exporting, importing and deleting cards.")
                     .foregroundStyle(Color.secondaryText)
@@ -182,6 +185,7 @@ public struct ImportCardsView: View {
                     .readsLeftToRight()
                     .autocorrectionDisabled()
                     .textInputAutocapitalization(.never)
+                    .accessibilityIdentifier("importTextEditor")
                     .padding()
 
                 Button {
@@ -192,6 +196,7 @@ public struct ImportCardsView: View {
                     Text("Paste from Clipboard", comment: "Button in the import sheet that fills the text box with what was last copied.")
                 }
                 .buttonStyle(.bordered)
+                .accessibilityIdentifier("pasteFromClipboardButton")
                 .padding()
             }
             .navigationTitle(Text("Import JSON", comment: "Title of the sheet for pasting cards exported as JSON."))
@@ -209,6 +214,7 @@ public struct ImportCardsView: View {
                         Text("Import", comment: "Toolbar button in the import sheet that adds the pasted cards. A verb.")
                     }
                     .disabled(importText.isEmpty)
+                    .accessibilityIdentifier("importButton")
                 }
             }
         }

@@ -46,7 +46,6 @@ public struct CardEditView<Scanner: View>: View {
                         .frame(height: 250)
                         .listRowInsets(EdgeInsets())
                 }
-                .accessibilityIdentifier("scannerSection")
             }
 
             Section {
@@ -62,7 +61,7 @@ public struct CardEditView<Scanner: View>: View {
                     .multilineTextAlignment(.trailing)
                     .autocorrectionDisabled()
                     .focused($focusedField, equals: .name)
-                    .accessibilityIdentifier("cardDetailsSection.nameTextField")
+                    .accessibilityIdentifier("nameTextField")
                     .accessibilityLabel(Text("Card name", comment: "VoiceOver label for the card name field in the card form."))
                     .accessibilityHint(Text("Enter the name of this card", comment: "VoiceOver hint for the card name field in the card form."))
                 }
@@ -81,14 +80,13 @@ public struct CardEditView<Scanner: View>: View {
                     .keyboardType(.default)
                     .autocorrectionDisabled()
                     .focused($focusedField, equals: .code)
-                    .accessibilityIdentifier("cardDetailsSection.codeTextField")
+                    .accessibilityIdentifier("codeTextField")
                     .accessibilityLabel(Text("Card code", comment: "VoiceOver label for the card's code field in the card form."))
                     .accessibilityHint(
                         Text("Enter the barcode number for this card", comment: "VoiceOver hint for the card's code field in the card form.")
                     )
                 }
             }
-            .accessibilityIdentifier("cardDetailsSection")
 
             Section {
                 Picker(selection: $draft.barcodeType) {
@@ -106,14 +104,12 @@ public struct CardEditView<Scanner: View>: View {
                     Text("Select the type of barcode for this card", comment: "VoiceOver hint for the barcode format menu in the card form.")
                 )
             }
-            .accessibilityIdentifier("barcodeTypeSection")
 
             Section {
                 CardColorPicker(selection: $draft.color)
             } header: {
                 Text("Colour", comment: "Section heading above the colour swatches in the card form. A noun.")
             }
-            .accessibilityIdentifier("cardColorSection")
 
             Section {
                 ForEach(draft.locations) { location in
@@ -141,7 +137,6 @@ public struct CardEditView<Scanner: View>: View {
                     comment: "Footer under the card's places in the card form, explaining the arrival notification."
                 )
             }
-            .accessibilityIdentifier("cardLocationsSection")
         }
         .sheet(isPresented: $showsLocationPicker) {
             LocationPickerView(
@@ -151,7 +146,6 @@ public struct CardEditView<Scanner: View>: View {
             )
         }
         .navigationBarTitleDisplayMode(.inline)
-        .accessibilityIdentifier("editCardForm")
         .task {
             guard autofocusesName else { return }
             try? await Task.sleep(for: .seconds(0.6))

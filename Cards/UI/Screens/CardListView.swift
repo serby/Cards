@@ -62,6 +62,7 @@ public struct CardListView: View {
         List {
             ForEach(cards) { card in
                 CardRowView(card: card) { actions.selectCard(card.id) }
+                    .accessibilityIdentifier("cardRow_\(card.id)")
                     .listRowBackground(Color.clear)
                     .listRowSeparator(.hidden)
                     .listRowInsets(EdgeInsets(top: 5, leading: 16, bottom: 5, trailing: 16))
@@ -87,6 +88,7 @@ public struct CardListView: View {
                         Text("Add Card", comment: "Button on the empty card list that opens the form for a new card.")
                     }
                     .buttonStyle(.borderedProminent)
+                    .accessibilityIdentifier("addFirstCardButton")
                 }
             }
         }
