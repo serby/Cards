@@ -112,6 +112,27 @@ public struct SettingsListView: View {
                 }
                 .disabled(state.cardCount == 0)
                 .accessibilityIdentifier("deleteAllCardsButton")
+                // On the button, so on iPad the dialog's popover points at it.
+                // On the whole list it was anchored at the top of the screen,
+                // squashed under the tab bar, with its warning cut off.
+                .confirmationDialog(
+                    Text("Delete All Cards", comment: "Title of the dialog that asks the user to confirm deleting every card."),
+                    isPresented: $showDeleteConfirmation,
+                    titleVisibility: .visible
+                ) {
+                    Button(role: .destructive) {
+                        actions.deleteAllCards()
+                        announcer.announce(Announcements.allCardsDeleted)
+                    } label: {
+                        Text("Delete All", comment: "Destructive button in the delete-all dialog that deletes every card.")
+                    }
+                    .accessibilityIdentifier("confirmDeleteAllButton")
+                    Button(role: .cancel) {} label: {
+                        Text("Cancel", comment: "Button in the delete-all dialog that keeps the cards.")
+                    }
+                } message: {
+                    Text(Self.deleteAllMessage(cardCount: state.cardCount))
+                }
             } header: {
                 Text("Data", comment: "Settings section heading for exporting, importing and deleting cards.")
                     .foregroundStyle(Color.secondaryText)
@@ -134,24 +155,6 @@ public struct SettingsListView: View {
                     importText = ""
                 }
             )
-        }
-        .confirmationDialog(
-            Text("Delete All Cards", comment: "Title of the dialog that asks the user to confirm deleting every card."),
-            isPresented: $showDeleteConfirmation,
-            titleVisibility: .visible
-        ) {
-            Button(role: .destructive) {
-                actions.deleteAllCards()
-                announcer.announce(Announcements.allCardsDeleted)
-            } label: {
-                Text("Delete All", comment: "Destructive button in the delete-all dialog that deletes every card.")
-            }
-            .accessibilityIdentifier("confirmDeleteAllButton")
-            Button(role: .cancel) {} label: {
-                Text("Cancel", comment: "Button in the delete-all dialog that keeps the cards.")
-            }
-        } message: {
-            Text(Self.deleteAllMessage(cardCount: state.cardCount))
         }
         .alert(
             Text("Import Result", comment: "Title of the alert shown after importing cards from JSON, whether it worked or not."),
