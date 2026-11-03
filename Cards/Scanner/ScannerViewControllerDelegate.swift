@@ -1,4 +1,5 @@
 import AVFoundation
+import OSLog
 import UIKit
 
 public protocol ScannerViewControllerDelegate: AnyObject {
@@ -6,6 +7,7 @@ public protocol ScannerViewControllerDelegate: AnyObject {
 }
 
 public class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
+    private static let log = Logger(subsystem: "net.serby.Cards", category: "Scanner")
 
     public var captureSession: AVCaptureSession?
     public var previewLayer: AVCaptureVideoPreviewLayer?
@@ -23,7 +25,7 @@ public class ScannerViewController: UIViewController, AVCaptureMetadataOutputObj
         captureSession = session
 
         guard let videoCaptureDevice = AVCaptureDevice.default(for: .video) else {
-            print("Unable to access the camera")
+            Self.log.error("No camera available")
             return
         }
 
@@ -35,11 +37,11 @@ public class ScannerViewController: UIViewController, AVCaptureMetadataOutputObj
             if session.canAddInput(videoInput) {
                 session.addInput(videoInput)
             } else {
-                print("Unable to add input to capture session")
+                Self.log.error("Unable to add the camera input to the capture session")
                 return
             }
         } catch {
-            print("Failed to create AVCaptureDeviceInput: \(error)")
+            Self.log.error("Failed to create the camera input: \(error.localizedDescription, privacy: .public)")
             return
         }
 
@@ -51,7 +53,7 @@ public class ScannerViewController: UIViewController, AVCaptureMetadataOutputObj
                 .qr, .ean8, .ean13, .pdf417, .code128, .code39, .code93, .upce, .aztec
             ]
         } else {
-            print("Unable to add metadata output")
+            Self.log.error("Unable to add the barcode metadata output")
             return
         }
 

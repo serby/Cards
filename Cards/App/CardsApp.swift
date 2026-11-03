@@ -72,15 +72,17 @@ struct CardsApp: App {
             tabView
         }
         .modelContainer(sharedModelContainer)
-        .onChange(of: scenePhase) { _, newPhase in
-            switch newPhase {
-            case .active:
-                performanceTracker.recordWarmStart()
-            case .inactive:
+        .onChange(of: scenePhase) { oldPhase, newPhase in
+            switch (oldPhase, newPhase) {
+            // A warm start runs from leaving the background to being active. Going
+            // inactive without backgrounding (Control Centre, the app switcher) is not one.
+            case (.background, .inactive):
                 performanceTracker.recordForegroundTransition()
-            case .background:
+            case (_, .active):
+                performanceTracker.recordWarmStart()
+            case (_, .background):
                 performanceTracker.recordBackgroundTransition()
-            @unknown default:
+            default:
                 break
             }
         }
