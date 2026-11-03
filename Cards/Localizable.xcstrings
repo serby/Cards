@@ -569,7 +569,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ajouté : %@"
+            "value" : "Ajouté : %@"
           }
         },
         "it" : {
@@ -1089,7 +1089,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Augmente la luminosité lorsqu'une carte est affichée pour faciliter la lecture du code-barres"
+            "value" : "Augmente la luminosité lorsqu’une carte est affichée pour faciliter la lecture du code-barres"
           }
         },
         "it" : {
@@ -1479,7 +1479,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L'accès à l'appareil photo est désactivé. Saisissez le code ci-dessous ou autorisez l'accès dans Réglages."
+            "value" : "L’accès à l’appareil photo est désactivé. Saisissez le code ci-dessous ou autorisez l’accès dans Réglages."
           }
         },
         "it" : {
@@ -1674,7 +1674,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Code de la carte : %@"
+            "value" : "Code de la carte : %@"
           }
         },
         "it" : {
@@ -2714,7 +2714,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Supprimé : %@"
+            "value" : "Supprimé : %@"
           }
         },
         "it" : {
@@ -4274,7 +4274,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Plan déplacé vers %@"
+            "value" : "Plan centré sur %@"
           }
         },
         "it" : {
@@ -5119,7 +5119,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nom, p. ex. Westway"
+            "value" : "Nom, p. ex. Westway"
           }
         },
         "it" : {
@@ -5249,7 +5249,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aucun lieu trouvé pour « %@ »"
+            "value" : "Aucun lieu trouvé pour « %@ »"
           }
         },
         "it" : {
@@ -6549,7 +6549,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Scannez le code-barres d'une carte de fidélité pour l'ajouter."
+            "value" : "Scannez le code-barres d’une carte de fidélité pour l’ajouter."
           }
         },
         "it" : {
@@ -6815,7 +6815,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sélectionne le type de code-barres de cette carte"
+            "value" : "Choisissez le type de code-barres de cette carte"
           }
         },
         "it" : {
@@ -7172,7 +7172,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bleu-vert"
+            "value" : "Sarcelle"
           }
         },
         "it" : {
@@ -7464,7 +7464,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Règle la luminosité de l'écran au maximum pour faciliter la lecture du code-barres"
+            "value" : "Active ou désactive la luminosité maximale de l’écran pour faciliter la lecture du code-barres"
           }
         },
         "it" : {
@@ -7659,7 +7659,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lorsque vous arrivez à l'un de ces lieux, le code-barres s'affiche sur votre écran verrouillé."
+            "value" : "Lorsque vous arrivez à l’un de ces lieux, le code-barres s’affiche sur votre écran verrouillé."
           }
         },
         "it" : {

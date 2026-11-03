@@ -176,7 +176,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L'appareil photo permet de scanner les codes-barres de vos cartes de fidélité et d'adhésion"
+            "value" : "L’appareil photo permet de scanner les codes-barres de vos cartes de fidélité et d’adhésion."
           }
         },
         "it" : {
@@ -248,7 +248,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Votre position indique votre distance des lieux où vous utilisez vos cartes et affiche le bon code-barres sur votre écran verrouillé à votre arrivée."
+            "value" : "Votre position permet d’indiquer à quelle distance se trouvent les lieux où vous utilisez vos cartes, et d’afficher le bon code-barres sur votre écran verrouillé à votre arrivée."
           }
         },
         "it" : {
