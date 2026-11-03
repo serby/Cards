@@ -71,6 +71,9 @@ public struct LocationPickerView: View {
                     Text("Add Location", comment: "Title of the map sheet for adding a place where a card is used.")
                 )
                 .navigationBarTitleDisplayMode(.inline)
+                // Opaque, so the bar's buttons are read against the bar and not
+                // against whatever map shows through a translucent one.
+                .toolbarBackground(Color.primaryBackground, for: .navigationBar)
                 .toolbarBackground(.visible, for: .navigationBar)
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) {
@@ -205,7 +208,11 @@ public struct LocationPickerView: View {
                     TextField(
                         "Postcode",
                         text: $postcode,
+                        // The prompts are the fields' only visible labels, beside
+                        // their icons, so they take readable secondary text rather
+                        // than the system placeholder grey (1.7:1 on the field).
                         prompt: Text("Postcode", comment: "Placeholder in the search field that moves the map to a postcode or address.")
+                            .foregroundStyle(Color.secondaryText)
                     )
                     .textInputAutocapitalization(.characters)
                     .autocorrectionDisabled()
@@ -247,6 +254,7 @@ public struct LocationPickerView: View {
                     "Name, e.g. Westway",
                     comment: "Placeholder for the new place's name. Westway is a London climbing centre; a typical local place name may read better."
                 )
+                .foregroundStyle(Color.secondaryText)
             )
             .focused($focusedField, equals: .name)
             .pickerField("tag")

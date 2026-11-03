@@ -105,6 +105,7 @@ public struct SettingsListView: View {
                     showDeleteConfirmation = true
                 } label: {
                     Text("Delete All Cards", comment: "Settings button that deletes every card after asking for confirmation.")
+                        .foregroundStyle(Color.destructive)
                 }
                 .disabled(state.cardCount == 0)
                 .accessibilityIdentifier("deleteAllCardsButton")
@@ -221,7 +222,11 @@ public struct ImportCardsView: View {
                 } label: {
                     Text("Paste from Clipboard", comment: "Button in the import sheet that fills the text box with what was last copied.")
                 }
-                .buttonStyle(.bordered)
+                // Plain accent text: on the bordered style's pink wash the accent
+                // falls to 4:1.
+                .buttonStyle(.borderless)
+                .foregroundStyle(Color.accent)
+                .frame(minHeight: 44)
                 .accessibilityIdentifier("pasteFromClipboardButton")
                 .padding()
             }

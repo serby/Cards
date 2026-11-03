@@ -15,6 +15,11 @@ public extension Color {
     /// backgrounds; `CardColorTests` checks both modes.
     static let accentLightRGB: UInt32 = 0xD0185B
     static let accentDarkRGB: UInt32 = 0xFF6699
+    /// Destructive actions. The system red is 3.6:1 on white, so this is the
+    /// deeper red iOS itself uses at increased contrast.
+    static let destructiveLightRGB: UInt32 = 0xD70015
+    static let destructiveDarkRGB: UInt32 = 0xFF6961
+    static let destructive = Color(light: Color(rgb: destructiveLightRGB), dark: Color(rgb: destructiveDarkRGB))
     static let accent = Color(light: Color(rgb: accentLightRGB), dark: Color(rgb: accentDarkRGB))
     static let accentLight = Color(light: Color(red: 1.0, green: 0.85, blue: 0.9),
                                    dark: Color(red: 0.4, green: 0.15, blue: 0.25))

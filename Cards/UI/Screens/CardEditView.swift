@@ -83,6 +83,7 @@ public struct CardEditView<Scanner: View>: View {
                         "Enter name",
                         text: $draft.name,
                         prompt: Text("Enter name", comment: "Placeholder in the empty card name field, such as Tesco Clubcard.")
+                            .foregroundStyle(Color.secondaryText)
                     )
                     .multilineTextAlignment(nameAlignment)
                     .autocorrectionDisabled()
@@ -102,6 +103,7 @@ public struct CardEditView<Scanner: View>: View {
                         "Enter code",
                         text: $draft.code,
                         prompt: Text("Enter code", comment: "Placeholder in the empty field for the number or text that the barcode encodes.")
+                            .foregroundStyle(Color.secondaryText)
                     )
                     .multilineTextAlignment(codeAlignment)
                     .readsLeftToRight()
@@ -135,7 +137,11 @@ public struct CardEditView<Scanner: View>: View {
             Section {
                 CardColorPicker(selection: $draft.color)
             } header: {
+                // Headings, footers and prompts take the app's secondary text: the
+                // system's grey is 3.2:1 on the form's background, and its
+                // placeholder grey 1.9:1.
                 Text("Colour", comment: "Section heading above the colour swatches in the card form. A noun.")
+                    .foregroundStyle(Color.secondaryText)
             }
 
             Section {
@@ -177,11 +183,13 @@ public struct CardEditView<Scanner: View>: View {
                 .accessibilityIdentifier("addLocationRowButton")
             } header: {
                 Text("Locations", comment: "Section heading in the card form for the places where the card is used.")
+                    .foregroundStyle(Color.secondaryText)
             } footer: {
                 Text(
                     "When you arrive at one of these places, the barcode appears on your Lock Screen.",
                     comment: "Footer under the card's places in the card form, explaining the arrival notification."
                 )
+                .foregroundStyle(Color.secondaryText)
             }
         }
         .sheet(isPresented: $showsLocationPicker) {

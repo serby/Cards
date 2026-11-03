@@ -64,7 +64,9 @@ struct CardColorTests {
             ("secondary background", .secondaryBackground),
             ("grouped background", Color(UIColor.systemGroupedBackground)),
             ("grouped cell", Color(UIColor.secondarySystemGroupedBackground)),
-            ("standard card face", CardColor.standard.cardFill)
+            ("standard card face", CardColor.standard.cardFill),
+            // The location picker's fields, whose prompts are secondary text.
+            ("picker field", Color(UIColor.tertiarySystemFill))
         ]
         for scheme in Self.schemes {
             for surface in surfaces {
@@ -94,6 +96,18 @@ struct CardColorTests {
                 let background = Resolved.rgb(surface, in: scheme)
                 let accent = Resolved.rgb(.accent, over: background, in: scheme)
                 #expect(Contrast.ratio(accent, background) >= Self.minimumContrast, "\(scheme)")
+            }
+        }
+    }
+
+    /// Delete All Cards in Settings is drawn in the destructive red on a list
+    /// cell.
+    @Test func destructiveIsReadableOnCells() {
+        for scheme in Self.schemes {
+            for surface in [Color.primaryBackground, Color(UIColor.secondarySystemGroupedBackground)] {
+                let background = Resolved.rgb(surface, in: scheme)
+                let red = Resolved.rgb(.destructive, over: background, in: scheme)
+                #expect(Contrast.ratio(red, background) >= Self.minimumContrast, "\(scheme)")
             }
         }
     }
