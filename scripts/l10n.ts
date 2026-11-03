@@ -443,10 +443,35 @@ export interface Problem {
 const missing = (message: string): Problem => ({ kind: "missing", message });
 const invalid = (message: string): Problem => ({ kind: "invalid", message });
 
-function validateString(candidates: string[], translation: string, at: string): Problem[] {
+/// The one whole number a plural category stands for in a language, if it
+/// stands for exactly one: Arabic "zero", "one" and "two", English "one", but
+/// not French "one" (0 and 1) or Russian "one" (1, 21, 31 …). "zero" always
+/// means 0, because Foundation uses a source's "zero" form for 0 in every
+/// language.
+export function singleNumber(lang: string, category: string): number | undefined {
+    if (category === "zero") return 0;
+    const rules = new Intl.PluralRules(lang);
+    const matches: number[] = [];
+    for (let n = 0; n <= 1000 && matches.length < 2; n++) if (rules.select(n) === category) matches.push(n);
+    return matches.length === 1 ? matches[0] : undefined;
+}
+
+const isCount = (p: Placeholder): boolean => p.raw === "%arg" || /[dDiuU]$/.test(p.key);
+
+/// A form for a single number may spell it out ("بطاقة واحدة", "One card") and
+/// leave out the count, so long as every other placeholder keeps its position.
+function withoutCount(list: Placeholder[]): Placeholder[][] {
+    return list.flatMap((p, index) => (isCount(p) ? [[...list.slice(0, index), ...list.slice(index + 1)]] : []));
+}
+
+function validateString(candidates: string[], translation: string, at: string, mayDropCount = false): Problem[] {
     if (translation.trim() === "" && candidates.some((candidate) => candidate.trim() !== "")) return [missing(`${at}empty translation`)];
     const got = placeholders(translation);
-    if (candidates.some((candidate) => sameMultiset(placeholders(candidate), got))) return [];
+    const accepted = candidates.flatMap((candidate) => {
+        const expected = placeholders(candidate);
+        return mayDropCount ? [expected, ...withoutCount(expected)] : [expected];
+    });
+    if (accepted.some((expected) => sameMultiset(expected, got))) return [];
     return [invalid(`${at}placeholders ${listPlaceholders(got)} do not match the source's ${listPlaceholders(placeholders(candidates[0]))}`)];
 }
 
@@ -485,7 +510,7 @@ export function validate(source: Text, translation: unknown, lang: string, path 
             const candidates = [source.plural[category], source.plural.other ?? Object.values(source.plural)[0]].filter((c) => c !== undefined);
             const where = `${path ? `${path}.` : ""}${category}`;
             if (candidates.every((c) => typeof c === "string") && typeof form === "string") {
-                problems.push(...validateString(candidates as string[], form, `${where}: `));
+                problems.push(...validateString(candidates as string[], form, `${where}: `, singleNumber(lang, category) !== undefined));
             } else {
                 problems.push(...validate(candidates[0], form, lang, where));
             }
@@ -628,13 +653,20 @@ export function buildPrompt(payload: Payload, brief: string, notes: string | und
         `## The app\n\n${brief.trim()}`,
     ];
     if (notes?.trim()) sections.push(`## Notes for ${name}\n\n${notes.trim()}`);
+    const single = pluralCategories(lang).flatMap((category) => {
+        const n = singleNumber(lang, category);
+        return n === undefined ? [] : [`"${category}" (only ever ${n})`];
+    });
+    const spellOut = single.length === 0
+        ? "keep the number's placeholder."
+        : `keep the number's placeholder, except in a category that only ever means one number: ${single.join(", ")}. There you may write the number as a word, as ${name} naturally would, and leave out its placeholder; keep every other placeholder.`;
     sections.push(`## How to translate
 
 - Write ${name} the way Apple writes it on iOS. Use the exact names Apple's ${name} iOS gives its own apps, features and settings, such as Settings, Camera, Wallet, Lock Screen, Home Screen, Notifications, Location Services, Photos and iCloud, and Apple's ${name} wording for standard controls such as Cancel, Done, Edit, Delete, Save, Add, Allow and OK.
 - Use the register of Apple's own ${name} iOS interface: the same level of formality and the same way of addressing the user, and Apple's ${name} conventions for capitalisation, punctuation and quotation marks in titles, buttons, alerts and permission prompts. Do not copy English title case if ${name} does not use it.
 - Be concise. The strings appear in buttons, navigation bars, list rows, alerts and notifications on an iPhone. Keep each one about as long as the source, and never add explanations.
 - Keep placeholders. Every placeholder in "placeholders" (such as %@, %lld, %d, %1$@, %%, %#@name@ and %arg) must appear in the translation as many times as in the source, character for character. You may move a placeholder; if two must change order, number them (%1$@, %2$@). Never translate, add or drop one. %% is a literal percent sign.
-- Plurals. When "source" is {"plural": …}, the translation is {"plural": …} with exactly the categories in "pluralCategories": the plural categories ${name} needs, which can differ from English. Each form must read correctly for every number in its category and keep the number's placeholder.
+- Plurals. When "source" is {"plural": …}, the translation is {"plural": …} with exactly the categories in "pluralCategories": the plural categories ${name} needs, which can differ from English. Each form must read correctly for every number in its category and ${spellOut}
 - Keep the shape of "source": a string for a string, a list for a list, and the same keys for {"device": …} and for {"format": …, "substitutions": …}.
 - Leave untranslated: brand and product names, everything in the do-not-translate list above, and the user's own content.
 - "comment" says where the string appears and what fills each placeholder. Use it, but do not translate it.

@@ -37,6 +37,7 @@ import {
     readKnownRegions,
     requiredPluralCategories,
     runCommand,
+    singleNumber,
     type Text,
     translate,
     unitsOf,
@@ -145,6 +146,36 @@ describe("plural rules", () => {
         assert.deepEqual(validate(source, { plural: { one: "Une carte", many: "%lld de cartes", other: "%lld cartes" } }, "fr"), []);
         const problems = validate(source, { plural: { one: "Une carte", many: "De cartes", other: "%lld cartes" } }, "fr");
         assert.deepEqual(problems.map((p) => p.message), ["many: placeholders none do not match the source's %lld"]);
+    });
+
+    test("a category for a single number knows that number", () => {
+        assert.equal(singleNumber("ar", "zero"), 0);
+        assert.equal(singleNumber("ar", "one"), 1);
+        assert.equal(singleNumber("ar", "two"), 2);
+        assert.equal(singleNumber("ar", "few"), undefined);
+        assert.equal(singleNumber("en", "one"), 1);
+        assert.equal(singleNumber("fr", "one"), undefined, "French one covers 0 and 1");
+        assert.equal(singleNumber("ru", "one"), undefined, "Russian one covers 1, 21, 31 …");
+        assert.equal(singleNumber("ja", "other"), undefined);
+    });
+
+    test("a form for a single number may spell the number out", () => {
+        const source: Text = { plural: { one: "%lld card", other: "%lld cards" } };
+        const arabic = { zero: "%lld بطاقة", one: "بطاقة واحدة", two: "بطاقتان", few: "%lld بطاقات", many: "%lld بطاقة", other: "%lld بطاقة" };
+        assert.deepEqual(validate(source, { plural: arabic }, "ar"), []);
+        const french = validate(source, { plural: { one: "Une carte", many: "%lld de cartes", other: "%lld cartes" } }, "fr");
+        assert.deepEqual(french.map((p) => p.message), ["one: placeholders none do not match the source's %lld"], "French one also means 0");
+        const few = validate(source, { plural: { ...arabic, few: "بطاقات" } }, "ar");
+        assert.deepEqual(few.map((p) => p.message), ["few: placeholders none do not match the source's %lld"]);
+    });
+
+    test("spelling the number out keeps the other placeholders in place", () => {
+        const source: Text = { plural: { one: "%lld card in %@", other: "%lld cards in %@" } };
+        const forms = (two: string) => ({ zero: "%lld في %@", one: "بطاقة في %2$@", two, few: "%lld في %@", many: "%lld في %@", other: "%lld في %@" });
+        assert.deepEqual(validate(source, { plural: forms("بطاقتان في %2$@") }, "ar"), []);
+        const shifted = validate(source, { plural: forms("بطاقتان في %@") }, "ar");
+        assert.equal(shifted.length, 1, "an unnumbered %@ would read the count instead of the place");
+        assert.match(shifted[0].message, /^two: placeholders/);
     });
 });
 
