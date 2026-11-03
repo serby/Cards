@@ -81,19 +81,35 @@ jobs:
       run: |
         scripts/ci-resolve-sim.sh "iPad Pro 13-inch (M4)" >> "$GITHUB_OUTPUT"
 
+    # The iPad simulator is booted just before this step, and a cold simulator
+    # sometimes times out loading accessibility before the UI test runner starts
+    # ("failed to initialize for UI testing"). That failure is the simulator's,
+    # so it gets up to two more attempts; any other failure fails at once.
     - name: Test iPad screenshot capture
       run: |
-        rm -rf /tmp/CardsIPadTests.xcresult
-        xcodebuild test \
-          -project Cards.xcodeproj \
-          -scheme Cards \
-          -destination "platform=iOS Simulator,name=${{ steps.ipad.outputs.device }},OS=${{ steps.ipad.outputs.version }}" \
-          -only-testing:CardsUITests/CardsScreenshotTests/testCaptureScreenshots \
-          -testLanguage en \
-          -testRegion US \
-          -enableCodeCoverage NO \
-          -collect-test-diagnostics never \
-          -resultBundlePath /tmp/CardsIPadTests.xcresult
+        for attempt in 1 2 3; do
+          rm -rf /tmp/CardsIPadTests.xcresult
+          set +e
+          xcodebuild test \
+            -project Cards.xcodeproj \
+            -scheme Cards \
+            -destination "platform=iOS Simulator,name=${{ steps.ipad.outputs.device }},OS=${{ steps.ipad.outputs.version }}" \
+            -only-testing:CardsUITests/CardsScreenshotTests/testCaptureScreenshots \
+            -testLanguage en \
+            -testRegion US \
+            -enableCodeCoverage NO \
+            -collect-test-diagnostics never \
+            -resultBundlePath /tmp/CardsIPadTests.xcresult 2>&1 | tee /tmp/CardsIPadTests.log
+          status=${PIPESTATUS[0]}
+          set -e
+          [ "$status" -eq 0 ] && exit 0
+          if ! grep -qi "failed to initialize for UI testing" /tmp/CardsIPadTests.log; then
+            exit "$status"
+          fi
+          echo "::warning::Attempt $attempt: the iPad simulator was not ready for UI testing; retrying"
+          sleep 30
+        done
+        exit 1
 
     - name: Validate iPad screenshot capture
       run: |
