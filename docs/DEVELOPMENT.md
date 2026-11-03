@@ -231,6 +231,18 @@ In Xcode, **File > Add Package Dependencies**, add the product to the `Cards` ta
 
 Edit `DesignAssets/Icon.svg`, run `scripts/generate-app-icons.sh`, and commit the SVG with the regenerated PNGs.
 
+### Publish a new App Store version
+
+1. Set `MARKETING_VERSION` on the app target to the new version (for example `1.3`), commit and push. Every push to `main` puts a build on TestFlight.
+2. Wait for that push's CI and TestFlight deploy to finish; App Store Connect rejects two uploads arriving at once.
+3. Tag the commit with an annotated tag whose name matches the version and whose message is the "What's New" text, then push the tag:
+   ```bash
+   git tag -a v1.3 -m "What's New text"
+   git push origin v1.3
+   ```
+4. `release.yml` stamps a build number, archives, signs and uploads, waits for Apple to process the build, creates the App Store version, attaches the build, sets "What's New" in every localisation and submits it for review (`scripts/asc-submit.sh`). A tag without a message stops the workflow before it uploads anything.
+5. Store listing text and screenshots are separate: `scripts/upload-metadata.sh` and `scripts/upload-screenshots.sh`, with an App Store Connect API key on the machine.
+
 ### Refresh the App Store screenshots
 
 Run `make capture-screenshots` (about ten minutes for the four device and locale sets), look at every changed PNG under `screenshots/`, and commit them in their own `test:` commit.
