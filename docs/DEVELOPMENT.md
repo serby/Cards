@@ -147,6 +147,8 @@ Every view in `Cards/UI` has a story in `Cards/Development/Storybook/Catalogue`,
 - Reuse the shared knobs rather than inventing new names: `ProximityKnobs` for anything that shows a distance.
 - Bindings to local state go through `Stateful`; bindings to knobs through `KnobValues.*Binding`.
 - A value read once at creation (a map's starting camera) needs `.id(knobValue)` so the story rebuilds when the knob changes.
+- Each story's toolbar has a display options menu: appearance, text size, language and direction, applied to whichever story is on screen in either mode. Language offers System and every localisation compiled into the app, so a language appears as soon as it has a translation. Direction is Automatic (the language's script direction), Left to right or Right to left. The language and direction persist between launches in their own defaults suite, `net.serby.Cards.Storybook`, which the app never reads.
+- The language sets the stage's `\.locale`, so it switches whatever SwiftUI resolves as it renders: `Text` and `Label` from a key or a `LocalizedStringResource`, prompts, picker items, the titles, messages and `Text` buttons of alerts and dialogs, sheets, `FormatStyle`s in a `Text` or a key's interpolation, and SwiftUI's own copy (`EditButton`, `DatePicker`). It cannot switch what is resolved before SwiftUI sees it or drawn by UIKit: `String(localized:)` (VoiceOver announcements, notifications, import results), `.formatted()` strings, the OK and Cancel buttons iOS adds to alerts and dialogs, and the keyboard. A sheet takes the language but keeps the app's direction. Check those by running the app in the language: the scheme's App Language, or launch with `-AppleLanguages '(de)'`.
 
 ### Rule 5: Colours come from the palette and must stay readable
 
@@ -182,7 +184,7 @@ The target builds in Swift 6 language mode with strict concurrency, `SWIFT_TREAT
 - Decorative images are hidden from VoiceOver; codes are read character by character (`speechSpellsOutCharacters()`).
 - Barcodes, card faces and colour swatches take `.keepsColoursWhenInverted()`, so Smart Invert leaves a barcode scannable and a red card red. `SmartInvertTests` checks they keep it.
 - Layouts survive the accessibility text sizes: switch from side by side to stacked with `AnyLayout` when `dynamicTypeSize.isAccessibilitySize`.
-- Check new UI in the Storybook in dark mode, at the largest text size and right to left before calling it finished.
+- Check new UI in the Storybook in dark mode, at the largest text size and right to left (Arabic once it is translated, or Direction set to Right to left) before calling it finished.
 
 ### Rule 9: Test the logic, the persistence and the promises
 
@@ -308,6 +310,7 @@ Xcode 27 has no Simulator.app; `make sim` opens Device Hub to show the screen, a
 | "Cannot create new type CD_CardItem in production schema" in the log | The Production CloudKit schema is missing the model; deploy it ([section 8](#8-releasing)) |
 | The map picker freezes the app | Something updates `Map` content from `onMapCameraChange` ([rule 7](#rule-7-swift-6-no-warnings-clean-lint)) |
 | A story shows several Edit buttons | The screen story is missing `galleryLayout: .oneAtATime` |
+| The Storybook's Language menu lists a language that has no translations | When a language's last translation goes, Xcode leaves its empty `.lproj` folder in the built app and the bundle still lists it. Delete the folder from `Cards.app` in `BUILT_PRODUCTS_DIR`, or clean the build folder in Xcode |
 | New copy is missing from `Localizable.xcstrings` | Command-line builds never write to catalogues; run `xcodebuild -exportLocalizations` ([Add or change copy](#add-or-change-copy)) |
 | Storybook or preview text turns up in `Localizable.xcstrings` | A literal reached a `LocalizedStringKey` in `Cards/Development`; make it `Text(verbatim:)` or a `String` |
 | An English device shows a translation | `Info.plist` must keep `CFBundleDevelopmentRegion`: catalogues compile no `en.lproj` for unchanged English, so without it iOS picks one of the translations |
