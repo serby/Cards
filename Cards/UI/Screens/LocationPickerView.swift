@@ -290,7 +290,13 @@ public struct LocationPickerView: View {
             }
         }
         .padding(18)
-        .background(.regularMaterial, in: .rect(cornerRadius: 24))
+        // Opaque, like the bar: a translucent panel let map tiles show through
+        // the text, and the audit measured the radius heading below AA on one.
+        .background {
+            RoundedRectangle(cornerRadius: 24)
+                .fill(Color.primaryBackground)
+                .shadow(color: .black.opacity(0.15), radius: 12, y: 4)
+        }
         .padding(.horizontal, 12)
         .padding(.bottom, 8)
     }
