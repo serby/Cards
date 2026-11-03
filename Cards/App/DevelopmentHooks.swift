@@ -1,3 +1,4 @@
+import OSLog
 import SwiftData
 import SwiftUI
 
@@ -19,12 +20,16 @@ enum DevelopmentHooks {
     }
 
     /// Creates the CloudKit schema in the Development environment when launched
-    /// with `-initializeCloudKitSchema`, before SwiftData opens the store at
-    /// `storeURL`. Does nothing in release.
-    static func initializeCloudKitSchemaIfRequested(storeURL: URL) throws {
+    /// with `-initializeCloudKitSchema`. A failure is logged, not thrown, so
+    /// the app still starts. Does nothing in release.
+    static func initializeCloudKitSchemaIfRequested() {
         #if DEBUG
-        if CommandLine.arguments.contains("-initializeCloudKitSchema") {
-            try CloudKitSchema.initialize(storeURL: storeURL)
+        guard CommandLine.arguments.contains("-initializeCloudKitSchema") else { return }
+        do {
+            try CloudKitSchema.initialize()
+        } catch {
+            Logger(subsystem: "net.serby.Cards", category: "CloudKitSchema")
+                .error("CloudKit schema initialisation failed: \(String(describing: error), privacy: .public)")
         }
         #endif
     }

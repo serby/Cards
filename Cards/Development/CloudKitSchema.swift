@@ -16,8 +16,16 @@ enum CloudKitSchema {
         case modelUnavailable
     }
 
-    /// Must run before SwiftData opens the store at `storeURL`.
-    static func initialize(storeURL: URL) throws {
+    /// Uses a throwaway store, never the real one: the real store's sync
+    /// metadata belongs to whichever environment it last synced with, and
+    /// reusing it makes CloudKit report "Zone Not Found".
+    static func initialize() throws {
+        let directory = FileManager.default.temporaryDirectory
+            .appending(path: "CloudKitSchema-\(UUID().uuidString)", directoryHint: .isDirectory)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let storeURL = directory.appending(path: "Schema.store")
+
         guard let model = NSManagedObjectModel.makeManagedObjectModel(for: [CardItem.self]) else {
             throw Failure.modelUnavailable
         }

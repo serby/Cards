@@ -28,7 +28,7 @@ struct CardsApp: App {
                 schema: schema,
                 isStoredInMemoryOnly: DevelopmentHooks.isUITesting
             )
-            try DevelopmentHooks.initializeCloudKitSchemaIfRequested(storeURL: modelConfiguration.url)
+            DevelopmentHooks.initializeCloudKitSchemaIfRequested()
             let container = try ModelContainer(for: schema, configurations: [modelConfiguration])
             try DevelopmentHooks.seedScreenshotCards(into: container)
             return container
