@@ -16,8 +16,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 
-XCODE_APP="${XCODE_APP:-/Applications/Xcode27.1.app}"
-export DEVELOPER_DIR="$XCODE_APP/Contents/Developer"
+source "$SCRIPT_DIR/xcode-env.sh"
 
 TEAM_ID="${DEVELOPMENT_TEAM:-ZMBFPG86J4}"
 BUNDLE_ID="${PRODUCT_BUNDLE_IDENTIFIER:-net.serby.Cards}"

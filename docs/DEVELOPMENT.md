@@ -20,7 +20,7 @@ If something here turns out to be wrong, fix the guide in the same change.
 
 | Tool | Why | Notes |
 |------|-----|-------|
-| Xcode 27.1 | Builds, tests, simulators | The Makefile expects `/Applications/Xcode27.1.app`; override with `make XCODE_APP=/path/to/Xcode.app …` |
+| Xcode 27.1 | Builds, tests, simulators | The Makefile and scripts use `XCODE_APP` if set, else `/Applications/Xcode27.1.app` when it is installed, else whatever `xcode-select` points at, as on CI runners (`scripts/xcode-env.sh`) |
 | SwiftLint | Lint, run before every build | `.swiftlint.yml` at the root |
 | Node 24 | `scripts/check-release-clean.ts` | Runs TypeScript directly, no install step |
 | Python 3 | `scripts/validate-screenshots.py` | Ships with macOS |

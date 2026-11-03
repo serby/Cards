@@ -1,8 +1,10 @@
 .PHONY: check-release test test-unit test-e2e test-coverage coverage-run coverage-report coverage-clean build clean sim device-hub device test-tsan capture-screenshots validate-screenshots deploy-testflight deploy-appstore upload-metadata upload-screenshots
 
-XCODE_APP ?= /Applications/Xcode27.1.app
-DEVELOPER_DIR := $(XCODE_APP)/Contents/Developer
-DEVICE_HUB_APP ?= $(XCODE_APP)/Contents/Applications/DeviceHub.app
+# Same choice as scripts/xcode-env.sh: XCODE_APP, else Xcode 27.1 when installed,
+# else whatever xcode-select points at.
+XCODE_APP ?= $(wildcard /Applications/Xcode27.1.app)
+DEVELOPER_DIR := $(if $(XCODE_APP),$(XCODE_APP)/Contents/Developer,$(shell xcode-select -p))
+DEVICE_HUB_APP ?= $(DEVELOPER_DIR)/../Applications/DeviceHub.app
 SIMULATOR_DEVICE ?= iPhone 16 Pro
 SIMULATOR_VERSION ?= 18.1
 
