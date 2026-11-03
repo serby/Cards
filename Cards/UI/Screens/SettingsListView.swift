@@ -38,6 +38,8 @@ public struct SettingsListView: View {
                             .foregroundColor(.secondaryText)
                             .readsLeftToRight()
                     }
+                    // "Version, 1.1 (42)" as one element, not two.
+                    .accessibilityElement(children: .combine)
                 }
 
                 if let url = state.authorURL {
@@ -49,13 +51,16 @@ public struct SettingsListView: View {
                             )
                             .foregroundColor(.primaryText)
                             Spacer()
+                            // The link trait and the hint say where it goes; the
+                            // arrow says it again for sighted users only.
                             Image(systemName: "arrow.up.forward.square")
                                 .foregroundColor(.accent)
-                                .accessibilityLabel(
-                                    Text("External link", comment: "VoiceOver label for the arrow showing that a Settings row opens a website.")
-                                )
+                                .accessibilityHidden(true)
                         }
                     }
+                    .accessibilityHint(
+                        Text("Opens in your web browser", comment: "VoiceOver hint for the Settings row that opens the author's website.")
+                    )
                 }
             }
 
@@ -185,6 +190,23 @@ public struct ImportCardsView: View {
                     .readsLeftToRight()
                     .autocorrectionDisabled()
                     .textInputAutocapitalization(.never)
+                    // Outside readsLeftToRight(), so the prompt follows the language.
+                    .overlay(alignment: .topLeading) {
+                        if importText.isEmpty {
+                            Text(
+                                "Paste exported JSON here",
+                                comment: "Prompt in the empty text box of the import sheet. JSON is a file format; keep the name."
+                            )
+                                .foregroundStyle(Color.secondaryText)
+                                .padding(.horizontal, 5)
+                                .padding(.vertical, 8)
+                                .allowsHitTesting(false)
+                                .accessibilityHidden(true)
+                        }
+                    }
+                    .accessibilityLabel(
+                        Text("JSON to import", comment: "VoiceOver label for the text box in the import sheet. JSON is a file format; keep the name.")
+                    )
                     .accessibilityIdentifier("importTextEditor")
                     .padding()
 

@@ -24,8 +24,9 @@ class CardsUITests: XCTestCase {
         app.launchArguments += ["-uiTesting"] + Self.variantArguments
         app.launch()
 
-        let addButton = app.buttons["addCardButton"]
-        XCTAssertTrue(addButton.waitForExistence(timeout: 5), "addCardButton did not appear")
+        // The store starts empty, so the list shows its own Add Card button.
+        let addButton = app.buttons["addFirstCardButton"]
+        XCTAssertTrue(addButton.waitForExistence(timeout: 5), "addFirstCardButton did not appear")
         addButton.tap()
 
         let nameField = app.textFields["nameTextField"]

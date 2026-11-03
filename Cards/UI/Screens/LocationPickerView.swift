@@ -182,9 +182,11 @@ public struct LocationPickerView: View {
                         .foregroundStyle(Color.secondaryText)
                 }
                 .font(.subheadline)
+                // The slider says both, so VoiceOver need not read them twice.
+                .accessibilityHidden(true)
                 Slider(value: $radius, in: Self.radiusRange, step: 25)
                     .accessibilityLabel(
-                        Text("Radius", comment: "VoiceOver label for the slider that sets how far around the pin counts as being at the place.")
+                        Text("Radius", comment: "Label above the slider that sets how far around the pin counts as being at the place.")
                     )
                     .accessibilityValue(Text(radius.metres, format: .radius))
             }

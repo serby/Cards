@@ -50,8 +50,10 @@ public struct CardEditView<Scanner: View>: View {
 
             Section {
                 HStack {
-                    Text("Name", comment: "Label beside the card's name field in the card form. A noun.")
-                        .accessibilityIdentifier("nameLabel")
+                    // The field carries this label, so VoiceOver reads it once and
+                    // "Tap Name" in Voice Control reaches the field.
+                    nameLabel
+                        .accessibilityHidden(true)
                     Spacer()
                     TextField(
                         "Enter name",
@@ -62,13 +64,13 @@ public struct CardEditView<Scanner: View>: View {
                     .autocorrectionDisabled()
                     .focused($focusedField, equals: .name)
                     .accessibilityIdentifier("nameTextField")
-                    .accessibilityLabel(Text("Card name", comment: "VoiceOver label for the card name field in the card form."))
+                    .accessibilityLabel(nameLabel)
                     .accessibilityHint(Text("Enter the name of this card", comment: "VoiceOver hint for the card name field in the card form."))
                 }
 
                 HStack {
-                    Text("Code", comment: "Label beside the field for the number or text that the barcode encodes. A noun.")
-                        .accessibilityIdentifier("codeLabel")
+                    codeLabel
+                        .accessibilityHidden(true)
                     Spacer()
                     TextField(
                         "Enter code",
@@ -81,7 +83,7 @@ public struct CardEditView<Scanner: View>: View {
                     .autocorrectionDisabled()
                     .focused($focusedField, equals: .code)
                     .accessibilityIdentifier("codeTextField")
-                    .accessibilityLabel(Text("Card code", comment: "VoiceOver label for the card's code field in the card form."))
+                    .accessibilityLabel(codeLabel)
                     .accessibilityHint(
                         Text("Enter the barcode number for this card", comment: "VoiceOver hint for the card's code field in the card form.")
                     )
@@ -99,7 +101,6 @@ public struct CardEditView<Scanner: View>: View {
                 }
                 .pickerStyle(.menu)
                 .accessibilityIdentifier("barcodeTypePicker")
-                .accessibilityLabel(Text("Barcode type", comment: "VoiceOver label for the barcode format menu in the card form."))
                 .accessibilityHint(
                     Text("Select the type of barcode for this card", comment: "VoiceOver hint for the barcode format menu in the card form.")
                 )
@@ -156,11 +157,23 @@ public struct CardEditView<Scanner: View>: View {
                 Button(action: actions.save) {
                     Text("Save", comment: "Toolbar button that saves the card form. A verb.")
                 }
+                // Labelled by its visible text, so "Tap Save" works in Voice Control.
                 .accessibilityIdentifier("saveCardButton")
-                .accessibilityLabel(Text("Save card", comment: "VoiceOver label for the Save button in the card form."))
-                .accessibilityHint(Text("Save changes to this card", comment: "VoiceOver hint for the Save button in the card form."))
+                .accessibilityHint(
+                    Text("Saves the card", comment: "VoiceOver hint for the Save button in the card form, for a new card or a changed one.")
+                )
             }
         }
+    }
+}
+
+private extension CardEditView {
+    var nameLabel: Text {
+        Text("Name", comment: "Label beside the card's name field in the card form. A noun.")
+    }
+
+    var codeLabel: Text {
+        Text("Code", comment: "Label beside the field for the number or text that the barcode encodes. A noun.")
     }
 }
 

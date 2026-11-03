@@ -30,12 +30,7 @@ public struct CardDetailView: View {
                         .multilineTextAlignment(.center)
                         .foregroundStyle(card.color.primaryInk)
                         .accessibilityIdentifier("cardNameText")
-                        .accessibilityLabel(
-                            Text(
-                                "Card name: \(card.name)",
-                                comment: "VoiceOver label for the name at the top of a card's screen. The argument is a name, such as Tesco."
-                            )
-                        )
+                        // The name alone, so the headings rotor lists cards by name.
                         .accessibilityAddTraits(.isHeader)
 
                     if let proximity = card.proximity {
@@ -126,15 +121,24 @@ public struct CardDetailView: View {
                         comment: "VoiceOver hint for the Brightness Boost button on a card's screen."
                     )
                 )
+                // The button shows only a sun, so Voice Control users guess at its
+                // name; let the shorter one work too.
+                .accessibilityInputLabels([
+                    Text(
+                        "Brightness Boost",
+                        comment: "VoiceOver label for the sun button on a card's screen, which turns the screen up so scanners can read the barcode."
+                    ),
+                    Text("Brightness", comment: "A name Voice Control users can say for the Brightness Boost button on a card's screen.")
+                ])
             }
 
+            // Labelled by its visible text, so "Tap Edit" works in Voice Control.
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: actions.editCard) {
                     Text("Edit", comment: "Toolbar button on a card's screen that opens the card for editing. A verb.")
                 }
                 .accessibilityIdentifier("editCardButton")
-                .accessibilityLabel(Text("Edit card", comment: "VoiceOver label for the Edit button on a card's screen."))
-                .accessibilityHint(Text("Tap to edit this card's details", comment: "VoiceOver hint for the Edit button on a card's screen."))
+                .accessibilityHint(Text("Opens the card for editing", comment: "VoiceOver hint for the Edit button on a card's screen."))
             }
         }
     }

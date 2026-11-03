@@ -58,9 +58,6 @@
     "Barcode scanner" : {
       "comment" : "VoiceOver label for the live camera view at the top of the new card form."
     },
-    "Barcode type" : {
-      "comment" : "VoiceOver label for the barcode format menu in the card form."
-    },
     "Barcode Type" : {
       "comment" : "Label of the menu for choosing the card's barcode format, such as EAN-13 or QR Code."
     },
@@ -69,6 +66,9 @@
     },
     "Boosts brightness when viewing card to improve scannability" : {
       "comment" : "Explains the Brightness Boost switch above it in Settings."
+    },
+    "Brightness" : {
+      "comment" : "A name Voice Control users can say for the Brightness Boost button on a card's screen."
     },
     "Brightness Boost" : {
       "comment" : "Settings switch for the feature that turns the screen up while a card is shown, so scanners can read its barcode.\nVoiceOver label for the sun button on a card's screen, which turns the screen up so scanners can read the barcode."
@@ -85,20 +85,11 @@
     "Cancel" : {
       "comment" : "Button in the delete-all dialog that keeps the cards.\nCloses the Add Location sheet without adding a place.\nCloses the import sheet without importing."
     },
-    "Card code" : {
-      "comment" : "VoiceOver label for the card's code field in the card form."
-    },
     "Card code: %@" : {
       "comment" : "VoiceOver label for the code under the barcode, which VoiceOver spells out character by character."
     },
     "Card colour" : {
       "comment" : "VoiceOver label for the grid of colour swatches in the card form."
-    },
-    "Card name" : {
-      "comment" : "VoiceOver label for the card name field in the card form."
-    },
-    "Card name: %@" : {
-      "comment" : "VoiceOver label for the name at the top of a card's screen. The argument is a name, such as Tesco."
     },
     "Card not found" : {
       "comment" : "Shown when a link or notification opens a card that has since been deleted."
@@ -151,9 +142,6 @@
     "Edit" : {
       "comment" : "Toolbar button on a card's screen that opens the card for editing. A verb."
     },
-    "Edit card" : {
-      "comment" : "VoiceOver label for the Edit button on a card's screen."
-    },
     "Edit Card" : {
       "comment" : "Title of the form for changing an existing card."
     },
@@ -171,9 +159,6 @@
     },
     "Export as JSON" : {
       "comment" : "Settings button that shares all cards as a JSON file. JSON is a file format; keep the name."
-    },
-    "External link" : {
-      "comment" : "VoiceOver label for the arrow showing that a Settings row opens a website."
     },
     "Failed to generate barcode" : {
       "comment" : "Shown instead of the barcode when the card's code can't be drawn in the chosen barcode format."
@@ -205,6 +190,9 @@
     "Invalid JSON format" : {
       "comment" : "Import result alert when the pasted text is not a card export. JSON is a file format; keep the name."
     },
+    "JSON to import" : {
+      "comment" : "VoiceOver label for the text box in the import sheet. JSON is a file format; keep the name."
+    },
     "Locations" : {
       "comment" : "Section heading in the card form for the places where the card is used."
     },
@@ -229,8 +217,17 @@
     "On" : {
       "comment" : "VoiceOver value of the Brightness Boost button on a card's screen when the boost is on."
     },
+    "Opens in your web browser" : {
+      "comment" : "VoiceOver hint for the Settings row that opens the author's website."
+    },
+    "Opens the card for editing" : {
+      "comment" : "VoiceOver hint for the Edit button on a card's screen."
+    },
     "Orange" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker."
+    },
+    "Paste exported JSON here" : {
+      "comment" : "Prompt in the empty text box of the import sheet. JSON is a file format; keep the name."
     },
     "Paste from Clipboard" : {
       "comment" : "Button in the import sheet that fills the text box with what was last copied."
@@ -254,7 +251,7 @@
       "comment" : "Barcode format in the barcode type picker: the square 2D code. Use the usual name for a QR code in your language."
     },
     "Radius" : {
-      "comment" : "Label above the slider that sets how far around the pin counts as being at the place.\nVoiceOver label for the slider that sets how far around the pin counts as being at the place."
+      "comment" : "Label above the slider that sets how far around the pin counts as being at the place."
     },
     "Red" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker."
@@ -262,11 +259,8 @@
     "Save" : {
       "comment" : "Toolbar button that saves the card form. A verb."
     },
-    "Save card" : {
-      "comment" : "VoiceOver label for the Save button in the card form."
-    },
-    "Save changes to this card" : {
-      "comment" : "VoiceOver hint for the Save button in the card form."
+    "Saves the card" : {
+      "comment" : "VoiceOver hint for the Save button in the card form, for a new card or a changed one."
     },
     "Scan the barcode on a loyalty card to add it." : {
       "comment" : "Under “No Cards Yet” on the empty card list."
@@ -299,9 +293,6 @@
           }
         }
       }
-    },
-    "Tap to edit this card's details" : {
-      "comment" : "VoiceOver hint for the Edit button on a card's screen."
     },
     "Teal" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker: a dark blue-green."

@@ -98,15 +98,19 @@ public struct CardListView: View {
         .sensoryFeedback(trigger: deleteTrigger, { SensoryFeedback.impact(weight: .medium) })
         .toolbar(toolbarVisible ? .visible : .hidden, for: .navigationBar)
         .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button(action: actions.addCard) {
-                    Image(systemName: "barcode.viewfinder")
+            // While the list is empty its own Add Card button is the one to use;
+            // two buttons with one name would make Voice Control ask which.
+            if !cards.isEmpty {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: actions.addCard) {
+                        Image(systemName: "barcode.viewfinder")
+                    }
+                    .foregroundColor(.accent)
+                    .accessibilityIdentifier("addCardButton")
+                    .accessibilityLabel(
+                        Text("Add Card", comment: "VoiceOver label for the toolbar button, a barcode scanner icon, that adds a new card.")
+                    )
                 }
-                .foregroundColor(.accent)
-                .accessibilityIdentifier("addCardButton")
-                .accessibilityLabel(
-                    Text("Add Card", comment: "VoiceOver label for the toolbar button, a barcode scanner icon, that adds a new card.")
-                )
             }
         }
         .onScrollGeometryChange(for: CGFloat.self) { geometry in
