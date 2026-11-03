@@ -38,7 +38,7 @@
       "comment" : "Under a location's name in the card form: the size of the circle around the place, as in “200 m radius”."
     },
     "%@, %@ radius" : {
-      "comment" : "VoiceOver value of the pin on the Add Location map: the name the place will get, then the circle's size, as in “Westway, 200 m radius”.",
+      "comment" : "VoiceOver label for a place: its name, then the size of the circle around it, as in “Westway, 200 metres radius”. Read for a place in the card form and for the pin on the Add Location map.",
       "localizations" : {
         "en" : {
           "stringUnit" : {

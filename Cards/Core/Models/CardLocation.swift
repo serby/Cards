@@ -59,6 +59,18 @@ public extension FormatStyle where Self == Measurement<UnitLength>.FormatStyle {
     static var radius: Self {
         .measurement(width: .abbreviated, usage: .asProvided)
     }
+
+    /// `distance` with its unit written out, for VoiceOver: "350 metres",
+    /// not "350 m", which speech reads inconsistently from one language to
+    /// another.
+    static var spokenDistance: Self {
+        .measurement(width: .wide, usage: .road)
+    }
+
+    /// `radius` with its unit written out, for VoiceOver: "200 metres".
+    static var spokenRadius: Self {
+        .measurement(width: .wide, usage: .asProvided)
+    }
 }
 
 /// How far the user is from the nearest of a card's locations.

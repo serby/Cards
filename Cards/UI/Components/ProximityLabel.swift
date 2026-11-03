@@ -64,7 +64,7 @@ public struct ProximityLabel: View {
             )
         } else {
             Text(
-                "\(distance, format: .distance) from \(proximity.placeName)",
+                "\(distance, format: .spokenDistance) from \(proximity.placeName)",
                 comment: "VoiceOver label: how far the user is from a card's nearest location, as in “350 m from Westway”."
             )
         }

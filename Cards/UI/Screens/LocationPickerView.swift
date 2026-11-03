@@ -148,15 +148,7 @@ public struct LocationPickerView: View {
         .accessibilityLabel(
             Text("Map pin", comment: "VoiceOver label for the pin in the middle of the Add Location map, which marks the place to add.")
         )
-        .accessibilityValue(
-            Text(
-                "\(pinName), \(radius.metres, format: .radius) radius",
-                comment: """
-                VoiceOver value of the pin on the Add Location map: the name the place will get, then the circle's size, \
-                as in “Westway, 200 m radius”.
-                """
-            )
-        )
+        .accessibilityValue(CardLocationRow.spokenDescription(name: pinName, radius: radius))
         .accessibilityActions {
             ForEach(Compass.allCases, id: \.self) { direction in
                 Button {
@@ -289,7 +281,7 @@ public struct LocationPickerView: View {
                     .accessibilityLabel(
                         Text("Radius", comment: "Label above the slider that sets how far around the pin counts as being at the place.")
                     )
-                    .accessibilityValue(Text(radius.metres, format: .radius))
+                    .accessibilityValue(Text(radius.metres, format: .spokenRadius))
             }
         }
         .padding(18)

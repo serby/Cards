@@ -73,6 +73,14 @@ struct CardLocationTests {
         #expect(radius.hasSuffix("m"))
     }
 
+    /// VoiceOver hears units in words, never abbreviations it might misread.
+    @Test func spokenDistancesWriteTheUnitOut() {
+        let british = Locale(identifier: "en_GB")
+        #expect(CLLocationDistance(200).metres.formatted(.spokenRadius.locale(british)) == "200 metres")
+        let distance = CLLocationDistance(1_500).metres.formatted(.spokenDistance.locale(Locale(identifier: "de_DE")))
+        #expect(distance.contains("Kilometer"))
+    }
+
     /// Views format distances themselves, so the Storybook's locale (and any
     /// `\.locale` set above them) reaches the number.
     @Test @MainActor func viewsFormatDistancesInTheirLocale() {

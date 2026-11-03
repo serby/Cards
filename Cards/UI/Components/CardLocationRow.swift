@@ -30,6 +30,20 @@ public struct CardLocationRow: View {
                 .foregroundStyle(Color.accent)
                 .accessibilityHidden(true)
         }
-        .accessibilityElement(children: .combine)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Self.spokenDescription(name: location.name, radius: location.radius))
+    }
+
+    /// A place as VoiceOver reads it, with the unit in words, as "200 m" is
+    /// spoken differently from one language to another. The location
+    /// picker's map pin reads the same.
+    static func spokenDescription(name: String, radius: Double) -> Text {
+        Text(
+            "\(name), \(radius.metres, format: .spokenRadius) radius",
+            comment: """
+            VoiceOver label for a place: its name, then the size of the circle around it, as in “Westway, 200 metres radius”. \
+            Read for a place in the card form and for the pin on the Add Location map.
+            """
+        )
     }
 }
