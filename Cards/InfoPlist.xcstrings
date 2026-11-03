@@ -1,0 +1,54 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "CFBundleDisplayName" : {
+      "comment" : "The app's name under its icon on the Home Screen and in Settings. Keep it short: about 12 characters fit under the icon before iOS truncates it. The app shows barcodes from loyalty and membership cards.",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Card Barcodes"
+          }
+        }
+      }
+    },
+    "CFBundleName" : {
+      "comment" : "Short name of the app, used where iOS has no room for the display name. 15 characters at most. Normally the same as the display name.",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Card Barcodes"
+          }
+        }
+      }
+    },
+    "NSCameraUsageDescription" : {
+      "comment" : "Shown by iOS when the app first asks to use the camera. Explains that the camera only scans the barcodes printed on the user's loyalty and membership cards.",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Camera is used to scan barcodes on your loyalty and membership cards"
+          }
+        }
+      }
+    },
+    "NSLocationWhenInUseUsageDescription" : {
+      "comment" : "Shown by iOS when the app first asks for the user's location. Explains the two uses: showing the distance to the shops where each card is used, and putting that card's barcode on the Lock Screen on arrival.",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Your location shows how far you are from the places you use your cards, and puts the right barcode on your Lock Screen when you arrive."
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

@@ -1,0 +1,209 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "%@" : {
+
+    },
+    "%@ (%@)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ (%2$@)"
+          }
+        }
+      }
+    },
+    "%@ radius" : {
+
+    },
+    "Add" : {
+
+    },
+    "Add Card" : {
+
+    },
+    "Add Location" : {
+
+    },
+    "Barcode for %@" : {
+
+    },
+    "Barcode scanner" : {
+
+    },
+    "Barcode type" : {
+
+    },
+    "Barcode Type" : {
+
+    },
+    "Boosts brightness when viewing card to improve scannability" : {
+
+    },
+    "Brightness Boost" : {
+
+    },
+    "Cancel" : {
+
+    },
+    "Card code" : {
+
+    },
+    "Card code: " : {
+
+    },
+    "Card colour" : {
+
+    },
+    "Card name" : {
+
+    },
+    "Card name: %@" : {
+
+    },
+    "Card not found" : {
+
+    },
+    "Cards" : {
+
+    },
+    "Code" : {
+
+    },
+    "Colour" : {
+
+    },
+    "Created by %@" : {
+
+    },
+    "Created on %@" : {
+
+    },
+    "Data" : {
+
+    },
+    "Delete All" : {
+
+    },
+    "Delete All Cards" : {
+
+    },
+    "Display" : {
+
+    },
+    "Edit" : {
+
+    },
+    "Edit card" : {
+
+    },
+    "Edit Card" : {
+
+    },
+    "Enter code" : {
+
+    },
+    "Enter name" : {
+
+    },
+    "Enter the barcode number for this card" : {
+
+    },
+    "Enter the name of this card" : {
+
+    },
+    "Export as JSON" : {
+
+    },
+    "External link" : {
+
+    },
+    "Failed to generate barcode" : {
+
+    },
+    "Find" : {
+
+    },
+    "Import" : {
+
+    },
+    "Import JSON" : {
+
+    },
+    "Import Result" : {
+
+    },
+    "Locations" : {
+
+    },
+    "Name" : {
+
+    },
+    "Name, e.g. Westway" : {
+
+    },
+    "No Cards Yet" : {
+
+    },
+    "No place found for “%@”" : {
+
+    },
+    "OK" : {
+
+    },
+    "Paste from Clipboard" : {
+
+    },
+    "Postcode" : {
+
+    },
+    "Radius" : {
+
+    },
+    "Save" : {
+
+    },
+    "Save card" : {
+
+    },
+    "Save changes to this card" : {
+
+    },
+    "Scan the barcode on a loyalty card to add it." : {
+
+    },
+    "Select the type of barcode for this card" : {
+
+    },
+    "Settings" : {
+
+    },
+    "Tap to edit this card's details" : {
+
+    },
+    "This is a %@ barcode with code %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "This is a %1$@ barcode with code %2$@"
+          }
+        }
+      }
+    },
+    "This will permanently delete all %lld cards. This action cannot be undone." : {
+
+    },
+    "Toggles screen brightness to maximum for easier barcode scanning" : {
+
+    },
+    "Version" : {
+
+    },
+    "When you arrive at one of these places, the barcode appears on your Lock Screen." : {
+
+    }
+  },
+  "version" : "1.0"
+}
