@@ -40,6 +40,15 @@ jobs:
           -scheme Cards \
           -destination "platform=iOS Simulator,name=${{ steps.sim.outputs.device }},OS=${{ steps.sim.outputs.version }}"
 
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 24
+
+    # Development code (Cards/Development: Storybook, previews, sample data,
+    # UI-test hooks) must never reach a release build.
+    - name: Check release build has no development code
+      run: node scripts/check-release-clean.ts
+
     - name: Test
       run: |
         rm -rf /tmp/CardsTests.xcresult

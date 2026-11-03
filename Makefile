@@ -1,4 +1,4 @@
-.PHONY: test test-unit test-e2e test-coverage coverage-run coverage-report coverage-clean build clean sim device-hub device test-tsan capture-screenshots validate-screenshots deploy-testflight deploy-appstore upload-metadata upload-screenshots
+.PHONY: check-release test test-unit test-e2e test-coverage coverage-run coverage-report coverage-clean build clean sim device-hub device test-tsan capture-screenshots validate-screenshots deploy-testflight deploy-appstore upload-metadata upload-screenshots
 
 XCODE_APP ?= /Applications/Xcode27.1.app
 DEVELOPER_DIR := $(XCODE_APP)/Contents/Developer
@@ -80,6 +80,10 @@ capture-screenshots:
 
 validate-screenshots:
 	python3 scripts/validate-screenshots.py
+
+# Builds Release and fails if anything from Cards/Development reached it.
+check-release:
+	node scripts/check-release-clean.ts
 
 deploy-testflight:
 	scripts/deploy-testflight.sh
