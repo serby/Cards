@@ -134,19 +134,19 @@ public struct CardEditView<Scanner: View>: View {
             }
 
             Section {
-                Picker(selection: $draft.barcodeType) {
-                    ForEach(BarcodeType.allCases, id: \.self) { type in
-                        Text(type.displayName).tag(type)
-                            .accessibilityIdentifier("barcodeType_\(type.rawValue.replacingOccurrences(of: " ", with: "_"))")
-                    }
-                } label: {
-                    Text("Barcode Type", comment: "Label of the menu for choosing the card's barcode format, such as EAN-13 or QR Code.")
+                // Side by side, or the menu under its label at accessibility
+                // sizes, as the fields above go under theirs: beside each other
+                // the label and the format each had half the row and wrapped a
+                // word or less to a line ("Bar- / code / Type", "EAN / -13").
+                // The row draws the label in both layouts, so nothing is
+                // swapped for something else as the text size changes.
+                rowLayout {
+                    barcodeTypeLabel
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .accessibilityHidden(true)
+                    barcodeTypePicker
+                        .labelsHidden()
                 }
-                .pickerStyle(.menu)
-                .accessibilityIdentifier("barcodeTypePicker")
-                .accessibilityHint(
-                    Text("Select the type of barcode for this card", comment: "VoiceOver hint for the barcode format menu in the card form.")
-                )
             }
 
             Section {
@@ -243,6 +243,28 @@ public struct CardEditView<Scanner: View>: View {
 }
 
 private extension CardEditView {
+    /// The format menu. Its label is hidden, as the row draws it, but
+    /// VoiceOver still reads it.
+    var barcodeTypePicker: some View {
+        Picker(selection: $draft.barcodeType) {
+            ForEach(BarcodeType.allCases, id: \.self) { type in
+                Text(type.displayName).tag(type)
+                    .accessibilityIdentifier("barcodeType_\(type.rawValue.replacingOccurrences(of: " ", with: "_"))")
+            }
+        } label: {
+            barcodeTypeLabel
+        }
+        .pickerStyle(.menu)
+        .accessibilityIdentifier("barcodeTypePicker")
+        .accessibilityHint(
+            Text("Select the type of barcode for this card", comment: "VoiceOver hint for the barcode format menu in the card form.")
+        )
+    }
+
+    var barcodeTypeLabel: Text {
+        Text("Barcode Type", comment: "Label of the menu for choosing the card's barcode format, such as EAN-13 or QR Code.")
+    }
+
     var nameLabel: Text {
         Text("Name", comment: "Label beside the card's name field in the card form. A noun.")
     }
