@@ -5,9 +5,69 @@
       "comment" : "The app's name under its icon on the Home Screen and in Settings. Keep it short: about 12 characters fit under the icon before iOS truncates it. The app shows barcodes from loyalty and membership cards.",
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Card Barcodes"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Card Barcodes"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
+            "value" : "Card Barcodes"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Card Barcodes"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Card Barcodes"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Card Barcodes"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Card Barcodes"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Card Barcodes"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Card Barcodes"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Card Barcodes"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
             "value" : "Card Barcodes"
           }
         }
@@ -17,9 +77,69 @@
       "comment" : "Short name of the app, used where iOS has no room for the display name. 15 characters at most. Normally the same as the display name.",
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Card Barcodes"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Card Barcodes"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
+            "value" : "Card Barcodes"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Card Barcodes"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Card Barcodes"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Card Barcodes"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Card Barcodes"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Card Barcodes"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Card Barcodes"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Card Barcodes"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
             "value" : "Card Barcodes"
           }
         }
@@ -29,10 +149,70 @@
       "comment" : "Shown by iOS when the app first asks to use the camera. Explains that the camera only scans the barcodes printed on the user's loyalty and membership cards.",
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تُستخدم الكاميرا لمسح الرموز الشريطية على بطاقات الولاء والعضوية الخاصة بك ضوئيًا"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Kamera wird verwendet, um Barcodes auf deinen Kunden- und Mitgliedskarten zu scannen"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Camera is used to scan barcodes on your loyalty and membership cards"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La cámara se usa para escanear los códigos de barras de tus tarjetas de fidelidad y de socio"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L'appareil photo permet de scanner les codes-barres de vos cartes de fidélité et d'adhésion"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La fotocamera è usata per scansionare i codici a barre delle tue carte fedeltà e tessere"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ポイントカードや会員カードのバーコードをスキャンするためにカメラを使用します"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "카메라는 포인트 카드와 멤버십 카드의 바코드를 스캔하는 데 사용됩니다"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A câmera é usada para escanear os códigos de barras dos seus cartões de fidelidade e de sócio"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "相机用于扫描你会员卡上的条形码"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "相機用於掃描你的集點卡和會員卡上的條碼"
           }
         }
       }
@@ -41,10 +221,70 @@
       "comment" : "Shown by iOS when the app first asks for the user's location. Explains the two uses: showing the distance to the shops where each card is used, and putting that card's barcode on the Lock Screen on arrival.",
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يُظهر موقعك مدى بُعدك عن الأماكن التي تستخدم فيها بطاقاتك، ويعرض الرمز الشريطي المناسب على شاشة القفل عند وصولك."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dein Standort zeigt, wie weit du von den Orten entfernt bist, an denen du deine Karten verwendest, und zeigt bei deiner Ankunft den passenden Barcode auf dem Sperrbildschirm an."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Your location shows how far you are from the places you use your cards, and puts the right barcode on your Lock Screen when you arrive."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu ubicación muestra a qué distancia estás de los lugares donde usas tus tarjetas y pone el código de barras correcto en tu pantalla bloqueada cuando llegas."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votre position indique votre distance des lieux où vous utilisez vos cartes et affiche le bon code-barres sur votre écran verrouillé à votre arrivée."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La tua posizione mostra quanto sei lontano dai luoghi in cui usi le carte e mostra il codice a barre giusto sulla schermata di blocco al tuo arrivo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "位置情報は、カードを使う場所までの距離を表示し、到着時にそのバーコードをロック画面に表示するために使用されます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "위치는 카드를 사용하는 장소까지의 거리를 표시하고, 도착하면 잠금 화면에 알맞은 바코드를 표시하는 데 사용됩니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sua localização mostra a distância até os lugares onde você usa seus cartões e coloca o código de barras certo na Tela Bloqueada quando você chega."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你的位置用于显示你距使用卡片的地点有多远，并在你到达时在锁定屏幕上显示相应的条形码。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你的位置用於顯示你與使用卡片地點的距離，並在你抵達時將正確的條碼顯示在鎖定畫面上。"
           }
         }
       }
