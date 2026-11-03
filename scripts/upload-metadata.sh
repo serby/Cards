@@ -11,15 +11,15 @@ BUNDLE_ID="net.serby.Cards"
 
 source "$SCRIPT_DIR/asc-auth.sh"
 
-asc_get() { curl -s -H "Authorization: Bearer $ASC_JWT" "$ASC_API$1"; }
-asc_patch() { curl -s -X PATCH -H "Authorization: Bearer $ASC_JWT" -H "Content-Type: application/json" -d "$2" "$ASC_API$1"; }
+asc_get() { curl -sS --globoff -H "Authorization: Bearer $ASC_JWT" "$ASC_API$1"; }
+asc_patch() { curl -sS --globoff -X PATCH -H "Authorization: Bearer $ASC_JWT" -H "Content-Type: application/json" -d "$2" "$ASC_API$1"; }
 
 # Find the app
 APP_ID=$(asc_get "/apps?filter[bundleId]=$BUNDLE_ID" | python3 -c "import sys,json; print(json.load(sys.stdin)['data'][0]['id'])")
 echo "App ID: $APP_ID"
 
 # Get the editable app info version
-INFO_ID=$(asc_get "/apps/$APP_ID/appInfos" | python3 -c "import sys,json; infos=json.load(sys.stdin)['data']; print([i['id'] for i in infos if i['attributes']['appStoreState']=='READY_FOR_SUBMISSION' or i['attributes']['appStoreState']=='PREPARE_FOR_SUBMISSION'][0])" 2>/dev/null || echo "")
+INFO_ID=$(asc_get "/apps/$APP_ID/appInfos" | python3 -c "import sys,json; infos=json.load(sys.stdin)['data']; print([i['id'] for i in infos if i['attributes']['appStoreState']=='READY_FOR_REVIEW' or i['attributes']['appStoreState']=='PREPARE_FOR_SUBMISSION'][0])" 2>/dev/null || echo "")
 
 if [[ -z "$INFO_ID" ]]; then
     echo "No editable app version found. Create a new version in App Store Connect first."
@@ -63,7 +63,7 @@ print(json.dumps({'data': {'type': 'appInfoLocalizations', 'id': '$LOC_ID', 'att
 done
 
 # Update version-level localizations (description, keywords, etc.)
-VERSION_ID=$(asc_get "/apps/$APP_ID/appStoreVersions?filter[appStoreState]=READY_FOR_SUBMISSION,PREPARE_FOR_SUBMISSION" | python3 -c "import sys,json; print(json.load(sys.stdin)['data'][0]['id'])" 2>/dev/null || echo "")
+VERSION_ID=$(asc_get "/apps/$APP_ID/appStoreVersions?filter[appStoreState]=READY_FOR_REVIEW,PREPARE_FOR_SUBMISSION" | python3 -c "import sys,json; print(json.load(sys.stdin)['data'][0]['id'])" 2>/dev/null || echo "")
 
 if [[ -n "$VERSION_ID" ]]; then
     VER_LOCS=$(asc_get "/appStoreVersions/$VERSION_ID/appStoreVersionLocalizations")
