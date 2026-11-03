@@ -22,7 +22,8 @@ If something here turns out to be wrong, fix the guide in the same change.
 |------|-----|-------|
 | Xcode 27.1 | Builds, tests, simulators | The Makefile expects `/Applications/Xcode27.1.app`; override with `make XCODE_APP=/path/to/Xcode.app …` |
 | SwiftLint | Lint, run before every build | `.swiftlint.yml` at the root |
-| Node 24 | `scripts/check-release-clean.ts` | Runs TypeScript directly, no install step |
+| Node 24 | `scripts/check-release-clean.ts`, `scripts/l10n.ts` | Runs TypeScript directly, no install step |
+| Claude Code | `make l10n-translate` | The default AI for translations; any other command can stand in through `L10N_AI_COMMAND` |
 | Python 3 | `scripts/validate-screenshots.py` | Ships with macOS |
 | librsvg, ImageMagick | App icon rendering only | `brew install librsvg imagemagick` |
 
@@ -54,6 +55,8 @@ Run these in order after every change, and fix what fails before moving on:
 | `make capture-screenshots` | Refresh the en-US and en-GB iPhone and iPad App Store screenshots |
 | `make validate-screenshots` | Check the committed screenshot set |
 | `make deploy-testflight`, `make deploy-appstore` | Archive, export and upload |
+| `make l10n-status`, `make l10n-check` | Translation counts per catalogue and language; fail if any language is incomplete |
+| `make l10n-translate` | Translate the String Catalogues with AI (`LANGS="ja fr"` for some languages only) |
 
 Override `SIMULATOR_DEVICE` and `SIMULATOR_VERSION` on the command line to target another simulator.
 
@@ -226,6 +229,16 @@ Add a case to `CardColor` with its display name and a translator comment (`Core/
 ### Add a package dependency
 
 In Xcode, **File > Add Package Dependencies**, add the product to the `Cards` target, and commit `project.pbxproj` with `Cards.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved`.
+
+### Translate the app, or add a language
+
+The String Catalogues under `Cards/` hold the British English source, and `scripts/l10n.ts` translates them with AI into every language in the project's `knownRegions`. There is no other list of languages.
+
+1. After changing copy, run `make l10n-translate`. It sends only what is missing, empty, flagged for review or broken, validates every reply (placeholders, plural forms) and asks again when one fails. Then `make l10n-check` must pass.
+2. To add a language, run `make l10n-add-language CODE=<code>`. It adds the code to `knownRegions` and translates everything into it.
+3. The AI works from `l10n/context.md`, the translator brief, plus `l10n/languages/<code>.md` for a language if that file exists. When the app gains a term, add it to the brief's glossary.
+4. For a person or another AI to translate or review, run `node scripts/l10n.ts export --lang <code> --out <file>` (add `--force` for every string), fill in the `translation` fields, and run `node scripts/l10n.ts import --lang <code> <file>`.
+5. The tool writes catalogues byte for byte as Xcode's catalogue editor does, so Xcode re-saving them changes nothing; `node scripts/l10n.ts normalise` puts a catalogue in that format. `make l10n-test` runs the tool's tests.
 
 ### Change the app icon
 
