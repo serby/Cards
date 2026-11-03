@@ -1,4 +1,3 @@
-#if DEBUG
 import MapKit
 import SwiftUI
 
@@ -332,5 +331,3 @@ private let importCardsStory = Story(
 private let sampleExportJSON = """
 [{"code":"9780201379624","color":"indigo","name":"Boots Advantage","order":0,"timestamp":"2023-11-14T22:13:20Z","type":"EAN-13"}]
 """
-
-#endif

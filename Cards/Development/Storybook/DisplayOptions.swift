@@ -1,4 +1,3 @@
-#if DEBUG
 import SwiftUI
 
 public enum ColourSchemeChoice: String, CaseIterable, Identifiable {
@@ -77,5 +76,3 @@ extension DynamicTypeSize {
         }
     }
 }
-
-#endif

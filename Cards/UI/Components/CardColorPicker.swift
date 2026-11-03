@@ -57,12 +57,3 @@ public struct CardColorPicker: View {
             .contentShape(.circle)
     }
 }
-
-#Preview {
-    @Previewable @State var color = CardColor.blue
-    Form {
-        Section("Colour") {
-            CardColorPicker(selection: $color)
-        }
-    }
-}

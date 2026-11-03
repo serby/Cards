@@ -1,4 +1,3 @@
-#if DEBUG
 import SwiftUI
 
 /// Supplies a `Binding` to a view that needs one, for stories where the value
@@ -20,5 +19,3 @@ public struct Stateful<Value, Content: View>: View {
         content($value)
     }
 }
-
-#endif

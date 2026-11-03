@@ -1,4 +1,3 @@
-#if DEBUG
 import SwiftUI
 
 @MainActor
@@ -214,5 +213,3 @@ private let scannerPlaceholderStory = Story(
             .padding()
     )
 }
-
-#endif

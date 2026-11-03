@@ -22,15 +22,6 @@ public extension ScreenBrightness {
         write: { UIScreen.current?.brightness = max(0, min(1, $0)) }
     )
 
-    /// Keeps a value in memory without touching the device, so stories can show
-    /// the brightness a view asked for without blinding the operator.
-    static func simulated(_ box: BrightnessBox) -> ScreenBrightness {
-        ScreenBrightness(
-            read: { box.level },
-            write: { box.level = max(0, min(1, $0)) }
-        )
-    }
-
     /// Ramps brightness to `target` in fixed steps.
     @MainActor
     func fade(to target: CGFloat, duration: TimeInterval) async {
@@ -44,17 +35,6 @@ public extension ScreenBrightness {
             try? await Task.sleep(for: .seconds(stepTime))
         }
         write(target)
-    }
-}
-
-/// Observable holder for `ScreenBrightness.simulated`.
-@MainActor
-@Observable
-public final class BrightnessBox {
-    public var level: CGFloat
-
-    public init(level: CGFloat = 0.5) {
-        self.level = level
     }
 }
 
@@ -80,8 +60,6 @@ public struct AccessibilityAnnouncer: Sendable {
     public static let system = Self { message in
         UIAccessibility.post(notification: .announcement, argument: message)
     }
-
-    public static let silent = Self { _ in }
 }
 
 private struct AccessibilityAnnouncerKey: EnvironmentKey {

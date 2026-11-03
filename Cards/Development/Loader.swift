@@ -1,7 +1,8 @@
-#if DEBUG
 import OSLog
 import SwiftUI
 
+/// Fakes a three-second load with signposts, for profiling the spinner in
+/// Instruments. Development only.
 @MainActor
 @Observable
 public final class Loader {
@@ -34,4 +35,3 @@ public final class Loader {
         }
     }
 }
-#endif

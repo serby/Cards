@@ -42,8 +42,3 @@ public struct BarcodeView: View {
         return BarcodeImage.make(code, type: type, size: size)
     }
 }
-
-#Preview {
-    BarcodeView(barcodeString: "123456", barcodeType: .code128)
-    BarcodeView(barcodeString: "", barcodeType: .ean13)
-}

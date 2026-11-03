@@ -1,4 +1,3 @@
-#if DEBUG
 import SwiftUI
 
 /// One tunable parameter exposed in a story's controls panel.
@@ -147,5 +146,3 @@ public struct Story: Identifiable {
         self.interactive = interactive
     }
 }
-
-#endif

@@ -1,4 +1,3 @@
-#if DEBUG
 import SwiftUI
 
 /// Browser for every pure `CardsUI` view: pick a story on the left, tune it on
@@ -250,5 +249,3 @@ private struct DisplayOptionsMenu: View {
         }
     }
 }
-
-#endif

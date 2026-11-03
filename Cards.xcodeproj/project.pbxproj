@@ -435,6 +435,11 @@
 				DEVELOPMENT_ASSET_PATHS = "\"Cards/Preview Content\"";
 				DEVELOPMENT_TEAM = 9734J427D3;
 				ENABLE_PREVIEWS = YES;
+				EXCLUDED_SOURCE_FILE_NAMES = (
+					"$(SRCROOT)/Cards/Development/*",
+					"$(SRCROOT)/Cards/Development/*/*",
+					"$(SRCROOT)/Cards/Development/*/*/*",
+				);
 				INFOPLIST_FILE = Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

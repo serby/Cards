@@ -109,12 +109,3 @@ public struct CardListScreen: View {
         }
     }
 }
-
-#Preview {
-    NavigationStack {
-        CardListScreen()
-            .environment(NavigationManager())
-            .environment(LocationService())
-    }
-    .modelContainer(for: CardItem.self, inMemory: true)
-}

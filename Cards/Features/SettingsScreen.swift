@@ -73,10 +73,3 @@ public struct SettingsScreen: View {
         try? modelContext.save()
     }
 }
-
-#Preview {
-    NavigationStack {
-        SettingsScreen()
-    }
-    .modelContainer(for: CardItem.self, inMemory: true)
-}

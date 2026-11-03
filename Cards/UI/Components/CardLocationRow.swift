@@ -27,9 +27,3 @@ public struct CardLocationRow: View {
         .accessibilityElement(children: .combine)
     }
 }
-
-#Preview {
-    List {
-        CardLocationRow(.sample)
-    }
-}

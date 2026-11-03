@@ -1,5 +1,3 @@
-#if DEBUG
-
 public extension Story {
     /// Every story, in sidebar order. Add new entries to one of the lists below.
     static var all: [Self] {
@@ -77,5 +75,3 @@ enum SampleCode {
         }
     }
 }
-
-#endif

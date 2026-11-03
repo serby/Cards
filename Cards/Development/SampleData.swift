@@ -1,4 +1,5 @@
 import Foundation
+import MapKit
 
 public extension CardLocation {
     static let sample = CardLocation(name: "Westway", latitude: 51.5203, longitude: -0.2094, radius: 150)
@@ -8,6 +9,13 @@ public extension CardLocation {
         CardLocation(name: "Portobello Market", latitude: 51.5154, longitude: -0.2052),
         CardLocation(name: "IKEA Wembley", latitude: 51.5560, longitude: -0.2796, radius: 400)
     ]
+
+    /// A region framing the sample location, for previews and stories.
+    static let previewRegion = MKCoordinateRegion(
+        center: CLLocationCoordinate2D(latitude: 51.5203, longitude: -0.2094),
+        latitudinalMeters: 1_200,
+        longitudinalMeters: 1_200
+    )
 }
 
 public extension CardSummary {

@@ -120,22 +120,3 @@ public struct CardDetailView: View {
         }
     }
 }
-
-#Preview {
-    @Previewable @State var boost = true
-    NavigationStack {
-        CardDetailView(card: .sample, brightnessBoost: $boost)
-    }
-    .environment(\.screenBrightness, .simulated(BrightnessBox()))
-    .environment(\.accessibilityAnnouncer, .silent)
-}
-
-
-#Preview {
-    @Previewable @State var boost = true
-    NavigationStack {
-        CardDetailView(card: .invalidCode, brightnessBoost: $boost)
-    }
-    .environment(\.screenBrightness, .simulated(BrightnessBox()))
-    .environment(\.accessibilityAnnouncer, .silent)
-}

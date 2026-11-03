@@ -227,20 +227,3 @@ private extension View {
         .background(Color(UIColor.tertiarySystemFill), in: .rect(cornerRadius: 12))
     }
 }
-
-#Preview {
-    LocationPickerView(
-        initialPosition: .region(CardLocation.previewRegion),
-        findPlace: { _ in nil },
-        onAdd: { _ in }
-    )
-}
-
-extension CardLocation {
-    /// A region framing the sample location, for previews and stories.
-    static let previewRegion = MKCoordinateRegion(
-        center: CLLocationCoordinate2D(latitude: 51.5203, longitude: -0.2094),
-        latitudinalMeters: 1_200,
-        longitudinalMeters: 1_200
-    )
-}
