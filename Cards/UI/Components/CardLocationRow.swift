@@ -4,6 +4,7 @@ import SwiftUI
 /// with the form's other icon rows.
 public struct CardLocationRow: View {
     private let location: CardLocation
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     public init(_ location: CardLocation) {
         self.location = location
@@ -13,7 +14,9 @@ public struct CardLocationRow: View {
         Label {
             VStack(alignment: .leading, spacing: 2) {
                 Text(location.name)
-                    .lineLimit(1)
+                    // The whole name at accessibility sizes, where one line holds
+                    // only a few letters.
+                    .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 1)
                 Text(
                     "\(location.radius.metres, format: .radius) radius",
                     comment: "Under a location's name in the card form: the size of the circle around the place, as in “200 m radius”."

@@ -36,37 +36,6 @@ public struct LocationPickerView: View {
         let longitude: CLLocationDegrees
     }
 
-    /// Where the pin's accessibility actions move the place.
-    private enum Compass: CaseIterable {
-        case north, south, east, west
-
-        var actionName: Text {
-            switch self {
-            case .north:
-                Text("Move North", comment: "VoiceOver action on the Add Location map pin: moves the place north by the circle's radius.")
-            case .south:
-                Text("Move South", comment: "VoiceOver action on the Add Location map pin: moves the place south by the circle's radius.")
-            case .east:
-                Text("Move East", comment: "VoiceOver action on the Add Location map pin: moves the place east by the circle's radius.")
-            case .west:
-                Text("Move West", comment: "VoiceOver action on the Add Location map pin: moves the place west by the circle's radius.")
-            }
-        }
-
-        var announcement: String {
-            switch self {
-            case .north:
-                String(localized: "Moved north", comment: "VoiceOver announcement after the Move North action on the Add Location map pin.")
-            case .south:
-                String(localized: "Moved south", comment: "VoiceOver announcement after the Move South action on the Add Location map pin.")
-            case .east:
-                String(localized: "Moved east", comment: "VoiceOver announcement after the Move East action on the Add Location map pin.")
-            case .west:
-                String(localized: "Moved west", comment: "VoiceOver announcement after the Move West action on the Add Location map pin.")
-            }
-        }
-    }
-
     private static let radiusRange: ClosedRange<CLLocationDistance> = 50...1_000
 
     public init(
@@ -87,7 +56,15 @@ public struct LocationPickerView: View {
                 map
                 pinAndRing
             }
-            .safeAreaInset(edge: .bottom) { controls }
+            .safeAreaInset(edge: .bottom) {
+                // Scrolls when it does not fit, as at large text sizes with the
+                // keyboard up, so the field being typed in stays on screen.
+                ViewThatFits(in: .vertical) {
+                    controls
+                    ScrollView { controls }
+                        .scrollBounceBehavior(.basedOnSize)
+                }
+            }
             .mapScope(mapScope)
                 .navigationTitle(
                     Text("Add Location", comment: "Title of the map sheet for adding a place where a card is used.")
@@ -346,16 +323,58 @@ public struct LocationPickerView: View {
     }
 }
 
+/// Where the map pin's accessibility actions move the place.
+private enum Compass: CaseIterable {
+    case north, south, east, west
+
+    var actionName: Text {
+        switch self {
+        case .north:
+            Text("Move North", comment: "VoiceOver action on the Add Location map pin: moves the place north by the circle's radius.")
+        case .south:
+            Text("Move South", comment: "VoiceOver action on the Add Location map pin: moves the place south by the circle's radius.")
+        case .east:
+            Text("Move East", comment: "VoiceOver action on the Add Location map pin: moves the place east by the circle's radius.")
+        case .west:
+            Text("Move West", comment: "VoiceOver action on the Add Location map pin: moves the place west by the circle's radius.")
+        }
+    }
+
+    var announcement: String {
+        switch self {
+        case .north:
+            String(localized: "Moved north", comment: "VoiceOver announcement after the Move North action on the Add Location map pin.")
+        case .south:
+            String(localized: "Moved south", comment: "VoiceOver announcement after the Move South action on the Add Location map pin.")
+        case .east:
+            String(localized: "Moved east", comment: "VoiceOver announcement after the Move East action on the Add Location map pin.")
+        case .west:
+            String(localized: "Moved west", comment: "VoiceOver announcement after the Move West action on the Add Location map pin.")
+        }
+    }
+}
+
 private extension View {
     /// A text field row in the picker panel: leading icon, system fill, and
     /// room to grow with Dynamic Type.
     func pickerField(_ systemImage: String) -> some View {
+        modifier(PickerField(systemImage: systemImage))
+    }
+}
+
+private struct PickerField: ViewModifier {
+    let systemImage: String
+    /// The icon column grows with the symbol, which follows the text size, so
+    /// the two never overlap.
+    @ScaledMetric(relativeTo: .body) private var iconWidth = 20.0
+
+    func body(content: Content) -> some View {
         HStack(spacing: 10) {
             Image(systemName: systemImage)
                 .foregroundStyle(.secondary)
-                .frame(width: 20)
+                .frame(width: iconWidth)
                 .accessibilityHidden(true)
-            self
+            content
         }
         .padding(.horizontal, 14)
         .frame(minHeight: 44)

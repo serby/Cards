@@ -12,6 +12,7 @@ public struct CardEditView<Scanner: View>: View {
     @FocusState private var focusedField: Field?
     @State private var showsLocationPicker = false
     @Environment(\.layoutDirection) private var layoutDirection
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.accessibilityVoiceOverEnabled) private var voiceOverEnabled
     @Environment(\.accessibilityAnnouncer) private var announcer
 
@@ -19,11 +20,30 @@ public struct CardEditView<Scanner: View>: View {
         case name, code
     }
 
+    /// Labels and fields side by side, or stacked at accessibility text sizes,
+    /// where a field beside its label would show only a few characters.
+    private var stacksFields: Bool {
+        dynamicTypeSize.isAccessibilitySize
+    }
+
+    private var rowLayout: AnyLayout {
+        stacksFields
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: 4))
+            : AnyLayout(HStackLayout())
+    }
+
+    /// Text in a field beside its label keeps to the far edge; under it, to
+    /// the label's edge.
+    private var nameAlignment: TextAlignment {
+        stacksFields ? .leading : .trailing
+    }
+
     /// The code field is laid out left to right in every language, as codes are
     /// written, so in a right-to-left form its text keeps to the same edge as the
-    /// name above it by aligning to its own leading (left) edge.
+    /// name above it by aligning to the opposite of the name's alignment.
     private var codeAlignment: TextAlignment {
-        layoutDirection == .rightToLeft ? .leading : .trailing
+        guard layoutDirection == .rightToLeft else { return nameAlignment }
+        return nameAlignment == .leading ? .trailing : .leading
     }
 
     public init(
@@ -51,18 +71,20 @@ public struct CardEditView<Scanner: View>: View {
             }
 
             Section {
-                HStack {
+                rowLayout {
                     // The field carries this label, so VoiceOver reads it once and
                     // "Tap Name" in Voice Control reaches the field.
                     nameLabel
                         .accessibilityHidden(true)
-                    Spacer()
+                    if !stacksFields {
+                        Spacer()
+                    }
                     TextField(
                         "Enter name",
                         text: $draft.name,
                         prompt: Text("Enter name", comment: "Placeholder in the empty card name field, such as Tesco Clubcard.")
                     )
-                    .multilineTextAlignment(.trailing)
+                    .multilineTextAlignment(nameAlignment)
                     .autocorrectionDisabled()
                     .focused($focusedField, equals: .name)
                     .accessibilityIdentifier("nameTextField")
@@ -70,10 +92,12 @@ public struct CardEditView<Scanner: View>: View {
                     .accessibilityHint(Text("Enter the name of this card", comment: "VoiceOver hint for the card name field in the card form."))
                 }
 
-                HStack {
+                rowLayout {
                     codeLabel
                         .accessibilityHidden(true)
-                    Spacer()
+                    if !stacksFields {
+                        Spacer()
+                    }
                     TextField(
                         "Enter code",
                         text: $draft.code,

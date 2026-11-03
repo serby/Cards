@@ -5,6 +5,7 @@ import SwiftUI
 public struct ProximityLabel: View {
     private let proximity: CardProximity
     private let showsPlace: Bool
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     public init(_ proximity: CardProximity, showsPlace: Bool = false) {
         self.proximity = proximity
@@ -26,7 +27,9 @@ public struct ProximityLabel: View {
             }
         }
         .monospacedDigit()
-        .lineLimit(1)
+        // One line keeps rows tidy, but at accessibility sizes it would leave
+        // only a few letters of the place's name.
+        .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 1)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(accessibilityText)
     }

@@ -24,7 +24,10 @@ public struct CardDetailView: View {
     }
 
     public var body: some View {
-        VStack {
+        // Scrolls once the card is taller than the screen, as at the largest
+        // text sizes, so the text can never squeeze the barcode below a size a
+        // scanner reads, and nothing is cut off.
+        ScrollView {
             VStack(spacing: 16) {
                 VStack(spacing: 6) {
                     Text(card.name)
@@ -79,9 +82,9 @@ public struct CardDetailView: View {
             .background(card.color.cardFill, in: .rect(cornerRadius: 24))
             .keepsColoursWhenInverted()
             .shadow(color: .black.opacity(0.12), radius: 16, y: 8)
-            Spacer()
+            .padding()
         }
-        .padding()
+        .scrollBounceBehavior(.basedOnSize)
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("cardDetailView")
         // No announcement here: it would cut across VoiceOver reading the new
