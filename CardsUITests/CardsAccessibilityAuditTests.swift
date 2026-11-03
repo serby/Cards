@@ -173,16 +173,14 @@ class CardsAccessibilityAuditTests: XCTestCase {
 }
 
 /// Every test again in Arabic, right to left, at the largest accessibility
-/// text size. Until the app has an Arabic translation iOS runs it in its
-/// development language, English, laid out left to right, so the last two
-/// arguments force right-to-left layout as Xcode's right-to-left
-/// pseudolanguage does. Dates and numbers follow the Saudi locale.
+/// text size. The Arabic translation lays the app out right to left by
+/// itself (`CardsArabicUITests.testLaysOutRightToLeft` checks it does).
+/// Dates and numbers follow the Saudi locale.
 final class CardsArabicLargeTextAuditTests: CardsAccessibilityAuditTests {
     override static var variantArguments: [String] {
         [
             "-AppleLanguages", "(ar)", "-AppleLocale", "ar_SA",
-            "-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL",
-            "-AppleTextDirection", "YES", "-NSForceRightToLeftWritingDirection", "YES"
+            "-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL"
         ]
     }
 }

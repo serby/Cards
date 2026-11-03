@@ -90,15 +90,24 @@ class CardsUITests: XCTestCase {
 }
 
 /// Every test again in Arabic, right to left, as the tests must not depend on
-/// the text or its direction. Until the app has an Arabic translation iOS runs
-/// it in its development language, English, laid out left to right, so the
-/// last two arguments force right-to-left layout as Xcode's right-to-left
-/// pseudolanguage does.
+/// the text or its direction. The app is translated into Arabic, so the
+/// language alone lays it out right to left; `testLaysOutRightToLeft` fails
+/// if that stops, as it would if the translation left the build and iOS fell
+/// back to English, left to right.
 final class CardsArabicUITests: CardsUITests {
     override static var variantArguments: [String] {
-        [
-            "-AppleLanguages", "(ar)", "-AppleLocale", "ar_SA",
-            "-AppleTextDirection", "YES", "-NSForceRightToLeftWritingDirection", "YES"
-        ]
+        ["-AppleLanguages", "(ar)", "-AppleLocale", "ar_SA"]
+    }
+
+    /// The first tab, Cards, is drawn on the right.
+    @MainActor
+    func testLaysOutRightToLeft() {
+        let app = XCUIApplication.launchForTesting(seeded: false, arguments: Self.variantArguments)
+        let tabs = app.tabBars.buttons
+        XCTAssertGreaterThan(
+            tabs.element(boundBy: 0).frame.minX,
+            tabs.element(boundBy: 1).frame.minX,
+            "The Arabic run is laid out left to right"
+        )
     }
 }
