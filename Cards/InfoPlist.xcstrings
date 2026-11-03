@@ -158,7 +158,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Die Kamera wird verwendet, um Barcodes auf deinen Kunden- und Mitgliedskarten zu scannen"
+            "value" : "Die Kamera wird verwendet, um Barcodes auf deinen Kunden- und Mitgliedskarten zu scannen."
           }
         },
         "en" : {
@@ -230,7 +230,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dein Standort zeigt, wie weit du von den Orten entfernt bist, an denen du deine Karten verwendest, und zeigt bei deiner Ankunft den passenden Barcode auf dem Sperrbildschirm an."
+            "value" : "Dein Standort wird verwendet, um die Entfernung zu den Orten anzuzeigen, an denen du deine Karten nutzt, und bei deiner Ankunft den passenden Barcode auf dem Sperrbildschirm einzublenden."
           }
         },
         "en" : {

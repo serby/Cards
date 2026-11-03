@@ -1207,7 +1207,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Helligkeits-Boost"
+            "value" : "Volle Helligkeit"
           }
         },
         "es" : {
@@ -1272,7 +1272,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Helligkeits-Boost aus"
+            "value" : "Volle Helligkeit aus"
           }
         },
         "es" : {
@@ -1337,7 +1337,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Helligkeits-Boost ein"
+            "value" : "Volle Helligkeit ein"
           }
         },
         "es" : {
@@ -4262,7 +4262,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Karte zu %@ bewegt"
+            "value" : "%@ wird angezeigt"
           }
         },
         "es" : {
@@ -6602,7 +6602,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$@-Code %2$@ gescannt"
+            "value" : "%1$@ gescannt, Code %2$@"
           }
         },
         "en" : {
@@ -6803,7 +6803,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wähle den Barcodetyp für diese Karte"
+            "value" : "Barcodetyp für diese Karte auswählen"
           }
         },
         "es" : {
@@ -7160,7 +7160,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Türkis"
+            "value" : "Blaugrün"
           }
         },
         "es" : {
@@ -7452,7 +7452,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Stellt die Bildschirmhelligkeit auf Maximum, damit der Barcode leichter gescannt werden kann"
+            "value" : "Schaltet die volle Helligkeit ein oder aus, damit sich der Barcode leichter scannen lässt"
           }
         },
         "es" : {
