@@ -239,12 +239,15 @@ public struct ImportCardsView: View {
                     } label: {
                         Text("Cancel", comment: "Closes the import sheet without importing.")
                     }
+                    .keyboardShortcut(.cancelAction)
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button(action: onImport) {
                         Text("Import", comment: "Toolbar button in the import sheet that adds the pasted cards. A verb.")
                     }
                     .disabled(importText.isEmpty)
+                    // Command-Return, as Return types a new line in the JSON.
+                    .keyboardShortcut(.return, modifiers: .command)
                     .accessibilityIdentifier("importButton")
                 }
             }

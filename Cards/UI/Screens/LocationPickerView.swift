@@ -82,12 +82,15 @@ public struct LocationPickerView: View {
                         } label: {
                             Text("Cancel", comment: "Closes the Add Location sheet without adding a place.")
                         }
+                        .keyboardShortcut(.cancelAction)
                     }
                     ToolbarItem(placement: .confirmationAction) {
                         Button(action: add) {
                             Text("Add", comment: "Toolbar button that adds the place under the map pin to the card. A verb.")
                         }
                         .disabled(center == nil)
+                        // Command-Return, as Return searches from the postcode field.
+                        .keyboardShortcut(.return, modifiers: .command)
                         .accessibilityIdentifier("addLocationButton")
                     }
                 }

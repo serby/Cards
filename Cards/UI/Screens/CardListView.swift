@@ -122,6 +122,7 @@ public struct CardListView: View {
                         Image(systemName: "barcode.viewfinder")
                     }
                     .foregroundColor(.accent)
+                    .keyboardShortcut("n")
                     .accessibilityIdentifier("addCardButton")
                     .accessibilityLabel(
                         Text("Add Card", comment: "VoiceOver label for the toolbar button, a barcode scanner icon, that adds a new card.")

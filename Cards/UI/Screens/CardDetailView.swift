@@ -153,6 +153,7 @@ public struct CardDetailView: View {
                 Button(action: actions.editCard) {
                     Text("Edit", comment: "Toolbar button on a card's screen that opens the card for editing. A verb.")
                 }
+                .keyboardShortcut("e")
                 .accessibilityIdentifier("editCardButton")
                 .accessibilityHint(Text("Opens the card for editing", comment: "VoiceOver hint for the Edit button on a card's screen."))
             }

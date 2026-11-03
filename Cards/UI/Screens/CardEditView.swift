@@ -218,6 +218,7 @@ public struct CardEditView<Scanner: View>: View {
                     Text("Save", comment: "Toolbar button that saves the card form. A verb.")
                 }
                 // Labelled by its visible text, so "Tap Save" works in Voice Control.
+                .keyboardShortcut("s")
                 .accessibilityIdentifier("saveCardButton")
                 .accessibilityHint(
                     Text("Saves the card", comment: "VoiceOver hint for the Save button in the card form, for a new card or a changed one.")
