@@ -4,7 +4,9 @@ import XCTest
 /// or overlapping text, untranslated copy, mirroring and number formats.
 /// It visits what the accessibility audit visits, through the same helpers,
 /// plus the empty list, a card's menu, the location prompt, a place in the
-/// form and the delete-all confirmation.
+/// form and the delete-all confirmation. A screen that scrolls is captured
+/// a page at a time to its end ("06-add", "06-add-2", …), so nothing between
+/// its top and its end goes unseen.
 ///
 /// `scripts/capture-l10n.ts` (`make capture-l10n`) runs it once per language
 /// and text size, with `-testLanguage` and `-testRegion`, and saves each
@@ -35,8 +37,7 @@ final class CardsLocalisationScreenshotTests: XCTestCase {
     @MainActor
     func testCardList() {
         let app = launch()
-        capture("01-list")
-        captureScrolled(app, to: app.buttons[SeededCard.ikea], "02-list-end")
+        capturePages(app, "01-list")
     }
 
     /// Costa is in the middle, so its menu offers Move Up and Move Down.
@@ -45,21 +46,20 @@ final class CardsLocalisationScreenshotTests: XCTestCase {
         let app = launch()
         let costa = app.buttons[SeededCard.costa]
         XCTAssertTrue(app.openMenu(on: costa, showing: app.buttons["deleteCardMenuItem"]), "The card's menu did not open")
-        capture("03-card-menu")
+        capture("02-card-menu")
     }
 
     @MainActor
     func testEmptyList() {
         _ = launch(seeded: false)
-        capture("04-empty")
+        capture("03-empty")
     }
 
     @MainActor
     func testCardDetail() {
         let app = launch()
         app.openCard(SeededCard.costa)
-        capture("05-detail")
-        captureScrolled(app, to: app.staticTexts["cardTimestampText"], "06-detail-end")
+        capturePages(app, "04-detail")
     }
 
     /// The seeded Tesco code is not a valid EAN-13, so its screen shows the
@@ -68,22 +68,21 @@ final class CardsLocalisationScreenshotTests: XCTestCase {
     func testCardDetailWithFailedBarcode() {
         let app = launch()
         app.openCard(SeededCard.tesco)
-        capture("07-detail-failed-barcode")
+        capturePages(app, "05-detail-failed-barcode")
     }
 
     @MainActor
     func testAddCard() {
         let app = launch()
         app.openAddCard()
-        capture("08-add")
-        captureScrolled(app, to: app.buttons["addLocationRowButton"], "09-add-end")
+        capturePages(app, "06-add")
     }
 
     @MainActor
     func testEditCard() {
         let app = launch()
         app.openEditCard(SeededCard.costa)
-        capture("10-edit")
+        capturePages(app, "07-edit")
     }
 
     /// The prompt shows the app's own reason for asking, from InfoPlist, but
@@ -94,10 +93,10 @@ final class CardsLocalisationScreenshotTests: XCTestCase {
         let app = launch()
         app.openLocationPicker()
         if let prompt = XCUIApplication.locationPrompt() {
-            capture("11-location-prompt")
+            capture("08-location-prompt")
             prompt.buttons.element(boundBy: prompt.buttons.count - 1).tap()
         }
-        capture("12-location-picker")
+        capture("09-location-picker")
 
         let add = app.buttons["addLocationButton"]
         let enabled = expectation(for: NSPredicate(format: "isEnabled == true"), evaluatedWith: add)
@@ -106,15 +105,14 @@ final class CardsLocalisationScreenshotTests: XCTestCase {
         let addLocation = app.buttons["addLocationRowButton"]
         XCTAssertTrue(addLocation.waitForExistence(timeout: 5), "The form did not come back")
         XCTAssertTrue(app.reveal(addLocation), "Could not scroll to the new place")
-        capture("13-add-with-location")
+        capture("10-add-with-location")
     }
 
     @MainActor
     func testSettings() {
         let app = launch()
         app.openSettings()
-        capture("14-settings")
-        captureScrolled(app, to: app.buttons["deleteAllCardsButton"], "15-settings-end")
+        capturePages(app, "11-settings")
     }
 
     @MainActor
@@ -125,14 +123,14 @@ final class CardsLocalisationScreenshotTests: XCTestCase {
         XCTAssertTrue(app.reveal(deleteAll), "Could not scroll to Delete All Cards")
         deleteAll.tap()
         XCTAssertTrue(app.buttons["confirmDeleteAllButton"].waitForExistence(timeout: 5), "The confirmation did not appear")
-        capture("16-delete-confirmation")
+        capture("12-delete-confirmation")
     }
 
     @MainActor
     func testImportSheet() {
         let app = launch()
         app.openImportSheet()
-        capture("17-import")
+        capture("13-import")
     }
 
     // MARK: - Helpers
@@ -153,11 +151,29 @@ final class CardsLocalisationScreenshotTests: XCTestCase {
         add(attachment)
     }
 
-    /// The screen again scrolled to `element`, if it had to scroll to show it.
+    /// The screen, then a page further down at a time until it stops moving:
+    /// `name`, `name-2`, `name-3`. Each drag moves half the screen, less than
+    /// the part between the bars, so the pages overlap and nothing between
+    /// them is missed.
     @MainActor
-    private func captureScrolled(_ app: XCUIApplication, to element: XCUIElement, _ name: String) {
-        guard !app.isOnScreen(element) else { return }
-        XCTAssertTrue(app.reveal(element), "Could not scroll to \(element)")
+    private func capturePages(_ app: XCUIApplication, _ name: String) {
         capture(name)
+        for page in 2...10 {
+            let before = layout(of: app)
+            let start = app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.75))
+            let end = app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.25))
+            // Slowly and held, so the content moves with the finger and does not fling.
+            start.press(forDuration: 0.1, thenDragTo: end, withVelocity: .slow, thenHoldForDuration: 0.3)
+            RunLoop.current.run(until: Date().addingTimeInterval(0.5))
+            guard layout(of: app) != before else { return }
+            capture("\(name)-\(page)")
+        }
+    }
+
+    /// Every element on screen with its frame, without the snapshot's memory
+    /// addresses, which differ each time: equal when nothing has moved.
+    @MainActor
+    private func layout(of app: XCUIApplication) -> String {
+        app.debugDescription.replacingOccurrences(of: "0x[0-9a-fA-F]+", with: "", options: .regularExpression)
     }
 }

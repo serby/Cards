@@ -4,13 +4,15 @@
 // in the test language and region that -testLanguage and -testRegion set
 // (zh-Hant in TW, pt-BR in BR), installing the app afresh each time so the
 // location prompt shows, and writes the attachments to
-// <out>/<language>/<size>/<screen>.png. See docs/DEVELOPMENT.md, "Check the
-// translations on screen".
+// <out>/<language>/<size>/<screen>.png. It runs on a simulator of its own,
+// whose system language it sets to each language in turn, so what iOS draws
+// outside the app is in the language too. See docs/DEVELOPMENT.md, "Check
+// the translations on screen".
 //
 // Usage: node scripts/capture-l10n.ts [options]
 //   --lang <code>…    Languages (default: en and every language in knownRegions)
 //   --size <name>…    Text sizes: xs s m large xl xxl xxxl AX1…AX5 (default: large AX5)
-//   --device <name>   Simulator (default: iPhone 16 Pro), created if missing
+//   --device <type>   Simulator device type (default: iPhone 16 Pro); the script keeps its own
 //   --os <version>    Its iOS version (default: 18.1)
 //   --out <dir>       Where the PNGs go (default: /tmp/cards-l10n-qa)
 //   --no-build        Reuse the last build in <out>/.build
@@ -80,8 +82,11 @@ interface Device {
     isAvailable: boolean;
 }
 
-/// The simulator called `name` on iOS `os`, created if there is none, booted.
-function simulator(name: string, os: string): string {
+/// The script's own simulator of the device type `deviceType` on iOS `os`,
+/// created if there is none, and booted. Its own, because each language
+/// changes the simulator's system language, which nobody else's should get.
+function simulator(deviceType: string, os: string): string {
+    const name = `${deviceType} (Cards l10n QA)`;
     const runtimeID = `com.apple.CoreSimulator.SimRuntime.iOS-${os.replace(".", "-")}`;
     const list = JSON.parse(run("xcrun", ["simctl", "list", "-j", "devices"])) as { devices: Record<string, Device[]> };
     let udid = (list.devices[runtimeID] ?? []).find((device) => device.isAvailable && device.name === name)?.udid;
@@ -89,14 +94,28 @@ function simulator(name: string, os: string): string {
         const types = JSON.parse(run("xcrun", ["simctl", "list", "-j", "devicetypes"])) as {
             devicetypes: { name: string; identifier: string }[];
         };
-        const type = types.devicetypes.find((candidate) => candidate.name === name);
-        if (!type) throw new Error(`No simulator device type called "${name}"`);
+        const type = types.devicetypes.find((candidate) => candidate.name === deviceType);
+        if (!type) throw new Error(`No simulator device type called "${deviceType}"`);
         udid = run("xcrun", ["simctl", "create", name, type.identifier, runtimeID]).trim();
         console.log(`Created ${name} (iOS ${os}): ${udid}`);
     }
+    boot(udid);
+    return udid;
+}
+
+function boot(udid: string): void {
     spawnSync("xcrun", ["simctl", "boot", udid], { env, stdio: "ignore" });
     run("xcrun", ["simctl", "bootstatus", udid, "-b"]);
-    return udid;
+}
+
+/// Sets the simulator's own language and region, and restarts it so they
+/// take: what iOS draws outside the app, the location prompt with the app's
+/// reason for asking among it, follows the system's language, not the app's.
+function setSystemLanguage(udid: string, language: string, region: string): void {
+    run("xcrun", ["simctl", "spawn", udid, "defaults", "write", "-g", "AppleLanguages", "-array", language]);
+    run("xcrun", ["simctl", "spawn", udid, "defaults", "write", "-g", "AppleLocale", "-string", appleLocale(language, region)]);
+    run("xcrun", ["simctl", "shutdown", udid]);
+    boot(udid);
 }
 
 /// Builds the app and its tests, and copies the products with their
@@ -216,7 +235,7 @@ function capture(options: {
         mkdirSync(screens, { recursive: true });
         for (const attachment of manifest.flatMap((entry) => entry.attachments ?? [])) {
             const name = screenName(attachment.suggestedHumanReadableName ?? attachment.exportedFileName);
-            if (!/^\d\d-[a-z-]+$/.test(name)) continue;
+            if (!/^\d\d-[a-z0-9-]+$/.test(name)) continue;
             cpSync(join(exported, attachment.exportedFileName), join(screens, `${name}.png`));
             saved += 1;
         }
@@ -255,6 +274,7 @@ export function main(argv: string[]): number {
 
     const failures: string[] = [];
     for (const language of languages) {
+        setSystemLanguage(udid, language, regionFor(language));
         for (const size of chosenSizes) {
             const started = Date.now();
             const { saved, passed } = capture({ udid, testRun, language, size, out, logs });
