@@ -1101,7 +1101,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "カードの表示中に画面を明るくして、スキャンしやすくします"
+            "value" : "カードの表示中は画面を明るくして、バーコードを読み取りやすくします"
           }
         },
         "ko" : {
@@ -1296,7 +1296,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "明るさブーストがオフ"
+            "value" : "明るさブーストをオフにしました"
           }
         },
         "ko" : {
@@ -1361,7 +1361,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "明るさブーストがオン"
+            "value" : "明るさブーストをオンにしました"
           }
         },
         "ko" : {
@@ -1491,7 +1491,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "カメラへのアクセスがオフです。下にコードを入力するか、設定でカメラへのアクセスを許可してください。"
+            "value" : "カメラへのアクセスがオフです。下にコードを入力するか、「設定」でカメラへのアクセスを許可してください。"
           }
         },
         "ko" : {
@@ -1686,7 +1686,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "カードのコード: %@"
+            "value" : "カードのコード：%@"
           }
         },
         "ko" : {
@@ -2271,7 +2271,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "作成者: %@"
+            "value" : "作成者：%@"
           }
         },
         "ko" : {
@@ -2336,7 +2336,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "作成日: %@"
+            "value" : "作成日時：%@"
           }
         },
         "ko" : {
@@ -3701,7 +3701,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ここ"
+            "value" : "現在地"
           }
         },
         "ko" : {
@@ -5131,7 +5131,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "名前（例: Westway）"
+            "value" : "名前（例：Westway）"
           }
         },
         "ko" : {
@@ -5196,7 +5196,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "カードがありません"
+            "value" : "まだカードがありません"
           }
         },
         "ko" : {
@@ -5586,7 +5586,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "カードを開いて編集します"
+            "value" : "カードの編集画面を開きます"
           }
         },
         "ko" : {
@@ -7372,7 +7372,7 @@
               "other" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld枚のカードがすべて完全に削除されます。この操作は取り消せません。"
+                  "value" : "%lld枚のカードが完全に削除されます。この操作は取り消せません。"
                 }
               }
             }
@@ -7476,7 +7476,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "バーコードを読み取りやすくするために画面の明るさを最大に切り替えます"
+            "value" : "画面の明るさを最大にして、バーコードを読み取りやすくします"
           }
         },
         "ko" : {
@@ -7866,7 +7866,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@にいます。バーコードの準備ができています。"
+            "value" : "%@にいます。バーコードの準備ができました。"
           }
         },
         "ko" : {
