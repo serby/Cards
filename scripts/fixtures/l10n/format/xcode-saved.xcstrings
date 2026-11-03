@@ -1,0 +1,756 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "_underscore" : {
+
+    },
+    "！ fullwidth" : {
+
+    },
+    "(paren" : {
+
+    },
+    "#hash" : {
+
+    },
+    "%@" : {
+
+    },
+    "%@ (%@)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ (%2$@)"
+          }
+        }
+      }
+    },
+    "%@ radius" : {
+
+    },
+    "%#@cards@ in %@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%#@cards@ in %@"
+          },
+          "substitutions" : {
+            "cards" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg card"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg cards"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld cards" : {
+      "comment" : "Number of cards",
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld بطاقات"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld بطاقة"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "بطاقة واحدة"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld بطاقة"
+                }
+              },
+              "two" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "بطاقتان"
+                }
+              },
+              "zero" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "لا بطاقات"
+                }
+              }
+            }
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld card"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld cards"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "~tilde" : {
+
+    },
+    "🎉 party" : {
+
+    },
+    "2 items" : {
+
+    },
+    "10 items" : {
+
+    },
+    "a b" : {
+
+    },
+    "a_b" : {
+
+    },
+    "a-b" : {
+
+    },
+    "a.b" : {
+
+    },
+    "a/b" : {
+
+    },
+    "ab" : {
+
+    },
+    "Add" : {
+
+    },
+    "Add Card" : {
+
+    },
+    "Add Location" : {
+
+    },
+    "Aether" : {
+
+    },
+    "Æther" : {
+
+    },
+    "apple" : {
+
+    },
+    "Apple" : {
+
+    },
+    "APPLE" : {
+
+    },
+    "Aztec" : {
+      "comment" : "Barcode format in the barcode type picker: the square 2D Aztec Code. Keep it unless your language writes it differently."
+    },
+    "Barcode for %@" : {
+
+    },
+    "Barcode scanner" : {
+
+    },
+    "Barcode type" : {
+
+    },
+    "Barcode Type" : {
+
+    },
+    "Blue" : {
+      "comment" : "Card colour name read by VoiceOver in the colour picker."
+    },
+    "Boosts brightness when viewing card to improve scannability" : {
+
+    },
+    "Brightness Boost" : {
+
+    },
+    "Brown" : {
+      "comment" : "Card colour name read by VoiceOver in the colour picker."
+    },
+    "Cancel" : {
+
+    },
+    "Card code" : {
+
+    },
+    "Card code: " : {
+
+    },
+    "Card colour" : {
+
+    },
+    "Card name" : {
+
+    },
+    "Card name: %@" : {
+
+    },
+    "Card not found" : {
+
+    },
+    "Cards" : {
+
+    },
+    "co op" : {
+
+    },
+    "co-op" : {
+
+    },
+    "Code" : {
+
+    },
+    "Code 39" : {
+      "comment" : "Barcode format in the barcode type picker. A standard name: keep it unless your language writes it differently."
+    },
+    "Code 93" : {
+      "comment" : "Barcode format in the barcode type picker. A standard name: keep it unless your language writes it differently."
+    },
+    "Code 128" : {
+      "comment" : "Barcode format in the barcode type picker. A standard name: keep it unless your language writes it differently."
+    },
+    "Colour" : {
+
+    },
+    "coop" : {
+
+    },
+    "Created by %@" : {
+
+    },
+    "Created on %@" : {
+
+    },
+    "Data" : {
+
+    },
+    "Default" : {
+      "comment" : "Card colour name read by VoiceOver in the colour picker: the plain grey card that follows light and dark mode."
+    },
+    "Delete All" : {
+
+    },
+    "Delete All Cards" : {
+
+    },
+    "Device and plural" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "device" : {
+              "ipad" : {
+                "variations" : {
+                  "plural" : {
+                    "one" : {
+                      "stringUnit" : {
+                        "state" : "translated",
+                        "value" : "%lld card on iPad"
+                      }
+                    },
+                    "other" : {
+                      "stringUnit" : {
+                        "state" : "translated",
+                        "value" : "%lld cards on iPad"
+                      }
+                    }
+                  }
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld cards"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Display" : {
+
+    },
+    "é nfc" : {
+
+    },
+    "é nfd" : {
+
+    },
+    "EAN-8" : {
+      "comment" : "Barcode format in the barcode type picker. A standard name: keep it as it is."
+    },
+    "EAN-13" : {
+      "comment" : "Barcode format in the barcode type picker. A standard name: keep it as it is."
+    },
+    "eclair" : {
+
+    },
+    "Eclair" : {
+
+    },
+    "Éclair" : {
+
+    },
+    "Edit" : {
+
+    },
+    "Edit card" : {
+
+    },
+    "Edit Card" : {
+
+    },
+    "Empty containers" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leere"
+          }
+        }
+      }
+    },
+    "Empty substitutions" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leer"
+          }
+        }
+      }
+    },
+    "empty value" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : ""
+          }
+        }
+      }
+    },
+    "Enter code" : {
+
+    },
+    "Enter name" : {
+
+    },
+    "Enter the barcode number for this card" : {
+
+    },
+    "Enter the name of this card" : {
+
+    },
+    "Escapes/in key" : {
+      "comment" : "a/b \\ back \"quote\" \u0001 ctrl \u001f us  del   ls   ps   nbsp \t tab \r cr \n lf \b bs \f ff é 🎉 <tag> & amp",
+      "extractionState" : "stale",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "a/b \\ back \"quote\" \u0001 ctrl \u001f us  del   ls   ps   nbsp \t tab \r cr \n lf \b bs \f ff é 🎉 <tag> & amp"
+          }
+        }
+      }
+    },
+    "Export as JSON" : {
+
+    },
+    "External link" : {
+
+    },
+    "Failed to generate barcode" : {
+
+    },
+    "Find" : {
+
+    },
+    "Graphite" : {
+      "comment" : "Card colour name read by VoiceOver in the colour picker: a dark blue-grey."
+    },
+    "Green" : {
+      "comment" : "Card colour name read by VoiceOver in the colour picker."
+    },
+    "Import" : {
+
+    },
+    "Import JSON" : {
+
+    },
+    "Import Result" : {
+
+    },
+    "Indigo" : {
+      "comment" : "Card colour name read by VoiceOver in the colour picker: a deep violet-blue."
+    },
+    "item 9" : {
+
+    },
+    "item 10" : {
+
+    },
+    "Language order" : {
+      "comment" : "Localisation keys whose order differs between comparators",
+      "extractionState" : "stale",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DE"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Language order"
+          }
+        },
+        "en-GB" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GB"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ES"
+          }
+        },
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "LatAm"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BR"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PT"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "中文"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "中文香港"
+          }
+        }
+      }
+    },
+    "Locations" : {
+
+    },
+    "Name" : {
+
+    },
+    "Name, e.g. Westway" : {
+
+    },
+    "No Cards Yet" : {
+
+    },
+    "No place found for “%@”" : {
+
+    },
+    "num" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1"
+          }
+        }
+      }
+    },
+    "OK" : {
+
+    },
+    "Old" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vieux"
+          }
+        }
+      }
+    },
+    "Orange" : {
+      "comment" : "Card colour name read by VoiceOver in the colour picker."
+    },
+    "Paste from Clipboard" : {
+
+    },
+    "PDF 417" : {
+      "comment" : "Barcode format in the barcode type picker: the stacked 2D PDF417 code, not a PDF file. Keep it as it is."
+    },
+    "Phrase set" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "de" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+
+            ]
+          }
+        },
+        "en" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "a/b",
+              "Open Cards"
+            ]
+          }
+        }
+      }
+    },
+    "Phrases" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "de" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+
+            ]
+          }
+        },
+        "en" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Show my card",
+              "Open Cards"
+            ]
+          }
+        }
+      }
+    },
+    "Pink" : {
+      "comment" : "Card colour name read by VoiceOver in the colour picker: a deep raspberry pink."
+    },
+    "Postcode" : {
+
+    },
+    "Purple" : {
+      "comment" : "Card colour name read by VoiceOver in the colour picker."
+    },
+    "QR Code" : {
+      "comment" : "Barcode format in the barcode type picker: the square 2D code. Use the usual name for a QR code in your language."
+    },
+    "Radius" : {
+
+    },
+    "Red" : {
+      "comment" : "Card colour name read by VoiceOver in the colour picker."
+    },
+    "Save" : {
+
+    },
+    "Save card" : {
+
+    },
+    "Save changes to this card" : {
+
+    },
+    "Scan on iPhone" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "device" : {
+              "iphone" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Scan on iPhone"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Scan"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Scan the barcode on a loyalty card to add it." : {
+
+    },
+    "Select the type of barcode for this card" : {
+
+    },
+    "Settings" : {
+      "comment" : "Settings tab / title",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Einstellungen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Settings"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "設定"
+          }
+        }
+      }
+    },
+    "Should translate default" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Standard"
+          }
+        }
+      }
+    },
+    "Strasse" : {
+
+    },
+    "Straße" : {
+
+    },
+    "Tap to edit this card's details" : {
+
+    },
+    "Teal" : {
+      "comment" : "Card colour name read by VoiceOver in the colour picker: a dark blue-green."
+    },
+    "This is a %@ barcode with code %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "This is a %1$@ barcode with code %2$@"
+          }
+        }
+      }
+    },
+    "This will permanently delete all %lld cards. This action cannot be undone." : {
+
+    },
+    "Toggles screen brightness to maximum for easier barcode scanning" : {
+
+    },
+    "Unknown fields" : {
+      "extractionState" : "stale",
+      "foo" : 1,
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "baz" : "z",
+            "state" : "translated",
+            "value" : "y"
+          }
+        }
+      }
+    },
+    "UPC-E" : {
+      "comment" : "Barcode format in the barcode type picker. A standard name: keep it as it is."
+    },
+    "Version" : {
+
+    },
+    "When you arrive at one of these places, the barcode appears on your Lock Screen." : {
+
+    },
+    "Yellow" : {
+      "comment" : "Card colour name read by VoiceOver in the colour picker."
+    },
+    "Zebra" : {
+
+    },
+    "zz" : {
+
+    },
+    "Ελληνικά" : {
+
+    },
+    "Русский" : {
+
+    },
+    "中文" : {
+
+    },
+    "日本" : {
+
+    }
+  },
+  "version" : "1.0"
+}

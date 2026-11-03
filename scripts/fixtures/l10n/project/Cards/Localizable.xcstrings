@@ -1,0 +1,35 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "%lld cards" : {
+      "comment" : "Settings, Data section: how many cards are saved. %lld is the number of cards.",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld card"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld cards"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Settings" : {
+      "comment" : "Tab bar item and navigation title of the Settings screen."
+    },
+    "You're at %@. Your barcode is ready." : {
+      "comment" : "Body of the notification sent when you arrive at a saved place, shown on the Lock Screen under the card's name. %@ is the place's name."
+    }
+  },
+  "version" : "1.0"
+}

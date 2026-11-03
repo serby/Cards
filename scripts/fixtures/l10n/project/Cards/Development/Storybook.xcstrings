@@ -1,0 +1,9 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "Storybook" : {
+      "comment" : "Development only: never translated."
+    }
+  },
+  "version" : "1.0"
+}
