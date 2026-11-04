@@ -1,0 +1,42 @@
+name: App Store screenshots
+
+# Replaces the editable App Store version's screenshots with those committed
+# under screenshots/. Run it by hand after refreshing them (docs/DEVELOPMENT.md,
+# "Refresh the App Store screenshots").
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version to update (default: the one being prepared)
+        required: false
+      dry-run:
+        description: Only report what would change
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v5
+
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 24
+
+    - name: Upload screenshots
+      env:
+        ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+        ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+        ASC_KEY_CONTENT: ${{ secrets.ASC_KEY_CONTENT }}
+        VERSION: ${{ inputs.version }}
+        DRY_RUN: ${{ inputs.dry-run }}
+      run: |
+        args=()
+        [[ -n "$VERSION" ]] && args+=(--version "$VERSION")
+        [[ "$DRY_RUN" == "true" ]] && args+=(--dry-run)
+        node scripts/upload-screenshots.ts "${args[@]}"

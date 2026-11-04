@@ -97,7 +97,7 @@ upload-metadata:
 	scripts/upload-metadata.sh
 
 upload-screenshots:
-	scripts/upload-screenshots.sh
+	node scripts/upload-screenshots.ts
 
 device:
 	$(XCODEBUILD) build -destination 'generic/platform=iOS' -allowProvisioningUpdates
