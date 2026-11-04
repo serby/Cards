@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: Version to update (default: the one being prepared)
+        description: "Version to update (default: the one being prepared)"
         required: false
       dry-run:
         description: Only report what would change
