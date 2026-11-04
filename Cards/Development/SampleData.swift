@@ -106,3 +106,33 @@ public extension SettingsState {
         cardCount: 0
     )
 }
+
+public extension CardWidgetState {
+    static let sample = CardWidgetState(
+        name: "Tesco Clubcard",
+        code: "5012345678900",
+        barcodeType: .ean13,
+        color: .blue,
+        proximity: CardProximity(placeName: "Tesco Express", distance: 120)
+    )
+
+    static let here = CardWidgetState(
+        name: "Costa Coffee",
+        code: "COSTA-88412",
+        barcodeType: .code128,
+        color: .red,
+        proximity: CardProximity(placeName: "Costa Notting Hill", distance: 0)
+    )
+
+    static let qr = CardWidgetState(
+        name: "Westway Climbing",
+        code: "https://serby.net",
+        barcodeType: .qrCode,
+        color: .graphite,
+        proximity: CardProximity(placeName: "Westway", distance: 350)
+    )
+
+    static let noLocation = CardWidgetState(name: "Library Card", code: "ABC-1234", barcodeType: .code128)
+
+    static let invalidCode = CardWidgetState(name: "Broken Card", code: "not-a-valid-ean", barcodeType: .ean13, color: .purple)
+}

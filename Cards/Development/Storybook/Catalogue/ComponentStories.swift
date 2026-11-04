@@ -8,6 +8,7 @@ let componentStories: [Story] = [
     cardColorPickerStory,
     proximityLabelStory,
     cardLocationRowStory,
+    cardWidgetStory,
     scannerPlaceholderStory
 ]
 
@@ -210,6 +211,42 @@ private let scannerPlaceholderStory = Story(
     AnyView(
         ScannerPlaceholderView()
             .frame(height: 250)
+            .padding()
+    )
+}
+
+@MainActor
+private let cardWidgetStory = Story(
+    id: "card-widget",
+    title: "CardWidgetView",
+    section: "Components",
+    knobs: [
+        .toggle("Has card", true),
+        .text("Name", CardWidgetState.sample.name),
+        .text("Code", CardWidgetState.sample.code),
+        .options("Type", BarcodeType.allNames, BarcodeType.ean13.rawValue),
+        .options("Colour", CardColor.allNames, CardColor.blue.rawValue)
+    ] + ProximityKnobs.knobs(place: "Tesco Express", distance: 120),
+    gallery: [
+        (name: "Nearby", view: AnyView(CardWidgetView(card: .sample).widgetPreviewFrame(.blue))),
+        (name: "Here", view: AnyView(CardWidgetView(card: .here).widgetPreviewFrame(.red))),
+        (name: "QR code", view: AnyView(CardWidgetView(card: .qr).widgetPreviewFrame(.graphite))),
+        (name: "No location", view: AnyView(CardWidgetView(card: .noLocation).widgetPreviewFrame(.standard))),
+        (name: "Invalid code", view: AnyView(CardWidgetView(card: .invalidCode).widgetPreviewFrame(.purple))),
+        (name: "No cards", view: AnyView(CardWidgetView(card: nil).widgetPreviewFrame(.standard)))
+    ]
+) { knobs in
+    let color = CardColor.named(knobs.option("Colour"))
+    let card = CardWidgetState(
+        name: knobs.string("Name"),
+        code: knobs.string("Code"),
+        barcodeType: .named(knobs.option("Type")),
+        color: color,
+        proximity: knobs.proximity()
+    )
+    return AnyView(
+        CardWidgetView(card: knobs.bool("Has card") ? card : nil)
+            .widgetPreviewFrame(knobs.bool("Has card") ? color : .standard)
             .padding()
     )
 }
