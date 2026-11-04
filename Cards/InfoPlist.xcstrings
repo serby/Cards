@@ -164,7 +164,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Camera is used to scan barcodes on your loyalty and membership cards"
+            "value" : "The camera is used to scan the barcodes on your loyalty and membership cards."
           }
         },
         "es" : {
@@ -224,7 +224,7 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "يُظهر موقعك مدى بُعدك عن الأماكن التي تستخدم فيها بطاقاتك، ويعرض الرمز الشريطي المناسب على شاشة القفل عند وصولك."
+            "value" : "يُستخدم موقعك لإظهار مدى بُعدك عن الأماكن التي تستخدم فيها بطاقاتك، ولعرض الرمز الشريطي المناسب على شاشة القفل عند وصولك."
           }
         },
         "de" : {
@@ -236,7 +236,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Your location shows how far you are from the places you use your cards, and puts the right barcode on your Lock Screen when you arrive."
+            "value" : "Your location is used to show how far you are from the places where you use your cards, and to put the right barcode on your Lock Screen when you arrive."
           }
         },
         "es" : {
@@ -254,7 +254,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La tua posizione indica quanto disti dai luoghi in cui usi le carte e, al tuo arrivo, mostra il codice a barre giusto sulla schermata di blocco."
+            "value" : "La tua posizione viene usata per indicare quanto disti dai luoghi in cui usi le carte e per mostrare il codice a barre giusto sulla schermata di blocco al tuo arrivo."
           }
         },
         "ja" : {
@@ -272,13 +272,13 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sua localização mostra a distância até os lugares onde você usa seus cartões e coloca o código de barras certo na Tela Bloqueada quando você chega."
+            "value" : "Sua localização é usada para mostrar a distância até os lugares onde você usa seus cartões e para colocar o código de barras certo na Tela Bloqueada quando você chega."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "你的位置用于显示你离卡片使用地点有多远，并在你到达时将相应的条形码显示在锁定屏幕上。"
+            "value" : "你的位置用于显示你距卡片使用地点有多远，并在到达时将相应的条形码显示在锁定屏幕上。"
           }
         },
         "zh-Hant" : {
