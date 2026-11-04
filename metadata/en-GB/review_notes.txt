@@ -1,12 +1,9 @@
-To test the barcode and QR code scanning feature, please visit:
-https://cards.serby.net/demo.html
+Card Barcodes needs no account or sign-in.
 
-This page contains:
-1. A sample barcode (EAN-13) - scan to add a test loyalty card
-2. A sample QR code - scan to add a test membership card
+To add a card by scanning, open https://cards.serby.net/demo.html on another screen. It has a sample EAN-13 barcode and a sample QR code. In the app, tap the scan button at the top of the list and point the camera at either code, then tap Save.
 
-Testing steps:
-1. Open the Cards app
-2. Tap the + button to add a new card
-3. Point the camera at either code on the demo page
-4. The app will detect and save the card
+To see a card's places and distances, open a card, tap Edit, then Add Location, and add a place on the map or by postcode or ZIP code. Allow location access when asked. The list then shows how far away the card's places are.
+
+Arrival notifications: with notifications allowed, iOS shows a notification with the card's barcode when you arrive at one of its places. They can be turned off in Settings > Arrival Notifications.
+
+Widget: on the Home Screen, long-press, tap Edit > Add Widget, and choose Card Barcodes. It shows the card nearest to you, or one chosen by long-pressing the widget and tapping Edit Widget.

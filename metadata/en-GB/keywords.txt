@@ -1,1 +1,1 @@
-loyalty,cards,barcode,wallet,membership,scanner,qr,rewards,store,digital
+membership,rewards,points,qr,code,gym,library,shop,pass,discount,coupon,fob,widget,nearby,colour

@@ -1,0 +1,5 @@
+A Home Screen widget shows the barcode of the card for where you are, or one you choose.
+Cards show their full colour in the list, with 23 colours to choose from or any colour you like.
+Card screens have a new design, with the name and number on white panels.
+Add where you are to a card straight from the card, with Add current location.
+Turn arrival notifications on or off in Settings.
