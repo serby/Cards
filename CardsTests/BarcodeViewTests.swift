@@ -72,4 +72,13 @@ struct BarcodeViewTests {
             #expect(abs(image.size.height - expectedHeight) <= 1.0, "Image height should match expected height")
         }
     }
+
+    @Test func barcodeOnWhiteAddsAQuietZone() throws {
+        let image = try #require(
+            BarcodeImage.onWhite("5012345678900", type: .ean13, size: CGSize(width: 300, height: 100), margin: 20)
+        )
+        #expect(image.size == CGSize(width: 340, height: 140))
+        #expect(image.scale == 1)
+        #expect(BarcodeImage.onWhite("nope", type: .ean13, size: CGSize(width: 300, height: 100), margin: 20) == nil)
+    }
 }
