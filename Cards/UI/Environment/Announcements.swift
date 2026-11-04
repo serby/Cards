@@ -3,12 +3,34 @@ import Foundation
 /// Messages VoiceOver speaks after an action that changes the screen without
 /// moving focus to the result, so people hear that it worked.
 public enum Announcements {
-    /// After cards are deleted from the list, or places from a card: "Deleted
-    /// Tesco Clubcard", "Deleted Tesco Clubcard and Boots Advantage".
-    public static func deleted(_ names: [String]) -> String {
-        String(
-            localized: "Deleted \(names.formatted(.list(type: .and)))",
-            comment: "VoiceOver announcement after deleting cards from the list or a place from a card. The argument is a name, or a list of names."
+    /// After cards are deleted from the list: the card by name, or how many
+    /// went when several did. Cards and places have strings of their own, so
+    /// a language that makes a word agree with "card" or "place" can.
+    public static func deletedCards(_ names: [String]) -> String {
+        if names.count == 1, let name = names.first {
+            return String(
+                localized: "Deleted card \(name)",
+                comment: "VoiceOver announcement after one card is deleted from the list. The argument is the card's name, such as Tesco Clubcard."
+            )
+        }
+        return String(
+            localized: "Deleted \(names.count) cards",
+            comment: "VoiceOver announcement after several cards are deleted from the list at once. The argument is how many, always two or more."
+        )
+    }
+
+    /// After places are deleted from a card in the card form, as
+    /// `deletedCards(_:)` does for cards.
+    public static func deletedPlaces(_ names: [String]) -> String {
+        if names.count == 1, let name = names.first {
+            return String(
+                localized: "Deleted place \(name)",
+                comment: "VoiceOver announcement after one place is deleted from the card form. The argument is the place's name, such as Westway."
+            )
+        }
+        return String(
+            localized: "Deleted \(names.count) places",
+            comment: "VoiceOver announcement after several places are deleted from a card at once. The argument is how many, always two or more."
         )
     }
 

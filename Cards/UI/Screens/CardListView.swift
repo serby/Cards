@@ -181,6 +181,6 @@ public struct CardListView: View {
         let names = offsets.map { cards[$0].name }
         deleteTrigger.toggle()
         actions.deleteCards(offsets)
-        announcer.announce(Announcements.deleted(names))
+        announcer.announce(Announcements.deletedCards(names))
     }
 }

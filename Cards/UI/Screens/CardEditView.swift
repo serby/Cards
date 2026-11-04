@@ -172,7 +172,7 @@ public struct CardEditView<Scanner: View>: View {
                         .contextMenu {
                             Button(role: .destructive) {
                                 draft.locations.removeAll { $0.id == location.id }
-                                announcer.announce(Announcements.deleted([location.name]))
+                                announcer.announce(Announcements.deletedPlaces([location.name]))
                             } label: {
                                 Label(
                                     LocalizedStringResource(
@@ -187,7 +187,7 @@ public struct CardEditView<Scanner: View>: View {
                 .onDelete { offsets in
                     let names = offsets.map { draft.locations[$0].name }
                     draft.locations.remove(atOffsets: offsets)
-                    announcer.announce(Announcements.deleted(names))
+                    announcer.announce(Announcements.deletedPlaces(names))
                 }
 
                 Button {
