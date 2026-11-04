@@ -17,24 +17,26 @@ The curves then run parallel and the shapes read as one object. A radius picked 
 - **Panels in a column line up:** the same width, the same radius, `inset` apart. The text panels and the barcode's frame on a card face are one column.
 - **A new nested shape** gets a constant in `CardGeometry`, derived from the shape it sits in, and a line in the test.
 
-## 2. Text never sits on a card colour
+## 2. Text on a card colour is always readable
 
-A card can be any colour, so no colour can be relied on to keep text readable. Text on a card face or a widget sits on a white panel (`CardPanel.fill`) in dark ink: `CardPanel.ink`, or `CardPanel.secondaryInk` for supporting text such as a place or a date.
+A card can be any colour, so text on one is readable by construction, in one of two ways:
 
-- Panels stay white in dark mode, like the barcode.
-- Marks that are not text, such as the colour picker's tick, may go straight on a colour, in `CardInk.best(on:)`, the ink that stands out more.
-- Tinted and clear Home Screens draw a widget in one tint, where white panels would hide the text. There the panels drop their fill and the text takes the tint (`widgetRenderingMode`).
+- **On a white panel**, in dark ink: `CardPanel.ink`, or `CardPanel.secondaryInk` for supporting text such as a place or a date. Card faces and widgets put all their text on panels, and a list row's distance sits on a white pill. Panels stay white in dark mode, like the barcode.
+- **Straight on the colour**, in the colour's `ink` (white or near-black, whichever stands out more), over `readableBackground` and its `gradient`. Those guarantee WCAG AA for any colour: a colour so mid-toned that neither ink reaches 4.5:1 is moved away from the ink, towards black or white, only as far as it takes. Every palette colour already passes, so the palette is never moved. A list row's card name and the picker's tick sit on the colour this way.
+
+Never put text on a colour's raw `background`. Tinted and clear Home Screens draw a widget in one tint, where white panels would hide the text, so there the panels drop their fill and the text takes the tint (`widgetRenderingMode`).
 
 ## 3. Card colours
 
 - **The palette** (`CardColor.allCases`): 23 colours, by hue and then the neutrals. The picker shows six to a row with the custom colour well last, so the palette size plus one must stay a multiple of six; a test checks.
 - **Custom colours:** any sRGB colour from the system colour picker, stored as `#RRGGBB` in the card's existing colour field. Builds from before custom colours show them as Default.
-- **Contrast:** every palette colour keeps its best ink at WCAG AA (4.5:1), and list rows keep the system label at AA over the wash of any colour, palette or custom (checked over a sweep of 216 colours). If a test fails, change the colour, never the threshold.
+- **Full colour:** cards show their colour at full strength wherever they appear, in the list as on the card screen. Readability comes from the rules in section 2, never from fading the colour.
+- **Contrast:** every palette colour's ink meets WCAG AA (4.5:1) on it unmoved, and the ink meets AA at both ends of the gradient for any colour, palette or custom (checked over a sweep of 216 colours and the mid greys). If a test fails, change the colour, never the threshold.
 - **Adding a palette colour:** a case, a raw value, a hex value and a display name. Raw values are stored in every card, so existing ones never change.
 
 ## 4. Gradients
 
-Card faces, the widget's background and the picker's swatches fill with the card colour's system gradient (`Color.gradient`, through `cardFill` and `widgetFill`), so a card looks the same wherever it appears. List rows keep a flat, faint wash, and nothing else gets a gradient. Because text sits on panels, a gradient never changes how readable it is.
+Card faces, list rows, the widget's background and the picker's swatches all fill with the card's `gradient`, so a card looks the same wherever it appears. It is lighter at the top, as if lit from above, and only ever moves away from the ink: a dark colour darkens towards the bottom, and a light colour lightens towards the top. Text on it therefore stays at least as readable as on `readableBackground` all the way down. Nothing else gets a gradient.
 
 ## 5. Everything else
 

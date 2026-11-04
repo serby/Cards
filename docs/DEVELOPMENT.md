@@ -150,7 +150,7 @@ Every view in `Cards/UI` has a story in `Cards/Development/Storybook/Catalogue`,
 
 ### Rule 5: Follow the visual style guide
 
-[docs/STYLE.md](STYLE.md) is the style guide: corners nest (an inset shape takes the outer radius minus the inset, with the radii in `UI/Theme/CardGeometry.swift`), text never sits straight on a card colour but on a white panel in dark ink, colours come from the palette or the custom picker, and card faces use the colour's gradient. `CardColorTests` checks WCAG AA (4.5:1) for every palette colour's ink, for list rows over the wash of any colour, and for the accent; `CardGeometryTests` checks the radii nest. If a test fails, change the colour, never the threshold.
+[docs/STYLE.md](STYLE.md) is the style guide: corners nest (an inset shape takes the outer radius minus the inset, with the radii in `UI/Theme/CardGeometry.swift`), text on a card colour is readable by construction (a white panel, or the colour's ink over its readable gradient), colours come from the palette or the custom picker, and card faces use the colour's gradient. `CardColorTests` checks WCAG AA (4.5:1) for every palette colour's ink, for text on the gradient of any colour, and for the accent; `CardGeometryTests` checks the radii nest. If a test fails, change the colour, never the threshold.
 
 ### Rule 6: Models stay CloudKit- and export-compatible
 
