@@ -51,6 +51,10 @@ public struct CardDetailView: View {
                             .font(.subheadline.weight(.medium))
                             .foregroundStyle(supportingInk)
                             .accessibilityIdentifier("cardProximityText")
+                            // Its own label replaces the text's, and with it the
+                            // static text trait, which left the accessibility
+                            // audit taking it for an 18 pt tall control.
+                            .accessibilityAddTraits(.isStaticText)
                     }
                 }
 
