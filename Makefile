@@ -1,4 +1,4 @@
-.PHONY: check-release test test-unit test-e2e test-coverage coverage-run coverage-report coverage-clean build clean sim device-hub device test-tsan capture-screenshots validate-screenshots deploy-testflight deploy-appstore check-metadata upload-metadata upload-screenshots
+.PHONY: check-release test test-unit test-e2e test-coverage coverage-run coverage-report coverage-clean build clean sim device-hub device test-tsan capture-screenshots validate-screenshots deploy-testflight deploy-appstore check-metadata upload-metadata upload-screenshots store-screenshots
 
 # Same choice as scripts/xcode-env.sh: XCODE_APP, else Xcode 27.1 when installed,
 # else whatever xcode-select points at.
@@ -80,6 +80,13 @@ capture-screenshots:
 			scripts/capture-screenshots.sh "$device" $locale || exit 1; \
 		done; \
 	done
+
+# Composes the App Store images in screenshots/store/<locale>/ from the raw
+# captures and each locale's captions.json.
+store-screenshots:
+	TEST_RUNNER_CARDS_STORE_SCREENSHOTS=1 $(XCODEBUILD) test -destination '$(DESTINATION)' \
+		-only-testing:CardsTests/StoreScreenshotTests
+	python3 scripts/validate-screenshots.py
 
 validate-screenshots:
 	python3 scripts/validate-screenshots.py

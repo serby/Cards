@@ -1,0 +1,42 @@
+[
+  {
+    "file": "01_Cards",
+    "screen": "01_CardList",
+    "color": "blue",
+    "layout": "screen",
+    "title": "Every card in full colour",
+    "subtitle": "Loyalty, membership and gym cards, ready to scan"
+  },
+  {
+    "file": "02_Scan",
+    "screen": "02_CardDetail",
+    "color": "graphite",
+    "layout": "screen",
+    "title": "Ready at the till",
+    "subtitle": "A bright, clear barcode, first time"
+  },
+  {
+    "file": "03_Widget",
+    "screen": "05_Widget",
+    "color": "teal",
+    "layout": "band",
+    "title": "The card for where you are",
+    "subtitle": "On your Home Screen, with the widget"
+  },
+  {
+    "file": "04_Places",
+    "screen": "04_LocationPicker",
+    "color": "red",
+    "layout": "screen",
+    "title": "On your Lock Screen when you arrive",
+    "subtitle": "Add the places you use each card"
+  },
+  {
+    "file": "05_Colours",
+    "screen": "03_EditCard",
+    "color": "purple",
+    "layout": "screen",
+    "title": "Any colour you like",
+    "subtitle": "23 colours, or pick your own"
+  }
+]
