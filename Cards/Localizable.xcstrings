@@ -1065,71 +1065,6 @@
         }
       }
     },
-    "Boosts brightness when viewing a card to improve scannability" : {
-      "comment" : "Under the Brightness Boost switch in Settings: the screen turns up while a card is open, so it scans more easily.",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "يرفع السطوع عند عرض بطاقة لتسهيل مسحها ضوئيًا"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Erhöht beim Anzeigen einer Karte die Helligkeit, damit der Barcode besser gescannt werden kann"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aumenta el brillo al ver una tarjeta para facilitar el escaneo"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Augmente la luminosité lorsqu’une carte est affichée pour faciliter la lecture du code-barres"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aumenta la luminosità quando visualizzi una carta per facilitare la scansione"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "カードの表示中は画面を明るくして、バーコードを読み取りやすくします"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "카드를 볼 때 화면을 최대 밝기로 높여 바코드가 쉽게 스캔되도록 합니다."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aumenta o brilho ao exibir um cartão para facilitar a leitura do código de barras"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "查看卡片时，提高亮度以便扫描。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "檢視卡片時提高亮度，讓條碼更容易掃描"
-          }
-        }
-      }
-    },
     "Brightness" : {
       "comment" : "A name Voice Control users can say for the Brightness Boost button on a card's screen.",
       "localizations" : {
@@ -7440,49 +7375,49 @@
         }
       }
     },
-    "Toggles screen brightness to maximum for easier barcode scanning" : {
-      "comment" : "VoiceOver hint for the Brightness Boost button on a card's screen.",
+    "Turns full brightness on or off, so the barcode scans easily" : {
+      "comment" : "VoiceOver hint for the Brightness Boost button on a card's screen. It works both ways: on when off, off when on.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "يحوّل سطوع الشاشة إلى الحد الأقصى لتسهيل مسح الرمز الشريطي ضوئيًا"
+            "value" : "يشغّل السطوع الكامل أو يوقفه ليسهل مسح الرمز الشريطي ضوئيًا"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Schaltet die volle Helligkeit ein oder aus, damit sich der Barcode leichter scannen lässt"
+            "value" : "Schaltet die volle Helligkeit ein oder aus, damit sich der Barcode leicht scannen lässt"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Activa o desactiva el brillo máximo de la pantalla para facilitar el escaneo del código de barras"
+            "value" : "Activa o desactiva el brillo máximo para que el código de barras se escanee fácilmente"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Active ou désactive la luminosité maximale de l’écran pour faciliter la lecture du code-barres"
+            "value" : "Active ou désactive la luminosité maximale pour faciliter la lecture du code-barres"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Attiva o disattiva la luminosità massima dello schermo per facilitare la scansione del codice a barre"
+            "value" : "Attiva o disattiva la luminosità massima, per far leggere facilmente il codice a barre"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "画面の明るさを最大にして、バーコードを読み取りやすくします"
+            "value" : "最大の明るさのオン/オフを切り替えて、バーコードを読み取りやすくします"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "바코드가 쉽게 스캔되도록 최대 밝기를 켜거나 끕니다."
+            "value" : "바코드가 잘 스캔되도록 최대 밝기를 켜거나 끕니다."
           }
         },
         "pt-BR" : {
@@ -7494,13 +7429,78 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "打开或关闭最高屏幕亮度，便于扫描条形码"
+            "value" : "打开或关闭最高亮度，方便扫描条形码"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "開啟或關閉最高亮度，讓條碼更容易掃描"
+          }
+        }
+      }
+    },
+    "Turns the screen up to full brightness while a card is open, so its barcode scans easily." : {
+      "comment" : "Under the Brightness Boost switch in Settings, saying what the switch does when it is on.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يرفع سطوع الشاشة إلى الحد الأقصى أثناء فتح بطاقة ليسهل مسح رمزها الشريطي ضوئيًا."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stellt den Bildschirm auf volle Helligkeit, solange eine Karte geöffnet ist, damit sich ihr Barcode leicht scannen lässt."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pone la pantalla al brillo máximo mientras hay una tarjeta abierta para que su código de barras se escanee fácilmente."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Passe l’écran à la luminosité maximale lorsqu’une carte est ouverte, pour faciliter la lecture de son code-barres."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Porta lo schermo alla luminosità massima quando una carta è aperta, per far leggere facilmente il suo codice a barre."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カードを開いている間、画面を最大の明るさにして、バーコードを読み取りやすくします。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "카드가 열려 있는 동안 화면을 최대 밝기로 전환하여 바코드가 잘 스캔되도록 합니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aumenta o brilho da tela ao máximo enquanto um cartão está aberto, para facilitar a leitura do código de barras."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开卡片时，将屏幕调至最高亮度，方便扫描条形码。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打開卡片時，將螢幕調至最高亮度，讓條碼更容易掃描。"
           }
         }
       }

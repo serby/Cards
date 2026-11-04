@@ -151,8 +151,8 @@ public struct CardDetailView: View {
                 )
                 .accessibilityHint(
                     Text(
-                        "Toggles screen brightness to maximum for easier barcode scanning",
-                        comment: "VoiceOver hint for the Brightness Boost button on a card's screen."
+                        "Turns full brightness on or off, so the barcode scans easily",
+                        comment: "VoiceOver hint for the Brightness Boost button on a card's screen. It works both ways: on when off, off when on."
                     )
                 )
                 // The button shows only a sun, so Voice Control users guess at its

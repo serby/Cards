@@ -221,8 +221,8 @@ private extension SettingsListView {
 
     var brightnessBoostSubtitle: Text {
         Text(
-            "Boosts brightness when viewing a card to improve scannability",
-            comment: "Under the Brightness Boost switch in Settings: the screen turns up while a card is open, so it scans more easily."
+            "Turns the screen up to full brightness while a card is open, so its barcode scans easily.",
+            comment: "Under the Brightness Boost switch in Settings, saying what the switch does when it is on."
         )
     }
 }
