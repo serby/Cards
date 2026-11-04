@@ -15,16 +15,18 @@ private struct EditCardStory: View {
     @State private var draft: CardDraft
     private let title: String
     private let showsScanner: Bool
+    private let cameraAccessOff: Bool
 
-    init(draft: CardDraft, title: String, showsScanner: Bool) {
+    init(draft: CardDraft, title: String, showsScanner: Bool, cameraAccessOff: Bool = false) {
         _draft = State(initialValue: draft)
         self.title = title
         self.showsScanner = showsScanner
+        self.cameraAccessOff = cameraAccessOff
     }
 
     var body: some View {
         CardEditView(draft: $draft, showsScanner: showsScanner) {
-            ScannerPlaceholderView()
+            ScannerPlaceholderView(cameraAccessOff: cameraAccessOff)
         }
         .navigationTitle(title)
     }
@@ -126,6 +128,7 @@ private let cardEditStory = Story(
         .options("Colour", CardColor.allNames, CardDraft.sample.color.rawValue),
         .number("Locations", 1, in: 0...Double(CardLocation.samples.count), step: 1),
         .toggle("Shows scanner", false),
+        .toggle("Camera access off", false),
         .toggle("Autofocus name", false)
     ],
     gallery: [
@@ -139,6 +142,12 @@ private let cardEditStory = Story(
             name: "Add new, with scanner",
             view: pushed {
                 EditCardStory(draft: .empty, title: "Add Card", showsScanner: true)
+            }
+        ),
+        (
+            name: "Add new, camera access off",
+            view: pushed {
+                EditCardStory(draft: .empty, title: "Add Card", showsScanner: true, cameraAccessOff: true)
             }
         )
     ]
@@ -167,7 +176,7 @@ private let cardEditStory = Story(
             autofocusesName: knobs.bool("Autofocus name"),
             showsScanner: knobs.bool("Shows scanner")
         ) {
-            ScannerPlaceholderView()
+            ScannerPlaceholderView(cameraAccessOff: knobs.bool("Camera access off"))
         }
         .navigationTitle(Text(verbatim: "Card"))
     }

@@ -64,8 +64,10 @@ public struct CardEditView<Scanner: View>: View {
         Form {
             if showsScanner {
                 Section {
+                    // At least 250 pt, and taller when what the scanner shows
+                    // needs it, such as the message when camera access is off.
                     scanner()
-                        .frame(height: 250)
+                        .frame(maxWidth: .infinity, minHeight: 250)
                         .listRowInsets(EdgeInsets())
                 }
             }

@@ -66,31 +66,22 @@ public struct ScannerOverlayView: View {
     }
 
     public var body: some View {
-        CameraScannerView(scannedCode: $scannedCode, barcodeType: $barcodeType, availability: $availability)
-            .overlay {
-                if availability == .denied {
-                    // Without access the camera view is black, so say why and
-                    // what to do instead.
-                    VStack(spacing: 8) {
-                        Image(systemName: "video.slash")
-                            .font(.title2)
-                            .accessibilityHidden(true)
-                        Text(
-                            "Camera access is off. Type the code below, or allow camera access in Settings.",
-                            comment: "Shown over the black camera view at the top of the new card form when the app may not use the camera."
-                        )
-                        .font(.subheadline)
-                        .multilineTextAlignment(.center)
-                    }
-                    .foregroundStyle(.white)
-                    .padding()
-                } else {
-                    Rectangle()
-                        .fill(Color.red.opacity(0.8))
-                        .frame(height: 2)
-                }
+        // A stack, not an overlay: an overlay takes the camera's size, so a
+        // long message was cut off at the box's fixed 250 pt. In the stack the
+        // message can make the box taller, and the camera fills it.
+        ZStack {
+            CameraScannerView(scannedCode: $scannedCode, barcodeType: $barcodeType, availability: $availability)
+            if availability == .denied {
+                // Without access the camera view is black, so say why and
+                // what to do instead.
+                CameraAccessOffMessage()
+            } else {
+                Rectangle()
+                    .fill(Color.red.opacity(0.8))
+                    .frame(height: 2)
             }
-            .clipShape(RoundedRectangle(cornerRadius: 12))
+        }
+        .clipShape(RoundedRectangle(cornerRadius: 12))
             .accessibilityElement(children: .ignore)
             .accessibilityIdentifier("scannerView")
             .accessibilityLabel(

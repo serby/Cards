@@ -8,7 +8,8 @@ let componentStories: [Story] = [
     cardColorPickerStory,
     proximityLabelStory,
     cardLocationRowStory,
-    scannerPlaceholderStory
+    scannerPlaceholderStory,
+    cameraAccessOffStory
 ]
 
 @MainActor
@@ -205,14 +206,44 @@ private let scannerPlaceholderStory = Story(
     id: "scanner-placeholder",
     title: "ScannerPlaceholderView",
     section: "Components",
-    knobs: [],
+    knobs: [
+        .toggle("Camera access off", false)
+    ],
     gallery: [
-        (name: "Default", view: AnyView(ScannerPlaceholderView().frame(height: 250)))
+        (name: "Default", view: AnyView(ScannerPlaceholderView().frame(minHeight: 250))),
+        (name: "Camera access off", view: AnyView(ScannerPlaceholderView(cameraAccessOff: true).frame(minHeight: 250)))
     ]
-) { _ in
+) { knobs in
     AnyView(
-        ScannerPlaceholderView()
-            .frame(height: 250)
+        // At least 250 pt, as in the card form, and taller when the message
+        // needs it.
+        ScannerPlaceholderView(cameraAccessOff: knobs.bool("Camera access off"))
+            .frame(minHeight: 250)
             .padding()
     )
+}
+
+/// The message has no parameters; the story shows it on black, as the
+/// scanner does, in a box that grows with it.
+@MainActor
+private let cameraAccessOffStory = Story(
+    id: "camera-access-off-message",
+    title: "CameraAccessOffMessage",
+    section: "Components",
+    knobs: [],
+    gallery: [
+        (name: "On the camera", view: AnyView(onTheCamera(CameraAccessOffMessage())))
+    ]
+) { _ in
+    AnyView(onTheCamera(CameraAccessOffMessage()).padding())
+}
+
+@MainActor
+private func onTheCamera(_ message: some View) -> some View {
+    ZStack {
+        Rectangle().fill(.black)
+        message
+    }
+    .frame(minHeight: 250)
+    .clipShape(RoundedRectangle(cornerRadius: 12))
 }
