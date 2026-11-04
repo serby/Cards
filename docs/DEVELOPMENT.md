@@ -39,7 +39,8 @@ Run these in order after every change, and fix what fails before moving on:
 2. `make build`
 3. `make test`, or `make test-unit` while iterating on logic
 4. `make check-release` whenever you add or move code in `Cards/Development`, touch `Cards/App/DevelopmentHooks.swift`, or add a preview
-5. `make capture-screenshots` whenever the list, the Add Card form or Settings change, then look at every changed PNG before committing it
+5. `node scripts/l10n.ts check` whenever copy or a catalogue changes ([rule 11](#rule-11-every-string-is-translatable-and-translated))
+6. `make capture-screenshots` whenever the list, the Add Card form or Settings change, then look at every changed PNG before committing it
 
 | Command | What it does |
 |---------|-------------|
@@ -56,9 +57,11 @@ Run these in order after every change, and fix what fails before moving on:
 | `make capture-screenshots` | Refresh the en-US and en-GB iPhone and iPad App Store screenshots |
 | `make validate-screenshots` | Check the committed screenshot set |
 | `make deploy-testflight`, `make deploy-appstore` | Archive, export and upload |
-| `make l10n-status`, `make l10n-check` | Translation counts per catalogue and language; fail if any language is incomplete |
-| `make l10n-translate` | Translate the String Catalogues with AI (`LANGS="ja fr"` for some languages only) |
-| `make capture-l10n` | Screenshot every screen in every language at the default and largest text sizes, for checking translations by eye ([recipe](#check-the-translations-on-screen)) |
+| `make l10n-status`, `make l10n-check` | Translation counts per catalogue and language; fail if any language is incomplete or broken (`node scripts/l10n.ts status`, `check`) |
+| `make l10n-translate` | Translate what needs it with AI (`LANGS="ja fr"` for some languages only) ([recipe](#add-or-change-copy)) |
+| `make l10n-add-language CODE=<code>` | Add a language and translate everything into it ([recipe](#add-a-language)) |
+| `make l10n-test` | The translation tool's own tests (`node --test scripts/l10n.test.ts`) |
+| `make capture-l10n` | Screenshot every screen in every language at the default and largest text sizes, for checking translations by eye ([recipe](#check-every-language)) |
 
 Override `SIMULATOR_DEVICE` and `SIMULATOR_VERSION` on the command line to target another simulator.
 
@@ -149,8 +152,7 @@ Every view in `Cards/UI` has a story in `Cards/Development/Storybook/Catalogue`,
 - Reuse the shared knobs rather than inventing new names: `ProximityKnobs` for anything that shows a distance.
 - Bindings to local state go through `Stateful`; bindings to knobs through `KnobValues.*Binding`.
 - A value read once at creation (a map's starting camera) needs `.id(knobValue)` so the story rebuilds when the knob changes.
-- Each story's toolbar has a display options menu: appearance, text size, language and direction, applied to whichever story is on screen in either mode. Language offers System and every localisation compiled into the app, so a language appears as soon as it has a translation. Direction is Automatic (the language's script direction), Left to right or Right to left. The language and direction persist between launches in their own defaults suite, `net.serby.Cards.Storybook`, which the app never reads.
-- The language sets the stage's `\.locale`, so it switches whatever SwiftUI resolves as it renders: `Text` and `Label` from a key or a `LocalizedStringResource`, prompts, picker items, the titles, messages and `Text` buttons of alerts and dialogs, sheets, `FormatStyle`s in a `Text` or a key's interpolation, and SwiftUI's own copy (`EditButton`, `DatePicker`). It cannot switch what is resolved before SwiftUI sees it or drawn by UIKit: `String(localized:)` (VoiceOver announcements, notifications, import results), `.formatted()` strings, the OK and Cancel buttons iOS adds to alerts and dialogs, and the keyboard. A sheet takes the language but keeps the app's direction. Check those by running the app in the language: the scheme's App Language, or launch with `-AppleLanguages '(de)'`.
+- Each story's toolbar has a display options menu: appearance, text size, language and direction, applied to whichever story is on screen in either mode. Language offers System and every localisation compiled into the app, so a language appears as soon as it has a translation; what it can and cannot switch is in [rule 11](#rule-11-every-string-is-translatable-and-translated). Direction is Automatic (the language's script direction), Left to right or Right to left. The language and direction persist between launches in their own defaults suite, `net.serby.Cards.Storybook`, which the app never reads.
 
 ### Rule 5: Colours come from the palette and must stay readable
 
@@ -213,6 +215,21 @@ The target builds in Swift 6 language mode with strict concurrency, `SWIFT_TREAT
 - Someone else may be editing the tree: read `git status` and `git diff` before staging, and stage by hunk when a file mixes your change with theirs.
 - Write British English in prose, comments and UI copy ("colour"), and Swift's spelling in identifiers (`color`).
 
+### Rule 11: Every string is translatable and translated
+
+Every word the app shows or speaks comes from `Cards/Localizable.xcstrings`, or from `Cards/InfoPlist.xcstrings` for the app's name and the permission prompts iOS shows. British English is the source, and every language in the project's `knownRegions` has all of it. English is also the key, so changing the English makes a new key that needs translating again.
+
+1. **Copy is written in the view, with a comment for the translator.** In a view, `Text("Edit", comment: "…")`. Where an API takes a title, give it a `Text` (`.navigationTitle(Text(…))`, `Button { … } label: { Text(…) }`, `Section { … } header: { Text(…) }`, a text field's `prompt:`), or a `LocalizedStringResource` where it also takes an image (`Label(LocalizedStringResource(…), systemImage:)`). Core cannot import SwiftUI, so its names are `LocalizedStringResource` (`BarcodeType.displayName`), and a view parameter that carries copy is a `LocalizedStringResource` or `LocalizedStringKey`. Use `String(localized:)` only where it has to be a `String`: notifications, VoiceOver announcements, a name saved into a card. The comment says where the string appears, what it does and what fills each placeholder, and "a verb" or "a noun" when English could be either: the translator sees only the key and the comment. Give different jobs different English, as one key has one translation: a deleted card and a deleted place each have their own announcement, so a language can make it agree with either.
+2. **Values are formatted in the view**, never passed as a ready-made string: `Text(date, format: …)`, `Text(radius.metres, format: .radius)`, or interpolated into the key (`"\(distance, format: .distance) from \(place)"`). A count gets English `one` and `other` forms in the catalogue. User content stays a `String`: card names, codes and place names show as typed and are never looked up.
+3. **Codes read left to right.** Card codes, version numbers and JSON take `.readsLeftToRight()`, and a barcode never mirrors.
+4. **No development copy in the catalogue.** The Storybook, previews and samples use `Text(verbatim:)` or `String` values; a literal in a `LocalizedStringKey` there is extracted into the catalogue by a Debug build, and would ship.
+5. **`node scripts/l10n.ts check` passes** (`make l10n-check`, and in CI): every key in every language, with its placeholders and plural forms, and no stale keys.
+6. **Adding or changing copy means `exportLocalizations`, then `translate`, then a review** of every new translation against its language's style guide, as [Add or change copy](#add-or-change-copy) describes.
+
+What SwiftUI resolves as it renders follows the `\.locale` it renders in, which is how the Storybook's language option switches it: `Text` and `Label` from a key or a `LocalizedStringResource`, prompts, picker items, the titles, messages and `Text` buttons of alerts and dialogs, sheets, `FormatStyle`s in a `Text` or a key's interpolation, and SwiftUI's own copy (`EditButton`, `DatePicker`). It cannot switch what is resolved before SwiftUI sees it or drawn by UIKit: `String(localized:)` (VoiceOver announcements, notifications), `.formatted()` strings, the OK and Cancel buttons iOS adds to alerts and dialogs, and the keyboard. A sheet takes the language but keeps the app's direction. Check those by running the app in the language: the scheme's App Language, or launch with `-AppleLanguages '(de)'`.
+
+Why: a string that skips the catalogue is English in every language, a string without a comment is a guess, and a translation nobody has read can be wrong in ways no tool catches. The check turns a missing or broken translation into a failed CI run rather than a tester's bug report.
+
 ## 5. Recipes
 
 ### Add a view
@@ -249,30 +266,27 @@ In Xcode, **File > Add Package Dependencies**, add the product to the `Cards` ta
 
 ### Add or change copy
 
-Every word the app shows or speaks comes from `Cards/Localizable.xcstrings`, or from `Cards/InfoPlist.xcstrings` for the app name and the permission prompts iOS shows. English is the source, and the App Store screenshots pin its wording.
+1. **Write it** as [rule 11](#rule-11-every-string-is-translatable-and-translated) says: in the view, with a comment for the translator. The App Store screenshots pin the English wording of the list, Add Card and Settings, so changing it there means [refreshing them](#refresh-the-app-store-screenshots).
+2. **Fill the catalogue.** `make build` compiles the catalogues but never writes to them, so run `xcodebuild -exportLocalizations -project Cards.xcodeproj -localizationPath /tmp/cards-l10n -exportLanguage en` (with `DEVELOPER_DIR` pointing at Xcode 27.1, as the Makefile sets it), then `node scripts/l10n.ts normalise`. Like a build in Xcode, the export adds new keys with their comments, removes unused keys that have no translations, marks unused translated keys `stale`, and fills `InfoPlist.xcstrings` from `Info.plist`. Give a new count its English `one` and `other` forms, and delete the stale keys: changed English is a new key, and the old one's translations no longer apply.
+3. **Translate.** `make l10n-translate` (`LANGS="ja fr"` for some languages only) sends the AI only what is missing, empty, flagged for review or broken, with `l10n/context.md`, the translator brief, and `l10n/languages/<code>.md`, the language's style guide. It validates every reply (placeholders, plural forms) and asks again when one fails.
+4. **Review** every new translation against its language's style guide. To change one, `node scripts/l10n.ts export --lang <code> --out <file>` (`--force` for every string, not just those that need work), edit the `translation` of the units you mean to change, delete the rest, and `node scripts/l10n.ts import --lang <code> <file>`, which validates them as `translate` does. The same two commands let a person or another AI translate or review a whole language. Never shorten the English to make a translation fit.
+5. **Check and commit.** `node scripts/l10n.ts check` must pass. Commit the catalogue, translations included, with the code that changed it. When the app gains a term, or one decision turns up in several style guides, add it to the brief's glossary; a decision for one language belongs in its style guide.
 
-1. **Write it where it is shown.** In a view, `Text("Edit", comment: "…")`. Where an API takes a title, give it a `Text` (`.navigationTitle(Text(…))`, `Button { … } label: { Text(…) }`, `Section { … } header: { Text(…) }`, a text field's `prompt:`), or a `LocalizedStringResource` where it also takes an image (`Label(LocalizedStringResource(…), systemImage:)`). Text that SwiftUI resolves itself follows the `\.locale` it renders in, which is how the Storybook switches language. Core cannot import SwiftUI, so its names are `LocalizedStringResource` (`BarcodeType.displayName`), and a view parameter that carries copy is a `LocalizedStringResource` or `LocalizedStringKey`. Use `String(localized:)` only where it has to be a `String`: notifications, VoiceOver announcements, a name saved into a card.
-2. **Comment every string** with where it appears and what it does, and say "a verb" or "a noun" when English could be either. The translator sees only the key and the comment.
-3. **Format values in the view**, never as a ready-made string: `Text(date, format: …)`, `Text(radius.metres, format: .radius)`, or interpolated into the key (`"\(distance, format: .distance) from \(place)"`). A count gets English `one` and `other` forms in the catalogue.
-4. **User content stays a `String`.** Card names, codes and place names show as typed and are never looked up. Development copy (the Storybook, previews, samples) uses `Text(verbatim:)` or `String` values, or a Debug build would extract it into the catalogue and it would ship.
-5. **Codes read left to right.** Card codes, version numbers and JSON take `.readsLeftToRight()`, and a barcode never mirrors. Check the screen right to left in the Storybook.
-6. **Fill the catalogue.** `make build` compiles the catalogues but never writes to them, so run `xcodebuild -exportLocalizations -project Cards.xcodeproj -localizationPath /tmp/cards-l10n -exportLanguage en` (with `DEVELOPER_DIR` pointing at Xcode 27.1, as the Makefile sets it). Like a build in Xcode, it adds new keys with their comments, removes unused keys that have no translations, marks unused translated keys `stale`, and fills `InfoPlist.xcstrings` from `Info.plist`. Add any plural forms, then commit the catalogue with the code and translate as below.
+The tool writes catalogues byte for byte as Xcode's catalogue editor does, so Xcode re-saving them changes nothing, and `normalise` puts a catalogue back in that format. `make l10n-test` runs the tool's own tests.
 
-### Translate the app, or add a language
+### Add a language
 
-The String Catalogues under `Cards/` hold the British English source, and `scripts/l10n.ts` translates them with AI into every language in the project's `knownRegions`. There is no other list of languages.
+1. Run `make l10n-add-language CODE=<code>`. It adds the code to the project's `knownRegions`, the only list of languages there is, and translates everything into it.
+2. Write `l10n/languages/<code>.md`, the language's style guide, with someone who speaks it at a native level: register and form of address, Apple's own terms, the glossary, punctuation, plural forms and pitfalls, as the other guides have them. Then translate again with the guide in place: `node scripts/l10n.ts translate --lang <code> --force`, and review it as in [Add or change copy](#add-or-change-copy).
+3. Capture every screen in it and look, as [Check every language](#check-every-language) describes.
 
-1. After changing copy, run `make l10n-translate`. It sends only what is missing, empty, flagged for review or broken, validates every reply (placeholders, plural forms) and asks again when one fails. Then `make l10n-check` must pass.
-2. To add a language, run `make l10n-add-language CODE=<code>`. It adds the code to `knownRegions` and translates everything into it.
-3. The AI works from `l10n/context.md`, the translator brief, plus `l10n/languages/<code>.md` for a language if that file exists. When the app gains a term, add it to the brief's glossary.
-4. For a person or another AI to translate or review, run `node scripts/l10n.ts export --lang <code> --out <file>` (add `--force` for every string), fill in the `translation` fields, and run `node scripts/l10n.ts import --lang <code> <file>`.
-5. The tool writes catalogues byte for byte as Xcode's catalogue editor does, so Xcode re-saving them changes nothing; `node scripts/l10n.ts normalise` puts a catalogue in that format. `make l10n-test` runs the tool's tests.
+### Check every language
 
-### Check the translations on screen
-
-`make capture-l10n` runs `CardsLocalisationScreenshotTests` once per language and text size and writes `/tmp/cards-l10n-qa/<language>/<size>/<screen>.png`: the list, a card's menu, the empty list, a card (and one whose barcode fails), Add Card, Edit Card, the location prompt and map, a place in the form, Settings, the delete-all confirmation and the import sheet. A screen that scrolls is captured a page at a time to its end (`06-add.png`, `06-add-2.png`, …). It visits the screens through the accessibility audit's helpers (`CardsUITests/UITestNavigation.swift`), so a screen added to one belongs in the other. Narrow it with `LANGS="ar ja"` and `SIZES="large AX5"` (`xs` to `xxxl`, `AX1` to `AX5`); `SIMULATOR_DEVICE="iPad Pro 13-inch (M4)" L10N_QA_OUT=/tmp/cards-l10n-qa/ipad` captures on an iPad. Each language runs in its own region (`en` in GB, `ar` in SA, `zh-Hant` in TW), as `-testLanguage` and `-testRegion` would set it. The script keeps its own simulator of that device (`iPhone 16 Pro (Cards l10n QA)`) and sets its system language too, restarting it once per language, because iOS draws the location prompt, with the app's reason for asking, in the system's language rather than the app's. Outside the script the test skips itself, so `make test` never runs it.
-
-Look at every picture for cut-off or overlapping text, controls pushed off screen, English left untranslated, raw keys or `%@`, mirroring right to left (codes and barcodes must not mirror), number and distance formats, and line breaks in Chinese and Japanese. Fix layout in the views; send wording that is wrong or too long back through the tool (`export` and `import`), never by shortening the English.
+- **Screenshots.** `make capture-l10n` runs `CardsLocalisationScreenshotTests` once per language and text size and writes `/tmp/cards-l10n-qa/<language>/<size>/<screen>.png`: the list, a card's menu, the empty list, a card (and one whose barcode fails), Add Card, Edit Card, the location prompt and map, a place in the form, Settings, the delete-all confirmation and the import sheet. A screen that scrolls is captured a page at a time to its end (`06-add.png`, `06-add-2.png`, …). It visits the screens through the accessibility audit's helpers (`CardsUITests/UITestNavigation.swift`), so a screen added to one belongs in the other. Narrow it with `LANGS="ar ja"` and `SIZES="large AX5"` (`xs` to `xxxl`, `AX1` to `AX5`); `SIMULATOR_DEVICE="iPad Pro 13-inch (M4)" L10N_QA_OUT=/tmp/cards-l10n-qa/ipad` captures on an iPad. Each language runs in its own region (`en` in GB, `ar` in SA, `zh-Hant` in TW), as `-testLanguage` and `-testRegion` would set it. The script keeps its own simulator of that device (`iPhone 16 Pro (Cards l10n QA)`) and sets its system language too, restarting it once per language, because iOS draws the location prompt, with the app's reason for asking, in the system's language rather than the app's. Outside the script the test skips itself, so `make test` never runs it.
+- **What to look for.** Cut-off or overlapping text, controls pushed off screen, English left untranslated, raw keys or `%@`, mirroring right to left (codes and barcodes must not mirror), number and distance formats, and line breaks in Chinese and Japanese. Fix layout in the views, and wording that is wrong or too long through `export` and `import`.
+- **The UI tests in a language.** They find elements by identifier, so they run in any language, and the accessibility audit's default-size pass runs in that language with them: `xcodebuild test -project Cards.xcodeproj -scheme Cards -destination 'platform=iOS Simulator,name=iPhone 16 Pro,OS=18.1' -only-testing:CardsUITests -testLanguage de`. German (long words) and Arabic (right to left) find the most.
+- **The accessibility audit.** `make test-a11y` runs it on every screen in English, and in Arabic, right to left, at the largest text size.
+- **The Storybook.** The display options menu's Language and Direction show any story in any language, either way round, at any text size, which is the quickest way to check a new view. What the language cannot switch ([rule 11](#rule-11-every-string-is-translatable-and-translated)) needs the app run in the language.
 
 ### Change the app icon
 
