@@ -77,12 +77,18 @@ public struct CardEditScreen: View {
     }
 
     /// What VoiceOver says after a scan, with the code spelled out character
-    /// by character, as everywhere else.
+    /// by character, as everywhere else. The format's name comes straight
+    /// before the code, with no "code" between them: several names already
+    /// end in it ("Scanned QR Code code …").
     static func scanAnnouncement(code: String, type: BarcodeType?) -> AttributedString {
         var message = if let type {
             AttributedString(
-                localized: "Scanned \(String(localized: type.displayName)) code \(code)",
-                comment: "VoiceOver announcement after the camera reads a barcode. The arguments are its format, such as EAN-13, then the code."
+                localized: "Scanned \(String(localized: type.displayName)): \(code)",
+                comment: """
+                    VoiceOver announcement after the camera reads a barcode. The arguments are its format, then the code, \
+                    as in “Scanned EAN-13: 5012345678900”. The format's name is already translated and may contain the word code, \
+                    as QR Code and Code 128 do, so do not add one.
+                    """
             )
         } else {
             AttributedString(

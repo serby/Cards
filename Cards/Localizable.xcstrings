@@ -6590,8 +6590,8 @@
         }
       }
     },
-    "Scanned %@ code %@" : {
-      "comment" : "VoiceOver announcement after the camera reads a barcode. The arguments are its format, such as EAN-13, then the code.",
+    "Scanned %@: %@" : {
+      "comment" : "VoiceOver announcement after the camera reads a barcode. The arguments are its format, then the code, as in “Scanned EAN-13: 5012345678900”. The format's name is already translated and may contain the word code, as QR Code and Code 128 do, so do not add one.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -6602,13 +6602,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$@ gescannt, Code %2$@"
+            "value" : "%1$@ gescannt: %2$@"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Scanned %1$@ code %2$@"
+            "value" : "Scanned %1$@: %2$@"
           }
         },
         "es" : {
@@ -6620,25 +6620,25 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Code-barres %1$@ scanné, code %2$@"
+            "value" : "%1$@ scanné : %2$@"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Codice %1$@ scansionato: %2$@"
+            "value" : "%1$@ scansionato: %2$@"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$@のコード%2$@をスキャンしました"
+            "value" : "%1$@をスキャンしました：%2$@"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$@ 코드 %2$@ 스캔됨"
+            "value" : "%1$@ 스캔됨: %2$@"
           }
         },
         "pt-BR" : {
@@ -6650,13 +6650,13 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已扫描 %1$@，卡号为 %2$@"
+            "value" : "已扫描 %1$@：%2$@"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已掃描 %1$@ 條碼，代碼為 %2$@"
+            "value" : "已掃描 %1$@：%2$@"
           }
         }
       }
