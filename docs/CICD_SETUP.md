@@ -27,16 +27,9 @@ base64 -i distribution.p12 | pbcopy
 ```
 Save this as `BUILD_CERTIFICATE_BASE64` secret (copied to clipboard)
 
-### Export Provisioning Profile
-```bash
-# Download from https://developer.apple.com/account
-# Certificates, Identifiers & Profiles → Profiles
-# Download the App Store profile for net.serby.cards
+### Provisioning profiles
 
-# Encode to base64
-base64 -i Cards_AppStore.mobileprovision | pbcopy
-```
-Save this as `BUILD_PROVISION_PROFILE_BASE64` secret
+None to export. CI creates and installs the App Store profiles for the app and its widget through the App Store Connect API on every run (`scripts/asc-profiles.ts`, see `docs/DEVELOPMENT.md` section 7). The `BUILD_PROVISION_PROFILE_BASE64` secret is no longer read and can be deleted.
 
 ## Step 3: Get Apple IDs
 
@@ -75,7 +68,6 @@ Click "New repository secret" for each:
 | `ITC_TEAM_ID` | [Your ITC Team ID] | App Store Connect → Membership |
 | `BUILD_CERTIFICATE_BASE64` | [Base64 certificate] | From Step 2 |
 | `P12_PASSWORD` | [Certificate password] | Password you set when exporting |
-| `BUILD_PROVISION_PROFILE_BASE64` | [Base64 profile] | From Step 2 |
 | `KEYCHAIN_PASSWORD` | [Any secure password] | Create a strong password |
 | `APP_STORE_CONNECT_API_KEY` | [App-specific password] | From Step 3 |
 

@@ -39,6 +39,20 @@ public final class CardItem: Identifiable {
     }
 }
 
+public extension WidgetCard {
+    /// What the widget needs from `card`. Lives here because the widget
+    /// extension shares `WidgetCard` but not the store.
+    init(_ card: CardItem) {
+        self.init(
+            code: card.code,
+            name: card.name,
+            barcodeType: card.getBarcodeType(),
+            color: card.getColor(),
+            locations: card.locations
+        )
+    }
+}
+
 public struct CardItemDTO: Codable {
     public let timestamp: Date
     public let code: String

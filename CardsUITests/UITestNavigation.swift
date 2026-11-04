@@ -1,14 +1,21 @@
 import XCTest
 
 /// The seeded cards (user content, so never translated) by their rows'
-/// identifiers.
+/// identifiers, which end in the card's code (`ScreenshotSeed`).
 enum SeededCard {
-    /// The first card. Its code is not a valid EAN-13, so its screen shows
-    /// the failure message on the barcode's plate.
+    /// The first card, with two places, the nearer one where you are.
     static let tesco = "cardRow_634004024987531"
+    /// The second card.
     static let costa = "cardRow_1234567890128"
+    static let boots = "cardRow_9780201379624"
+    /// A QR code.
+    static let westway = "cardRow_https://serby.net"
+    static let nectar = "cardRow_9988776655443"
     /// The last card, below the fold at large text sizes.
     static let ikea = "cardRow_7350053850019"
+
+    /// Every row, in list order.
+    static let all = [tesco, costa, boots, westway, nectar, ikea]
 }
 
 /// Getting around the app, so every UI test that visits a screen reaches it
@@ -18,7 +25,9 @@ enum SeededCard {
 @MainActor
 extension XCUIApplication {
     /// Launches with an in-memory store, and with the six screenshot cards
-    /// unless `seeded` is false, then waits for the list.
+    /// unless `seeded` is false, then waits for the list. The seeded cards are
+    /// seen from a fixed place (`ScreenshotSeed.location`), so the app never
+    /// asks for location access while they are in use.
     static func launchForTesting(seeded: Bool = true, arguments: [String] = []) -> XCUIApplication {
         let app = XCUIApplication()
         app.launchArguments += ["-uiTesting"] + (seeded ? ["-screenshotSeed"] : []) + arguments
@@ -28,7 +37,25 @@ extension XCUIApplication {
         app.launch()
         let add = seeded ? app.buttons["addCardButton"] : app.buttons["addFirstCardButton"]
         XCTAssertTrue(add.waitForExistence(timeout: 5), "The card list did not appear")
+        if seeded {
+            dismissNotificationPrompt()
+        }
         return app
+    }
+
+    /// Whether this test run has already waited for the notification prompt.
+    private static var hasAnsweredNotificationPrompt = false
+
+    /// The seeded cards have places, so the first launch after an install asks
+    /// to send arrival notifications. iOS remembers the answer until the app
+    /// is installed again, so only the first seeded launch of a run waits for
+    /// the prompt. Any answer will do; the prompt is the system's.
+    static func dismissNotificationPrompt() {
+        guard !hasAnsweredNotificationPrompt else { return }
+        hasAnsweredNotificationPrompt = true
+        guard let alert = systemPrompt(timeout: 5) else { return }
+        alert.buttons.element(boundBy: alert.buttons.count - 1).tap()
+        XCTAssertTrue(alert.waitForNonExistence(timeout: 3), "The notification prompt stayed up")
     }
 
     func openCard(_ row: String) {
@@ -36,8 +63,24 @@ extension XCUIApplication {
         XCTAssertTrue(staticTexts["cardNameText"].waitForExistence(timeout: 5), "The card's screen did not open")
     }
 
+    /// Opens Costa's screen with a code its format, EAN-13, cannot draw, so
+    /// the screen shows the failure message on the barcode's plate. Every
+    /// seeded code draws, so it adds a digit to Costa's first: fourteen digits
+    /// are too many for EAN-13, wherever the cursor lands.
+    func openCardWithFailedBarcode() {
+        openEditCard(SeededCard.costa)
+        let code = textFields["codeTextField"]
+        code.tap()
+        code.typeText("0")
+        buttons["saveCardButton"].tap()
+        XCTAssertTrue(staticTexts["cardNameText"].waitForExistence(timeout: 5), "The card's screen did not open")
+    }
+
+    /// The list's toolbar button, or the empty list's own button when there are
+    /// no cards.
     func openAddCard() {
-        buttons["addCardButton"].tap()
+        let toolbarButton = buttons["addCardButton"]
+        (toolbarButton.exists ? toolbarButton : buttons["addFirstCardButton"]).tap()
         XCTAssertTrue(buttons["saveCardButton"].waitForExistence(timeout: 5), "The Add Card form did not open")
     }
 
@@ -142,11 +185,17 @@ extension XCUIApplication {
         XCTAssertFalse(keyboard.waitForExistence(timeout: 1), "The keyboard stayed up")
     }
 
-    /// The location access prompt SpringBoard shows over the app, if it is up
-    /// within `timeout` seconds.
-    static func locationPrompt(timeout: TimeInterval = 3) -> XCUIElement? {
+    /// A prompt SpringBoard shows over the app, such as for location access or
+    /// notifications, if one is up within `timeout` seconds.
+    static func systemPrompt(timeout: TimeInterval = 3) -> XCUIElement? {
         let alert = XCUIApplication(bundleIdentifier: "com.apple.springboard").alerts.firstMatch
         return alert.waitForExistence(timeout: timeout) ? alert : nil
+    }
+
+    /// The location access prompt, which the Add Location map raises the first
+    /// time it opens without the seeded cards' fixed place.
+    static func locationPrompt(timeout: TimeInterval = 3) -> XCUIElement? {
+        systemPrompt(timeout: timeout)
     }
 
     /// The Add Location map asks for location access when it first opens. Any

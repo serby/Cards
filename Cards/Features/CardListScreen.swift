@@ -35,6 +35,13 @@ public struct CardListScreen: View {
             }
             await ArrivalNotifier.reschedule(arrivals, near: locationService.current)
         }
+        .task(id: widgetCards) {
+            WidgetSnapshot.publish(widgetCards)
+        }
+    }
+
+    private var widgetCards: [WidgetCard] {
+        cardItems.map(WidgetCard.init)
     }
 
     private var arrivals: [ArrivalNotifier.Card] {

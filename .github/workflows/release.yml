@@ -25,8 +25,15 @@ jobs:
       run: |
         TAG="${GITHUB_REF#refs/tags/}"
         VERSION="${TAG#v}"
-        # `git for-each-ref` returns the annotation body, empty for lightweight tags
-        WHATS_NEW=$(git for-each-ref "refs/tags/${TAG}" --format='%(contents)' | sed -e 's/-----BEGIN PGP SIGNATURE-----.*//s' )
+        # actions/checkout points the tag straight at the commit, dropping the
+        # annotation, so fetch the tag object itself before reading its message.
+        git fetch --force --no-tags --depth=1 origin "+refs/tags/${TAG}:refs/tags/${TAG}"
+        if [[ "$(git cat-file -t "refs/tags/${TAG}")" != "tag" ]]; then
+          echo "::error::Tag ${TAG} is lightweight. Use 'git tag -a ${TAG} -m \"release notes\"'."
+          exit 1
+        fi
+        # The annotation, without any signature block.
+        WHATS_NEW=$(git for-each-ref "refs/tags/${TAG}" --format='%(contents)' | awk '/-----BEGIN PGP SIGNATURE-----/ { exit } { print }')
         if [[ -z "$WHATS_NEW" ]]; then
           echo "::error::Tag ${TAG} is lightweight or has no message. Use 'git tag -a ${TAG} -m \"release notes\"'."
           exit 1
@@ -46,34 +53,18 @@ jobs:
       run: |
         BUILD=$(( ( $(date -u +%s) - 1767225600 ) / 60 ))
         echo "Setting CFBundleVersion to $BUILD"
-        /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $BUILD" Info.plist
+        echo "BUILD_NUMBER=$BUILD" >> "$GITHUB_ENV"
         echo "build=${BUILD}" >> "$GITHUB_OUTPUT"
 
-    - name: Install the Apple certificate and provisioning profile
-      env:
-        BUILD_CERTIFICATE_BASE64: ${{ secrets.BUILD_CERTIFICATE_BASE64 }}
-        P12_PASSWORD: ${{ secrets.P12_PASSWORD }}
-        BUILD_PROVISION_PROFILE_BASE64: ${{ secrets.BUILD_PROVISION_PROFILE_BASE64 }}
-        KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
-      run: |
-        CERTIFICATE_PATH=$RUNNER_TEMP/build_certificate.p12
-        PP_PATH=$RUNNER_TEMP/build_pp.mobileprovision
-        KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
-
-        echo -n "$BUILD_CERTIFICATE_BASE64" | base64 --decode -o $CERTIFICATE_PATH
-        echo -n "$BUILD_PROVISION_PROFILE_BASE64" | base64 --decode -o $PP_PATH
-
-        security create-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
-        security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
-        security unlock-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
-        security import $CERTIFICATE_PATH -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
-        security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
-        security list-keychain -d user -s $KEYCHAIN_PATH
-
-        mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-        PROFILE_UUID=$(/usr/libexec/PlistBuddy -c "Print UUID" /dev/stdin <<< $(/usr/bin/security cms -D -i $PP_PATH))
-        cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles/$PROFILE_UUID.mobileprovision
-        cp $PP_PATH $GITHUB_WORKSPACE/Cards.mobileprovision
+    - name: Install signing
+      uses: ./.github/actions/install-signing
+      with:
+        certificate-base64: ${{ secrets.BUILD_CERTIFICATE_BASE64 }}
+        p12-password: ${{ secrets.P12_PASSWORD }}
+        keychain-password: ${{ secrets.KEYCHAIN_PASSWORD }}
+        asc-key-id: ${{ secrets.ASC_KEY_ID }}
+        asc-issuer-id: ${{ secrets.ASC_ISSUER_ID }}
+        asc-key-content: ${{ secrets.ASC_KEY_CONTENT }}
 
     - name: Upload to App Store
       env:
@@ -97,4 +88,4 @@ jobs:
 
     - name: Clean up keychain
       if: ${{ always() }}
-      run: security delete-keychain $RUNNER_TEMP/app-signing.keychain-db
+      run: security delete-keychain $RUNNER_TEMP/app-signing.keychain-db || true

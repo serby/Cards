@@ -20,7 +20,7 @@ If something here turns out to be wrong, fix the guide in the same change.
 
 | Tool | Why | Notes |
 |------|-----|-------|
-| Xcode 27.1 | Builds, tests, simulators | The Makefile expects `/Applications/Xcode27.1.app`; override with `make XCODE_APP=/path/to/Xcode.app …` |
+| Xcode 27.1 | Builds, tests, simulators | The Makefile and scripts use `XCODE_APP` if set, else `/Applications/Xcode27.1.app` when it is installed, else whatever `xcode-select` points at, as on CI runners (`scripts/xcode-env.sh`) |
 | SwiftLint | Lint, run before every build | `.swiftlint.yml` at the root |
 | Node 24 | `scripts/check-release-clean.ts`, `scripts/l10n.ts` | Runs TypeScript directly, no install step |
 | Claude Code | `make l10n-translate` | The default AI for translations; any other command can stand in through `L10N_AI_COMMAND` |
@@ -40,7 +40,7 @@ Run these in order after every change, and fix what fails before moving on:
 3. `make test`, or `make test-unit` while iterating on logic
 4. `make check-release` whenever you add or move code in `Cards/Development`, touch `Cards/App/DevelopmentHooks.swift`, or add a preview
 5. `node scripts/l10n.ts check` whenever copy or a catalogue changes ([rule 11](#rule-11-every-string-is-translatable-and-translated))
-6. `make capture-screenshots` whenever the list, the Add Card form or Settings change, then look at every changed PNG before committing it
+6. `make capture-screenshots` whenever the list, a card's screen, the edit form or the location picker change, then look at every changed PNG before committing it
 
 | Command | What it does |
 |---------|-------------|
@@ -54,7 +54,7 @@ Run these in order after every change, and fix what fails before moving on:
 | `make check-release` | Build Release and fail if any development code reached it ([rule 1](#rule-1-development-code-never-ships)) |
 | `make sim` | Build, boot the simulator, install and launch |
 | `make device` | Build and install on a connected iPhone |
-| `make capture-screenshots` | Refresh the en-US and en-GB iPhone and iPad App Store screenshots |
+| `make capture-screenshots` | Refresh the en-US and en-GB iPhone, iPad and iPhone Duo App Store screenshots |
 | `make validate-screenshots` | Check the committed screenshot set |
 | `make deploy-testflight`, `make deploy-appstore` | Archive, export and upload |
 | `make l10n-status`, `make l10n-check` | Translation counts per catalogue and language; fail if any language is incomplete or broken (`node scripts/l10n.ts status`, `check`) |
@@ -69,28 +69,31 @@ Xcode on this project writes build products to `fastlane/derived_data/Build/Prod
 
 ## 3. Project layout
 
-One app target, one Swift module. The folders are layers by convention, so the compiler will not stop a violation; the rules in section 4 do.
+One app target and one widget extension. The app is a single Swift module whose folders are layers by convention, so the compiler will not stop a violation; the rules in section 4 do.
 
 ```
 Cards/
   App/           Entry point, and DevelopmentHooks: the only door into Development
   Core/          Models, navigation and services. No SwiftUI views
-    Models/        CardItem (SwiftData), CardItemDTO, BarcodeType, CardColor, CardLocation
+    Models/        CardItem (SwiftData), CardItemDTO, BarcodeType, CardColor, CardLocation, WidgetCard
     Navigation/    NavigationRoute, NavigationManager, deep links
-    Services/      LocationService, PostcodeLookup, PerformanceTracker
+    Services/      CardStore, LocationService, PostcodeLookup, PerformanceTracker, WidgetSnapshot
   UI/            Every view, as a pure function of view state and actions
     Screens/       CardListView, CardDetailView, CardEditView, LocationPickerView, SettingsListView
-    Components/    BarcodeView, BarcodeImage, CardColorPicker, CardLocationRow, ProximityLabel, …
-    ViewState/     CardSummary, CardDetail, CardDraft, SettingsState
+    Components/    BarcodeView, BarcodeImage, CardColorPicker, CardLocationRow, CardWidgetView, ProximityLabel, …
+    ViewState/     CardSummary, CardDetail, CardDraft, CardWidgetState, SettingsState
     Actions/       Closure bundles each screen raises
     Environment/   Injected effects: ScreenBrightness, AccessibilityAnnouncer
     Theme/         Colours, the card palette
   Scanner/       Camera scanning (AVFoundation), pinch to zoom
   Features/      Connectors: SwiftData, navigation, location and notifications in, view state out
   Development/   Never in a release build. Storybook, previews, sample data, stand-ins, test seeds
+CardsWidget/     The Home Screen widget extension: timeline, configuration intents, location
 CardsTests/      Unit tests (Swift Testing)
 CardsUITests/    UI and screenshot tests (XCTest)
 ```
+
+The widget cannot open the SwiftData store, so the list screen writes every card to a JSON file in the App Group container (`WidgetSnapshot`) and the widget reads that. The widget compiles a short list of files from `Cards/` (models, `BarcodeImage`, `CardWidgetView`, the palette); the list is the "Exceptions for \"Cards\" folder in \"CardsWidget\" target" set in the project, which is what Xcode's Target Membership box edits. A shared file may only use what is on that list, so keep it to Foundation, SwiftUI and other shared files.
 
 Dependencies point one way:
 
@@ -169,6 +172,7 @@ The SwiftData store syncs through CloudKit, and users keep JSON exports. So:
 - New `CardItemDTO` fields are optional, and a test decodes an export from before the field existed.
 - Persisting a new kind of value gets a round-trip test through a real in-memory `ModelContainer` (`cloudKitDatabase: .none`).
 - Before a build with new fields ships, the CloudKit schema must be deployed to Production (see [section 8](#8-releasing)).
+- The store stays in the app's own container. SwiftData puts its default store in the first App Group in the entitlements, and the widget added one, so `CardStore.configuration` passes `groupContainer: .none`; without it every existing card would be stranded in the old file. `CardStoreTests` checks the path. Always build the container through `CardStore`.
 
 ### Rule 7: Swift 6, no warnings, clean lint
 
@@ -208,7 +212,7 @@ The target builds in Swift 6 language mode with strict concurrency, `SWIFT_TREAT
 ### Rule 10: Commits tell a story, straight on `main`
 
 - **Work on `main`.** Cards has one contributor, so there are no feature branches and no pull requests: commit to `main` and push. Pushing is the release step, because a push to `main` runs CI and, when CI passes, `deploy.yml` uploads a TestFlight build. Push when the change is ready for testers, and run the loop in section 2 first so CI is a formality.
-- **Build numbers are automatic.** The deploy job stamps `CFBundleVersion` from the time on the runner and commits nothing back, so `main` never moves under you.
+- **Build numbers are automatic.** The deploy job passes a build number from the time on the runner to `scripts/build-ipa.sh` as `BUILD_NUMBER`, which sets `CURRENT_PROJECT_VERSION` for the app and widget together, and commits nothing back, so `main` never moves under you.
 - One concern per commit, with a conventional prefix: `feat`, `fix`, `refactor`, `style`, `test`, `build`, `ci`, `docs`, `chore`.
 - The subject says what changed; the body says why, and anything a reviewer could trip over.
 - Each commit builds. Run the loop in section 2 before committing.
@@ -266,7 +270,7 @@ In Xcode, **File > Add Package Dependencies**, add the product to the `Cards` ta
 
 ### Add or change copy
 
-1. **Write it** as [rule 11](#rule-11-every-string-is-translatable-and-translated) says: in the view, with a comment for the translator. The App Store screenshots pin the English wording of the list, Add Card and Settings, so changing it there means [refreshing them](#refresh-the-app-store-screenshots).
+1. **Write it** as [rule 11](#rule-11-every-string-is-translatable-and-translated) says: in the view, with a comment for the translator. The App Store screenshots pin the English wording of the list, a card's screen, the edit form and the location picker, so changing it there means [refreshing them](#refresh-the-app-store-screenshots).
 2. **Fill the catalogue.** `make build` compiles the catalogues but never writes to them, so run `xcodebuild -exportLocalizations -project Cards.xcodeproj -localizationPath /tmp/cards-l10n -exportLanguage en` (with `DEVELOPER_DIR` pointing at Xcode 27.1, as the Makefile sets it), then `node scripts/l10n.ts normalise`. Like a build in Xcode, the export adds new keys with their comments, removes unused keys that have no translations, marks unused translated keys `stale`, and fills `InfoPlist.xcstrings` from `Info.plist`. Give a new count its English `one` and `other` forms, and delete the stale keys: changed English is a new key, and the old one's translations no longer apply.
 3. **Translate.** `make l10n-translate` (`LANGS="ja fr"` for some languages only) sends the AI only what is missing, empty, flagged for review or broken, with `l10n/context.md`, the translator brief, and `l10n/languages/<code>.md`, the language's style guide. It validates every reply (placeholders, plural forms) and asks again when one fails.
 4. **Review** every new translation against its language's style guide. To change one, `node scripts/l10n.ts export --lang <code> --out <file>` (`--force` for every string, not just those that need work), edit the `translation` of the units you mean to change, delete the rest, and `node scripts/l10n.ts import --lang <code> <file>`, which validates them as `translate` does. The same two commands let a person or another AI translate or review a whole language. Never shorten the English to make a translation fit.
@@ -282,7 +286,7 @@ The tool writes catalogues byte for byte as Xcode's catalogue editor does, so Xc
 
 ### Check every language
 
-- **Screenshots.** `make capture-l10n` runs `CardsLocalisationScreenshotTests` once per language and text size and writes `/tmp/cards-l10n-qa/<language>/<size>/<screen>.png`: the list, a card's menu, the empty list, a card (and one whose barcode fails), Add Card, Edit Card, the location prompt and map, a place in the form, Settings, the delete-all confirmation and the import sheet. A screen that scrolls is captured a page at a time to its end (`06-add.png`, `06-add-2.png`, …). It visits the screens through the accessibility audit's helpers (`CardsUITests/UITestNavigation.swift`), so a screen added to one belongs in the other. Narrow it with `LANGS="ar ja"` and `SIZES="large AX5"` (`xs` to `xxxl`, `AX1` to `AX5`); `SIMULATOR_DEVICE="iPad Pro 13-inch (M4)" L10N_QA_OUT=/tmp/cards-l10n-qa/ipad` captures on an iPad. Each language runs in its own region (`en` in GB, `ar` in SA, `zh-Hant` in TW), as `-testLanguage` and `-testRegion` would set it. The script keeps its own simulator of that device (`iPhone 16 Pro (Cards l10n QA)`) and sets its system language too, restarting it once per language, because iOS draws the location prompt, with the app's reason for asking, in the system's language rather than the app's. Outside the script the test skips itself, so `make test` never runs it.
+- **Screenshots.** `make capture-l10n` runs `CardsLocalisationScreenshotTests` once per language and text size and writes `/tmp/cards-l10n-qa/<language>/<size>/<screen>.png`: the list, a card's menu, the empty list, a card (and one whose barcode fails), Add Card, Edit Card, the location prompt (from the empty list, as the seeded cards' fixed place never asks) and map, a place in the form, Settings, the delete-all confirmation and the import sheet. A screen that scrolls is captured a page at a time to its end (`06-add.png`, `06-add-2.png`, …). It visits the screens through the accessibility audit's helpers (`CardsUITests/UITestNavigation.swift`), so a screen added to one belongs in the other. Narrow it with `LANGS="ar ja"` and `SIZES="large AX5"` (`xs` to `xxxl`, `AX1` to `AX5`); `SIMULATOR_DEVICE="iPad Pro 13-inch (M4)" L10N_QA_OUT=/tmp/cards-l10n-qa/ipad` captures on an iPad. Each language runs in its own region (`en` in GB, `ar` in SA, `zh-Hant` in TW), as `-testLanguage` and `-testRegion` would set it. The script keeps its own simulator of that device (`iPhone 16 Pro (Cards l10n QA)`) and sets its system language too, restarting it once per language, because iOS draws the location prompt, with the app's reason for asking, in the system's language rather than the app's. Outside the script the test skips itself, so `make test` never runs it.
 - **What to look for.** Cut-off or overlapping text, controls pushed off screen, English left untranslated, raw keys or `%@`, mirroring right to left (codes and barcodes must not mirror), number and distance formats, and line breaks in Chinese and Japanese. Fix layout in the views, and wording that is wrong or too long through `export` and `import`.
 - **The UI tests in a language.** They find elements by identifier, so they run in any language, and the accessibility audit's default-size pass runs in that language with them: `xcodebuild test -project Cards.xcodeproj -scheme Cards -destination 'platform=iOS Simulator,name=iPhone 16 Pro,OS=18.1' -only-testing:CardsUITests -testLanguage de`. German (long words) and Arabic (right to left) find the most.
 - **The accessibility audit.** `make test-a11y` runs it on every screen in English, and in Arabic, right to left, at the largest text size.
@@ -292,16 +296,34 @@ The tool writes catalogues byte for byte as Xcode's catalogue editor does, so Xc
 
 Edit `DesignAssets/Icon.svg`, run `scripts/generate-app-icons.sh`, and commit the SVG with the regenerated PNGs.
 
+### Publish a new App Store version
+
+1. Set `MARKETING_VERSION` in the project-level build settings to the new version (for example `1.3`); the app and the widget inherit it, and App Store Connect rejects an extension whose version differs from its app. Commit and push. Every push to `main` puts a build on TestFlight.
+2. Wait for that push's CI and TestFlight deploy to finish; App Store Connect rejects two uploads arriving at once.
+3. Tag the commit with an annotated tag whose name matches the version and whose message is the "What's New" text, then push the tag:
+   ```bash
+   git tag -a v1.3 -m "What's New text"
+   git push origin v1.3
+   ```
+4. `release.yml` stamps a build number, archives, signs and uploads, waits for Apple to process the build, creates the App Store version, attaches the build, sets "What's New" in every localisation and submits it for review (`scripts/asc-submit.sh`). A tag without a message stops the workflow before it uploads anything.
+5. Store listing text and screenshots are separate: `scripts/upload-metadata.sh` for the text, and the **App Store screenshots** workflow for the images (below).
+
 ### Refresh the App Store screenshots
 
-Run `make capture-screenshots` (about ten minutes for the four device and locale sets), look at every changed PNG under `screenshots/`, and commit them in their own `test:` commit.
+Run `make capture-screenshots` (about twenty minutes for the six device and locale sets), look at every changed PNG under `screenshots/`, and commit them in their own `test:` commit.
+
+- **What is captured:** `CardsScreenshotTests` launches with `-screenshotSeed`, which seeds six cards and fixes the user at Notting Hill Gate (`ScreenshotSeed.location`), so the distances and the "Here" badge are the same on every run. iPhone and iPhone Duo get the list, a card, the edit form and the location picker; iPad gets the list and a card.
+- **iPhone Duo:** `scripts/capture-screenshots.sh "iPhone Duo" <locale>` captures the outer display (1398 × 2034, the simulator boots folded) with `_Duo` names; App Store Connect takes that or the inner display's 2007 × 2853. It needs the iOS 27.1 simulator runtime, which CI does not have, so CI checks Duo references for size only.
+- **CI compares** the list, card and edit screenshots it captures with these references (`scripts/validate-screenshots.py`), so refresh them whenever those screens change. The map is not compared, because its tiles come from the network.
+- **Uploading:** after pushing, run the **App Store screenshots** workflow (Actions tab, or `gh workflow run app-store-screenshots.yml`). It runs `scripts/upload-screenshots.ts`, which replaces the editable version's screenshots for each display type it has images for, in file-name order. Tick **dry run** to see what it would change. Locally, `make upload-screenshots` does the same with an API key in the environment.
 
 ## 6. Running and driving the simulator
 
 Xcode 27 has no Simulator.app; `make sim` opens Device Hub to show the screen, and every `simctl` command works headless.
 
 - **Launch arguments:** `-uiTesting` gives an in-memory store and hides the Storybook tab; `-screenshotSeed` adds the six screenshot cards; `-initializeCloudKitSchema` creates the CloudKit schema in the Development environment ([section 8](#8-releasing)). The environment variables `CARDS_UI_TESTING=1` and `CARDS_SCREENSHOT_SEED=1` do the same as the first two. All of them are ignored in release builds.
-- **Deep links:** `cards://cards/card/<code>`, `cards://cards/card/<code>/edit` and `cards://cards/new`. `xcrun simctl openurl` shows a confirmation prompt first.
+- **Deep links:** `cards://cards/card/<code>`, `cards://cards/card/<code>/edit` and `cards://cards/new`, with the code percent-encoded (`NavigationRoute.url` builds them). `xcrun simctl openurl` shows a confirmation prompt first.
+- **The widget:** open the app once so it writes the snapshot, then long-press the Home Screen, tap **Edit > Add Widget**, find Card Barcodes and add the medium size. Long-press the widget and choose **Edit Widget** to pick a card instead of the nearest one. Its views are also in the Storybook (`CardWidgetView`), which is quicker for layout work.
 - **Location:** `xcrun simctl privacy <udid> grant location net.serby.Cards`, then `xcrun simctl location <udid> set 51.5203,-0.2094`.
 - **Arrival notifications:** give a card a location, send the app to the background, set the simulated location away and then back inside the circle; SpringBoard logs `Location trigger fired` when it delivers.
 - **Reinstalling:** uninstall before installing. `simctl install` over a running copy can keep the old binary, and you end up debugging a build you are not running.
@@ -313,9 +335,11 @@ Xcode 27 has no Simulator.app; `make sim` opens Device Hub to show the screen, a
 - A **Personal Team cannot build this app**. Free teams do not support the iCloud capability, and the app ID belongs to another team, so Xcode fails with "Personal development teams … do not support the iCloud capability" and "doesn't include the iCloud capability".
 - Every Apple ID comes with a free Personal Team, so "Paul Serby (Personal Team)" in the team menu is not the paid team; it belongs to whichever Apple ID is signed in, which may be a work one. If the menu has no plain "Paul Serby", the Apple ID that owns the paid team is not signed in to Xcode.
 - To build to a device, sign in to Xcode (**Settings > Accounts**) with the Apple ID that is a member of `ZMBFPG86J4`, select that team in **Signing & Capabilities** for both configurations, and let Xcode register the device and create the development profile.
+- The widget is `net.serby.Cards.Widget`, and it shares the App Group `group.net.serby.Cards` with the app. Xcode registered both, and assigned the group to both App IDs, on the first device build with automatic signing. Do that again (`make device`) after adding a capability: the App Store Connect API cannot assign App Groups.
+- CI keeps no provisioning profiles. `.github/actions/install-signing` imports the distribution certificate and runs `scripts/asc-profiles.ts`, which installs an App Store profile per bundle ID named `Cards CI App Store <bundle ID>`, creating it, or replacing it when Apple has invalidated it after a capability change. `scripts/build-ipa.sh` signs with those names.
 - Never sign this app with a company team you happen to belong to.
 - Debug builds use `Cards/Cards.Debug.entitlements`, which points at the **Development** CloudKit environment, and Release builds use `Cards/Cards.entitlements`, which points at **Production**. A debug build on your own iPhone therefore syncs a separate set of cards from the App Store app, and can never damage the live data.
-- CloudKit change pushes are not enabled yet: the app has neither the `remote-notification` background mode nor the Push Notifications capability, so other devices' changes arrive when the app is opened rather than straight away (CloudKit logs "BUG IN CLIENT OF CLOUDKIT: … require the 'remote-notification' background mode"). Enabling it changes the App ID, which means regenerating the App Store provisioning profile and the `BUILD_PROVISION_PROFILE_BASE64` secret CI signs with.
+- CloudKit change pushes are not enabled yet: the app has neither the `remote-notification` background mode nor the Push Notifications capability, so other devices' changes arrive when the app is opened rather than straight away (CloudKit logs "BUG IN CLIENT OF CLOUDKIT: … require the 'remote-notification' background mode"). Enabling it changes the App ID; add the capability with a device build, and CI replaces the invalidated profile on its next run.
 - `scripts/build-ipa.sh` passes `DEVELOPMENT_TEAM` (default `ZMBFPG86J4`) itself, so archives do not depend on the project's team setting.
 
 ## 8. Releasing
@@ -323,7 +347,7 @@ Xcode 27 has no Simulator.app; `make sim` opens Device Hub to show the screen, a
 1. Push to `main` (rule 10). CI runs lint, the build, the release check, the tests and the screenshot comparison, and when it is green `deploy.yml` uploads to TestFlight.
 2. If the build adds stored fields, deploy the CloudKit schema first; Production rejects records whose type or fields it does not have, with "Cannot create new type … in production schema" or "Cannot create or modify field …". Launch a Debug build once with `-initializeCloudKitSchema`, on a device or simulator signed in to iCloud, and wait for the log line "CloudKit schema initialised in the Development environment". Then open the [CloudKit Console](https://icloud.developer.apple.com/dashboard/), choose `iCloud.net.serby.Cards`, and use **Deploy Schema Changes** to copy the Development schema to Production.
 3. `make deploy-testflight` or `make deploy-appstore` archive with `scripts/build-ipa.sh` and upload with an App Store Connect API key (`ASC_KEY_ID`, `ASC_ISSUER_ID`, `ASC_KEY_CONTENT`). In CI, `deploy.yml` uploads to TestFlight after CI passes on `main`, and `release.yml` submits to the App Store on `v*` tags.
-4. `scripts/upload-metadata.sh` and `scripts/upload-screenshots.sh` push the store listing from `metadata/` and `screenshots/`.
+4. `scripts/upload-metadata.sh` pushes the store listing text from `metadata/`, and the **App Store screenshots** workflow uploads `screenshots/` ([section 5](#refresh-the-app-store-screenshots)).
 
 `.github/workflows/ci.yml`, `deploy.yml` and `release.yml` are the source of truth for the pipelines; `docs/CICD_SETUP.md` and `docs/DEPLOYMENT.md` cover the one-off account and secrets setup.
 
@@ -335,6 +359,9 @@ Xcode 27 has no Simulator.app; `make sim` opens Device Hub to show the screen, a
 | "Device … isn't registered in your developer account" | Building to a device or "My Mac (Designed for iPad)" with a team that has not registered it. Select `ZMBFPG86J4`; Xcode offers to register it |
 | Release build fails with "has no member 'sample'" or similar | Production code, often a preview left beside a view, names something in `Cards/Development`. Move the preview or go through `DevelopmentHooks` |
 | `make check-release` lists a declaration | That development type or member is reachable from production code. Find the reference and route it through a hook |
+| `asc-profiles.ts` fails with "No App ID net.serby.Cards.Widget" | The App ID or its App Group is not registered. Run `make device` once, signed in to the paid team, so Xcode registers them |
+| Upload fails because the extension's `CFBundleVersion` or `CFBundleShortVersionString` differs from the app's | A version was set on one target or in an Info.plist. Keep both in the project-level build settings, and pass build numbers as `BUILD_NUMBER` |
+| Cards are missing after an update | The store moved. Build the container with `CardStore.configuration` ([rule 6](#rule-6-models-stay-cloudkit--and-export-compatible)) |
 | The app behaves like an older build | `simctl install` kept the old binary; uninstall, then install |
 | A build fails in `PrecompileModule` with "cannot find interface declaration" | Stale generated `*-Swift.h` headers after a type was deleted; delete them under `fastlane/derived_data/Build/Intermediates.noindex` and rebuild |
 | "Cannot create new type CD_CardItem in production schema" in the log | The Production CloudKit schema is missing the model; deploy it ([section 8](#8-releasing)) |

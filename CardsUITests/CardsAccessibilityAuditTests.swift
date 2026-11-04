@@ -32,12 +32,12 @@ class CardsAccessibilityAuditTests: XCTestCase {
         try audit(app, scrolledTo: app.staticTexts["cardTimestampText"])
     }
 
-    /// The seeded Tesco code is not a valid EAN-13, so its screen shows the
-    /// failure message on the barcode's plate.
+    /// A code its format cannot draw, so the screen shows the failure message
+    /// on the barcode's plate.
     @MainActor
     func testCardDetailWithFailedBarcode() throws {
         let app = launch()
-        app.openCard(SeededCard.tesco)
+        app.openCardWithFailedBarcode()
         try audit(app)
     }
 

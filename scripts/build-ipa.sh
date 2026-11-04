@@ -6,22 +6,26 @@
 #
 #   IPA=$(scripts/build-ipa.sh)
 #
-# Signing defaults to manual against the App Store profile that CI installs
-# into ~/Library/MobileDevice/Provisioning Profiles. Override with:
-#   PROVISIONING_PROFILE_SPECIFIER  profile name (default below)
-#   CODE_SIGN_IDENTITY              signing identity (default "Apple Distribution")
-#   EXPORT_METHOD                   app-store-connect | release-testing | debugging
+# Signing is manual, against the App Store profiles scripts/asc-profiles.ts
+# installs into ~/Library/MobileDevice/Provisioning Profiles: one for the app and
+# one for its widget. Override with:
+#   CARDS_APP_PROFILE      the app's profile name (default below)
+#   CARDS_WIDGET_PROFILE   the widget's profile name (default below)
+#   CODE_SIGN_IDENTITY     signing identity (default "Apple Distribution")
+#   EXPORT_METHOD          app-store-connect | release-testing | debugging
+#   BUILD_NUMBER           CFBundleVersion for the app and widget (default: the project's)
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 
-XCODE_APP="${XCODE_APP:-/Applications/Xcode27.1.app}"
-export DEVELOPER_DIR="$XCODE_APP/Contents/Developer"
+source "$SCRIPT_DIR/xcode-env.sh"
 
 TEAM_ID="${DEVELOPMENT_TEAM:-ZMBFPG86J4}"
-BUNDLE_ID="${PRODUCT_BUNDLE_IDENTIFIER:-net.serby.Cards}"
-PROFILE="${PROVISIONING_PROFILE_SPECIFIER:-Card Codes Wallet App Store Profile}"
+APP_ID="net.serby.Cards"
+WIDGET_ID="net.serby.Cards.Widget"
+APP_PROFILE="${CARDS_APP_PROFILE:-Cards CI App Store $APP_ID}"
+WIDGET_PROFILE="${CARDS_WIDGET_PROFILE:-Cards CI App Store $WIDGET_ID}"
 IDENTITY="${CODE_SIGN_IDENTITY:-Apple Distribution}"
 METHOD="${EXPORT_METHOD:-app-store-connect}"
 
@@ -51,8 +55,10 @@ cat > "$EXPORT_OPTIONS" <<PLIST
 	<string>${IDENTITY}</string>
 	<key>provisioningProfiles</key>
 	<dict>
-		<key>${BUNDLE_ID}</key>
-		<string>${PROFILE}</string>
+		<key>${APP_ID}</key>
+		<string>${APP_PROFILE}</string>
+		<key>${WIDGET_ID}</key>
+		<string>${WIDGET_PROFILE}</string>
 	</dict>
 	<key>stripSwiftSymbols</key>
 	<true/>
@@ -64,6 +70,13 @@ cat > "$EXPORT_OPTIONS" <<PLIST
 </plist>
 PLIST
 
+# The app and the widget must carry the same CFBundleVersion, so it is set once,
+# for every target, rather than in either Info.plist.
+VERSION_ARGS=()
+if [[ -n "${BUILD_NUMBER:-}" ]]; then
+	VERSION_ARGS=(CURRENT_PROJECT_VERSION="$BUILD_NUMBER")
+fi
+
 echo "==> Archiving (Release)" >&2
 xcodebuild archive \
 	-project Cards.xcodeproj \
@@ -74,8 +87,10 @@ xcodebuild archive \
 	-derivedDataPath "$BUILD_DIR/dd" \
 	CODE_SIGN_STYLE=Manual \
 	DEVELOPMENT_TEAM="$TEAM_ID" \
-	PROVISIONING_PROFILE_SPECIFIER="$PROFILE" \
-	CODE_SIGN_IDENTITY="$IDENTITY" >&2
+	CARDS_APP_PROFILE="$APP_PROFILE" \
+	CARDS_WIDGET_PROFILE="$WIDGET_PROFILE" \
+	CODE_SIGN_IDENTITY="$IDENTITY" \
+	${VERSION_ARGS[@]+"${VERSION_ARGS[@]}"} >&2
 
 echo "==> Exporting .ipa" >&2
 xcodebuild -exportArchive \

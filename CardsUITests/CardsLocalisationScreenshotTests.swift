@@ -62,12 +62,12 @@ final class CardsLocalisationScreenshotTests: XCTestCase {
         capturePages(app, "04-detail")
     }
 
-    /// The seeded Tesco code is not a valid EAN-13, so its screen shows the
-    /// failure message on the barcode's plate.
+    /// A code its format cannot draw, so the screen shows the failure message
+    /// on the barcode's plate.
     @MainActor
     func testCardDetailWithFailedBarcode() {
         let app = launch()
-        app.openCard(SeededCard.tesco)
+        app.openCardWithFailedBarcode()
         capturePages(app, "05-detail-failed-barcode")
     }
 
@@ -87,15 +87,24 @@ final class CardsLocalisationScreenshotTests: XCTestCase {
 
     /// The prompt shows the app's own reason for asking, from InfoPlist, but
     /// only the first time, so the script installs the app afresh for each run.
-    /// A place added with the pin and no name shows in the form with its radius.
+    /// The seeded cards are seen from a fixed place, so the app never asks
+    /// while they are in use; this test starts with no cards.
     @MainActor
-    func testLocationPicker() {
-        let app = launch()
+    func testLocationPrompt() {
+        let app = launch(seeded: false)
         app.openLocationPicker()
         if let prompt = XCUIApplication.locationPrompt() {
             capture("08-location-prompt")
             prompt.buttons.element(boundBy: prompt.buttons.count - 1).tap()
         }
+    }
+
+    /// The map opens at the last known place, the seeded cards' fixed one.
+    /// A place added with the pin and no name shows in the form with its radius.
+    @MainActor
+    func testLocationPicker() {
+        let app = launch()
+        app.openLocationPicker()
         capture("09-location-picker")
 
         let add = app.buttons["addLocationButton"]

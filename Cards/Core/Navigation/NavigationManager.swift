@@ -30,8 +30,7 @@ import SwiftUI
     }
 
     public func handleDeepLink(_ url: URL) {
-        guard url.scheme == "cards" && url.host == "cards" else { return }
-        guard let route = NavigationRoute.from(path: url.path) else { return }
+        guard let route = NavigationRoute.from(url: url) else { return }
         navigate(to: route)
     }
 }

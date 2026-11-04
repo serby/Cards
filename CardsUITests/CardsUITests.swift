@@ -54,28 +54,25 @@ class CardsUITests: XCTestCase {
     /// Control users.
     @MainActor
     func testMoveAndDeleteFromTheMenu() throws {
-        let app = XCUIApplication()
-        app.launchArguments += ["-uiTesting", "-screenshotSeed"] + Self.variantArguments
-        app.launchEnvironment["CARDS_SCREENSHOT_SEED"] = "1"
-        app.launch()
+        let app = XCUIApplication.launchForTesting(arguments: Self.variantArguments)
 
         // The first two seeded cards.
         let tesco = app.buttons[SeededCard.tesco]
-        let boots = app.buttons["cardRow_9780201379624"]
+        let costa = app.buttons[SeededCard.costa]
         XCTAssertTrue(tesco.waitForExistence(timeout: 5))
-        XCTAssertLessThan(tesco.frame.minY, boots.frame.minY)
+        XCTAssertLessThan(tesco.frame.minY, costa.frame.minY)
 
         let moveDown = app.buttons["moveCardDownMenuItem"]
         XCTAssertTrue(app.openMenu(on: tesco, showing: moveDown), "The card's menu did not open")
         XCTAssertFalse(app.buttons["moveCardUpMenuItem"].exists, "The first card offered to move up")
         moveDown.tap()
-        XCTAssertTrue(waitUntil { boots.frame.minY < tesco.frame.minY }, "Tesco did not move below Boots")
+        XCTAssertTrue(waitUntil { costa.frame.minY < tesco.frame.minY }, "Tesco did not move below Costa")
 
         let delete = app.buttons["deleteCardMenuItem"]
         XCTAssertTrue(app.openMenu(on: tesco, showing: delete), "The card's menu did not open")
         delete.tap()
         XCTAssertTrue(waitUntil { !tesco.exists }, "Tesco was not deleted")
-        XCTAssertTrue(boots.exists)
+        XCTAssertTrue(costa.exists)
     }
 
     @MainActor

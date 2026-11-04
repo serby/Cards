@@ -1,8 +1,10 @@
 .PHONY: check-release test test-unit test-e2e test-a11y test-coverage coverage-run coverage-report coverage-clean build clean sim device-hub device test-tsan capture-screenshots validate-screenshots deploy-testflight deploy-appstore upload-metadata upload-screenshots
 
-XCODE_APP ?= /Applications/Xcode27.1.app
-DEVELOPER_DIR := $(XCODE_APP)/Contents/Developer
-DEVICE_HUB_APP ?= $(XCODE_APP)/Contents/Applications/DeviceHub.app
+# Same choice as scripts/xcode-env.sh: XCODE_APP, else Xcode 27.1 when installed,
+# else whatever xcode-select points at.
+XCODE_APP ?= $(wildcard /Applications/Xcode27.1.app)
+DEVELOPER_DIR := $(if $(XCODE_APP),$(XCODE_APP)/Contents/Developer,$(shell xcode-select -p))
+DEVICE_HUB_APP ?= $(DEVELOPER_DIR)/../Applications/DeviceHub.app
 SIMULATOR_DEVICE ?= iPhone 16 Pro
 SIMULATOR_VERSION ?= 18.1
 
@@ -80,10 +82,11 @@ sim: build
 device-hub: sim
 
 capture-screenshots:
-	scripts/capture-screenshots.sh "iPhone 16 Pro Max" en-US
-	scripts/capture-screenshots.sh "iPad Pro 13-inch (M4)" en-US
-	scripts/capture-screenshots.sh "iPhone 16 Pro Max" en-GB
-	scripts/capture-screenshots.sh "iPad Pro 13-inch (M4)" en-GB
+	for locale in en-US en-GB; do \
+		for device in "iPhone 16 Pro Max" "iPad Pro 13-inch (M4)" "iPhone Duo"; do \
+			scripts/capture-screenshots.sh "$device" $locale || exit 1; \
+		done; \
+	done
 
 validate-screenshots:
 	python3 scripts/validate-screenshots.py
@@ -102,7 +105,7 @@ upload-metadata:
 	scripts/upload-metadata.sh
 
 upload-screenshots:
-	scripts/upload-screenshots.sh
+	node scripts/upload-screenshots.ts
 
 device:
 	$(XCODEBUILD) build -destination 'generic/platform=iOS' -allowProvisioningUpdates

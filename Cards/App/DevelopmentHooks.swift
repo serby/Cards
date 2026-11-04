@@ -1,3 +1,4 @@
+import CoreLocation
 import OSLog
 import SwiftData
 import SwiftUI
@@ -38,13 +39,28 @@ enum DevelopmentHooks {
     /// `-screenshotSeed` (or `CARDS_SCREENSHOT_SEED=1`). Does nothing in release.
     static func seedScreenshotCards(into container: ModelContainer) throws {
         #if DEBUG
-        let requested = CommandLine.arguments.contains("-screenshotSeed")
-            || ProcessInfo.processInfo.environment["CARDS_SCREENSHOT_SEED"] == "1"
-        if requested {
+        if screenshotSeedRequested {
             try ScreenshotSeed.insert(into: container.mainContext)
         }
         #endif
     }
+
+    /// Where the screenshot cards are seen from, with `-screenshotSeed`, so their
+    /// distances are the same on every run. Nil otherwise, and always in release.
+    static var screenshotLocation: CLLocation? {
+        #if DEBUG
+        screenshotSeedRequested ? ScreenshotSeed.location : nil
+        #else
+        nil
+        #endif
+    }
+
+    #if DEBUG
+    private static var screenshotSeedRequested: Bool {
+        CommandLine.arguments.contains("-screenshotSeed")
+            || ProcessInfo.processInfo.environment["CARDS_SCREENSHOT_SEED"] == "1"
+    }
+    #endif
 
     /// Tabs that only exist while developing: the Storybook, kept out of UI
     /// tests so they see the shipping UI. Never shown in release.

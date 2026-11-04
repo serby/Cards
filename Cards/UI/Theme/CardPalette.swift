@@ -89,6 +89,12 @@ public extension CardColor {
         primaryInk.opacity(CardSwatch.secondaryInkOpacity)
     }
 
+    /// The Home Screen widget's background: the card colour, or the system
+    /// background for `.standard`, under the same ink as the card face.
+    var widgetFill: Color {
+        swatch?.backgroundColor ?? .primaryBackground
+    }
+
     /// A list row: a faint wash of the card colour, or the grouped background
     /// for `.standard` so every row reads as the same shape.
     var rowFill: Color {

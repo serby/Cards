@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		AF00000000000000000000A3 /* RSBarcodes_Swift in Frameworks */ = {isa = PBXBuildFile; productRef = AF00000000000000000000A2 /* RSBarcodes_Swift */; };
+		AF00000000000000000000A5 /* RSBarcodes_Swift in Frameworks */ = {isa = PBXBuildFile; productRef = AF00000000000000000000A4 /* RSBarcodes_Swift */; };
+		AF00000000000000000000A6 /* CardsWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = AA00000000000000000000D4 /* CardsWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -25,18 +27,71 @@
 			remoteGlobalIDString = AA00000000000000000000E1;
 			remoteInfo = Cards;
 		};
+		AE00000000000000000000A6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AA00000000000000000000A1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AA00000000000000000000E4;
+			remoteInfo = CardsWidget;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		AD00000000000000000000B4 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				AF00000000000000000000A6 /* CardsWidget.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		AA00000000000000000000C1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AA00000000000000000000D1 /* Cards.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Cards.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA00000000000000000000D2 /* CardsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CardsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA00000000000000000000D3 /* CardsUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CardsUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA00000000000000000000D4 /* CardsWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = CardsWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		A100000000000000000000A1 /* Exceptions for "Cards" folder in "CardsWidget" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Core/Models/BarcodeType.swift,
+				Core/Models/CardColor.swift,
+				Core/Models/CardLocation.swift,
+				Core/Models/WidgetCard.swift,
+				Core/Navigation/NavigationRoute.swift,
+				Core/Services/WidgetSnapshot.swift,
+				UI/Components/BarcodeImage.swift,
+				UI/Components/CardWidgetView.swift,
+				UI/Components/ProximityLabel.swift,
+				UI/Theme/CardPalette.swift,
+				UI/Theme/Colors.swift,
+				UI/ViewState/CardWidgetState.swift,
+			);
+			target = AA00000000000000000000E4 /* CardsWidget */;
+		};
+		A100000000000000000000A2 /* Exceptions for "CardsWidget" folder in "CardsWidget" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = AA00000000000000000000E4 /* CardsWidget */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		AA00000000000000000000B1 /* Cards */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				A100000000000000000000A1 /* Exceptions for "Cards" folder in "CardsWidget" target */,
+			);
 			path = Cards;
 			sourceTree = "<group>";
 		};
@@ -48,6 +103,14 @@
 		AA00000000000000000000B3 /* CardsUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = CardsUITests;
+			sourceTree = "<group>";
+		};
+		AA00000000000000000000B4 /* CardsWidget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				A100000000000000000000A2 /* Exceptions for "CardsWidget" folder in "CardsWidget" target */,
+			);
+			path = CardsWidget;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -75,6 +138,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		AD00000000000000000000B2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AF00000000000000000000A5 /* RSBarcodes_Swift in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -84,6 +155,7 @@
 				AA00000000000000000000B1 /* Cards */,
 				AA00000000000000000000B2 /* CardsTests */,
 				AA00000000000000000000B3 /* CardsUITests */,
+				AA00000000000000000000B4 /* CardsWidget */,
 				AA00000000000000000000C1 /* Info.plist */,
 				AA00000000000000000000A3 /* Products */,
 			);
@@ -95,6 +167,7 @@
 				AA00000000000000000000D1 /* Cards.app */,
 				AA00000000000000000000D2 /* CardsTests.xctest */,
 				AA00000000000000000000D3 /* CardsUITests.xctest */,
+				AA00000000000000000000D4 /* CardsWidget.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -109,10 +182,12 @@
 				AD00000000000000000000A1 /* Sources */,
 				AD00000000000000000000A2 /* Frameworks */,
 				AD00000000000000000000A3 /* Resources */,
+				AD00000000000000000000B4 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				AE00000000000000000000A5 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				AA00000000000000000000B1 /* Cards */,
@@ -171,6 +246,29 @@
 			productReference = AA00000000000000000000D3 /* CardsUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		AA00000000000000000000E4 /* CardsWidget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AB00000000000000000000A5 /* Build configuration list for PBXNativeTarget "CardsWidget" */;
+			buildPhases = (
+				AD00000000000000000000B1 /* Sources */,
+				AD00000000000000000000B2 /* Frameworks */,
+				AD00000000000000000000B3 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				AA00000000000000000000B4 /* CardsWidget */,
+			);
+			name = CardsWidget;
+			packageProductDependencies = (
+				AF00000000000000000000A4 /* RSBarcodes_Swift */,
+			);
+			productName = CardsWidget;
+			productReference = AA00000000000000000000D4 /* CardsWidget.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -191,6 +289,9 @@
 					AA00000000000000000000E3 = {
 						CreatedOnToolsVersion = 16.1;
 						TestTargetID = AA00000000000000000000E1;
+					};
+					AA00000000000000000000E4 = {
+						CreatedOnToolsVersion = 27.1;
 					};
 				};
 			};
@@ -224,6 +325,7 @@
 				AA00000000000000000000E1 /* Cards */,
 				AA00000000000000000000E2 /* CardsTests */,
 				AA00000000000000000000E3 /* CardsUITests */,
+				AA00000000000000000000E4 /* CardsWidget */,
 			);
 		};
 /* End PBXProject section */
@@ -244,6 +346,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		AD00000000000000000000A9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AD00000000000000000000B3 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -274,6 +383,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		AD00000000000000000000B1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -286,6 +402,11 @@
 			isa = PBXTargetDependency;
 			target = AA00000000000000000000E1 /* Cards */;
 			targetProxy = AE00000000000000000000A4 /* PBXContainerItemProxy */;
+		};
+		AE00000000000000000000A5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AA00000000000000000000E4 /* CardsWidget */;
+			targetProxy = AE00000000000000000000A6 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -323,6 +444,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 30;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = ZMBFPG86J4;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -344,6 +466,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.3;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -387,6 +510,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 30;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = ZMBFPG86J4;
 				ENABLE_NS_ASSERTIONS = NO;
@@ -402,6 +526,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -418,7 +543,6 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Cards/Cards.Debug.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 30;
 				DEVELOPMENT_ASSET_PATHS = "\"Cards/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = Info.plist;
@@ -426,7 +550,6 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = net.serby.Cards;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -444,7 +567,6 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Cards/Cards.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 30;
 				DEVELOPMENT_ASSET_PATHS = "\"Cards/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				EXCLUDED_SOURCE_FILE_NAMES = (
@@ -457,9 +579,9 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = net.serby.Cards;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "$(CARDS_APP_PROFILE)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
 				SWIFT_UPCOMING_FEATURE_EXISTENTIAL_ANY = YES;
@@ -538,6 +660,55 @@
 			};
 			name = Release;
 		};
+		AC00000000000000000000A9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = CardsWidget/CardsWidget.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = CardsWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Card Barcodes";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = net.serby.Cards.Widget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
+				SWIFT_UPCOMING_FEATURE_EXISTENTIAL_ANY = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		AC00000000000000000000AA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = CardsWidget/CardsWidget.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = CardsWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Card Barcodes";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = net.serby.Cards.Widget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "$(CARDS_WIDGET_PROFILE)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
+				SWIFT_UPCOMING_FEATURE_EXISTENTIAL_ANY = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -577,6 +748,15 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		AB00000000000000000000A5 /* Build configuration list for PBXNativeTarget "CardsWidget" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AC00000000000000000000A9 /* Debug */,
+				AC00000000000000000000AA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
@@ -592,6 +772,11 @@
 
 /* Begin XCSwiftPackageProductDependency section */
 		AF00000000000000000000A2 /* RSBarcodes_Swift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AF00000000000000000000A1 /* XCRemoteSwiftPackageReference "RSBarcodes_Swift" */;
+			productName = RSBarcodes_Swift;
+		};
+		AF00000000000000000000A4 /* RSBarcodes_Swift */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = AF00000000000000000000A1 /* XCRemoteSwiftPackageReference "RSBarcodes_Swift" */;
 			productName = RSBarcodes_Swift;
