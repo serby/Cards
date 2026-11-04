@@ -75,10 +75,11 @@ sim: build
 device-hub: sim
 
 capture-screenshots:
-	scripts/capture-screenshots.sh "iPhone 16 Pro Max" en-US
-	scripts/capture-screenshots.sh "iPad Pro 13-inch (M4)" en-US
-	scripts/capture-screenshots.sh "iPhone 16 Pro Max" en-GB
-	scripts/capture-screenshots.sh "iPad Pro 13-inch (M4)" en-GB
+	for locale in en-US en-GB; do \
+		for device in "iPhone 16 Pro Max" "iPad Pro 13-inch (M4)" "iPhone Duo"; do \
+			scripts/capture-screenshots.sh "$device" $locale || exit 1; \
+		done; \
+	done
 
 validate-screenshots:
 	python3 scripts/validate-screenshots.py

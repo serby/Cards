@@ -5,6 +5,7 @@
 # Usage:
 #   scripts/capture-screenshots.sh                         # iPhone 16 Pro Max, en-US
 #   scripts/capture-screenshots.sh "iPad Pro 13-inch (M4)" en-GB
+#   scripts/capture-screenshots.sh "iPhone Duo" en-GB             # outer display, "_Duo" names
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -14,9 +15,14 @@ LOCALE="${2:-en-US}"
 OUT_DIR="$PROJECT_DIR/screenshots/$LOCALE"
 RESULT_BUNDLE="/tmp/Cards-screenshots.xcresult"
 EXPORT_DIR="/tmp/Cards-screenshots-export"
+# Which screenshots the test takes, and the suffix it gives their names.
 CAPTURE_SET="iphone"
+SUFFIX=""
 if [[ "$DEVICE" == iPad* ]]; then
     CAPTURE_SET="ipad"
+elif [[ "$DEVICE" == "iPhone Duo" ]]; then
+    CAPTURE_SET="duo"
+    SUFFIX="_Duo"
 fi
 LANGUAGE="${LOCALE%%-*}"
 REGION="${LOCALE#*-}"
@@ -31,7 +37,7 @@ SIM_VERSION=$(printf '%s\n' "$SIM_INFO" | sed -n 's/^version=//p')
 
 echo "==> Running screenshot test on $SIM_NAME (iOS $SIM_VERSION)"
 rm -rf "$RESULT_BUNDLE" "$EXPORT_DIR"
-xcodebuild test \
+TEST_RUNNER_SCREENSHOT_SUFFIX="$SUFFIX" xcodebuild test \
     -project Cards.xcodeproj \
     -scheme Cards \
     -destination "platform=iOS Simulator,name=$SIM_NAME,OS=$SIM_VERSION" \
@@ -48,39 +54,32 @@ xcrun xcresulttool export attachments \
     --output-path "$EXPORT_DIR"
 
 mkdir -p "$OUT_DIR"
-# manifest.json maps original attachment names → exported filenames. The
-# suggestedHumanReadableName Apple returns is "<our-name>_<iter>_<UUID>.png";
-# we strip everything from "_0_" onwards to get back to our chosen prefix.
-EXPORT_DIR="$EXPORT_DIR" OUT_DIR="$OUT_DIR" CAPTURE_SET="$CAPTURE_SET" python3 - <<'PY'
-import json, os, re, shutil
-export_dir = os.environ["EXPORT_DIR"]
-out_dir = os.environ["OUT_DIR"]
-capture_set = os.environ["CAPTURE_SET"]
-manifest_path = os.path.join(export_dir, "manifest.json")
-with open(manifest_path) as f:
-    manifest = json.load(f)
-
-expected = {
-    "iphone": {"01_CardList", "02_AddCard", "03_Settings"},
-    "ipad": {"01_CardList_iPad"},
-}[capture_set]
-seen = set()
-for entry in manifest:
-    for att in entry.get("attachments", []):
-        raw = att.get("suggestedHumanReadableName") or att.get("exportedFileName", "")
-        # Trim Apple's "_<iter>_<UUID>.png" suffix back to our prefix.
-        clean = re.sub(r"_\d+_[0-9A-Fa-f-]{36}\.png$", "", raw)
-        if clean not in expected:
-            continue
-        src = os.path.join(export_dir, att["exportedFileName"])
-        dst = os.path.join(out_dir, f"{clean}.png")
-        shutil.copyfile(src, dst)
-        seen.add(clean)
-missing = expected - seen
-if missing:
-    raise SystemExit(f"Missing screenshot attachments: {sorted(missing)}")
-print("Copied:", sorted(seen))
-PY
+# manifest.json maps attachment names to exported files. Apple suggests
+# "<our-name>_<iter>_<UUID>.png"; trimming from "_<iter>_" gets our name back.
+EXPORT_DIR="$EXPORT_DIR" OUT_DIR="$OUT_DIR" CAPTURE_SET="$CAPTURE_SET" node --input-type=module -e '
+import { copyFileSync, readFileSync } from "node:fs";
+import { join } from "node:path";
+const { EXPORT_DIR: exportDir, OUT_DIR: outDir, CAPTURE_SET: set } = process.env;
+const screens = ["01_CardList", "02_CardDetail", "03_EditCard", "04_LocationPicker"];
+const expected = new Set({
+    iphone: screens,
+    ipad: ["01_CardList_iPad", "02_CardDetail_iPad"],
+    duo: screens.map((name) => name + "_Duo"),
+}[set]);
+const seen = new Set();
+for (const entry of JSON.parse(readFileSync(join(exportDir, "manifest.json"), "utf8"))) {
+    for (const attachment of entry.attachments ?? []) {
+        const raw = attachment.suggestedHumanReadableName ?? attachment.exportedFileName ?? "";
+        const name = raw.replace(/_\d+_[0-9A-Fa-f-]{36}\.png$/, "");
+        if (!expected.has(name)) continue;
+        copyFileSync(join(exportDir, attachment.exportedFileName), join(outDir, name + ".png"));
+        seen.add(name);
+    }
+}
+const missing = [...expected].filter((name) => !seen.has(name));
+if (missing.length > 0) throw new Error("Missing screenshot attachments: " + missing.join(", "));
+console.log("Copied:", [...seen].sort().join(", "));
+'
 
 python3 "$SCRIPT_DIR/validate-screenshots.py"
 
@@ -88,4 +87,4 @@ echo
 echo "==> Screenshots in $OUT_DIR:"
 ls -la "$OUT_DIR"
 echo
-echo "Verify dimensions, then upload with: scripts/upload-screenshots.sh"
+echo "Check them, commit, push, then run the App Store screenshots workflow to upload."

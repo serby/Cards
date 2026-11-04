@@ -6,7 +6,7 @@ import UserNotifications
 struct CardsApp: App {
     @Environment(\.scenePhase) private var scenePhase
     @State private var navigationManager: NavigationManager
-    @State private var locationService = LocationService()
+    @State private var locationService = LocationService(fixedLocation: DevelopmentHooks.screenshotLocation)
     private let performanceTracker = PerformanceTracker()
     private let arrivalRouter: ArrivalNotificationRouter
 

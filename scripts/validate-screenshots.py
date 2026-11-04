@@ -15,23 +15,22 @@ from pathlib import Path
 
 PROJECT_DIR = Path(__file__).resolve().parent.parent
 SCREENSHOTS_DIR = PROJECT_DIR / "screenshots"
-EXPECTED = {
-    "en-GB": {
-        "01_CardList.png": (1320, 2868),
-        "01_CardList_iPad.png": (2064, 2752),
-        "02_AddCard.png": (1320, 2868),
-        "03_Settings.png": (1320, 2868),
-    },
-    "en-US": {
-        "01_CardList.png": (1320, 2868),
-        "01_CardList_iPad.png": (2064, 2752),
-        "02_AddCard.png": (1320, 2868),
-        "03_Settings.png": (1320, 2868),
-    },
+IPHONE = (1320, 2868)
+IPAD = (2064, 2752)
+DUO = (1398, 2034)  # iPhone Duo, outer display: the simulator boots folded
+SCREENS = ("01_CardList", "02_CardDetail", "03_EditCard", "04_LocationPicker")
+REFERENCES = {
+    **{f"{name}.png": IPHONE for name in SCREENS},
+    **{f"{name}_Duo.png": DUO for name in SCREENS},
+    "01_CardList_iPad.png": IPAD,
+    "02_CardDetail_iPad.png": IPAD,
 }
+EXPECTED = {"en-GB": REFERENCES, "en-US": REFERENCES}
+# What CI compares with the references. The map is left out because its tiles
+# come from the network, and Duo because CI's Xcode has no iPhone Duo runtime.
 CAPTURE_SETS = {
-    "iphone": ("01_CardList", "02_AddCard", "03_Settings"),
-    "ipad": ("01_CardList_iPad",),
+    "iphone": ("01_CardList", "02_CardDetail", "03_EditCard"),
+    "ipad": ("01_CardList_iPad", "02_CardDetail_iPad"),
 }
 PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
 

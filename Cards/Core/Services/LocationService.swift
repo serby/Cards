@@ -11,11 +11,16 @@ public final class LocationService: NSObject {
 
     @ObservationIgnored private let manager: CLLocationManager
     @ObservationIgnored private var wantsUpdates = false
+    @ObservationIgnored private let fixedLocation: CLLocation?
 
-    override public init() {
+    /// With `fixedLocation`, the service reports that place and never uses
+    /// location services, so what it shows does not depend on where the device is.
+    public init(fixedLocation: CLLocation? = nil) {
         let manager = CLLocationManager()
         self.manager = manager
-        authorization = manager.authorizationStatus
+        self.fixedLocation = fixedLocation
+        current = fixedLocation
+        authorization = fixedLocation == nil ? manager.authorizationStatus : .authorizedWhenInUse
         super.init()
         manager.delegate = self
         manager.desiredAccuracy = kCLLocationAccuracyHundredMeters
@@ -29,7 +34,7 @@ public final class LocationService: NSObject {
     /// Asks for When In Use permission if it has not been asked yet, then starts.
     public func requestAccess() {
         wantsUpdates = true
-        if authorization == .notDetermined {
+        if fixedLocation == nil, authorization == .notDetermined {
             manager.requestWhenInUseAuthorization()
         } else {
             start()
@@ -39,7 +44,7 @@ public final class LocationService: NSObject {
     /// Starts updates if permission is already granted. Never prompts.
     public func start() {
         wantsUpdates = true
-        guard isAuthorized else { return }
+        guard fixedLocation == nil, isAuthorized else { return }
         manager.startUpdatingLocation()
     }
 }
