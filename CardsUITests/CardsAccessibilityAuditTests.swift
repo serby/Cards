@@ -56,6 +56,8 @@ class CardsAccessibilityAuditTests: XCTestCase {
         // system keyboard.
         app.openEditCard(SeededCard.costa)
         try audit(app)
+        // Costa has a place, so this reaches a place's row and the footer.
+        try audit(app, scrolledTo: app.buttons["addLocationRowButton"])
     }
 
     @MainActor
@@ -137,6 +139,20 @@ class CardsAccessibilityAuditTests: XCTestCase {
         "importJSONButton", "deleteAllCardsButton", "dataSectionHeader", "locationsFooter"
     ]
 
+    /// A place's row in the card form. The check reports its name and radius
+    /// by their text, with no identifier, as the row speaks for both
+    /// (`children: .ignore`): "partially unsupported" in English at the
+    /// default size, and "unsupported", with the radius "clipped", in Arabic
+    /// at the largest size. The Arabic audit's screenshot shows both grown to
+    /// that size and wrapped, the radius whole on its two lines, the same as
+    /// the rows in `growsInFull`.
+    @MainActor
+    private static func isInLocationRow(_ frame: CGRect, in app: XCUIApplication) -> Bool {
+        app.descendants(matching: .any).matching(identifier: "locationRow").allElementsBoundByIndex.contains { row in
+            row.frame.insetBy(dx: -1, dy: -1).contains(frame)
+        }
+    }
+
     /// Section headings, which the contrast check measures below AA when they
     /// are short words at the default text size: German ANZEIGE, FARBE and
     /// ORTE, Arabic العرض and اللون, but never English DISPLAY, COLOUR or
@@ -171,7 +187,9 @@ class CardsAccessibilityAuditTests: XCTestCase {
             // UIKit draws navigation bar buttons at a fixed size and shows them
             // in the Large Content Viewer instead (touch and hold), as in every
             // app; the large-text run shows the bar unchanged while the rest grows.
-            return bars.contains { $0.frame.contains(frame) } || growsInFull.contains(element.identifier)
+            return bars.contains { $0.frame.contains(frame) }
+                || growsInFull.contains(element.identifier)
+                || isInLocationRow(frame, in: app)
         case .contrast:
             // A disabled control, such as Import with nothing pasted: WCAG 1.4.3
             // exempts inactive controls.
@@ -190,6 +208,7 @@ class CardsAccessibilityAuditTests: XCTestCase {
             // It wraps in a stack that grows with it, and the AX5 captures
             // show it whole in every language.
             if element.identifier == "wrappingPrompt" { return true }
+            if isInLocationRow(frame, in: app) { return true }
             // Text running under the tab bar before the screen is scrolled: the
             // List cuts its frame off at the bar's top edge (the Locations
             // footer ends at exactly y 791 on the iPhone 16 Pro in English and

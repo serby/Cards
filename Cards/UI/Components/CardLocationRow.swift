@@ -32,6 +32,7 @@ public struct CardLocationRow: View {
         }
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Self.spokenDescription(name: location.name, radius: location.radius))
+        .accessibilityIdentifier("locationRow")
     }
 
     private var text: some View {
