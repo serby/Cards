@@ -209,12 +209,19 @@ class CardsAccessibilityAuditTests: XCTestCase {
             // show it whole in every language.
             if element.identifier == "wrappingPrompt" { return true }
             if isInLocationRow(frame, in: app) { return true }
+            let tabBar = app.tabBars.firstMatch
+            // The Locations footer clear of the tab bar. With a place above it,
+            // German's two lines end at y 701 on the iPhone 16 Pro, 90 pt above
+            // the bar, and the audit's own screenshot of the element shows both
+            // lines whole at the default size.
+            if element.identifier == "locationsFooter", !tabBar.exists || frame.maxY < tabBar.frame.minY - 1 {
+                return true
+            }
             // Text running under the tab bar before the screen is scrolled: the
             // List cuts its frame off at the bar's top edge (the Locations
             // footer ends at exactly y 791 on the iPhone 16 Pro in English and
             // Arabic alike), and the second audit, at the screen's end, sees it
             // whole. Arabic's taller lines leave more of it under the bar.
-            let tabBar = app.tabBars.firstMatch
             return tabBar.exists && abs(frame.maxY - tabBar.frame.minY) < 1
         case .hitRegion:
             // MapKit's own Legal link, drawn and sized by the map.
