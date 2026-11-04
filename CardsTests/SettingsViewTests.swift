@@ -43,9 +43,14 @@ struct SettingsCopyTests {
     }
 
     @Test func importResultCountsCards() {
-        #expect(english(SettingsScreen.importedMessage(count: 1)) == "Successfully imported 1 card")
-        #expect(english(SettingsScreen.importedMessage(count: 0)) == "Successfully imported 0 cards")
-        #expect(english(SettingsScreen.importedMessage(count: 12)) == "Successfully imported 12 cards")
+        #expect(english(SettingsScreen.importedMessage(count: 1)) == "Imported 1 card")
+        #expect(english(SettingsScreen.importedMessage(count: 12)) == "Imported 12 cards")
+    }
+
+    /// An export with no cards in it is valid JSON, so the import works, but
+    /// "Imported 0 cards" would read as though something went wrong.
+    @Test func importOfNoCardsSaysThereWereNone() {
+        #expect(english(SettingsScreen.importedMessage(count: 0)) == "No cards to import")
     }
 
     @Test func deleteAllMessageCountsCards() {

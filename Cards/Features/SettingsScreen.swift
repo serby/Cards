@@ -70,11 +70,18 @@ public struct SettingsScreen: View {
     }
 
     /// The import result after `count` cards were added, with a plural form
-    /// for each count.
+    /// for each count. A valid export with no cards in it ("[]") says so,
+    /// rather than reporting that it imported 0 cards.
     static func importedMessage(count: Int) -> LocalizedStringResource {
-        LocalizedStringResource(
-            "Successfully imported \(count) cards",
-            comment: "Import result alert after cards are added from pasted JSON. The argument is how many cards were added."
+        guard count > 0 else {
+            return LocalizedStringResource(
+                "No cards to import",
+                comment: "Import result alert when the pasted JSON is a valid card export with no cards in it, so nothing was added."
+            )
+        }
+        return LocalizedStringResource(
+            "Imported \(count) cards",
+            comment: "Import result alert after cards are added from pasted JSON. The argument is how many cards were added, always at least one."
         )
     }
 
