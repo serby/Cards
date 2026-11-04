@@ -60,7 +60,11 @@ final class CardsScreenshotTests: XCTestCase {
         XCTAssertTrue(app.keyboards.firstMatch.waitForNonExistence(timeout: 3))
         attach(app, name: "03_EditCard\(suffix)")
 
-        app.buttons["addLocationRowButton"].tap()
+        // Below the fold on the Duo's outer display, where the form does not
+        // make the row until it scrolls into view.
+        let addLocation = app.buttons["addLocationRowButton"]
+        XCTAssertTrue(app.reveal(addLocation), "Could not scroll to Add Location")
+        addLocation.tap()
         XCTAssertTrue(app.descendants(matching: .any)["locationPickerMap"].firstMatch.waitForExistence(timeout: 5))
         // Map tiles load from the network after the map appears.
         Thread.sleep(forTimeInterval: 4)
