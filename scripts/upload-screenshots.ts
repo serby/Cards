@@ -153,17 +153,31 @@ async function replaceScreenshots(asc: AppStoreConnect, set: Resource<{ screensh
     }
     if (existing.length > 0) console.log(`   ${type}: deleted ${existing.length} old screenshot(s)`);
 
-    const uploaded: string[] = [];
+    // Send every image first, then wait for them together: Apple processes them
+    // in parallel, and one slow image no longer holds up the rest.
+    const uploaded: { id: string; name: string }[] = [];
     for (const path of paths) {
-        uploaded.push(await upload(asc, set.id, path));
-        console.log(`   ${type}: ${basename(path)} ✓`);
+        uploaded.push({ id: await upload(asc, set.id, path), name: basename(path) });
     }
     // Upload order is display order, but say so explicitly.
     await asc.request("PATCH", `/v1/appScreenshotSets/${set.id}/relationships/appScreenshots`, {
-        data: uploaded.map((id) => ({ type: "appScreenshots", id })),
+        data: uploaded.map(({ id }) => ({ type: "appScreenshots", id })),
     });
+    const states = await waitForProcessing(asc, uploaded);
+    for (const { name, id } of uploaded) {
+        const state = states.get(id);
+        console.log(`   ${type}: ${name} ${state === "COMPLETE" ? "✓" : `!! ${state}`}`);
+    }
+    const unfinished = uploaded.filter(({ id }) => states.get(id) !== "COMPLETE");
+    if (unfinished.length > 0) {
+        unfinishedScreenshots.push(...unfinished.map(({ id, name }) => `${type} ${name} (${states.get(id)})`));
+    }
 }
 
+/// Screenshots that had not processed when the wait ran out, reported at the end.
+const unfinishedScreenshots: string[] = [];
+
+/// Uploads one image and returns its ID, without waiting for Apple to process it.
 async function upload(asc: AppStoreConnect, setId: string, path: string): Promise<string> {
     const bytes = readFileSync(path);
     const reservation = await asc.post<Resource<Screenshot>>("/v1/appScreenshots", {
@@ -189,21 +203,35 @@ async function upload(asc: AppStoreConnect, setId: string, path: string): Promis
             attributes: { uploaded: true, sourceFileChecksum: createHash("md5").update(bytes).digest("hex") },
         },
     });
-    // Apple usually takes seconds, but sometimes minutes, so allow ten.
-    for (let attempt = 1; attempt <= 120; attempt++) {
-        const current = await asc.get<Resource<Screenshot>>(`/v1/appScreenshots/${screenshot.id}`);
-        const state = current.data.attributes.assetDeliveryState;
-        if (state?.state === "COMPLETE") return screenshot.id;
-        if (state?.state === "FAILED") {
-            throw new Error(`${basename(path)} failed processing: ${JSON.stringify(state.errors)}`);
+    return screenshot.id;
+}
+
+/// Each screenshot's last delivery state, once all are COMPLETE or FAILED, or
+/// after fifteen minutes. Apple usually takes seconds, but sometimes minutes.
+async function waitForProcessing(asc: AppStoreConnect, screenshots: { id: string; name: string }[]): Promise<Map<string, string>> {
+    const states = new Map<string, string>();
+    const deadline = Date.now() + 15 * 60 * 1000;
+    while (Date.now() < deadline) {
+        for (const { id, name } of screenshots) {
+            if (states.get(id) === "COMPLETE" || states.get(id) === "FAILED") continue;
+            const current = await asc.get<Resource<Screenshot>>(`/v1/appScreenshots/${id}`);
+            const delivery = current.data.attributes.assetDeliveryState;
+            states.set(id, delivery?.state ?? "UNKNOWN");
+            if (delivery?.state === "FAILED") {
+                console.log(`   !! ${name} failed processing: ${JSON.stringify(delivery.errors)}`);
+            }
         }
-        await new Promise((resolve) => setTimeout(resolve, 5_000));
+        if (screenshots.every(({ id }) => states.get(id) === "COMPLETE" || states.get(id) === "FAILED")) break;
+        await new Promise((resolve) => setTimeout(resolve, 10_000));
     }
-    throw new Error(`${basename(path)} did not finish processing in ten minutes`);
+    return states;
 }
 
 try {
     await main();
+    if (unfinishedScreenshots.length > 0) {
+        throw new Error(`these screenshots did not finish processing: ${unfinishedScreenshots.join(", ")}`);
+    }
 } catch (error) {
     console.error(`error: ${errorMessage(error)}`);
     process.exitCode = 1;
