@@ -126,7 +126,8 @@ private let cardEditStory = Story(
         .options("Colour", CardColor.allNames, CardDraft.sample.color.rawValue),
         .number("Locations", 1, in: 0...Double(CardLocation.samples.count), step: 1),
         .toggle("Shows scanner", false),
-        .toggle("Autofocus name", false)
+        .toggle("Autofocus name", false),
+        .toggle("Map opens at Westway", true)
     ],
     gallery: [
         (
@@ -165,6 +166,7 @@ private let cardEditStory = Story(
         CardEditView(
             draft: draft,
             autofocusesName: knobs.bool("Autofocus name"),
+            mapCentre: knobs.bool("Map opens at Westway") ? CardLocation.sample.coordinate : nil,
             showsScanner: knobs.bool("Shows scanner")
         ) {
             ScannerPlaceholderView()

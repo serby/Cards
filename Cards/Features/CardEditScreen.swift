@@ -51,6 +51,7 @@ public struct CardEditScreen: View {
             CardEditView(
                 draft: $draft,
                 actions: actions,
+                mapCentre: locationService.current?.coordinate,
                 scanner: {
                     ScannerOverlayView(scannedCode: $scannedCode, barcodeType: $scannedBarcodeType)
                 }
@@ -59,7 +60,8 @@ public struct CardEditScreen: View {
             CardEditView(
                 draft: $draft,
                 actions: actions,
-                autofocusesName: true
+                autofocusesName: true,
+                mapCentre: locationService.current?.coordinate
             )
         }
     }

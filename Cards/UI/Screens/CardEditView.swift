@@ -1,3 +1,4 @@
+import MapKit
 import SwiftUI
 
 /// The add/edit form. The scanner is a view slot so the camera stays in
@@ -6,6 +7,8 @@ public struct CardEditView<Scanner: View>: View {
     @Binding private var draft: CardDraft
     private let actions: CardEditActions
     private let autofocusesName: Bool
+    /// Where the location picker opens: the user's last known location, if any.
+    private let mapCentre: CLLocationCoordinate2D?
     private let showsScanner: Bool
     private let scanner: () -> Scanner
 
@@ -20,12 +23,14 @@ public struct CardEditView<Scanner: View>: View {
         draft: Binding<CardDraft>,
         actions: CardEditActions = CardEditActions(),
         autofocusesName: Bool = false,
+        mapCentre: CLLocationCoordinate2D? = nil,
         showsScanner: Bool = true,
         @ViewBuilder scanner: @escaping () -> Scanner
     ) {
         _draft = draft
         self.actions = actions
         self.autofocusesName = autofocusesName
+        self.mapCentre = mapCentre
         self.showsScanner = showsScanner
         self.scanner = scanner
     }
@@ -111,6 +116,9 @@ public struct CardEditView<Scanner: View>: View {
         }
         .sheet(isPresented: $showsLocationPicker) {
             LocationPickerView(
+                initialPosition: mapCentre.map { centre in
+                    .region(MKCoordinateRegion(center: centre, latitudinalMeters: 800, longitudinalMeters: 800))
+                } ?? .userLocation(fallback: .automatic),
                 findPlace: actions.findPlace,
                 onAppear: actions.requestLocationAccess,
                 onAdd: { draft.locations.append($0) }
@@ -139,12 +147,14 @@ public extension CardEditView where Scanner == EmptyView {
     init(
         draft: Binding<CardDraft>,
         actions: CardEditActions = CardEditActions(),
-        autofocusesName: Bool = false
+        autofocusesName: Bool = false,
+        mapCentre: CLLocationCoordinate2D? = nil
     ) {
         self.init(
             draft: draft,
             actions: actions,
             autofocusesName: autofocusesName,
+            mapCentre: mapCentre,
             showsScanner: false,
             scanner: { EmptyView() }
         )
