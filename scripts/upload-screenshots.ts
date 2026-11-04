@@ -4,11 +4,14 @@
 // never uploaded.
 //
 // Each image's display type comes from its pixel size. For every display type
-// it uploads, it first deletes what that set already holds, so a version
-// created from the last one does not end up with both sets of images. Display
-// types it has no images for are left alone.
+// it has images for, the set ends up holding exactly those, in order: images
+// already there with the same name and checksum are kept, anything else is
+// deleted, and the rest are sent. A run after a slow or stopped one therefore
+// only sends what is missing, and then waits for Apple to process everything.
+// Display types it has no images for are left alone.
 //
-// Usage: node scripts/upload-screenshots.ts [--version 1.2] [--dry-run]
+// Usage: node scripts/upload-screenshots.ts [--version 1.3] [--dry-run] [--replace]
+//   --replace  send every image again, even ones already there
 // Needs ASC_KEY_ID, ASC_ISSUER_ID and ASC_KEY_CONTENT (see scripts/asc.ts). In
 // CI, run the "App Store listing" workflow, which has them.
 
@@ -44,12 +47,22 @@ function pngSize(path: string): { width: number; height: number } {
 
 interface Screenshot {
     fileName: string;
+    sourceFileChecksum?: string | null;
     assetDeliveryState?: { state: string; errors?: { code: string; description: string }[] };
     uploadOperations?: { method: string; url: string; offset: number; length: number; requestHeaders: { name: string; value: string }[] }[];
 }
 
 const args = process.argv.slice(2);
+// A mistyped flag (--dryrun) must not turn into a real upload.
+for (const [index, arg] of args.entries()) {
+    const isValue = index > 0 && args[index - 1] === "--version";
+    if (!isValue && !["--version", "--dry-run", "--replace"].includes(arg)) {
+        console.error(`error: unknown argument ${arg}`);
+        process.exit(1);
+    }
+}
 const dryRun = args.includes("--dry-run");
+const replaceAll = args.includes("--replace");
 const versionArgument = args.includes("--version") ? args[args.indexOf("--version") + 1] : undefined;
 
 async function main(): Promise<void> {
@@ -93,11 +106,28 @@ async function main(): Promise<void> {
                 console.log(`!! ${group.join(", ")}: App Store Connect accepts none of ${types.join(", ")}; skipping`);
                 continue;
             }
-            await replaceScreenshots(asc, set, group.map((file) => join(screenshotsDir, locale, file)));
+            await syncScreenshots(asc, set, locale, group.map((file) => join(screenshotsDir, locale, file)));
         }
+    }
+    if (dryRun || processing.length === 0) {
+        console.log("Done. Check the version in App Store Connect.");
+        return;
+    }
+
+    // Wait for every set at once: Apple processes them in parallel, and on a slow
+    // day one image can take a quarter of an hour.
+    console.log(`==> Waiting for Apple to process ${processing.length} screenshot(s)`);
+    const states = await waitForProcessing(asc, processing);
+    for (const item of processing) {
+        const state = states.get(item.id);
+        console.log(`   ${item.locale} ${item.type}: ${item.name} ${state === "COMPLETE" ? "✓" : `!! ${state}`}`);
+        if (state !== "COMPLETE") unfinishedScreenshots.push(`${item.locale} ${item.name} (${state})`);
     }
     console.log("Done. Check the version in App Store Connect.");
 }
+
+/// Screenshots uploaded or kept this run that Apple has not finished processing.
+const processing: { id: string; name: string; locale: string; type: string }[] = [];
 
 /// The localisation's set for the first of `types` App Store Connect accepts,
 /// creating it if needed.
@@ -141,37 +171,60 @@ async function screenshotSet(
     return undefined;
 }
 
-async function replaceScreenshots(asc: AppStoreConnect, set: Resource<{ screenshotDisplayType: string }>, paths: string[]): Promise<void> {
+/// Makes the set hold exactly `paths`, in order. A screenshot already there
+/// with the same file name and checksum is kept, whether processed or still
+/// processing, so a run after a slow or stopped one only sends what is missing.
+/// Anything else in the set, and any failed or half-uploaded copy, is deleted.
+/// With --replace every screenshot is sent again.
+async function syncScreenshots(
+    asc: AppStoreConnect,
+    set: Resource<{ screenshotDisplayType: string }>,
+    locale: string,
+    paths: string[],
+): Promise<void> {
     const type = set.attributes.screenshotDisplayType;
+    const existing = set.id === "dry-run" ? [] : await asc.all<Screenshot>(`/v1/appScreenshotSets/${set.id}/appScreenshots`);
+    const reusable = (screenshot: Resource<Screenshot>, name: string, checksum: string) =>
+        !replaceAll &&
+        screenshot.attributes.fileName === name &&
+        screenshot.attributes.sourceFileChecksum === checksum &&
+        ["COMPLETE", "UPLOAD_COMPLETE"].includes(screenshot.attributes.assetDeliveryState?.state ?? "");
+
+    const plan = paths.map((path) => {
+        const name = basename(path);
+        const checksum = createHash("md5").update(readFileSync(path)).digest("hex");
+        const kept = existing.find((screenshot) => reusable(screenshot, name, checksum));
+        return { path, name, kept };
+    });
+    const keptIds = new Set(plan.flatMap(({ kept }) => (kept ? [kept.id] : [])));
+    const stale = existing.filter((screenshot) => !keptIds.has(screenshot.id));
+    const toSend = plan.filter(({ kept }) => !kept);
+
     if (dryRun) {
-        console.log(`   ${type}: would replace with ${paths.map((path) => basename(path)).join(", ")}`);
+        const summary = toSend.length === 0 && stale.length === 0
+            ? "unchanged"
+            : `would send ${toSend.map(({ name }) => name).join(", ") || "nothing"}${stale.length > 0 ? ` and delete ${stale.length} old` : ""}`;
+        console.log(`   ${type}: ${summary}`);
         return;
     }
-    const existing = await asc.all<Screenshot>(`/v1/appScreenshotSets/${set.id}/appScreenshots`);
-    for (const screenshot of existing) {
+    for (const screenshot of stale) {
         await asc.delete(`/v1/appScreenshots/${screenshot.id}`);
     }
-    if (existing.length > 0) console.log(`   ${type}: deleted ${existing.length} old screenshot(s)`);
+    if (stale.length > 0) console.log(`   ${type}: deleted ${stale.length} old screenshot(s)`);
 
-    // Send every image first, then wait for them together: Apple processes them
-    // in parallel, and one slow image no longer holds up the rest.
-    const uploaded: { id: string; name: string }[] = [];
-    for (const path of paths) {
-        uploaded.push({ id: await upload(asc, set.id, path), name: basename(path) });
+    const ids: string[] = [];
+    for (const item of plan) {
+        const id = item.kept?.id ?? await upload(asc, set.id, item.path);
+        ids.push(id);
+        if (item.kept?.attributes.assetDeliveryState?.state !== "COMPLETE") {
+            processing.push({ id, name: item.name, locale, type });
+        }
     }
+    console.log(`   ${type}: ${toSend.length === 0 ? "all already there" : `sent ${toSend.map(({ name }) => name).join(", ")}`}`);
     // Upload order is display order, but say so explicitly.
     await asc.request("PATCH", `/v1/appScreenshotSets/${set.id}/relationships/appScreenshots`, {
-        data: uploaded.map(({ id }) => ({ type: "appScreenshots", id })),
+        data: ids.map((id) => ({ type: "appScreenshots", id })),
     });
-    const states = await waitForProcessing(asc, uploaded);
-    for (const { name, id } of uploaded) {
-        const state = states.get(id);
-        console.log(`   ${type}: ${name} ${state === "COMPLETE" ? "✓" : `!! ${state}`}`);
-    }
-    const unfinished = uploaded.filter(({ id }) => states.get(id) !== "COMPLETE");
-    if (unfinished.length > 0) {
-        unfinishedScreenshots.push(...unfinished.map(({ id, name }) => `${type} ${name} (${states.get(id)})`));
-    }
 }
 
 /// Screenshots that had not processed when the wait ran out, reported at the end.
@@ -207,10 +260,10 @@ async function upload(asc: AppStoreConnect, setId: string, path: string): Promis
 }
 
 /// Each screenshot's last delivery state, once all are COMPLETE or FAILED, or
-/// after fifteen minutes. Apple usually takes seconds, but sometimes minutes.
+/// after 25 minutes. Apple usually takes seconds, but sometimes many minutes.
 async function waitForProcessing(asc: AppStoreConnect, screenshots: { id: string; name: string }[]): Promise<Map<string, string>> {
     const states = new Map<string, string>();
-    const deadline = Date.now() + 15 * 60 * 1000;
+    const deadline = Date.now() + 25 * 60 * 1000;
     while (Date.now() < deadline) {
         for (const { id, name } of screenshots) {
             if (states.get(id) === "COMPLETE" || states.get(id) === "FAILED") continue;
