@@ -124,6 +124,7 @@ public struct CardEditView<Scanner: View>: View {
                 onAdd: { draft.locations.append($0) }
             )
         }
+        .scrollDismissesKeyboard(.immediately)
         .navigationBarTitleDisplayMode(.inline)
         .accessibilityIdentifier("editCardForm")
         .task {
