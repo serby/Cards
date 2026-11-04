@@ -7,7 +7,15 @@ import SwiftData
 public enum CardStore {
     public static let schema = Schema([CardItem.self])
 
+    /// An in-memory store (UI tests) never syncs: there is nothing to keep, and
+    /// iOS 27.0 aborts on the first save when CloudKit mirrors one ("No eligible
+    /// connection available").
     public static func configuration(inMemory: Bool) -> ModelConfiguration {
-        ModelConfiguration(schema: schema, isStoredInMemoryOnly: inMemory, groupContainer: .none)
+        ModelConfiguration(
+            schema: schema,
+            isStoredInMemoryOnly: inMemory,
+            groupContainer: .none,
+            cloudKitDatabase: inMemory ? .none : .automatic
+        )
     }
 }
