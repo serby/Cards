@@ -183,7 +183,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Card Barcodesでカードを追加すると、ここに表示されます。"
+            "value" : "Card Barcodesで追加できます。"
           }
         },
         "ko" : {
