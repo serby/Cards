@@ -4,7 +4,7 @@ set -euo pipefail
 # Deploy to App Store via App Store Connect API key
 # Required env vars: ASC_KEY_ID, ASC_ISSUER_ID, ASC_KEY_CONTENT (or ASC_KEY_FILE)
 # Note: This uploads the binary. Submission for review must be done via
-# App Store Connect or the upload-metadata.sh script.
+# App Store Connect or the App Store listing workflow (scripts/upload-metadata.ts).
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"

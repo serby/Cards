@@ -1,5 +1,7 @@
 // Replaces the App Store screenshots of the editable App Store version with
-// screenshots/<locale>/*.png, in file-name order.
+// the store images in screenshots/store/<locale>/*.png, in file-name order.
+// The raw captures in screenshots/<locale>/, which CI compares against, are
+// never uploaded.
 //
 // Each image's display type comes from its pixel size. For every display type
 // it uploads, it first deletes what that set already holds, so a version
@@ -8,17 +10,16 @@
 //
 // Usage: node scripts/upload-screenshots.ts [--version 1.2] [--dry-run]
 // Needs ASC_KEY_ID, ASC_ISSUER_ID and ASC_KEY_CONTENT (see scripts/asc.ts). In
-// CI, run the "App Store screenshots" workflow, which has them.
+// CI, run the "App Store listing" workflow, which has them.
 
 import { createHash } from "node:crypto";
-import { readdirSync, readFileSync, statSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { basename, join } from "node:path";
-import { AppStoreConnect, AppStoreConnectError, query, type Resource } from "./asc.ts";
+import { AppStoreConnect, AppStoreConnectError, editableVersions, errorMessage, findApp, versionState, type Resource } from "./asc.ts";
 
 const root = join(import.meta.dirname, "..");
-const screenshotsDir = join(root, "screenshots");
+const screenshotsDir = join(root, "screenshots", "store");
 const bundleId = process.env.BUNDLE_ID ?? "net.serby.Cards";
-const editableStates = ["PREPARE_FOR_SUBMISSION", "DEVELOPER_REJECTED", "REJECTED", "METADATA_REJECTED", "INVALID_BINARY"];
 
 /// iPhone Duo is newer than the published API spec (4.5.1), which does not list
 /// APP_IPHONE_DUO; App Store Connect accepts it all the same (November 2026).
@@ -52,17 +53,13 @@ const dryRun = args.includes("--dry-run");
 const versionArgument = args.includes("--version") ? args[args.indexOf("--version") + 1] : undefined;
 
 async function main(): Promise<void> {
+    if (!existsSync(screenshotsDir)) throw new Error(`No store screenshots: ${screenshotsDir} does not exist`);
     const asc = new AppStoreConnect();
-    const apps = await asc.all<{ bundleId: string }>(`/v1/apps?${query({ "filter[bundleId]": bundleId })}`);
-    const app = apps.find((candidate) => candidate.attributes.bundleId === bundleId);
-    if (!app) throw new Error(`No app with bundle ID ${bundleId}`);
-
-    const versions = await asc.all<{ versionString: string; appStoreState: string }>(
-        `/v1/apps/${app.id}/appStoreVersions?${query({ "filter[appStoreState]": editableStates.join(","), "filter[platform]": "IOS" })}`,
-    );
+    const app = await findApp(asc, bundleId);
+    const versions = await editableVersions(asc, app.id);
     const version = versionArgument ? versions.find((candidate) => candidate.attributes.versionString === versionArgument) : versions[0];
     if (!version) throw new Error(`No editable App Store version${versionArgument ? ` ${versionArgument}` : ""}`);
-    console.log(`==> ${bundleId} ${version.attributes.versionString} (${version.attributes.appStoreState})${dryRun ? ", dry run" : ""}`);
+    console.log(`==> ${bundleId} ${version.attributes.versionString} (${versionState(version)})${dryRun ? ", dry run" : ""}`);
 
     const localizations = await asc.all<{ locale: string }>(`/v1/appStoreVersions/${version.id}/appStoreVersionLocalizations`);
     // Which of several candidate types App Store Connect accepted, so a rejected
@@ -204,4 +201,9 @@ async function upload(asc: AppStoreConnect, setId: string, path: string): Promis
     throw new Error(`${basename(path)} did not finish processing`);
 }
 
-await main();
+try {
+    await main();
+} catch (error) {
+    console.error(`error: ${errorMessage(error)}`);
+    process.exitCode = 1;
+}

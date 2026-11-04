@@ -44,6 +44,10 @@ jobs:
       with:
         node-version: 24
 
+    # The App Store listing text in metadata/ must fit App Store Connect's limits.
+    - name: Check App Store metadata
+      run: node scripts/check-metadata.ts
+
     # Development code (Cards/Development: Storybook, previews, sample data,
     # UI-test hooks) must never reach a release build.
     - name: Check release build has no development code

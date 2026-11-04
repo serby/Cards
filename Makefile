@@ -1,4 +1,4 @@
-.PHONY: check-release test test-unit test-e2e test-coverage coverage-run coverage-report coverage-clean build clean sim device-hub device test-tsan capture-screenshots validate-screenshots deploy-testflight deploy-appstore upload-metadata upload-screenshots
+.PHONY: check-release test test-unit test-e2e test-coverage coverage-run coverage-report coverage-clean build clean sim device-hub device test-tsan capture-screenshots validate-screenshots deploy-testflight deploy-appstore check-metadata upload-metadata upload-screenshots
 
 # Same choice as scripts/xcode-env.sh: XCODE_APP, else Xcode 27.1 when installed,
 # else whatever xcode-select points at.
@@ -94,8 +94,12 @@ deploy-testflight:
 deploy-appstore:
 	scripts/deploy-appstore.sh
 
+# Checks metadata/ against App Store Connect's limits, offline.
+check-metadata:
+	node scripts/check-metadata.ts
+
 upload-metadata:
-	scripts/upload-metadata.sh
+	node scripts/upload-metadata.ts
 
 upload-screenshots:
 	node scripts/upload-screenshots.ts

@@ -28,18 +28,38 @@ interface Document<Data> {
 
 export class AppStoreConnectError extends Error {
     readonly status: number;
+    readonly method: string;
+    readonly path: string;
     readonly body: string;
 
     constructor(status: number, method: string, path: string, body: string) {
         super(`${method} ${path} returned ${status}: ${body}`);
         this.status = status;
+        this.method = method;
+        this.path = path;
         this.body = body;
     }
 }
 
+/// One line for a failure, with App Store Connect's own explanation rather than its raw JSON.
+export function errorMessage(error: unknown): string {
+    if (error instanceof AppStoreConnectError) {
+        let details: string[] = [];
+        try {
+            const parsed = JSON.parse(error.body) as { errors?: { code?: string; title?: string; detail?: string }[] };
+            details = (parsed.errors ?? []).map((item) => item.detail ?? item.title ?? item.code ?? "").filter((detail) => detail !== "");
+        } catch {
+            // Not JSON; the body itself is the best explanation there is.
+        }
+        const explanation = details.length > 0 ? details.join("; ") : error.body.replace(/\s+/g, " ").slice(0, 600);
+        return `${error.method} ${error.path} returned ${error.status}: ${explanation}`;
+    }
+    return error instanceof Error ? error.message : String(error);
+}
+
 function requireEnv(name: string): string {
     const value = process.env[name];
-    if (!value) throw new Error(`${name} is not set`);
+    if (!value) throw new Error(`${name} is not set; the App Store Connect API key needs ASC_KEY_ID, ASC_ISSUER_ID and ASC_KEY_CONTENT`);
     return value;
 }
 
@@ -131,4 +151,36 @@ export function query(params: Record<string, string | number>): string {
     return Object.entries(params)
         .map(([key, value]) => `${key}=${encodeURIComponent(String(value))}`)
         .join("&");
+}
+
+/// App Store version states in which the version, its listing and its build can still be changed.
+export const editableVersionStates = ["PREPARE_FOR_SUBMISSION", "DEVELOPER_REJECTED", "REJECTED", "METADATA_REJECTED", "INVALID_BINARY"];
+
+export interface AppStoreVersionAttributes {
+    platform?: string;
+    versionString: string;
+    appVersionState?: string;
+    /// Deprecated in favour of appVersionState; read only as a fallback.
+    appStoreState?: string;
+    copyright?: string | null;
+}
+
+export function versionState(version: Resource<AppStoreVersionAttributes>): string {
+    return version.attributes.appVersionState ?? version.attributes.appStoreState ?? "unknown state";
+}
+
+/// The app with this bundle ID.
+export async function findApp(asc: AppStoreConnect, bundleId: string): Promise<Resource<{ bundleId: string; name: string }>> {
+    const apps = await asc.all<{ bundleId: string; name: string }>(`/v1/apps?${query({ "filter[bundleId]": bundleId })}`);
+    const app = apps.find((candidate) => candidate.attributes.bundleId === bundleId);
+    if (!app) throw new Error(`No app with bundle ID ${bundleId} in App Store Connect`);
+    return app;
+}
+
+/// The app's App Store versions that can still be edited. App Store Connect
+/// keeps at most one per platform; callers still check rather than assume it.
+export function editableVersions(asc: AppStoreConnect, appId: string, platform = "IOS"): Promise<Resource<AppStoreVersionAttributes>[]> {
+    return asc.all<AppStoreVersionAttributes>(
+        `/v1/apps/${appId}/appStoreVersions?${query({ "filter[appVersionState]": editableVersionStates.join(","), "filter[platform]": platform })}`,
+    );
 }
