@@ -88,12 +88,15 @@ public struct CardWidgetView<Accessory: View>: View {
                 .foregroundStyle(Color.accent)
                 .widgetAccentable()
                 .accessibilityHidden(true)
-            Text("No cards yet")
+            Text("No cards yet", comment: "Title of the Home Screen widget before the user has added a card.")
                 .font(.headline)
-            Text("Add a card in Card Barcodes and it shows here.")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
+            Text(
+                "Add a card in Card Barcodes and it shows here.",
+                comment: "Under “No cards yet” in the Home Screen widget. Card Barcodes is the app's name."
+            )
+            .font(.caption)
+            .foregroundStyle(.secondary)
+            .multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .accessibilityElement(children: .combine)
@@ -121,7 +124,10 @@ private struct CardWidgetBarcode: View {
                     .widgetAccentedRenderingMode(.fullColor)
                     .scaledToFit()
             } else {
-                Text("This code can't be drawn")
+                Text(
+                    "This code can't be drawn",
+                    comment: "Shown in the Home Screen widget instead of the barcode when the card's code can't be drawn in its barcode format."
+                )
                     .font(.caption)
                     .foregroundStyle(Color(rgb: CardInk.dark.rgb))
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -138,6 +144,11 @@ private extension View {
     /// Reads as one element: "Tesco Clubcard, 120 m · Tesco Express".
     func widgetCardStyle() -> some View {
         accessibilityElement(children: .combine)
-            .accessibilityHint("Opens the card in Card Barcodes")
+            .accessibilityHint(
+                Text(
+                    "Opens the card in Card Barcodes",
+                    comment: "VoiceOver hint for the card in the Home Screen widget. Card Barcodes is the app's name."
+                )
+            )
     }
 }

@@ -17,8 +17,21 @@ struct CardWidget: Widget {
                 (entry.card?.color ?? .standard).widgetFill
             }
         }
-        .configurationDisplayName("Card")
-        .description("Shows the barcode of the card nearest to you, or one you choose.")
+        .configurationDisplayName(
+            Text(
+                "Card",
+                comment: """
+                    A noun: one loyalty card. The Home Screen widget's name in the widget gallery, the title of its setting for which card to \
+                    show, and what Shortcuts calls a card.
+                    """
+            )
+        )
+        .description(
+            Text(
+                "Shows the barcode of the card nearest to you, or one you choose.",
+                comment: "Description of the Home Screen widget in the widget gallery."
+            )
+        )
         .supportedFamilies([.systemMedium])
     }
 }
@@ -79,6 +92,11 @@ private struct RefreshButton: View {
         }
         .buttonStyle(.plain)
         .background(.thinMaterial, in: .circle)
-        .accessibilityLabel("Find nearest card")
+        .accessibilityLabel(
+            Text(
+                "Find nearest card",
+                comment: "VoiceOver label for the Home Screen widget's refresh button, which finds the card nearest to you again."
+            )
+        )
     }
 }
