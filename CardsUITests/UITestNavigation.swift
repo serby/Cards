@@ -58,9 +58,16 @@ extension XCUIApplication {
         XCTAssertTrue(alert.waitForNonExistence(timeout: 3), "The notification prompt stayed up")
     }
 
+    /// A tap while the list is still settling just after launch can miss, as
+    /// a press can (`openMenu`), so it taps again while the row is still there.
     func openCard(_ row: String) {
-        buttons[row].tap()
-        XCTAssertTrue(staticTexts["cardNameText"].waitForExistence(timeout: 5), "The card's screen did not open")
+        let name = staticTexts["cardNameText"]
+        for _ in 0..<3 {
+            buttons[row].tap()
+            if name.waitForExistence(timeout: 3) { break }
+            guard buttons[row].exists, buttons[row].isHittable else { break }
+        }
+        XCTAssertTrue(name.waitForExistence(timeout: 5), "The card's screen did not open")
     }
 
     /// Opens Costa's screen with a code its format, EAN-13, cannot draw, so
