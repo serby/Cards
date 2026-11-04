@@ -6,7 +6,7 @@ Read [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) before changing anything. Its nu
 2. **Views in `Cards/UI` are pure:** view state, actions and injected effects in, no store or device access.
 3. **Impure work lives in `Cards/Features` connectors and `Cards/Core/Services`.**
 4. **Every view has a story, and every parameter has a knob.** Screen stories use `galleryLayout: .oneAtATime`.
-5. **Card colours come from the tested palette.** Never lower a contrast threshold.
+5. **Follow the visual style guide, [docs/STYLE.md](docs/STYLE.md).** Corners nest (inner radius = outer radius − inset), text sits on white panels rather than on a card colour, and palette contrast is tested. Never lower a contrast threshold.
 6. **Models stay CloudKit- and export-compatible:** defaults on every property, optional DTO fields, legacy-import tests.
 7. **Swift 6, no warnings, clean lint.**
 8. **Accessibility is part of done.**

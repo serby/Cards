@@ -148,9 +148,9 @@ Every view in `Cards/UI` has a story in `Cards/Development/Storybook/Catalogue`,
 - Bindings to local state go through `Stateful`; bindings to knobs through `KnobValues.*Binding`.
 - A value read once at creation (a map's starting camera) needs `.id(knobValue)` so the story rebuilds when the knob changes.
 
-### Rule 5: Colours come from the palette and must stay readable
+### Rule 5: Follow the visual style guide
 
-Card faces use only `CardColor` swatches (`UI/Theme/CardPalette.swift`), each a fixed background with an ink. Never draw a card in an arbitrary colour. `CardColorTests` checks WCAG AA (4.5:1) for primary and secondary text on every swatch, for the tinted list row in light and dark mode, and for the accent on the system background. Adding a colour means adding a case, a swatch and a display name; the tests then cover it automatically. If a test fails, change the colour, never the threshold.
+[docs/STYLE.md](STYLE.md) is the style guide: corners nest (an inset shape takes the outer radius minus the inset, with the radii in `UI/Theme/CardGeometry.swift`), text never sits straight on a card colour but on a white panel in dark ink, colours come from the palette or the custom picker, and card faces use the colour's gradient. `CardColorTests` checks WCAG AA (4.5:1) for every palette colour's ink, for list rows over the wash of any colour, and for the accent; `CardGeometryTests` checks the radii nest. If a test fails, change the colour, never the threshold.
 
 ### Rule 6: Models stay CloudKit- and export-compatible
 
@@ -225,7 +225,7 @@ Put it under `Cards/Development` and reference it only from other development co
 
 ### Add a card colour
 
-Add a case to `CardColor`, a swatch and a display name in `CardPalette.swift`, run `make test-unit`, and adjust the colour until `CardColorTests` passes.
+Add a case to `CardColor` with its raw value in `CardColor.swift`, then its hex and display name in `CardPalette.swift`, keeping the picker's rows full ([docs/STYLE.md](STYLE.md), section 3). Run `make test-unit` and adjust the colour until `CardColorTests` passes.
 
 ### Add a package dependency
 
