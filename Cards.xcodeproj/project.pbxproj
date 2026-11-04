@@ -71,6 +71,8 @@
 				UI/Components/BarcodeImage.swift,
 				UI/Components/CardWidgetView.swift,
 				UI/Components/ProximityLabel.swift,
+				UI/Modifiers/KeepsColoursWhenInverted.swift,
+				UI/Modifiers/ReadsLeftToRight.swift,
 				UI/Theme/CardPalette.swift,
 				UI/Theme/Colors.swift,
 				UI/ViewState/CardWidgetState.swift,

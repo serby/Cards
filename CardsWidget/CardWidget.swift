@@ -15,6 +15,7 @@ struct CardWidget: Widget {
             .widgetURL(entry.card?.url)
             .containerBackground(for: .widget) {
                 (entry.card?.color ?? .standard).widgetFill
+                    .keepsColoursWhenInverted()
             }
         }
         .configurationDisplayName(
@@ -89,9 +90,12 @@ private struct RefreshButton: View {
             Image(systemName: "arrow.clockwise")
                 .font(.caption.weight(.semibold))
                 .frame(width: 28, height: 28)
+                .background(.thinMaterial, in: .circle)
+                // Drawn at 28 pt, but 44 pt to tap, the least a finger needs.
+                .frame(width: 44, height: 44)
+                .contentShape(.rect)
         }
         .buttonStyle(.plain)
-        .background(.thinMaterial, in: .circle)
         .accessibilityLabel(
             Text(
                 "Find nearest card",

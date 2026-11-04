@@ -29,6 +29,14 @@ struct SmartInvertTests {
         #expect(ViewTree.count(of: KeepsColoursWhenInverted.self, in: detail.body) == 1)
     }
 
+    /// The Home Screen widget's barcode, in both of its layouts. The widget
+    /// keeps its card colour too, in `CardWidget`'s container background.
+    @Test(arguments: [("5012345678900", BarcodeType.ean13), ("https://serby.net", .qrCode), ("nope", .ean13)])
+    func widgetBarcodesKeepTheirColours(_ code: String, _ type: BarcodeType) {
+        let widget = CardWidgetView(card: CardWidgetState(name: "Tesco Clubcard", code: code, barcodeType: type, color: .blue))
+        #expect(ViewTree.count(of: KeepsColoursWhenInverted.self, in: widget.body) == 1)
+    }
+
     @Test(arguments: CardColor.allCases)
     func swatchesKeepTheirColours(_ color: CardColor) {
         let picker = CardColorPicker(selection: .constant(.blue))

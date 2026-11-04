@@ -1651,7 +1651,7 @@
       }
     },
     "Card code: %@" : {
-      "comment" : "VoiceOver label for the code under the barcode, which VoiceOver spells out character by character.",
+      "comment" : "VoiceOver label for a card's code, shown with its barcode on the card's screen and in the Home Screen widget. VoiceOver spells the code out character by character.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {

@@ -73,7 +73,10 @@ public struct CardDetailView: View {
                         .accessibilityLabel(
                             Text(
                                 "Card code: \(Text(card.code).speechSpellsOutCharacters())",
-                                comment: "VoiceOver label for the code under the barcode, which VoiceOver spells out character by character."
+                                comment: """
+                                    VoiceOver label for a card's code, shown with its barcode on the card's screen and in the Home Screen \
+                                    widget. VoiceOver spells the code out character by character.
+                                    """
                             )
                         )
                         .accessibilityAddTraits(.isStaticText)

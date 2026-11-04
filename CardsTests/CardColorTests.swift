@@ -44,6 +44,20 @@ struct CardColorTests {
         }
     }
 
+    /// The Home Screen widget draws a card's name in the primary ink, and its
+    /// distance and code in the secondary ink, on its own background: the
+    /// card colour, or the system background for `.standard`.
+    @Test(arguments: CardColor.allCases)
+    func widgetTextIsReadable(_ color: CardColor) {
+        for scheme in Self.schemes {
+            let fill = Resolved.rgb(color.widgetFill, over: Resolved.rgb(.primaryBackground, in: scheme), in: scheme)
+            let primary = Resolved.rgb(color.primaryInk, over: fill, in: scheme)
+            let secondary = Resolved.rgb(color.secondaryInk, over: fill, in: scheme)
+            #expect(Contrast.ratio(primary, fill) >= Self.minimumContrast, "primary ink, \(scheme)")
+            #expect(Contrast.ratio(secondary, fill) >= Self.minimumContrast, "secondary ink, \(scheme)")
+        }
+    }
+
     /// The list row draws its name and distance over a faint wash of the
     /// colour on the system background, in both appearances.
     @Test(arguments: CardColor.allCases)
@@ -65,6 +79,8 @@ struct CardColorTests {
             ("grouped background", Color(UIColor.systemGroupedBackground)),
             ("grouped cell", Color(UIColor.secondarySystemGroupedBackground)),
             ("standard card face", CardColor.standard.cardFill),
+            // The widget with no cards, and a `.standard` card's widget.
+            ("widget", CardColor.standard.widgetFill),
             // The location picker's fields, whose prompts are secondary text.
             ("picker field", Color(UIColor.tertiarySystemFill))
         ]

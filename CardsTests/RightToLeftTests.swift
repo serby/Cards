@@ -23,6 +23,20 @@ struct RightToLeftTests {
         #expect(rendered(barcode, .rightToLeft) == leftToRight)
     }
 
+    @Test(arguments: [
+        (BarcodeType.ean13, "5012345678900"),
+        (BarcodeType.qrCode, "https://serby.net")
+    ])
+    func widgetBarcodesNeverMirror(_ type: BarcodeType, _ code: String) {
+        let card = CardWidgetState(name: "Tesco Clubcard", code: code, barcodeType: type)
+        let size = type.isSquare ? CGSize(width: 420, height: 420) : CGSize(width: 900, height: 190)
+        let barcode = CardWidgetBarcode(card: card, pixelSize: size, margin: 24)
+            .frame(width: 300, height: type.isSquare ? 300 : 80)
+        let leftToRight = rendered(barcode, .leftToRight)
+        #expect(leftToRight != nil)
+        #expect(rendered(barcode, .rightToLeft) == leftToRight)
+    }
+
     @Test func codesReadLeftToRightInARightToLeftLayout() {
         let code = Text(verbatim: "123-ABC 45").readsLeftToRight()
         #expect(rendered(code, .rightToLeft) == rendered(code, .leftToRight))
