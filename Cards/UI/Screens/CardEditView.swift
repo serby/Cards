@@ -1,4 +1,4 @@
-import MapKit
+import CoreLocation
 import SwiftUI
 
 /// The add/edit form. The scanner is a view slot so the camera stays in
@@ -116,9 +116,7 @@ public struct CardEditView<Scanner: View>: View {
         }
         .sheet(isPresented: $showsLocationPicker) {
             LocationPickerView(
-                initialPosition: mapCentre.map { centre in
-                    .region(MKCoordinateRegion(center: centre, latitudinalMeters: 800, longitudinalMeters: 800))
-                } ?? .userLocation(fallback: .automatic),
+                centre: mapCentre,
                 findPlace: actions.findPlace,
                 onAppear: actions.requestLocationAccess,
                 onAdd: { draft.locations.append($0) }

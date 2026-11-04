@@ -25,9 +25,22 @@ public struct CardListActions {
 @MainActor
 public struct CardDetailActions {
     public var editCard: () -> Void
+    /// Saves a place picked on the map as one of the card's locations.
+    public var addLocation: (CardLocation) -> Void
+    /// Called when the location picker opens, so the map can show where you are.
+    public var requestLocationAccess: () -> Void
+    public var findPlace: (String) async -> PlaceMatch?
 
-    public init(editCard: @escaping () -> Void = {}) {
+    public init(
+        editCard: @escaping () -> Void = {},
+        addLocation: @escaping (CardLocation) -> Void = { _ in },
+        requestLocationAccess: @escaping () -> Void = {},
+        findPlace: @escaping (String) async -> PlaceMatch? = { _ in nil }
+    ) {
         self.editCard = editCard
+        self.addLocation = addLocation
+        self.requestLocationAccess = requestLocationAccess
+        self.findPlace = findPlace
     }
 }
 

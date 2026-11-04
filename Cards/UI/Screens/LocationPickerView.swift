@@ -46,6 +46,24 @@ public struct LocationPickerView: View {
         self.onAdd = onAdd
     }
 
+    /// Opens at `centre`, normally the user's last known location, or follows the
+    /// user's location when there is none yet.
+    public init(
+        centre: CLLocationCoordinate2D?,
+        findPlace: @escaping (String) async -> PlaceMatch?,
+        onAppear: @escaping () -> Void = {},
+        onAdd: @escaping (CardLocation) -> Void
+    ) {
+        self.init(
+            initialPosition: centre.map { centre in
+                .region(MKCoordinateRegion(center: centre, latitudinalMeters: 800, longitudinalMeters: 800))
+            } ?? .userLocation(fallback: .automatic),
+            findPlace: findPlace,
+            onAppear: onAppear,
+            onAdd: onAdd
+        )
+    }
+
     public var body: some View {
         NavigationStack {
             ZStack {

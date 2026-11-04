@@ -63,4 +63,38 @@ final class CardsUITests: XCTestCase {
         XCTAssertTrue(waitForElement(app.staticTexts["Card name: \(testName)"]), "Card name '\(testName)' not displayed in CardItemView")
         XCTAssertTrue(waitForElement(app.staticTexts["Card code: \(testCode)"]), "Card code '\(testCode)' not displayed in CardItemView")
     }
+
+    /// Adding where you are from the card screen saves it to the card, which then
+    /// reads as "here" and stops offering to add it again.
+    @MainActor
+    func testAddCurrentLocationFromCard() throws {
+        let app = XCUIApplication()
+        app.launchArguments += ["-uiTesting", "-screenshotSeed"]
+        app.launch()
+        dismissNotificationPrompt()
+
+        // Nectar has no locations; the seed puts the user at Notting Hill Gate.
+        let nectar = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Nectar")).firstMatch
+        XCTAssertTrue(waitForElement(nectar))
+        nectar.tap()
+
+        let addHere = app.buttons["addCurrentLocationButton"]
+        XCTAssertTrue(waitForElement(addHere))
+        addHere.tap()
+        XCTAssertTrue(waitForElement(app.descendants(matching: .any)["locationPickerMap"].firstMatch))
+        app.buttons["addLocationButton"].tap()
+
+        XCTAssertTrue(waitForElement(app.descendants(matching: .any)["cardProximityText"].firstMatch))
+        XCTAssertTrue(addHere.waitForNonExistence(timeout: 3))
+    }
+
+    /// Cards with locations ask for notifications once; answer so the alert
+    /// does not cover the app.
+    @MainActor
+    private func dismissNotificationPrompt() {
+        let alert = XCUIApplication(bundleIdentifier: "com.apple.springboard").alerts.firstMatch
+        if alert.waitForExistence(timeout: 5) {
+            alert.buttons.element(boundBy: 1).tap()
+        }
+    }
 }

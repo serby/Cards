@@ -1,3 +1,4 @@
+import CoreLocation
 import SwiftUI
 
 /// The card detail screen. Brightness and VoiceOver announcements go through
@@ -6,18 +7,23 @@ public struct CardDetailView: View {
     private let card: CardDetail
     @Binding private var brightnessBoost: Bool
     private let actions: CardDetailActions
+    /// Where the location picker opens: the user's last known location, if any.
+    private let mapCentre: CLLocationCoordinate2D?
 
     @Environment(\.screenBrightness) private var screenBrightness
     @Environment(\.accessibilityAnnouncer) private var announcer
     @State private var originalBrightness: CGFloat?
+    @State private var showsLocationPicker = false
 
     public init(
         card: CardDetail,
         brightnessBoost: Binding<Bool>,
+        mapCentre: CLLocationCoordinate2D? = nil,
         actions: CardDetailActions = CardDetailActions()
     ) {
         self.card = card
         _brightnessBoost = brightnessBoost
+        self.mapCentre = mapCentre
         self.actions = actions
     }
 
@@ -65,9 +71,22 @@ public struct CardDetailView: View {
             .frame(maxWidth: .infinity)
             .background(card.color.cardFill, in: .rect(cornerRadius: 24))
             .shadow(color: .black.opacity(0.12), radius: 16, y: 8)
+
+            // Pointless where the card already is, so it goes once you are inside one of its places.
+            if card.proximity?.isHere != true {
+                addCurrentLocationButton
+            }
             Spacer()
         }
         .padding()
+        .sheet(isPresented: $showsLocationPicker) {
+            LocationPickerView(
+                centre: mapCentre,
+                findPlace: actions.findPlace,
+                onAppear: actions.requestLocationAccess,
+                onAdd: actions.addLocation
+            )
+        }
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("cardDetailView")
         .task {
@@ -101,6 +120,21 @@ public struct CardDetailView: View {
                     .accessibilityHint("Tap to edit this card's details")
             }
         }
+    }
+
+    /// A quiet way to remember this place for the card, without opening the editor.
+    private var addCurrentLocationButton: some View {
+        Button {
+            showsLocationPicker = true
+        } label: {
+            Label("Add current location", systemImage: "location")
+                .font(.footnote.weight(.medium))
+        }
+        .buttonStyle(.borderless)
+        .foregroundStyle(.secondary)
+        .padding(.top, 12)
+        .accessibilityIdentifier("addCurrentLocationButton")
+        .accessibilityHint("Opens a map to save where you are as one of this card's places")
     }
 
     private func boost() async {

@@ -86,7 +86,8 @@ private let cardDetailStory = Story(
         .options("Type", BarcodeType.allNames, BarcodeType.ean13.rawValue),
         .options("Colour", CardColor.allNames, CardDetail.sample.color.rawValue),
         .number("Created (days ago)", 30, in: 0...3_650, step: 1),
-        .toggle("Brightness boost", true)
+        .toggle("Brightness boost", true),
+        .toggle("Map opens at Westway", true)
     ] + ProximityKnobs.knobs(place: "Boots Westfield", distance: 320),
     gallery: [CardDetail.sample, .qr, .invalidCode].map { card in
         (
@@ -109,7 +110,11 @@ private let cardDetailStory = Story(
         proximity: knobs.proximity()
     )
     return pushed {
-        CardDetailView(card: card, brightnessBoost: knobs.boolBinding("Brightness boost"))
+        CardDetailView(
+            card: card,
+            brightnessBoost: knobs.boolBinding("Brightness boost"),
+            mapCentre: knobs.bool("Map opens at Westway") ? CardLocation.sample.coordinate : nil
+        )
     }
 }
 
