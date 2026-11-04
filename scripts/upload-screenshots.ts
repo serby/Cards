@@ -20,11 +20,10 @@ const screenshotsDir = join(root, "screenshots");
 const bundleId = process.env.BUNDLE_ID ?? "net.serby.Cards";
 const editableStates = ["PREPARE_FOR_SUBMISSION", "DEVELOPER_REJECTED", "REJECTED", "METADATA_REJECTED", "INVALID_BINARY"];
 
-/// iPhone Duo is newer than the published API, so its display type is tried by
-/// name; ASC_DUO_DISPLAY_TYPE overrides the guesses.
-const duoCandidates = process.env.ASC_DUO_DISPLAY_TYPE
-    ? [process.env.ASC_DUO_DISPLAY_TYPE]
-    : ["APP_IPHONE_DUO", "APP_IPHONE_DUO_INNER", "APP_IPHONE_FOLD", "APP_IPHONE_FOLDABLE"];
+/// iPhone Duo is newer than the published API spec (4.5.1), which does not list
+/// APP_IPHONE_DUO; App Store Connect accepts it all the same (November 2026).
+/// ASC_DUO_DISPLAY_TYPE overrides it should Apple rename it.
+const duoCandidates = [process.env.ASC_DUO_DISPLAY_TYPE ?? "APP_IPHONE_DUO"];
 
 /// Pixel size to display type, from Apple's screenshot specifications.
 function displayTypes(width: number, height: number): string[] {
