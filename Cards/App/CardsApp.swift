@@ -21,15 +21,10 @@ struct CardsApp: App {
     }
 
     var sharedModelContainer: ModelContainer = {
-        let schema = Schema([CardItem.self])
-
         do {
-            let modelConfiguration = ModelConfiguration(
-                schema: schema,
-                isStoredInMemoryOnly: DevelopmentHooks.isUITesting
-            )
+            let modelConfiguration = CardStore.configuration(inMemory: DevelopmentHooks.isUITesting)
             DevelopmentHooks.initializeCloudKitSchemaIfRequested()
-            let container = try ModelContainer(for: schema, configurations: [modelConfiguration])
+            let container = try ModelContainer(for: CardStore.schema, configurations: [modelConfiguration])
             try DevelopmentHooks.seedScreenshotCards(into: container)
             return container
         } catch {
