@@ -53,7 +53,6 @@ final class CardsScreenshotTests: XCTestCase {
         XCTAssertTrue(app.descendants(matching: .any)["barcodeView"].firstMatch.waitForExistence(timeout: 5))
         XCTAssertTrue(app.descendants(matching: .any)["cardProximityText"].firstMatch.waitForExistence(timeout: 3))
         attach(app, name: "02_CardDetail\(suffix)")
-        if isPad { return }
 
         app.buttons["editCardButton"].tap()
         let nameField = app.textFields["Card name"]

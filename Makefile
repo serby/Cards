@@ -76,7 +76,7 @@ device-hub: sim
 
 capture-screenshots:
 	for locale in en-US en-GB; do \
-		for device in "iPhone 16 Pro Max" "iPad Pro 13-inch (M4)" "iPhone Duo"; do \
+		for device in "iPhone 17 Pro Max" "iPad Pro 13-inch (M4)" "iPhone Duo"; do \
 			scripts/capture-screenshots.sh "$device" $locale || exit 1; \
 		done; \
 	done

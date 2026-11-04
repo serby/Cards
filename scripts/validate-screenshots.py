@@ -19,11 +19,15 @@ IPHONE = (1320, 2868)
 IPAD = (2064, 2752)
 DUO = (1398, 2034)  # iPhone Duo, outer display: the simulator boots folded
 SCREENS = ("01_CardList", "02_CardDetail", "03_EditCard", "04_LocationPicker")
+# The widget shot is a crop of the Home Screen round the widget, whatever size
+# the widget takes there (None).
 REFERENCES = {
     **{f"{name}.png": IPHONE for name in SCREENS},
     **{f"{name}_Duo.png": DUO for name in SCREENS},
-    "01_CardList_iPad.png": IPAD,
-    "02_CardDetail_iPad.png": IPAD,
+    **{f"{name}_iPad.png": IPAD for name in SCREENS},
+    "05_Widget.png": (None, None),
+    "05_Widget_Duo.png": (None, None),
+    "05_Widget_iPad.png": (None, None),
 }
 EXPECTED = {"en-GB": REFERENCES, "en-US": REFERENCES}
 # What CI compares with the references. The map is left out because its tiles
@@ -49,7 +53,8 @@ def png_info(path: Path) -> tuple[int, int, int, int]:
 def validate_references() -> list[str]:
     errors: list[str] = []
     actual_locales = {
-        path.name for path in SCREENSHOTS_DIR.iterdir() if path.is_dir() and not path.name.startswith(".")
+        path.name for path in SCREENSHOTS_DIR.iterdir()
+        if path.is_dir() and not path.name.startswith(".") and path.name != "store"
     }
     if actual_locales != set(EXPECTED):
         errors.append(
@@ -72,9 +77,12 @@ def validate_references() -> list[str]:
             except (OSError, ValueError, struct.error) as error:
                 errors.append(f"{locale}/{filename}: {error}")
                 continue
-            if (width, height) != expected_dimensions:
+            expected_width, expected_height = expected_dimensions
+            if (expected_width is not None and width != expected_width) or (
+                expected_height is not None and height != expected_height
+            ):
                 errors.append(
-                    f"{locale}/{filename}: expected {expected_dimensions[0]}x{expected_dimensions[1]}, "
+                    f"{locale}/{filename}: expected {expected_width or 'any'}x{expected_height or 'any'}, "
                     f"found {width}x{height}"
                 )
             if bit_depth != 8 or color_type not in (2, 6):

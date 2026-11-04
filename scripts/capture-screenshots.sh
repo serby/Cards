@@ -1,16 +1,21 @@
 #!/bin/bash
-# Capture App Store screenshots by running the screenshot UI test on a target
-# simulator, then extracting the attachments into screenshots/<locale>/.
+# Capture the App Store screenshots of the app by running the screenshot UI
+# tests on a target simulator, then extracting the attachments into
+# screenshots/<locale>/. These are the raw captures CI compares against; the
+# images uploaded to the App Store are composed from them (make store-screenshots).
+#
+# The app is uninstalled first, so the widget test adds the only widget to a
+# clean Home Screen, and the status bar shows 9:41 with full signal and battery.
 #
 # Usage:
-#   scripts/capture-screenshots.sh                         # iPhone 16 Pro Max, en-US
+#   scripts/capture-screenshots.sh                         # iPhone 17 Pro Max, en-US
 #   scripts/capture-screenshots.sh "iPad Pro 13-inch (M4)" en-GB
 #   scripts/capture-screenshots.sh "iPhone Duo" en-GB             # outer display, "_Duo" names
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
-DEVICE="${1:-iPhone 16 Pro Max}"
+DEVICE="${1:-iPhone 17 Pro Max}"
 LOCALE="${2:-en-US}"
 OUT_DIR="$PROJECT_DIR/screenshots/$LOCALE"
 RESULT_BUNDLE="/tmp/Cards-screenshots.xcresult"
@@ -34,14 +39,20 @@ echo "==> Resolving simulator"
 SIM_INFO=$("$SCRIPT_DIR/ci-resolve-sim.sh" "$DEVICE")
 SIM_NAME=$(printf '%s\n' "$SIM_INFO" | sed -n 's/^device=//p')
 SIM_VERSION=$(printf '%s\n' "$SIM_INFO" | sed -n 's/^version=//p')
+SIM_UDID=$(printf '%s\n' "$SIM_INFO" | sed -n 's/^udid=//p')
+
+xcrun simctl uninstall "$SIM_UDID" net.serby.Cards 2>/dev/null || true
+xcrun simctl status_bar "$SIM_UDID" override --time 9:41 --dataNetwork wifi --wifiMode active --wifiBars 3 \
+    --cellularMode active --cellularBars 4 --batteryState charged --batteryLevel 100
 
 echo "==> Running screenshot test on $SIM_NAME (iOS $SIM_VERSION)"
 rm -rf "$RESULT_BUNDLE" "$EXPORT_DIR"
 TEST_RUNNER_SCREENSHOT_SUFFIX="$SUFFIX" xcodebuild test \
     -project Cards.xcodeproj \
     -scheme Cards \
-    -destination "platform=iOS Simulator,name=$SIM_NAME,OS=$SIM_VERSION" \
+    -destination "platform=iOS Simulator,id=$SIM_UDID" \
     -only-testing:CardsUITests/CardsScreenshotTests/testCaptureScreenshots \
+    -only-testing:CardsUITests/CardsWidgetScreenshotTests/testCaptureWidgetScreenshot \
     -testLanguage "$LANGUAGE" \
     -testRegion "$REGION" \
     -enableCodeCoverage NO \
@@ -60,12 +71,9 @@ EXPORT_DIR="$EXPORT_DIR" OUT_DIR="$OUT_DIR" CAPTURE_SET="$CAPTURE_SET" node --in
 import { copyFileSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 const { EXPORT_DIR: exportDir, OUT_DIR: outDir, CAPTURE_SET: set } = process.env;
-const screens = ["01_CardList", "02_CardDetail", "03_EditCard", "04_LocationPicker"];
-const expected = new Set({
-    iphone: screens,
-    ipad: ["01_CardList_iPad", "02_CardDetail_iPad"],
-    duo: screens.map((name) => name + "_Duo"),
-}[set]);
+const screens = ["01_CardList", "02_CardDetail", "03_EditCard", "04_LocationPicker", "05_Widget"];
+const suffix = { iphone: "", ipad: "_iPad", duo: "_Duo" }[set];
+const expected = new Set(screens.map((name) => name + suffix));
 const seen = new Set();
 for (const entry of JSON.parse(readFileSync(join(exportDir, "manifest.json"), "utf8"))) {
     for (const attachment of entry.attachments ?? []) {
