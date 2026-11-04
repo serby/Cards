@@ -1,8 +1,8 @@
 import MapKit
 import SwiftUI
 
-/// Picks a place for a card: drag the map under the pin, or jump to a postcode,
-/// then set how far around it counts as "there".
+/// Picks a place for a card: drag the map under the pin, or jump to a postcode
+/// or an address, then set how far around it counts as "there".
 public struct LocationPickerView: View {
     private let findPlace: (String) async -> PlaceMatch?
     private let onAppear: () -> Void
@@ -89,7 +89,7 @@ public struct LocationPickerView: View {
                             Text("Add", comment: "Toolbar button that adds the place under the map pin to the card. A verb.")
                         }
                         .disabled(center == nil)
-                        // Command-Return, as Return searches from the postcode field.
+                        // Command-Return, as Return searches from the search field.
                         .keyboardShortcut(.return, modifiers: .command)
                         .accessibilityIdentifier("addLocationButton")
                     }
@@ -207,7 +207,7 @@ public struct LocationPickerView: View {
                     // Both fields wrap rather than cut their text off at large
                     // text sizes; Return searches, or ends editing.
                     TextField(
-                        "Postcode",
+                        "Postcode or address",
                         text: $postcode.singleLine(onReturn: search),
                         prompt: Text(verbatim: ""),
                         axis: .vertical
@@ -227,11 +227,11 @@ public struct LocationPickerView: View {
                     if isSearching {
                         ProgressView()
                             .accessibilityLabel(
-                                Text("Searching", comment: "VoiceOver label for the spinner beside the postcode field while a search runs.")
+                                Text("Searching", comment: "VoiceOver label for the spinner beside the map's search field while a search runs.")
                             )
                     } else if !postcode.isEmpty {
                         Button(action: search) {
-                            Text("Find", comment: "Button beside the postcode field that moves the map to that postcode. A verb.")
+                            Text("Find", comment: "Button beside the search field that moves the map to the postcode or address typed in it. A verb.")
                                 // The whole 44 pt square is the button, not just the word.
                                 .frame(minWidth: 44, minHeight: 44)
                                 .contentShape(.rect)
@@ -245,13 +245,10 @@ public struct LocationPickerView: View {
             }
 
             if notFound {
-                Text(
-                    "No place found for \u{201C}\(postcode)\u{201D}",
-                    comment: "Under the postcode field when nothing is found. The argument is what was typed; use your language's quotation marks."
-                )
-                .font(.footnote)
-                .foregroundStyle(Color.secondaryText)
-                .frame(maxWidth: .infinity, alignment: .leading)
+                Text(Self.notFoundMessage(postcode))
+                    .font(.footnote)
+                    .foregroundStyle(Color.secondaryText)
+                    .frame(maxWidth: .infinity, alignment: .leading)
             }
 
             TextField(
@@ -262,7 +259,7 @@ public struct LocationPickerView: View {
             )
             .submitLabel(.done)
             .focused($focusedField, equals: .name)
-            // On the field, as on the postcode field: on the row it replaced
+            // On the field, as on the search field: on the row it replaced
             // the identifiers of everything in it, the prompt and icon too.
             .accessibilityIdentifier("locationNameField")
             .accessibilityLabel(namePrompt)
@@ -312,7 +309,7 @@ public struct LocationPickerView: View {
             // otherwise silent.
             guard let match else {
                 notFound = true
-                announcer.announce(Self.notFoundMessage(query))
+                announcer.announce(String(localized: Self.notFoundMessage(query)))
                 return
             }
             radius = CardLocation.defaultRadius
@@ -325,14 +322,14 @@ public struct LocationPickerView: View {
             announcer.announce(
                 String(
                     localized: "Map moved to \(match.name)",
-                    comment: "VoiceOver announcement after a postcode search on the Add Location map finds a place. The argument is the place found."
+                    comment: "VoiceOver announcement after a search on the Add Location map finds a place. The argument is the place found."
                 )
             )
         }
     }
 
     private var postcodePrompt: Text {
-        Text("Postcode", comment: "Placeholder in the search field that moves the map to a postcode or address.")
+        Text("Postcode or address", comment: "Placeholder and VoiceOver label of the search field on the Add Location map.")
     }
 
     private var namePrompt: Text {
@@ -342,11 +339,14 @@ public struct LocationPickerView: View {
         )
     }
 
-    /// Shown under the postcode field, and spoken, when nothing is found.
-    private static func notFoundMessage(_ query: String) -> String {
-        String(
-            localized: "No place found for \u{201C}\(query)\u{201D}",
-            comment: "Under the postcode field when nothing is found. The argument is what was typed; use your language's quotation marks."
+    /// Shown under the search field, and spoken, when nothing is found.
+    private static func notFoundMessage(_ query: String) -> LocalizedStringResource {
+        LocalizedStringResource(
+            "No place found for \u{201C}\(query)\u{201D}",
+            comment: """
+                Under the search field on the Add Location map when nothing is found. \
+                The argument is the postcode or address that was typed; use your language's quotation marks.
+                """
         )
     }
 

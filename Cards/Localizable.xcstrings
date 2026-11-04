@@ -3795,7 +3795,7 @@
       }
     },
     "Find" : {
-      "comment" : "Button beside the postcode field that moves the map to that postcode. A verb.",
+      "comment" : "Button beside the search field that moves the map to the postcode or address typed in it. A verb.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -4802,7 +4802,7 @@
       }
     },
     "Map moved to %@" : {
-      "comment" : "VoiceOver announcement after a postcode search on the Add Location map finds a place. The argument is the place found.",
+      "comment" : "VoiceOver announcement after a search on the Add Location map finds a place. The argument is the place found.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -5842,7 +5842,7 @@
       }
     },
     "No place found for “%@”" : {
-      "comment" : "Under the postcode field when nothing is found. The argument is what was typed; use your language's quotation marks.",
+      "comment" : "Under the search field on the Add Location map when nothing is found. The argument is the postcode or address that was typed; use your language's quotation marks.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -6621,67 +6621,67 @@
         }
       }
     },
-    "Postcode" : {
-      "comment" : "Placeholder in the search field that moves the map to a postcode or address.",
+    "Postcode or address" : {
+      "comment" : "Placeholder and VoiceOver label of the search field on the Add Location map.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "الرمز البريدي"
+            "value" : "الرمز البريدي أو العنوان"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Postleitzahl"
+            "value" : "Postleitzahl oder Adresse"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Código postal"
+            "value" : "Código postal o dirección"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Code postal"
+            "value" : "Code postal ou adresse"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "CAP"
+            "value" : "CAP o indirizzo"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "郵便番号"
+            "value" : "郵便番号または住所"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "우편번호"
+            "value" : "우편번호 또는 주소"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "CEP"
+            "value" : "CEP ou endereço"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "邮政编码"
+            "value" : "邮政编码或地址"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "郵遞區號"
+            "value" : "郵遞區號或地址"
           }
         }
       }
@@ -7343,7 +7343,7 @@
       }
     },
     "Searching" : {
-      "comment" : "VoiceOver label for the spinner beside the postcode field while a search runs.",
+      "comment" : "VoiceOver label for the spinner beside the map's search field while a search runs.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
