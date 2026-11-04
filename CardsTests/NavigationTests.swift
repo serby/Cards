@@ -213,4 +213,23 @@ struct NavigationTests {
         let uniqueIds = Set(ids)
         #expect(ids.count == uniqueIds.count)
     }
+
+    @Test(arguments: ["123", "https://serby.net/a?b=c#d", "two words", "Café ☕️", "100%"])
+    func cardLinksRoundTripAnyCode(_ code: String) throws {
+        let url = try #require(NavigationRoute.card(code).url)
+        #expect(url.absoluteString.hasPrefix("cards://cards/card/"))
+        #expect(NavigationRoute.from(url: url) == .card(code))
+    }
+
+    @Test func linksRoundTripEveryRoute() throws {
+        for route in [NavigationRoute.cards, .newCard, .card("1"), .editCard("a/b")] {
+            let url = try #require(route.url)
+            #expect(NavigationRoute.from(url: url) == route)
+        }
+    }
+
+    @Test func linksElsewhereAreIgnored() throws {
+        #expect(NavigationRoute.from(url: try #require(URL(string: "https://cards/card/1"))) == nil)
+        #expect(NavigationRoute.from(url: try #require(URL(string: "cards://other/card/1"))) == nil)
+    }
 }
