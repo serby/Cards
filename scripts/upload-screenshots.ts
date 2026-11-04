@@ -189,16 +189,17 @@ async function upload(asc: AppStoreConnect, setId: string, path: string): Promis
             attributes: { uploaded: true, sourceFileChecksum: createHash("md5").update(bytes).digest("hex") },
         },
     });
-    for (let attempt = 1; attempt <= 40; attempt++) {
+    // Apple usually takes seconds, but sometimes minutes, so allow ten.
+    for (let attempt = 1; attempt <= 120; attempt++) {
         const current = await asc.get<Resource<Screenshot>>(`/v1/appScreenshots/${screenshot.id}`);
         const state = current.data.attributes.assetDeliveryState;
         if (state?.state === "COMPLETE") return screenshot.id;
         if (state?.state === "FAILED") {
             throw new Error(`${basename(path)} failed processing: ${JSON.stringify(state.errors)}`);
         }
-        await new Promise((resolve) => setTimeout(resolve, 3_000));
+        await new Promise((resolve) => setTimeout(resolve, 5_000));
     }
-    throw new Error(`${basename(path)} did not finish processing`);
+    throw new Error(`${basename(path)} did not finish processing in ten minutes`);
 }
 
 try {
