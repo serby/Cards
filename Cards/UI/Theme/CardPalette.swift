@@ -1,6 +1,7 @@
 import SwiftUI
+import UIKit
 
-/// Whether text on a card colour is drawn light or dark.
+/// Whether marks drawn straight on a card colour are light or dark.
 public enum CardInk: Sendable {
     case light
     case dark
@@ -14,21 +15,25 @@ public enum CardInk: Sendable {
             0x1C1C1E
         }
     }
+
+    public var color: Color { Color(rgb: rgb) }
+
+    /// Whichever ink stands out more against `background`.
+    public static func best(on background: UInt32) -> Self {
+        let lightContrast = WCAG.contrast(Self.light.rgb, background)
+        let darkContrast = WCAG.contrast(Self.dark.rgb, background)
+        return lightContrast >= darkContrast ? .light : .dark
+    }
 }
 
-/// A fixed card background and the ink drawn on it. `CardColorTests` checks every
-/// swatch meets WCAG AA (4.5:1) for both primary and secondary text, and that the
-/// list-row hint keeps the system label readable in light and dark mode.
-public struct CardSwatch: Hashable, Sendable {
-    /// Opacity of secondary text (card name, date) relative to the ink.
-    public static let secondaryInkOpacity = 0.85
-
-    /// sRGB as 0xRRGGBB.
-    public let background: UInt32
-    public let ink: CardInk
-
-    public var backgroundColor: Color { Color(rgb: background) }
-    public var inkColor: Color { Color(rgb: ink.rgb) }
+/// Text never sits straight on a card colour, which can be any colour at all.
+/// It sits on these white panels in dark ink (see docs/STYLE.md).
+public enum CardPanel {
+    public static let fill = Color.white
+    public static let ink = CardInk.dark.color
+    /// Supporting text: a place, a date.
+    public static let secondaryInkOpacity = 0.7
+    public static let secondaryInk = ink.opacity(secondaryInkOpacity)
 }
 
 public extension CardColor {
@@ -37,33 +42,57 @@ public extension CardColor {
     static let hintOpacityLight = 0.22
     static let hintOpacityDark = 0.36
 
-    /// `nil` for `.standard`, which follows the system appearance instead.
-    var swatch: CardSwatch? {
+    /// sRGB as 0xRRGGBB; `nil` for `.standard`, which follows the system appearance.
+    var background: UInt32? {
         switch self {
         case .standard:
             nil
         case .red:
-            CardSwatch(background: 0xB3261E, ink: .light)
+            0xB3261E
+        case .coral:
+            0xE5735A
         case .orange:
-            CardSwatch(background: 0xF28C28, ink: .dark)
+            0xF28C28
         case .yellow:
-            CardSwatch(background: 0xF9C74F, ink: .dark)
+            0xF9C74F
+        case .lime:
+            0x9CCC65
         case .green:
-            CardSwatch(background: 0x24692B, ink: .light)
+            0x24692B
+        case .olive:
+            0x556B2F
+        case .mint:
+            0x4DB6AC
         case .teal:
-            CardSwatch(background: 0x00695C, ink: .light)
+            0x00695C
+        case .sky:
+            0x4FC3F7
         case .blue:
-            CardSwatch(background: 0x1458B0, ink: .light)
+            0x1458B0
         case .indigo:
-            CardSwatch(background: 0x3F51B5, ink: .light)
+            0x3F51B5
+        case .navy:
+            0x1A237E
+        case .lavender:
+            0xB39DDB
         case .purple:
-            CardSwatch(background: 0x7B1FA2, ink: .light)
+            0x7B1FA2
         case .pink:
-            CardSwatch(background: 0xAD1457, ink: .light)
+            0xAD1457
+        case .rose:
+            0xF48FB1
+        case .maroon:
+            0x7F1D1D
         case .brown:
-            CardSwatch(background: 0x795548, ink: .light)
+            0x795548
+        case .sand:
+            0xD7CCC8
         case .graphite:
-            CardSwatch(background: 0x455A64, ink: .light)
+            0x455A64
+        case .black:
+            0x121212
+        case .custom(let rgb):
+            rgb & 0xFFFFFF
         }
     }
 
@@ -73,60 +102,106 @@ public extension CardColor {
             "Default"
         case .red:
             "Red"
+        case .coral:
+            "Coral"
         case .orange:
             "Orange"
         case .yellow:
             "Yellow"
+        case .lime:
+            "Lime"
         case .green:
             "Green"
+        case .olive:
+            "Olive"
+        case .mint:
+            "Mint"
         case .teal:
             "Teal"
+        case .sky:
+            "Sky"
         case .blue:
             "Blue"
         case .indigo:
             "Indigo"
+        case .navy:
+            "Navy"
+        case .lavender:
+            "Lavender"
         case .purple:
             "Purple"
         case .pink:
             "Pink"
+        case .rose:
+            "Rose"
+        case .maroon:
+            "Maroon"
         case .brown:
             "Brown"
+        case .sand:
+            "Sand"
         case .graphite:
             "Graphite"
+        case .black:
+            "Black"
+        case .custom:
+            "Custom"
         }
     }
 
-    /// The card face.
+    /// The flat colour, or `nil` for `.standard`.
+    var backgroundColor: Color? {
+        background.map(Color.init(rgb:))
+    }
+
+    /// The card face, the widget and the picker's swatches: the colour as a soft
+    /// gradient. `.standard` is a translucent grey over the system background.
     var cardFill: AnyShapeStyle {
-        swatch.map { AnyShapeStyle($0.backgroundColor) } ?? AnyShapeStyle(Color.gray.opacity(0.25))
+        AnyShapeStyle((backgroundColor ?? Color.gray.opacity(0.25)).gradient)
     }
 
-    /// Text on the card face: the code.
-    var primaryInk: AnyShapeStyle {
-        swatch.map { AnyShapeStyle($0.inkColor) } ?? AnyShapeStyle(.primary)
+    /// The Home Screen widget's background: the colour, or the system background
+    /// for `.standard`, as a gradient.
+    var widgetFill: AnyShapeStyle {
+        AnyShapeStyle((backgroundColor ?? .primaryBackground).gradient)
     }
 
-    /// Supporting text on the card face: the name and date.
-    var secondaryInk: AnyShapeStyle {
-        swatch.map { AnyShapeStyle($0.inkColor.opacity(CardSwatch.secondaryInkOpacity)) }
-            ?? AnyShapeStyle(.secondary)
-    }
-
-    /// The Home Screen widget's background: the card colour, or the system
-    /// background for `.standard`, under the same ink as the card face.
-    var widgetFill: Color {
-        swatch?.backgroundColor ?? .primaryBackground
+    /// Marks drawn straight on the colour, such as the picker's tick.
+    var ink: Color {
+        background.map { CardInk.best(on: $0).color } ?? .primary
     }
 
     /// A list row: a faint wash of the card colour, or the grouped background
-    /// for `.standard` so every row reads as the same shape.
+    /// for `.standard` so every row reads as the same shape. `CardColorTests`
+    /// checks the system label stays readable over the wash of any colour.
     var rowFill: Color {
-        swatch.map { swatch in
-            Color(
-                light: swatch.backgroundColor.opacity(Self.hintOpacityLight),
-                dark: swatch.backgroundColor.opacity(Self.hintOpacityDark)
-            )
+        backgroundColor.map { color in
+            Color(light: color.opacity(Self.hintOpacityLight), dark: color.opacity(Self.hintOpacityDark))
         } ?? .secondaryBackground
+    }
+
+    /// A custom card colour from a colour the user picked, in sRGB.
+    static func custom(from color: Color) -> Self {
+        var red: CGFloat = 0, green: CGFloat = 0, blue: CGFloat = 0, alpha: CGFloat = 0
+        UIColor(color).getRed(&red, green: &green, blue: &blue, alpha: &alpha)
+        let byte = { (value: CGFloat) in UInt32((min(max(value, 0), 1) * 255).rounded()) }
+        return .custom(byte(red) << 16 | byte(green) << 8 | byte(blue))
+    }
+}
+
+/// WCAG 2 relative luminance and contrast, for opaque 0xRRGGBB sRGB colours.
+enum WCAG {
+    static func contrast(_ first: UInt32, _ second: UInt32) -> Double {
+        let (one, two) = (luminance(first), luminance(second))
+        return (max(one, two) + 0.05) / (min(one, two) + 0.05)
+    }
+
+    static func luminance(_ rgb: UInt32) -> Double {
+        let linear = [(rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF].map { channel -> Double in
+            let value = Double(channel) / 255
+            return value <= 0.04045 ? value / 12.92 : pow((value + 0.055) / 1.055, 2.4)
+        }
+        return 0.2126 * linear[0] + 0.7152 * linear[1] + 0.0722 * linear[2]
     }
 }
 

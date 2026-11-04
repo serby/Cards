@@ -29,12 +29,12 @@ public struct CardDetailView: View {
 
     public var body: some View {
         VStack {
-            VStack(spacing: 16) {
+            VStack(spacing: CardGeometry.inset) {
                 VStack(spacing: 6) {
                     Text(card.name)
                         .font(.title2.bold())
                         .multilineTextAlignment(.center)
-                        .foregroundStyle(card.color.primaryInk)
+                        .foregroundStyle(CardPanel.ink)
                         .accessibilityIdentifier("cardNameText")
                         .accessibilityLabel("Card name: \(card.name)")
                         .accessibilityAddTraits(.isHeader)
@@ -42,10 +42,11 @@ public struct CardDetailView: View {
                     if let proximity = card.proximity {
                         ProximityLabel(proximity, showsPlace: true)
                             .font(.subheadline.weight(.medium))
-                            .foregroundStyle(card.color.secondaryInk)
+                            .foregroundStyle(CardPanel.secondaryInk)
                             .accessibilityIdentifier("cardProximityText")
                     }
                 }
+                .cardPanel()
 
                 BarcodeView(barcodeString: card.code, barcodeType: card.barcodeType)
                     .accessibilityLabel("Barcode for \(card.name)")
@@ -53,7 +54,7 @@ public struct CardDetailView: View {
                 VStack(spacing: 4) {
                     Text(card.code)
                         .font(.title3.monospaced().weight(.semibold))
-                        .foregroundStyle(card.color.primaryInk)
+                        .foregroundStyle(CardPanel.ink)
                         .textSelection(.enabled)
                         .accessibilityIdentifier("cardCodeText")
                         .accessibilityLabel(Text("Card code: ") + Text(card.code).speechSpellsOutCharacters())
@@ -61,15 +62,16 @@ public struct CardDetailView: View {
 
                     Text("\(card.timestamp, format: Date.FormatStyle(date: .abbreviated, time: .shortened))")
                         .font(.caption)
-                        .foregroundStyle(card.color.secondaryInk)
+                        .foregroundStyle(CardPanel.secondaryInk)
                         .accessibilityIdentifier("cardTimestampText")
                         .accessibilityLabel("Created on \(card.timestamp, format: Date.FormatStyle(date: .long, time: .shortened))")
                         .accessibilityAddTraits(.isStaticText)
                 }
+                .cardPanel()
             }
-            .padding(20)
+            .padding(CardGeometry.inset)
             .frame(maxWidth: .infinity)
-            .background(card.color.cardFill, in: .rect(cornerRadius: 24))
+            .background(card.color.cardFill, in: .rect(cornerRadius: CardGeometry.cornerRadius))
             .shadow(color: .black.opacity(0.12), radius: 16, y: 8)
 
             // Pointless where the card already is, so it goes once you are inside one of its places.
@@ -152,5 +154,15 @@ public struct CardDetailView: View {
             await screenBrightness.fade(to: originalBrightness ?? 0.5, duration: 0.2)
             announcer.announce("Brightness boost off")
         }
+    }
+}
+
+private extension View {
+    /// A white panel for text on the card face, its corners nested inside the card's.
+    func cardPanel() -> some View {
+        padding(.vertical, 12)
+            .padding(.horizontal, 16)
+            .frame(maxWidth: .infinity)
+            .background(CardPanel.fill, in: .rect(cornerRadius: CardGeometry.panelCornerRadius))
     }
 }

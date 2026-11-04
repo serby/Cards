@@ -8,6 +8,10 @@ public struct CardWidgetView<Accessory: View>: View {
     private let card: CardWidgetState?
     private let accessory: Accessory
 
+    /// Full colour on a normal Home Screen; tinted or clear Home Screens draw
+    /// everything in one tint, where white panels would hide the text.
+    @Environment(\.widgetRenderingMode) private var renderingMode
+
     public init(card: CardWidgetState?, @ViewBuilder accessory: () -> Accessory) {
         self.card = card
         self.accessory = accessory()
@@ -25,26 +29,29 @@ public struct CardWidgetView<Accessory: View>: View {
         }
     }
 
-    /// Name and distance above a full-width strip of bars.
+    private var isFullColor: Bool { renderingMode == .fullColor }
+
+    /// Name and distance on a panel above a full-width strip of bars.
     private func stripLayout(_ card: CardWidgetState) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: 6) {
             HStack(alignment: .center, spacing: 8) {
-                VStack(alignment: .leading, spacing: 2) {
+                VStack(alignment: .leading, spacing: 1) {
                     title(card, lineLimit: 1)
                     proximity(card)
                 }
                 Spacer(minLength: 0)
                 accessory
             }
+            .widgetPanel(isFullColor)
             // About 4:1, the space a medium widget leaves under the name, so the bars use its full width.
             CardWidgetBarcode(card: card, pixelSize: CGSize(width: 900, height: 190), margin: 28)
         }
         .widgetCardStyle()
     }
 
-    /// Name, distance and code beside a square code.
+    /// Name, distance and code on a panel beside a square code.
     private func squareLayout(_ card: CardWidgetState) -> some View {
-        HStack(spacing: 12) {
+        HStack(spacing: 6) {
             VStack(alignment: .leading, spacing: 4) {
                 title(card, lineLimit: 2)
                 proximity(card)
@@ -53,22 +60,31 @@ public struct CardWidgetView<Accessory: View>: View {
                     Text(card.code)
                         .font(.caption.monospaced())
                         .lineLimit(2)
-                        .foregroundStyle(card.color.secondaryInk)
+                        .foregroundStyle(secondaryInk)
                     Spacer(minLength: 0)
                     accessory
                 }
             }
+            .widgetPanel(isFullColor)
             CardWidgetBarcode(card: card, pixelSize: CGSize(width: 420, height: 420), margin: 24)
                 .aspectRatio(1, contentMode: .fit)
         }
         .widgetCardStyle()
     }
 
+    private var ink: AnyShapeStyle {
+        isFullColor ? AnyShapeStyle(CardPanel.ink) : AnyShapeStyle(.primary)
+    }
+
+    private var secondaryInk: AnyShapeStyle {
+        isFullColor ? AnyShapeStyle(CardPanel.secondaryInk) : AnyShapeStyle(.secondary)
+    }
+
     private func title(_ card: CardWidgetState, lineLimit: Int) -> some View {
         Text(card.name)
             .font(.headline)
             .lineLimit(lineLimit)
-            .foregroundStyle(card.color.primaryInk)
+            .foregroundStyle(ink)
             .widgetAccentable()
     }
 
@@ -77,7 +93,7 @@ public struct CardWidgetView<Accessory: View>: View {
         if let proximity = card.proximity {
             ProximityLabel(proximity, showsPlace: true)
                 .font(.caption.weight(.medium))
-                .foregroundStyle(card.color.secondaryInk)
+                .foregroundStyle(secondaryInk)
         }
     }
 
@@ -123,18 +139,28 @@ private struct CardWidgetBarcode: View {
             } else {
                 Text("This code can't be drawn")
                     .font(.caption)
-                    .foregroundStyle(Color(rgb: CardInk.dark.rgb))
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(.white)
+                    .foregroundStyle(CardPanel.ink)
             }
         }
-        .clipShape(.rect(cornerRadius: 10))
+        // A white panel that fills the space, so its edges line up with the text
+        // panel's, with its corners nested in the widget's own.
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(CardPanel.fill, in: ContainerRelativeShape())
+        .clipShape(ContainerRelativeShape())
         .accessibilityHidden(true)
     }
 }
 
 private extension View {
+    /// The white panel text sits on, its corners nested in the widget's. Left out
+    /// on tinted Home Screens, which draw the text in the tint instead.
+    func widgetPanel(_ isFullColor: Bool) -> some View {
+        padding(.horizontal, 10)
+            .padding(.vertical, 6)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            .background(isFullColor ? CardPanel.fill : .clear, in: ContainerRelativeShape())
+    }
+
     /// Reads as one element: "Tesco Clubcard, 120 m · Tesco Express".
     func widgetCardStyle() -> some View {
         accessibilityElement(children: .combine)

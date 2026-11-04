@@ -129,7 +129,20 @@ private let cardColorPickerStory = Story(
                         }
                     }
                 }
-                .frame(height: 200)
+                .frame(height: 280)
+            )
+        ),
+        (
+            name: "Custom colour chosen",
+            view: AnyView(
+                Stateful(CardColor.custom(0x3399CC)) { color in
+                    Form {
+                        Section("Colour") {
+                            CardColorPicker(selection: color)
+                        }
+                    }
+                }
+                .frame(height: 280)
             )
         )
     ]

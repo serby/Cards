@@ -22,16 +22,17 @@ public struct BarcodeView: View {
                         .resizable()
                         .scaledToFit()
                 } else {
+                    // Dark ink: the white stays white in dark mode, where the default would vanish.
                     Text("Failed to generate barcode")
-                    
+                        .foregroundStyle(CardPanel.ink)
                 }
             }
             .frame(maxWidth: .infinity)
             .padding()
-            .background(.white)
+            .background(.white, in: .rect(cornerRadius: CardGeometry.barcodeCornerRadius))
         }
-        .padding(6)
-        .background(.gray.opacity(0.5), in: .rect(cornerRadius: 12))
+        .padding(CardGeometry.barcodeFrame)
+        .background(.gray.opacity(0.5), in: .rect(cornerRadius: CardGeometry.panelCornerRadius))
         .accessibilityIdentifier("barcodeView")
         .accessibilityHint("This is a \(barcodeType.rawValue) barcode with code \(barcodeString)")
     }

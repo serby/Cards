@@ -14,7 +14,7 @@ struct CardWidget: Widget {
             }
             .widgetURL(entry.card?.url)
             .containerBackground(for: .widget) {
-                (entry.card?.color ?? .standard).widgetFill
+                Rectangle().fill((entry.card?.color ?? .standard).widgetFill)
             }
         }
         .configurationDisplayName("Card")

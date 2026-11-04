@@ -16,8 +16,9 @@ extension BarcodeType {
 }
 
 extension CardColor {
+    /// The palette, then a custom colour, so knobs can show both kinds.
     static var allNames: [String] {
-        allCases.map(\.rawValue)
+        allCases.map(\.rawValue) + [CardColor.custom(0x3399CC).rawValue]
     }
 
     static func named(_ raw: String) -> Self {
