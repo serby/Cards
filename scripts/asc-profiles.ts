@@ -97,11 +97,23 @@ async function currentProfile(
     certificateId: string,
 ): Promise<Resource<Profile> | undefined> {
     const name = profileName(bundle.attributes.identifier);
+    // The bundle ID's own profiles endpoint does not accept include, so ask
+    // for the name across the team and keep this bundle's.
     const profiles = await asc.all<Profile>(
-        `/v1/bundleIds/${bundle.id}/profiles?${query({ "fields[profiles]": "name,profileState,profileContent,uuid,expirationDate,certificates", include: "certificates", limit: 200 })}`,
+        `/v1/profiles?${query({
+            "filter[name]": name,
+            "filter[profileType]": "IOS_APP_STORE",
+            "fields[profiles]": "name,profileState,profileContent,uuid,expirationDate,bundleId,certificates",
+            include: "bundleId,certificates",
+            limit: 200,
+        })}`,
     );
+    const ownBundle = (profile: Resource<Profile>): boolean => {
+        const linked = profile.relationships?.bundleId?.data;
+        return !Array.isArray(linked) && linked?.id === bundle.id;
+    };
     let usable: Resource<Profile> | undefined;
-    for (const profile of profiles.filter((candidate) => candidate.attributes.name === name)) {
+    for (const profile of profiles.filter((candidate) => candidate.attributes.name === name && ownBundle(candidate))) {
         const linked = profile.relationships?.certificates?.data;
         const certificateIds = Array.isArray(linked) ? linked.map((item) => item.id) : [];
         const expiresSoon = Date.parse(profile.attributes.expirationDate) - Date.now() < 7 * 24 * 60 * 60 * 1000;
