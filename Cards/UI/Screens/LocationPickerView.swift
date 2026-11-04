@@ -335,7 +335,10 @@ public struct LocationPickerView: View {
     private var namePrompt: Text {
         Text(
             "Name, e.g. Westway",
-            comment: "Placeholder for the new place's name. Westway is a London climbing centre; a typical local place name may read better."
+            comment: """
+                Placeholder and VoiceOver label for the new place's name. \
+                Westway is a London climbing centre: keep the name Westway and translate only “Name, e.g.”.
+                """
         )
     }
 
