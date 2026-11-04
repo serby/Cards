@@ -3145,136 +3145,6 @@
         }
       }
     },
-    "Enter the barcode number for this card" : {
-      "comment" : "VoiceOver hint for the card's code field in the card form.",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "أدخل رقم الرمز الشريطي لهذه البطاقة"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Barcodenummer für diese Karte eingeben"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Introduce el número del código de barras de esta tarjeta"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Saisissez le numéro du code-barres de cette carte"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Inserisci il numero del codice a barre di questa carta"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "このカードのバーコード番号を入力します"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "이 카드의 바코드 번호를 입력합니다."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Digite o número do código de barras deste cartão"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "输入这张卡片的卡号"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "輸入此卡片的條碼號碼"
-          }
-        }
-      }
-    },
-    "Enter the name of this card" : {
-      "comment" : "VoiceOver hint for the card name field in the card form.",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "أدخل اسم هذه البطاقة"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Namen dieser Karte eingeben"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Introduce el nombre de esta tarjeta"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Saisissez le nom de cette carte"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Inserisci il nome di questa carta"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "このカードの名前を入力します"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "이 카드의 이름을 입력합니다."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Digite o nome deste cartão"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "输入这张卡片的名称"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "輸入此卡片的名稱"
-          }
-        }
-      }
-    },
     "Export as JSON" : {
       "comment" : "Settings button that shares all cards as a JSON file. JSON is a file format; keep the name.",
       "localizations" : {
@@ -5940,71 +5810,6 @@
         }
       }
     },
-    "Point the camera at the barcode. The code is filled in when it is read." : {
-      "comment" : "VoiceOver hint for the live camera view at the top of the new card form.",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "وجّه الكاميرا نحو الرمز الشريطي. يتم إدخال الرمز عند قراءته."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Richte die Kamera auf den Barcode. Der Code wird eingetragen, sobald er gelesen wurde."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apunta la cámara al código de barras. El código se rellenará cuando se lea."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pointez l’appareil photo vers le code-barres. Le code est saisi dès sa lecture."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Inquadra il codice a barre con la fotocamera. Il codice viene inserito appena letto."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "カメラをバーコードに向けてください。読み取られるとコードが入力されます。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "카메라로 바코드를 비추십시오. 바코드가 인식되면 코드가 자동으로 입력됩니다."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aponte a câmera para o código de barras. O código é preenchido ao ser lido."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "将相机对准条形码。读取后会自动填入卡号。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "將相機對準條碼。讀取後會自動填入代碼。"
-          }
-        }
-      }
-    },
     "Postcode" : {
       "comment" : "Placeholder in the search field that moves the map to a postcode or address.",
       "localizations" : {
@@ -6261,6 +6066,71 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "半徑"
+          }
+        }
+      }
+    },
+    "Reads the barcode you point the camera at, and fills in its code" : {
+      "comment" : "VoiceOver hint for the live camera view at the top of the new card form.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يقرأ الرمز الشريطي الذي توجّه إليه الكاميرا ويُدخل رمزه"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Liest den Barcode, auf den du die Kamera richtest, und trägt seinen Code ein"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lee el código de barras al que apuntas con la cámara y rellena su código"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lit le code-barres visé par l’appareil photo et saisit son code"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Legge il codice a barre inquadrato con la fotocamera e inserisce il suo codice"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カメラを向けたバーコードを読み取り、そのコードを入力します"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "카메라로 비춘 바코드를 읽고 코드를 입력합니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lê o código de barras apontado pela câmera e preenche o código"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "扫描相机对准的条形码，并填写卡号"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "讀取相機對準的條碼並填入其代碼"
           }
         }
       }
@@ -6726,67 +6596,197 @@
         }
       }
     },
-    "Select the type of barcode for this card" : {
-      "comment" : "VoiceOver hint for the barcode format menu in the card form.",
+    "Sets the code for this card's barcode" : {
+      "comment" : "VoiceOver hint for the field for the number or text that the barcode encodes, in the card form.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "اختر نوع الرمز الشريطي لهذه البطاقة"
+            "value" : "يعيّن رمز الرمز الشريطي لهذه البطاقة"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Barcodetyp für diese Karte auswählen"
+            "value" : "Legt den Code für den Barcode dieser Karte fest"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Selecciona el tipo de código de barras de esta tarjeta"
+            "value" : "Define el código del código de barras de esta tarjeta"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Choisissez le type de code-barres de cette carte"
+            "value" : "Définit le code du code-barres de cette carte"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Seleziona il tipo di codice a barre per questa carta"
+            "value" : "Imposta il codice per il codice a barre di questa carta"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "このカードのバーコードの種類を選択します"
+            "value" : "このカードのバーコードのコードを設定します"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이 카드의 바코드 유형을 선택합니다."
+            "value" : "이 카드의 바코드 번호를 설정합니다."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Selecione o tipo de código de barras deste cartão"
+            "value" : "Define o código do código de barras deste cartão"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "选择这张卡片的条形码类型"
+            "value" : "设置这张卡片的卡号"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "選擇此卡片的條碼類型"
+            "value" : "設定這張卡片的代碼"
+          }
+        }
+      }
+    },
+    "Sets the name shown for this card in your list" : {
+      "comment" : "VoiceOver hint for the card name field in the card form.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يعيّن الاسم الذي يظهر لهذه البطاقة في قائمتك"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Legt den Namen fest, der für diese Karte in deiner Liste angezeigt wird"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Define el nombre que se muestra para esta tarjeta en tu lista"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Définit le nom affiché pour cette carte dans votre liste"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Imposta il nome mostrato per questa carta nell'elenco"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "リストに表示されるこのカードの名前を設定します"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "목록에 표시되는 이 카드의 이름을 설정합니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Define o nome exibido para este cartão em sua lista"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "设置这张卡片在列表中显示的名称"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "設定這張卡片在列表中顯示的名稱"
+          }
+        }
+      }
+    },
+    "Sets the type of barcode for this card" : {
+      "comment" : "VoiceOver hint for the barcode format menu in the card form.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يعيّن نوع الرمز الشريطي لهذه البطاقة"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Legt den Barcodetyp für diese Karte fest"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Define el tipo de código de barras de esta tarjeta"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Définit le type de code-barres de cette carte"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Imposta il tipo di codice a barre per questa carta"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このカードのバーコードの種類を設定します"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 카드의 바코드 유형을 설정합니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Define o tipo de código de barras deste cartão"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "设置这张卡片的条形码类型"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "設定這張卡片的條碼類型"
           }
         }
       }

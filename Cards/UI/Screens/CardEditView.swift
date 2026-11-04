@@ -93,7 +93,9 @@ public struct CardEditView<Scanner: View>: View {
                     .focused($focusedField, equals: .name)
                     .accessibilityIdentifier("nameTextField")
                     .accessibilityLabel(nameLabel)
-                    .accessibilityHint(Text("Enter the name of this card", comment: "VoiceOver hint for the card name field in the card form."))
+                    .accessibilityHint(
+                        Text("Sets the name shown for this card in your list", comment: "VoiceOver hint for the card name field in the card form.")
+                    )
                     .wrappingPrompt(
                         Text("Enter name", comment: "Placeholder in the empty card name field, such as Tesco Clubcard."),
                         isShown: draft.name.isEmpty,
@@ -120,7 +122,10 @@ public struct CardEditView<Scanner: View>: View {
                     .accessibilityIdentifier("codeTextField")
                     .accessibilityLabel(codeLabel)
                     .accessibilityHint(
-                        Text("Enter the barcode number for this card", comment: "VoiceOver hint for the card's code field in the card form.")
+                        Text(
+                            "Sets the code for this card's barcode",
+                            comment: "VoiceOver hint for the field for the number or text that the barcode encodes, in the card form."
+                        )
                     )
                     // Outside readsLeftToRight(), so the prompt follows the
                     // language, keeping to the same edge as the name's.
@@ -259,7 +264,7 @@ private extension CardEditView {
         .pickerStyle(.menu)
         .accessibilityIdentifier("barcodeTypePicker")
         .accessibilityHint(
-            Text("Select the type of barcode for this card", comment: "VoiceOver hint for the barcode format menu in the card form.")
+            Text("Sets the type of barcode for this card", comment: "VoiceOver hint for the barcode format menu in the card form.")
         )
     }
 

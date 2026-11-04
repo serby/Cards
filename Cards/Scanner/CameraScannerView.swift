@@ -111,7 +111,7 @@ private struct ScannerAccessibility: ViewModifier {
             content
                 .accessibilityHint(
                     Text(
-                        "Point the camera at the barcode. The code is filled in when it is read.",
+                        "Reads the barcode you point the camera at, and fills in its code",
                         comment: "VoiceOver hint for the live camera view at the top of the new card form."
                     )
                 )
