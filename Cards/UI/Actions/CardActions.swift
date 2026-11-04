@@ -68,16 +68,20 @@ public struct SettingsActions {
     public var importCards: (String) -> Void
     public var deleteAllCards: () -> Void
     public var readClipboard: () -> String?
+    /// Opens the app's page in the Settings app, where notifications are allowed.
+    public var openNotificationSettings: () -> Void
 
     public init(
         exportCards: @escaping () -> Void = {},
         importCards: @escaping (String) -> Void = { _ in },
         deleteAllCards: @escaping () -> Void = {},
-        readClipboard: @escaping () -> String? = { nil }
+        readClipboard: @escaping () -> String? = { nil },
+        openNotificationSettings: @escaping () -> Void = {}
     ) {
         self.exportCards = exportCards
         self.importCards = importCards
         self.deleteAllCards = deleteAllCards
         self.readClipboard = readClipboard
+        self.openNotificationSettings = openNotificationSettings
     }
 }

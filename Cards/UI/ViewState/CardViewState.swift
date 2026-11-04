@@ -76,18 +76,22 @@ public struct SettingsState: Hashable, Sendable {
     public let authorName: String
     public let authorURL: URL?
     public let cardCount: Int
+    /// Notifications are switched off for the app in the Settings app.
+    public let notificationsBlocked: Bool
 
     public init(
         appVersion: String?,
         appBuild: String?,
         authorName: String,
         authorURL: URL?,
-        cardCount: Int
+        cardCount: Int,
+        notificationsBlocked: Bool = false
     ) {
         self.appVersion = appVersion
         self.appBuild = appBuild
         self.authorName = authorName
         self.authorURL = authorURL
         self.cardCount = cardCount
+        self.notificationsBlocked = notificationsBlocked
     }
 }

@@ -105,6 +105,15 @@ public extension SettingsState {
         authorURL: URL(string: "https://github.com/serby"),
         cardCount: 0
     )
+
+    static let withNotificationsBlocked = SettingsState(
+        appVersion: "1.1",
+        appBuild: "42",
+        authorName: "Paul Serby",
+        authorURL: URL(string: "https://github.com/serby"),
+        cardCount: 6,
+        notificationsBlocked: true
+    )
 }
 
 public extension CardWidgetState {

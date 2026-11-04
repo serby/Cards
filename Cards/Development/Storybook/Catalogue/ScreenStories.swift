@@ -254,6 +254,8 @@ private let settingsStory = Story(
         .text("Author URL", "https://github.com/serby"),
         .number("Card count", 6, in: 0...50, step: 1),
         .toggle("Brightness boost", true),
+        .toggle("Arrival notifications", true),
+        .toggle("Notifications blocked", false),
         .text("Message", "")
     ],
     gallery: [
@@ -272,6 +274,14 @@ private let settingsStory = Story(
                     SettingsListView(state: .noCards, brightnessBoost: boost)
                 }
             }
+        ),
+        (
+            name: "Notifications blocked",
+            view: pushed {
+                Stateful(true) { arrivals in
+                    SettingsListView(state: .withNotificationsBlocked, brightnessBoost: .constant(true), arrivalNotifications: arrivals)
+                }
+            }
         )
     ]
 ) { knobs in
@@ -280,7 +290,8 @@ private let settingsStory = Story(
         appBuild: knobs.string("Build"),
         authorName: knobs.string("Author"),
         authorURL: URL(string: knobs.string("Author URL")),
-        cardCount: knobs.integer("Card count")
+        cardCount: knobs.integer("Card count"),
+        notificationsBlocked: knobs.bool("Notifications blocked")
     )
     // An empty Message knob means no alert.
     let message = Binding<String?>(
@@ -291,6 +302,7 @@ private let settingsStory = Story(
         SettingsListView(
             state: state,
             brightnessBoost: knobs.boolBinding("Brightness boost"),
+            arrivalNotifications: knobs.boolBinding("Arrival notifications"),
             message: message
         )
     }

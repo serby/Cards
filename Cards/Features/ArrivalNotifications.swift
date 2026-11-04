@@ -29,6 +29,10 @@ public enum ArrivalNotifier {
         let location: CardLocation
     }
 
+    /// The Settings switch for arrival notifications (a `UserDefaults` key).
+    /// On unless the user turns it off.
+    public static let enabledKey = "arrivalNotifications"
+
     /// iOS watches at most 20 regions per app, so the nearest are kept.
     static let regionLimit = 20
     nonisolated static let codeKey = "code"
@@ -54,6 +58,12 @@ public enum ArrivalNotifier {
         for arrival in arrivals {
             try? await center.add(request(for: arrival))
         }
+    }
+
+    /// Whether notifications are switched off for the app in the Settings app,
+    /// so arrivals cannot show however the in-app switch is set.
+    public static func isBlockedInSettings() async -> Bool {
+        await UNUserNotificationCenter.current().notificationSettings().authorizationStatus == .denied
     }
 
     /// The places to watch, nearest first when `location` is known, capped at

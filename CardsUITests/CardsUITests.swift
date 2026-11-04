@@ -88,6 +88,23 @@ final class CardsUITests: XCTestCase {
         XCTAssertTrue(addHere.waitForNonExistence(timeout: 3))
     }
 
+    @MainActor
+    func testArrivalNotificationsSwitch() throws {
+        let app = XCUIApplication()
+        app.launchArguments.append("-uiTesting")
+        app.launch()
+        app.tabBars.buttons["Settings"].tap()
+
+        let toggle = app.switches["arrivalNotificationsToggle"]
+        XCTAssertTrue(waitForElement(toggle))
+        let before = toggle.value as? String
+        toggle.switches.firstMatch.tap()
+        XCTAssertNotEqual(toggle.value as? String, before)
+        // The setting outlives the app, so put it back for the next test.
+        toggle.switches.firstMatch.tap()
+        XCTAssertEqual(toggle.value as? String, before)
+    }
+
     /// Cards with locations ask for notifications once; answer so the alert
     /// does not cover the app.
     @MainActor

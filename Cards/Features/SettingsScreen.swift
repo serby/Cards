@@ -6,6 +6,9 @@ public struct SettingsScreen: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var cards: [CardItem]
     @AppStorage("brightnessBoost") private var brightnessBoost = true
+    @AppStorage(ArrivalNotifier.enabledKey) private var arrivalNotifications = true
+    @Environment(\.scenePhase) private var scenePhase
+    @State private var notificationsBlocked = false
 
     @State private var message: String?
     @State private var showExportSheet = false
@@ -19,20 +22,32 @@ public struct SettingsScreen: View {
                 appBuild: Bundle.main.infoDictionary?["CFBundleVersion"] as? String,
                 authorName: "Paul Serby",
                 authorURL: URL(string: "https://github.com/serby"),
-                cardCount: cards.count
+                cardCount: cards.count,
+                notificationsBlocked: notificationsBlocked
             ),
             brightnessBoost: $brightnessBoost,
+            arrivalNotifications: $arrivalNotifications,
             message: $message,
             actions: SettingsActions(
                 exportCards: { showExportSheet = true },
                 importCards: importJSON,
                 deleteAllCards: deleteAllCards,
-                readClipboard: { UIPasteboard.general.string }
+                readClipboard: { UIPasteboard.general.string },
+                openNotificationSettings: openNotificationSettings
             )
         )
         .sheet(isPresented: $showExportSheet) {
             ShareSheet(items: [exportJSON()])
         }
+        // Checked again on coming back, in case notifications were allowed in Settings.
+        .task(id: scenePhase) {
+            notificationsBlocked = await ArrivalNotifier.isBlockedInSettings()
+        }
+    }
+
+    private func openNotificationSettings() {
+        guard let url = URL(string: UIApplication.openNotificationSettingsURLString) else { return }
+        UIApplication.shared.open(url)
     }
 
     private func exportJSON() -> String {

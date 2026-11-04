@@ -6,6 +6,7 @@ public struct CardListScreen: View {
     @Query(sort: \CardItem.order) private var cardItems: [CardItem]
     @Environment(NavigationManager.self) private var navigationManager
     @Environment(LocationService.self) private var locationService
+    @AppStorage(ArrivalNotifier.enabledKey) private var arrivalNotifications = true
 
     public init() {}
 
@@ -29,15 +30,21 @@ public struct CardListScreen: View {
         .navigationDestination(for: NavigationRoute.self) { route in
             destinationView(for: route)
         }
-        .task(id: arrivals) {
+        .task(id: watchedArrivals) {
             if arrivals.contains(where: { !$0.locations.isEmpty }) {
                 locationService.start()
             }
-            await ArrivalNotifier.reschedule(arrivals, near: locationService.current)
+            await ArrivalNotifier.reschedule(watchedArrivals, near: locationService.current)
         }
         .task(id: widgetCards) {
             WidgetSnapshot.publish(widgetCards)
         }
+    }
+
+    /// The cards whose barcodes go on the Lock Screen on arrival: none when the
+    /// Settings switch is off, which also cancels any already scheduled.
+    private var watchedArrivals: [ArrivalNotifier.Card] {
+        arrivalNotifications ? arrivals : []
     }
 
     private var widgetCards: [WidgetCard] {

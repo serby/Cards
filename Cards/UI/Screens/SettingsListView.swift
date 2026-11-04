@@ -5,6 +5,7 @@ import SwiftUI
 public struct SettingsListView: View {
     private let state: SettingsState
     @Binding private var brightnessBoost: Bool
+    @Binding private var arrivalNotifications: Bool
     @Binding private var message: String?
     private let actions: SettingsActions
 
@@ -15,11 +16,13 @@ public struct SettingsListView: View {
     public init(
         state: SettingsState,
         brightnessBoost: Binding<Bool>,
+        arrivalNotifications: Binding<Bool> = .constant(true),
         message: Binding<String?> = .constant(nil),
         actions: SettingsActions = SettingsActions()
     ) {
         self.state = state
         _brightnessBoost = brightnessBoost
+        _arrivalNotifications = arrivalNotifications
         _message = message
         self.actions = actions
     }
@@ -59,6 +62,26 @@ public struct SettingsListView: View {
                     .foregroundColor(.tertiaryText)
             } header: {
                 Text("Display")
+                    .foregroundColor(.secondaryText)
+            }
+
+            Section {
+                Toggle("Arrival Notifications", isOn: $arrivalNotifications)
+                    .tint(.accent)
+                    .accessibilityIdentifier("arrivalNotificationsToggle")
+                Text("Shows a card's barcode on your Lock Screen when you arrive at one of its places")
+                    .font(.caption)
+                    .foregroundColor(.tertiaryText)
+                if arrivalNotifications && state.notificationsBlocked {
+                    Button(action: actions.openNotificationSettings) {
+                        Label("Notifications are off for Card Barcodes. Turn them on in Settings.", systemImage: "bell.slash")
+                            .font(.callout)
+                    }
+                    .foregroundColor(.accent)
+                    .accessibilityIdentifier("openNotificationSettingsButton")
+                }
+            } header: {
+                Text("Locations")
                     .foregroundColor(.secondaryText)
             }
 
