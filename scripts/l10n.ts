@@ -1,8 +1,10 @@
 // Translates the app's String Catalogues with AI, and checks they are complete.
 //
 // The languages are the project's knownRegions minus en and Base, and the
-// catalogues are every *.xcstrings under Cards/ except Cards/Development, so
-// there is no separate configuration. The AI is any shell command that reads a
+// catalogues are every *.xcstrings under the targets' source folders, Cards/
+// (the app) and CardsWidget/ (the widget extension), except Cards/Development,
+// so there is no separate configuration. A string compiled into both targets
+// is in both catalogues; it is translated once and must read the same in both. The AI is any shell command that reads a
 // prompt on stdin and writes its reply on stdout: L10N_AI_COMMAND, or by default
 // the local Claude Code CLI with no tools. Every reply is validated with the
 // same rules as `check` before anything is written, and catalogues are written
@@ -151,7 +153,9 @@ export function parseCatalogue(text: string, name: string): CatalogueDocument {
 export interface Project {
     root: string;
     pbxproj: string;
-    sources: string;
+    /// The folders whose files the targets compile, one per target that ships:
+    /// each has its own bundle, so its own catalogues.
+    sources: string[];
     development: string;
     l10n: string;
 }
@@ -160,7 +164,7 @@ export function projectAt(root: string): Project {
     return {
         root,
         pbxproj: join(root, "Cards.xcodeproj", "project.pbxproj"),
-        sources: join(root, "Cards"),
+        sources: [join(root, "Cards"), join(root, "CardsWidget")],
         development: join(root, "Cards", "Development"),
         l10n: join(root, "l10n"),
     };
@@ -178,7 +182,9 @@ export function findCatalogues(project: Project): string[] {
             }
         }
     };
-    if (existsSync(project.sources)) walk(project.sources);
+    for (const sources of project.sources) {
+        if (existsSync(sources)) walk(sources);
+    }
     return found.sort(compareKeys);
 }
 
@@ -818,6 +824,56 @@ export function unitsNeedingWork(catalogues: Catalogue[], lang: string, force: b
     return catalogues.flatMap((catalogue) => unitsOf(catalogue).units.filter((unit) => force || assess(unit, lang).status !== "translated"));
 }
 
+/// What makes units in different catalogues one string: the same key, source
+/// and comment. A file compiled into the app and the widget puts its strings in
+/// both targets' catalogues, as each bundle needs its own copy, so those twins
+/// are translated once and must stay the same.
+export function twinKey(unit: Unit): string {
+    return formatJSON([unit.key, unit.source, unit.entry.comment ?? ""]);
+}
+
+/// Every unit of every catalogue, grouped with its twins.
+export function twinsOf(catalogues: Catalogue[]): Map<string, Unit[]> {
+    const groups = new Map<string, Unit[]>();
+    for (const catalogue of catalogues) {
+        for (const unit of unitsOf(catalogue).units) {
+            const key = twinKey(unit);
+            groups.set(key, [...(groups.get(key) ?? []), unit]);
+        }
+    }
+    return groups;
+}
+
+/// The work for one language: one unit to ask for per string that needs it,
+/// and copies for units whose twin is already translated, which are never
+/// asked for again. With `force`, every string is asked for afresh.
+export function planWork(catalogues: Catalogue[], lang: string, force: boolean): { ask: Unit[]; copies: Translation[]; twins: Map<string, Unit[]> } {
+    const twins = twinsOf(catalogues);
+    // Units are compared by catalogue and key: every unitsOf call makes new ones.
+    const needs = new Set(unitsNeedingWork(catalogues, lang, force).map((unit) => unitId(unit.catalogue.name, unit.key)));
+    const needsWork = (unit: Unit): boolean => needs.has(unitId(unit.catalogue.name, unit.key));
+    const ask: Unit[] = [];
+    const copies: Translation[] = [];
+    for (const group of twins.values()) {
+        const needing = group.filter(needsWork);
+        if (needing.length === 0) continue;
+        const settled = force ? undefined : group.find((twin) => !needsWork(twin));
+        if (settled) {
+            const text = textOf(settled.entry.localizations?.[lang]) as Text;
+            copies.push(...needing.map((twin) => ({ lang, unit: twin, text })));
+        } else {
+            ask.push(needing[0]);
+        }
+    }
+    return { ask, copies, twins };
+}
+
+/// A translation of one unit, for it and each of its twins.
+function withTwins(translation: Translation, twins: Map<string, Unit[]>): Translation[] {
+    const group = twins.get(twinKey(translation.unit)) ?? [translation.unit];
+    return group.map((unit) => ({ ...translation, unit }));
+}
+
 const unitId = (catalogue: string, key: string): string => `${catalogue}\u0000${key}`;
 
 export async function mapLimit<T, R>(items: T[], limit: number, work: (item: T) => Promise<R>): Promise<R[]> {
@@ -892,18 +948,21 @@ async function translateBatch(units: Unit[], lang: string, label: string, option
 /// memory in a fixed order. Writing is left to the caller, once per catalogue.
 export async function translate(catalogues: Catalogue[], options: TranslateOptions): Promise<{ translations: Translation[]; failures: Failure[] }> {
     const perLanguage = await mapLimit(options.languages, options.jobs, async (lang) => {
-        const units = unitsNeedingWork(catalogues, lang, options.force);
-        if (units.length === 0) {
+        const { ask: units, copies, twins } = planWork(catalogues, lang, options.force);
+        if (units.length === 0 && copies.length === 0) {
             options.log(`${lang}: nothing to translate`);
             return { done: [] as Translation[], failed: [] as Failure[] };
         }
+        if (copies.length > 0) {
+            options.log(`${lang}: ${copies.length} copied from the same string in another catalogue`);
+        }
         const batches: Unit[][] = [];
         for (let start = 0; start < units.length; start += options.batchSize) batches.push(units.slice(start, start + options.batchSize));
-        const done: Translation[] = [];
+        const done: Translation[] = [...copies];
         const failed: Failure[] = [];
         for (const [index, batch] of batches.entries()) {
             const result = await translateBatch(batch, lang, `${lang} batch ${index + 1}/${batches.length}`, options);
-            done.push(...result.done);
+            done.push(...result.done.flatMap((translation) => withTwins(translation, twins)));
             failed.push(...result.failed);
         }
         options.log(`${lang}: ${done.length} translated${failed.length > 0 ? `, ${failed.length} failed` : ""}`);
@@ -960,18 +1019,37 @@ export function checkReport(catalogues: Catalogue[], languages: string[]): { err
             }
         }
     }
+    for (const group of twinsOf(catalogues).values()) {
+        if (group.length < 2) continue;
+        for (const lang of languages) {
+            const texts = group.flatMap((unit) => {
+                const text = textOf(unit.entry.localizations?.[lang]);
+                return text === undefined ? [] : [formatJSON(text)];
+            });
+            if (new Set(texts).size > 1) {
+                const names = group.map((unit) => unit.catalogue.name).join(" and ");
+                errors.push(`${names} [${lang}] ${JSON.stringify(group[0].key)}: translated differently; it is one string, compiled into each of those targets`);
+            }
+        }
+    }
     return { errors, warnings };
 }
 
 export interface ImportResult {
     applied: number;
+    /// Translations given to twins of the units in the file, or copied from a
+    /// twin that already had one.
+    copied: number;
     skipped: number;
     problems: string[];
 }
 
 /// Applies a filled-in payload, validating each unit exactly as translate does.
+/// A unit's translation goes to its twins too, and twins still missing one get
+/// a copy, as translate gives them.
 export function importReply(catalogues: Catalogue[], lang: string, reply: string): ImportResult {
-    const result: ImportResult = { applied: 0, skipped: 0, problems: [] };
+    const result: ImportResult = { applied: 0, copied: 0, skipped: 0, problems: [] };
+    const twins = twinsOf(catalogues);
     const units = new Map(catalogues.flatMap((catalogue) => unitsOf(catalogue).units).map((unit) => [unitId(unit.catalogue.name, unit.key), unit]));
     for (const answer of parseReply(reply, lang)) {
         const unit = units.get(unitId(answer.catalogue, answer.key));
@@ -985,10 +1063,17 @@ export function importReply(catalogues: Catalogue[], lang: string, reply: string
             if (problems.length > 0) {
                 result.problems.push(...problems.map((p) => `${label}: ${p.message}`));
             } else {
-                applyTranslation(unit, lang, answer.translation as Text);
+                for (const twin of withTwins({ lang, unit, text: answer.translation as Text }, twins)) {
+                    applyTranslation(twin.unit, lang, twin.text);
+                    if (twin.unit.catalogue.name !== unit.catalogue.name) result.copied++;
+                }
                 result.applied++;
             }
         }
+    }
+    for (const copy of planWork(catalogues, lang, false).copies) {
+        applyTranslation(copy.unit, lang, copy.text);
+        result.copied++;
     }
     return result;
 }
@@ -1059,9 +1144,11 @@ function readNotes(project: Project, lang: string): string | undefined {
 
 const log = (line: string): void => console.error(`l10n: ${line}`);
 
+const sourceFolders = (project: Project): string => project.sources.map((path) => `${relative(project.root, path)}/`).join(" or ");
+
 async function runTranslate(project: Project, catalogues: Catalogue[], languages: string[], force: boolean, jobs: number, batchSize: number): Promise<number> {
     if (catalogues.length === 0) {
-        log("no String Catalogues under Cards/, nothing to translate");
+        log(`no String Catalogues under ${sourceFolders(project)}, nothing to translate`);
         return 0;
     }
     const command = process.env.L10N_AI_COMMAND || defaultAICommand;
@@ -1118,7 +1205,7 @@ export async function main(argv: string[]): Promise<number> {
             noArguments();
             const catalogues = loadCatalogues(project);
             const languages = projectLanguages(pbxproj());
-            if (catalogues.length === 0) console.log("No String Catalogues under Cards/.");
+            if (catalogues.length === 0) console.log(`No String Catalogues under ${sourceFolders(project)}.`);
             else console.log(statusReport(catalogues, languages));
             return 0;
         }
@@ -1126,7 +1213,7 @@ export async function main(argv: string[]): Promise<number> {
             noArguments();
             const catalogues = loadCatalogues(project);
             const languages = projectLanguages(pbxproj());
-            if (catalogues.length === 0) console.error("warning: no String Catalogues under Cards/");
+            if (catalogues.length === 0) console.error(`warning: no String Catalogues under ${sourceFolders(project)}`);
             if (languages.length === 0) console.error("warning: the project has no languages besides en and Base");
             const { errors, warnings } = checkReport(catalogues, languages);
             for (const warning of warnings) console.error(`warning: ${warning}`);
@@ -1148,7 +1235,9 @@ export async function main(argv: string[]): Promise<number> {
             if (!lang || others.length > 0) throw new UsageError("export needs exactly one --lang");
             if (!values.out) throw new UsageError("export needs --out <file> (- for stdout)");
             const catalogues = loadCatalogues(project);
-            const units = unitsNeedingWork(catalogues, lang, values.force);
+            // One unit per string: import gives its translation to the twins,
+            // and copies the twins of strings already translated.
+            const units = planWork(catalogues, lang, values.force).ask;
             const text = `${JSON.stringify(payloadFor(units, lang, catalogues[0]?.doc.sourceLanguage), null, 2)}\n`;
             if (values.out === "-") process.stdout.write(text);
             else writeFileSync(values.out, text);
@@ -1166,7 +1255,7 @@ export async function main(argv: string[]): Promise<number> {
                 if (saveCatalogue(catalogue)) log(`wrote ${catalogue.name}`);
             }
             for (const problem of result.problems) console.error(`error: ${problem}`);
-            console.log(`Imported ${result.applied} translation${result.applied === 1 ? "" : "s"} for ${lang}; ${result.skipped} left empty; ${result.problems.length} problem${result.problems.length === 1 ? "" : "s"}.`);
+            console.log(`Imported ${result.applied} translation${result.applied === 1 ? "" : "s"} for ${lang}, and ${result.copied} to the same string in another catalogue; ${result.skipped} left empty; ${result.problems.length} problem${result.problems.length === 1 ? "" : "s"}.`);
             return result.problems.length > 0 ? 1 : 0;
         }
         case "add-language": {

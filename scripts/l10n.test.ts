@@ -11,9 +11,9 @@
 
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { cpSync, existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { join, relative } from "node:path";
 import { describe, test } from "node:test";
 
 import {
@@ -25,6 +25,7 @@ import {
     type CatalogueDocument,
     checkReport,
     compareKeys,
+    findCatalogues,
     formatCatalogue,
     formatJSON,
     languageName,
@@ -33,6 +34,7 @@ import {
     payloadFor,
     placeholders,
     pluralCategories,
+    projectAt,
     projectLanguages,
     readKnownRegions,
     requiredPluralCategories,
@@ -247,6 +249,108 @@ describe("completeness", () => {
             'Cards/Localizable.xcstrings [fr] "At %@": not translated yet (state new)',
             'Cards/Localizable.xcstrings [fr] "Done": needs review (state needs_review)',
         ]);
+    });
+});
+
+describe("the app's and the widget's catalogues", () => {
+    /// The fixture project with a widget catalogue beside the app's: "Settings"
+    /// is a twin of the app's, as a file compiled into both targets makes it,
+    /// and "Find Nearest Card" is the widget's own.
+    function projectWithWidget(): string {
+        const root = projectCopy();
+        mkdirSync(join(root, "CardsWidget"), { recursive: true });
+        writeFileSync(
+            join(root, "CardsWidget", "Localizable.xcstrings"),
+            formatCatalogue({
+                sourceLanguage: "en",
+                strings: {
+                    "Find Nearest Card": { comment: "Title of the widget's refresh action." },
+                    "Settings": { comment: "Tab bar item and navigation title of the Settings screen." },
+                },
+                version: "1.0",
+            }),
+        );
+        return root;
+    }
+
+    test("are found under Cards/ and CardsWidget/, leaving out Cards/Development and everything else", () => {
+        const root = projectWithWidget();
+        try {
+            const empty = formatCatalogue({ sourceLanguage: "en", strings: {}, version: "1.0" });
+            writeFileSync(join(root, "CardsWidget", "InfoPlist.xcstrings"), empty);
+            mkdirSync(join(root, "scripts", "fixtures"), { recursive: true });
+            writeFileSync(join(root, "scripts", "fixtures", "Fixture.xcstrings"), empty);
+            const found = findCatalogues(projectAt(root)).map((path) => relative(root, path));
+            assert.deepEqual(found, ["Cards/Localizable.xcstrings", "CardsWidget/InfoPlist.xcstrings", "CardsWidget/Localizable.xcstrings"]);
+        } finally {
+            rmSync(root, { recursive: true, force: true });
+        }
+    });
+
+    test("ask once for a string in both, and give both the same translation", () => {
+        const root = projectWithWidget();
+        const promptLog = join(root, "prompts.log");
+        try {
+            const result = cli(root, ["translate"], { FAKE_AI_LOG: promptLog });
+            assert.equal(result.status, 0, result.stderr);
+            const prompts = readFileSync(promptLog, "utf8");
+            assert.equal(prompts.split('"key": "Settings"').length - 1, 1, "Settings is asked for once");
+            const widget = readJSON(join(root, "CardsWidget", "Localizable.xcstrings"));
+            assert.deepEqual(widget.strings.Settings.localizations.ja, unit("[ja] Settings"));
+            assert.deepEqual(widget.strings["Find Nearest Card"].localizations.ja, unit("[ja] Find Nearest Card"));
+            assert.equal(cli(root, ["check"]).status, 0);
+        } finally {
+            rmSync(root, { recursive: true, force: true });
+        }
+    });
+
+    test("copy a translation one already has rather than asking again", () => {
+        const root = projectCopy();
+        const promptLog = join(root, "prompts.log");
+        try {
+            assert.equal(cli(root, ["translate"]).status, 0);
+            const widgetRoot = projectWithWidget();
+            cpSync(join(widgetRoot, "CardsWidget"), join(root, "CardsWidget"), { recursive: true });
+            rmSync(widgetRoot, { recursive: true, force: true });
+
+            const result = cli(root, ["translate"], { FAKE_AI_LOG: promptLog });
+            assert.equal(result.status, 0, result.stderr);
+            assert.match(result.stderr, /ja: 1 copied from the same string in another catalogue/);
+            assert.ok(!readFileSync(promptLog, "utf8").includes('"key": "Settings"'), "Settings is not asked for again");
+            const widget = readJSON(join(root, "CardsWidget", "Localizable.xcstrings"));
+            assert.deepEqual(widget.strings.Settings.localizations.ja, unit("[ja] Settings"));
+        } finally {
+            rmSync(root, { recursive: true, force: true });
+        }
+    });
+
+    test("must agree: check fails on twins translated differently, and import fixes both", () => {
+        const root = projectWithWidget();
+        const widgetPath = join(root, "CardsWidget", "Localizable.xcstrings");
+        const exported = join(root, "ja.json");
+        try {
+            assert.equal(cli(root, ["translate"]).status, 0);
+            const widget = readJSON(widgetPath);
+            widget.strings.Settings.localizations.ja = unit("環境設定");
+            writeFileSync(widgetPath, formatCatalogue(widget));
+            const check = cli(root, ["check"]);
+            assert.equal(check.status, 1);
+            assert.match(check.stderr, /Cards\/Localizable.xcstrings and CardsWidget\/Localizable.xcstrings \[ja\] "Settings": translated differently/);
+
+            assert.equal(cli(root, ["export", "--lang", "ja", "--force", "--out", exported]).status, 0);
+            const payload = readJSON(exported);
+            const settings = payload.units.filter((u: { key: string }) => u.key === "Settings");
+            assert.deepEqual(settings.map((u: { catalogue: string }) => u.catalogue), ["Cards/Localizable.xcstrings"], "exported once");
+            payload.units = [{ ...settings[0], translation: "設定" }];
+            writeFileSync(exported, JSON.stringify(payload));
+            const imported = cli(root, ["import", "--lang", "ja", exported]);
+            assert.equal(imported.status, 0, imported.stderr);
+            assert.match(imported.stdout, /Imported 1 translation for ja, and 1 to the same string in another catalogue/);
+            assert.deepEqual(readJSON(widgetPath).strings.Settings.localizations.ja, unit("設定"));
+            assert.equal(cli(root, ["check"]).status, 0);
+        } finally {
+            rmSync(root, { recursive: true, force: true });
+        }
     });
 });
 

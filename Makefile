@@ -118,7 +118,7 @@ device:
 
 # Localisation: AI translation and completeness checks for the String Catalogues
 # (scripts/l10n.ts). The languages are the project's knownRegions and the
-# catalogues every *.xcstrings under Cards/ outside Cards/Development.
+# catalogues every *.xcstrings under Cards/ and CardsWidget/ outside Cards/Development.
 #   make l10n-status                        Counts per catalogue and language
 #   make l10n-check                         Fail if any language is incomplete
 #   make l10n-translate [LANGS="ja fr"]     Translate what needs it (default: every language)
