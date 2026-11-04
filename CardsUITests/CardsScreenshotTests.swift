@@ -66,7 +66,12 @@ final class CardsScreenshotTests: XCTestCase {
         XCTAssertTrue(app.keyboards.firstMatch.waitForNonExistence(timeout: 3))
         attach(app, name: "03_EditCard\(suffix)")
 
-        app.buttons["Add Location"].tap()
+        // Below the palette on smaller screens, such as the iPhone Duo's outer display.
+        let addLocation = app.buttons["Add Location"]
+        for _ in 0..<3 where !addLocation.isHittable {
+            app.descendants(matching: .any)["editCardForm"].firstMatch.swipeUp()
+        }
+        addLocation.tap()
         XCTAssertTrue(app.descendants(matching: .any)["locationPickerMap"].firstMatch.waitForExistence(timeout: 5))
         // Map tiles load from the network after the map appears.
         Thread.sleep(forTimeInterval: 4)
