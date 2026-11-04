@@ -65,15 +65,29 @@ extension XCUIApplication {
 
     /// Opens Costa's screen with a code its format, EAN-13, cannot draw, so
     /// the screen shows the failure message on the barcode's plate. Every
-    /// seeded code draws, so it adds a digit to Costa's first: fourteen digits
-    /// are too many for EAN-13, wherever the cursor lands.
+    /// seeded code draws, so it adds a digit to Costa's: fourteen digits are
+    /// too many for EAN-13. The form gives the name focus a moment after it
+    /// opens, which would take it back from a tapped code field, so the test
+    /// waits for that and then lets Return move on to the code.
     func openCardWithFailedBarcode() {
-        openEditCard(SeededCard.costa)
-        let code = textFields["codeTextField"]
-        code.tap()
-        code.typeText("0")
+        openCard(SeededCard.costa)
+        buttons["editCardButton"].tap()
+        let name = textFields["nameTextField"]
+        XCTAssertTrue(name.waitForExistence(timeout: 5), "The card's form did not open")
+        if !Self.gainsFocus(name, within: 3) {
+            name.tap()
+        }
+        name.typeText("\n")
+        XCTAssertTrue(Self.gainsFocus(textFields["codeTextField"], within: 2), "Return did not move on to the code")
+        typeText("0")
         buttons["saveCardButton"].tap()
         XCTAssertTrue(staticTexts["cardNameText"].waitForExistence(timeout: 5), "The card's screen did not open")
+    }
+
+    /// Whether `element` has keyboard focus within `timeout` seconds.
+    static func gainsFocus(_ element: XCUIElement, within timeout: TimeInterval) -> Bool {
+        let focused = XCTNSPredicateExpectation(predicate: NSPredicate(format: "hasKeyboardFocus == true"), object: element)
+        return XCTWaiter.wait(for: [focused], timeout: timeout) == .completed
     }
 
     /// The list's toolbar button, or the empty list's own button when there are
