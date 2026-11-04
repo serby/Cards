@@ -37,11 +37,6 @@ public enum CardPanel {
 }
 
 public extension CardColor {
-    /// Opacity of the card colour washed behind its list row. Dark mode needs a
-    /// stronger wash to read as the same hint against a black background.
-    static let hintOpacityLight = 0.22
-    static let hintOpacityDark = 0.36
-
     /// sRGB as 0xRRGGBB; `nil` for `.standard`, which follows the system appearance.
     var background: UInt32? {
         switch self {
@@ -149,35 +144,65 @@ public extension CardColor {
         }
     }
 
-    /// The flat colour, or `nil` for `.standard`.
+    /// The flat colour as the user chose it, or `nil` for `.standard`.
     var backgroundColor: Color? {
         background.map(Color.init(rgb:))
     }
 
-    /// The card face, the widget and the picker's swatches: the colour as a soft
-    /// gradient. `.standard` is a translucent grey over the system background.
+    /// The colour as text can sit straight on it, in `ink`: unchanged when that
+    /// already meets WCAG AA, which every palette colour does, otherwise moved
+    /// away from the ink, towards black or white, only as far as it takes.
+    var readableBackground: UInt32? {
+        guard let background else { return nil }
+        let ink = CardInk.best(on: background)
+        let away: UInt32 = ink == .light ? 0x000000 : 0xFFFFFF
+        var colour = background
+        var amount = 0.0
+        while WCAG.contrast(ink.rgb, colour) < WCAG.minimumTextContrast, amount < 1 {
+            amount += 0.02
+            colour = WCAG.mix(background, away, amount)
+        }
+        return colour
+    }
+
+    /// The ends of the card's gradient, top then bottom. Lighter at the top, as
+    /// if lit from above, and both ends at least as far from the ink as
+    /// `readableBackground`, so text on the colour stays readable all the way down.
+    var gradientStops: (top: UInt32, bottom: UInt32)? {
+        guard let base = readableBackground, let background else { return nil }
+        return CardInk.best(on: background) == .light
+            ? (top: base, bottom: WCAG.mix(base, 0x000000, 0.22))
+            : (top: WCAG.mix(base, 0xFFFFFF, 0.18), bottom: base)
+    }
+
+    /// The card's gradient, for card faces, list rows, the widget and the swatches.
+    var gradient: LinearGradient? {
+        gradientStops.map { stops in
+            LinearGradient(colors: [Color(rgb: stops.top), Color(rgb: stops.bottom)], startPoint: .top, endPoint: .bottom)
+        }
+    }
+
+    /// The card face and the picker's swatches. `.standard` is a translucent grey
+    /// over the system background.
     var cardFill: AnyShapeStyle {
-        AnyShapeStyle((backgroundColor ?? Color.gray.opacity(0.25)).gradient)
+        gradient.map(AnyShapeStyle.init) ?? AnyShapeStyle(Color.gray.opacity(0.25))
     }
 
-    /// The Home Screen widget's background: the colour, or the system background
-    /// for `.standard`, as a gradient.
+    /// The Home Screen widget's background; the system background for `.standard`.
     var widgetFill: AnyShapeStyle {
-        AnyShapeStyle((backgroundColor ?? .primaryBackground).gradient)
+        gradient.map(AnyShapeStyle.init) ?? AnyShapeStyle(Color.primaryBackground)
     }
 
-    /// Marks drawn straight on the colour, such as the picker's tick.
+    /// A list row: the card's full colour, or the grouped background for
+    /// `.standard`, so every row reads as the same shape.
+    var rowFill: AnyShapeStyle {
+        gradient.map(AnyShapeStyle.init) ?? AnyShapeStyle(Color.secondaryBackground)
+    }
+
+    /// Text and marks drawn straight on the colour: the card name in a list row,
+    /// the picker's tick. The system label for `.standard`.
     var ink: Color {
-        background.map { CardInk.best(on: $0).color } ?? .primary
-    }
-
-    /// A list row: a faint wash of the card colour, or the grouped background
-    /// for `.standard` so every row reads as the same shape. `CardColorTests`
-    /// checks the system label stays readable over the wash of any colour.
-    var rowFill: Color {
-        backgroundColor.map { color in
-            Color(light: color.opacity(Self.hintOpacityLight), dark: color.opacity(Self.hintOpacityDark))
-        } ?? .secondaryBackground
+        background.map { CardInk.best(on: $0).color } ?? .primaryText
     }
 
     /// A custom card colour from a colour the user picked, in sRGB.
@@ -191,6 +216,18 @@ public extension CardColor {
 
 /// WCAG 2 relative luminance and contrast, for opaque 0xRRGGBB sRGB colours.
 enum WCAG {
+    /// AA for normal-size text.
+    static let minimumTextContrast = 4.5
+
+    /// `from` moved `amount` (0…1) of the way to `to`, in gamma-encoded sRGB.
+    static func mix(_ from: UInt32, _ to: UInt32, _ amount: Double) -> UInt32 {
+        let channel = { (rgb: UInt32, shift: UInt32) in Double((rgb >> shift) & 0xFF) }
+        return [16, 8, 0].reduce(into: UInt32(0)) { result, shift in
+            let value = channel(from, UInt32(shift)) * (1 - amount) + channel(to, UInt32(shift)) * amount
+            result |= UInt32(value.rounded()) << UInt32(shift)
+        }
+    }
+
     static func contrast(_ first: UInt32, _ second: UInt32) -> Double {
         let (one, two) = (luminance(first), luminance(second))
         return (max(one, two) + 0.05) / (min(one, two) + 0.05)

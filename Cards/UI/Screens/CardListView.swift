@@ -19,13 +19,17 @@ public struct CardRowView: View {
             layout {
                 Text(card.name)
                     .font(.headline)
-                    .foregroundStyle(Color.primaryText)
+                    .foregroundStyle(card.color.ink)
                     .multilineTextAlignment(.leading)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 if let proximity = card.proximity {
-                    ProximityLabel(proximity)
-                        .font(.subheadline)
-                        .foregroundStyle(proximity.isHere ? Color.primaryText : Color.secondaryText)
+                    // On a white pill, as text on a card colour is (docs/STYLE.md).
+                    ProximityLabel(proximity, highlightsHere: false)
+                        .font(.subheadline.weight(.medium))
+                        .foregroundStyle(CardPanel.ink)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 4)
+                        .background(CardPanel.fill, in: .capsule)
                 }
             }
             .padding(.horizontal, 18)

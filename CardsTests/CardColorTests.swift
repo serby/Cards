@@ -19,7 +19,7 @@ struct CardColorTests {
 
     @Test func standardFollowsTheSystemAppearance() {
         #expect(CardColor.standard.background == nil)
-        #expect(CardColor.standard.rowFill == .secondaryBackground)
+        #expect(CardColor.standard.gradientStops == nil)
     }
 
     /// Card text sits on white panels in dark ink, whatever the card colour.
@@ -43,15 +43,31 @@ struct CardColorTests {
         #expect(CardInk.best(on: 0x1458B0) == .light)
     }
 
-    /// The list row draws the system label over a faint wash of the colour on
-    /// the system background, in both appearances.
-    @Test(arguments: palette + customColours)
-    func listHintKeepsTheLabelReadable(_ color: CardColor) throws {
+    /// A list row puts the card name straight on the colour's gradient, so its
+    /// ink must meet AA at both ends, for any colour at all. Mid greys are where
+    /// neither ink is enough until the colour is moved.
+    @Test(arguments: palette + customColours + [0x767676, 0x777777, 0x808080, 0x8A8A8A, 0x6E8B3D].map(CardColor.custom))
+    func textOnTheColourIsReadable(_ color: CardColor) throws {
         let background = try #require(color.background)
-        let lightRow = Contrast.blend(background, over: 0xFFFFFF, opacity: CardColor.hintOpacityLight)
-        let darkRow = Contrast.blend(background, over: 0x000000, opacity: CardColor.hintOpacityDark)
-        #expect(Contrast.ratio(0x000000, lightRow) >= Self.minimumContrast)
-        #expect(Contrast.ratio(0xFFFFFF, darkRow) >= Self.minimumContrast)
+        let stops = try #require(color.gradientStops)
+        let ink = CardInk.best(on: background).rgb
+        #expect(Contrast.ratio(ink, stops.top) >= Self.minimumContrast)
+        #expect(Contrast.ratio(ink, stops.bottom) >= Self.minimumContrast)
+    }
+
+    /// Only colours that need it are moved: the palette shows exactly as designed.
+    @Test(arguments: palette)
+    func paletteColoursAreNotMoved(_ color: CardColor) {
+        #expect(color.readableBackground == color.background)
+    }
+
+    @Test func midGreyIsMovedOnlyAsFarAsItTakes() throws {
+        let grey = CardColor.custom(0x808080)
+        let moved = try #require(grey.readableBackground)
+        #expect(moved != 0x808080)
+        let ink = CardInk.best(on: 0x808080).rgb
+        #expect(Contrast.ratio(ink, moved) >= Self.minimumContrast)
+        #expect(Contrast.ratio(ink, moved) < Self.minimumContrast + 0.5)
     }
 
     /// The accent colours buttons and links, so it needs AA against the

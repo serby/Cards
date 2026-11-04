@@ -2,14 +2,20 @@ import SwiftUI
 
 /// How far away a card's nearest location is: "Here", or "350 m".
 /// With `showsPlace`, it names the place too: "At Westway", "350 m · Westway".
+/// "Here" stands out in its own capsule unless `highlightsHere` is off, for
+/// callers that already put the label on a capsule of its own.
 public struct ProximityLabel: View {
     private let proximity: CardProximity
     private let showsPlace: Bool
+    private let highlightsHere: Bool
 
-    public init(_ proximity: CardProximity, showsPlace: Bool = false) {
+    public init(_ proximity: CardProximity, showsPlace: Bool = false, highlightsHere: Bool = true) {
         self.proximity = proximity
         self.showsPlace = showsPlace
+        self.highlightsHere = highlightsHere
     }
+
+    private var drawsCapsule: Bool { proximity.isHere && highlightsHere }
 
     public var body: some View {
         HStack(alignment: .firstTextBaseline, spacing: 4) {
@@ -18,9 +24,9 @@ public struct ProximityLabel: View {
             Text(text)
         }
         .fontWeight(proximity.isHere ? .semibold : nil)
-        .padding(.horizontal, proximity.isHere ? 8 : 0)
+        .padding(.horizontal, drawsCapsule ? 8 : 0)
         .background {
-            if proximity.isHere {
+            if drawsCapsule {
                 // Drawn beyond the text vertically so "Here" never makes a row taller.
                 Capsule().fill(.quaternary).padding(.vertical, -3)
             }
