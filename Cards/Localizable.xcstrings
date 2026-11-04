@@ -8078,13 +8078,13 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "打开卡片时，将屏幕调至最高亮度，方便扫描条形码。"
+            "value" : "打开卡片时，屏幕最亮，便于扫描。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "打開卡片時，將螢幕調至最高亮度，讓條碼更容易掃描。"
+            "value" : "打開卡片時，螢幕最亮，方便掃描。"
           }
         }
       }
