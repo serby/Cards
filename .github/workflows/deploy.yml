@@ -19,7 +19,11 @@ jobs:
       github.event_name == 'push'
 
     steps:
+    # A workflow_run event checks out the newest commit on main, which may not be
+    # the one CI just passed. Build exactly that commit; a manual run builds main.
     - uses: actions/checkout@v5
+      with:
+        ref: ${{ github.event.workflow_run.head_sha || github.sha }}
 
     - name: Bump CFBundleVersion
       run: |
