@@ -28,12 +28,12 @@ import {
     versionState,
     type AppStoreVersionAttributes,
     type Resource,
+    editableAppInfoStates,
 } from "./asc.ts";
 import { checkMetadata, hasErrors, printReport, reviewNotesLocale, type Field, type LocaleMetadata } from "./check-metadata.ts";
 
 const bundleId = process.env.BUNDLE_ID ?? "net.serby.Cards";
 /// App info states in which its localisations can still be edited.
-const editableAppInfoStates = ["PREPARE_FOR_SUBMISSION", "DEVELOPER_REJECTED", "REJECTED"];
 /// How much of a long value a change line shows.
 const previewWidth = 56;
 

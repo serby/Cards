@@ -28,6 +28,7 @@ import {
     versionState,
     type AppStoreVersionAttributes,
     type Resource,
+    editableAppInfo,
 } from "./asc.ts";
 
 const bundleId = process.env.BUNDLE_ID ?? "net.serby.Cards";
@@ -203,6 +204,28 @@ async function attachLatestBuild(asc: AppStoreConnect, appId: string, version: P
     }
 }
 
+/// Answers App Store Connect can do without: overrides and links, not questions.
+const optionalAgeRatingFields = new Set([
+    "kidsAgeBand", "ageRatingOverride", "ageRatingOverrideV2", "koreaAgeRatingOverride",
+    "gracRatingClassificationNumber", "developerAgeRatingInfoUrl", "socialMediaAgeRestricted",
+]);
+
+/// Reports age rating questions still unanswered. App Store Connect refuses to
+/// submit a version while any is, as it did on 3 November 2026 for socialMedia.
+async function reportAgeRating(asc: AppStoreConnect, appId: string): Promise<void> {
+    const info = await editableAppInfo(asc, appId);
+    if (!info) {
+        console.log("Age rating: no app info is being prepared");
+        return;
+    }
+    const declaration = await asc.get<Resource<Record<string, unknown>>>(`/v1/appInfos/${info.id}/ageRatingDeclaration`);
+    const fields = Object.entries(declaration.data.attributes);
+    const unanswered = fields.filter(([name, value]) => value === null && !optionalAgeRatingFields.has(name)).map(([name]) => name);
+    console.log(unanswered.length === 0
+        ? `Age rating: all ${fields.length - optionalAgeRatingFields.size} questions answered`
+        : `Age rating: ${unanswered.length} unanswered: ${unanswered.join(", ")}`);
+}
+
 async function main(): Promise<void> {
     const { values } = parseArgs({
         args: process.argv.slice(2),
@@ -228,6 +251,7 @@ async function main(): Promise<void> {
         const attached = await attachedBuild(asc, version.id);
         console.log(`Build: ${attached ? `build ${attached.attributes.version} attached` : "none attached"}`);
     }
+    await reportAgeRating(asc, app.id);
     console.log(dryRun ? "Dry run: nothing was written." : "Done.");
 }
 

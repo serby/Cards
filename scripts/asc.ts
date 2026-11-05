@@ -184,3 +184,12 @@ export function editableVersions(asc: AppStoreConnect, appId: string, platform =
         `/v1/apps/${appId}/appStoreVersions?${query({ "filter[appVersionState]": editableVersionStates.join(","), "filter[platform]": platform })}`,
     );
 }
+
+/// App info states in which its localisations and age rating can still be changed.
+export const editableAppInfoStates = ["PREPARE_FOR_SUBMISSION", "DEVELOPER_REJECTED", "REJECTED"];
+
+/// The app info being prepared alongside the editable version, if there is one.
+export async function editableAppInfo(asc: AppStoreConnect, appId: string): Promise<Resource<{ state?: string; appStoreState?: string }> | undefined> {
+    const infos = await asc.all<{ state?: string; appStoreState?: string }>(`/v1/apps/${appId}/appInfos`);
+    return infos.find((info) => editableAppInfoStates.includes(info.attributes.state ?? info.attributes.appStoreState ?? ""));
+}
