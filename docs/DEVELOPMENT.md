@@ -216,6 +216,14 @@ The target builds in Swift 6 language mode with strict concurrency, `SWIFT_TREAT
 
 A change Paul needs to see is built, tested and run in the simulator, and shown to him with screenshots, before it is pushed. It is pushed, with its screenshots refreshed in the same push, only once he agrees it ships as a new version of the app. Fixes, tooling and documentation that change nothing on screen are exempt. The steps are in [section 2](#shape-features-in-the-simulator-before-they-ship).
 
+### Rule 12: Mark changes with the release skill
+
+`changelog.json` is the one record of what changed for the people using the app, newest version first. `node scripts/changelog.ts generate` writes `CHANGELOG.md` and each locale's `metadata/<locale>/release_notes.txt` from it, the app bundles it for Settings > What's New, and CI's `node scripts/changelog.ts check` fails when a generated file is stale or the newest version is not the app's. The release skill ([.claude/skills/release/SKILL.md](../.claude/skills/release/SKILL.md)) is the standard way to add entries, from the commits, and to release a version. Never edit `CHANGELOG.md` or `release_notes.txt` by hand.
+
+### Rule 13: Keep the spec current
+
+[spec/](../spec/README.md) describes the whole app as user stories with acceptance criteria. A change that adds or alters behaviour updates the matching stories in the same commit, and a new feature adds new ones, marked "In preparation for <version>" until it ships.
+
 ## 5. Recipes
 
 ### Add a view
@@ -254,13 +262,19 @@ In Xcode, **File > Add Package Dependencies**, add the product to the `Cards` ta
 
 Edit `DesignAssets/Icon.svg`, run `scripts/generate-app-icons.sh`, and commit the SVG with the regenerated PNGs.
 
+### Mark a change
+
+Ask for the release skill ("mark the changes"), or follow [.claude/skills/release/SKILL.md](../.claude/skills/release/SKILL.md) by hand: add the entries to `changelog.json`, update `spec/`, then run `node scripts/changelog.ts generate` and `node scripts/changelog.ts check`. The first change after a release starts the next version, which means bumping `MARKETING_VERSION` too.
+
 ### Publish a new App Store version
+
+The release skill runs these steps; they are here for reference.
 
 1. Set `MARKETING_VERSION` in the project-level build settings to the new version (for example `1.3`); the app and the widget inherit it, and App Store Connect rejects an extension whose version differs from its app. Commit and push. Every push to `main` puts a build on TestFlight.
 2. Wait for that push's CI and TestFlight deploy to finish; App Store Connect rejects two uploads arriving at once.
-3. Tag the commit with an annotated tag whose name matches the version and whose message is the "What's New" text, then push the tag:
+3. Tag the commit with an annotated tag whose name matches the version and whose message is its What's New from the changelog, then push the tag:
    ```bash
-   git tag -a v1.3 -m "What's New text"
+   git tag -a v1.3 -F <(node scripts/changelog.ts notes 1.3)
    git push origin v1.3
    ```
 4. `release.yml` stamps a build number, archives, signs and uploads, waits for Apple to process the build, creates the App Store version, attaches the build, sets "What's New" in every localisation and submits it for review (`scripts/asc-submit.sh`). A tag without a message stops the workflow before it uploads anything.
