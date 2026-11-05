@@ -48,6 +48,11 @@ jobs:
     - name: Check App Store metadata
       run: node scripts/check-metadata.ts
 
+    # changelog.json must be valid, start with the app's version, and match the
+    # files generated from it.
+    - name: Check the changelog
+      run: node scripts/changelog.ts check
+
     # Development code (Cards/Development: Storybook, previews, sample data,
     # UI-test hooks) must never reach a release build.
     - name: Check release build has no development code

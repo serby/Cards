@@ -1,5 +1,11 @@
 A Home Screen widget shows the barcode of the card for where you are, or one you choose.
-Cards show their full color in the list, with 23 colors to choose from or any color you like.
-Card screens have a new design, with the name and number on white panels.
+Give each card a color from 23, or pick any color you like.
+Add the places you use a card, from the map or by ZIP code, and see how far away they are.
+Arrive at one of a card's places and its barcode appears on your Lock Screen.
 Add where you are to a card straight from the card, with Add current location.
 Turn arrival notifications on or off in Settings.
+Pinch to zoom when scanning a barcode.
+Cards show their full color in the list, with names you can read on any color.
+Card screens have a new design, with the name and number on white panels.
+A new app icon shows a barcode card behind a QR code card.
+VoiceOver spells out a card's number, and buttons in light mode use a deeper pink that is easier to read.

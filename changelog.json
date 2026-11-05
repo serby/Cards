@@ -1,0 +1,115 @@
+{
+  "versions": [
+    {
+      "version": "1.3",
+      "date": null,
+      "changes": [
+        {
+          "type": "new",
+          "text": "A Home Screen widget shows the barcode of the card for where you are, or one you choose."
+        },
+        {
+          "type": "new",
+          "text": "Give each card a colour from 23, or pick any colour you like.",
+          "en-US": "Give each card a color from 23, or pick any color you like."
+        },
+        {
+          "type": "new",
+          "text": "Add the places you use a card, from the map or by postcode, and see how far away they are.",
+          "en-US": "Add the places you use a card, from the map or by ZIP code, and see how far away they are."
+        },
+        {
+          "type": "new",
+          "text": "Arrive at one of a card's places and its barcode appears on your Lock Screen."
+        },
+        {
+          "type": "new",
+          "text": "Add where you are to a card straight from the card, with Add current location."
+        },
+        {
+          "type": "new",
+          "text": "Turn arrival notifications on or off in Settings."
+        },
+        {
+          "type": "new",
+          "text": "Pinch to zoom when scanning a barcode."
+        },
+        {
+          "type": "improved",
+          "text": "Cards show their full colour in the list, with names you can read on any colour.",
+          "en-US": "Cards show their full color in the list, with names you can read on any color."
+        },
+        {
+          "type": "improved",
+          "text": "Card screens have a new design, with the name and number on white panels."
+        },
+        {
+          "type": "improved",
+          "text": "A new app icon shows a barcode card behind a QR code card."
+        },
+        {
+          "type": "improved",
+          "text": "VoiceOver spells out a card's number, and buttons in light mode use a deeper pink that is easier to read."
+        }
+      ]
+    },
+    {
+      "version": "1.1",
+      "date": "2026-06-20",
+      "changes": [
+        {
+          "type": "new",
+          "text": "Use Card Barcodes on iPad, in portrait or landscape."
+        },
+        {
+          "type": "new",
+          "text": "Your cards sync between your iPhone and iPad through iCloud."
+        },
+        {
+          "type": "new",
+          "text": "Turn Brightness Boost on or off from the card screen."
+        },
+        {
+          "type": "improved",
+          "text": "Add a card with one button: the scanner sits at the top of the form and fills in the code and barcode type."
+        },
+        {
+          "type": "improved",
+          "text": "Delete All Cards is greyed out when there are no cards to delete.",
+          "en-US": "Delete All Cards is grayed out when there are no cards to delete."
+        }
+      ]
+    },
+    {
+      "version": "1.0",
+      "date": "2025-12-26",
+      "changes": [
+        {
+          "type": "new",
+          "text": "Scan a card's barcode with the camera, or type its number in."
+        },
+        {
+          "type": "new",
+          "text": "Keep cards with QR, EAN-13, EAN-8, UPC-E, Code 128, Code 39, Code 93, Aztec or PDF417 barcodes."
+        },
+        {
+          "type": "new",
+          "text": "Open a card and the screen brightens, so it scans first time at the till.",
+          "en-US": "Open a card and the screen brightens, so it scans first time at the checkout."
+        },
+        {
+          "type": "new",
+          "text": "Name your cards, drag them into any order and swipe to delete one."
+        },
+        {
+          "type": "new",
+          "text": "Export your cards as JSON and import them again."
+        },
+        {
+          "type": "new",
+          "text": "Card Barcodes works in light and dark mode."
+        }
+      ]
+    }
+  ]
+}
