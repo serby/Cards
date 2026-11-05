@@ -18,16 +18,23 @@ on:
 
 jobs:
   build-and-test:
-    runs-on: macos-26
+    # The Xcode 27 image, so CI builds with the same Xcode as local builds (.xcode-version).
+    runs-on: xcode-27
 
     steps:
     - uses: actions/checkout@v5
+
+    - name: Select the Xcode in .xcode-version
+      run: |
+        source scripts/xcode-env.sh
+        echo "DEVELOPER_DIR=$DEVELOPER_DIR" >> "$GITHUB_ENV"
+        "$DEVELOPER_DIR/usr/bin/xcodebuild" -version
 
     - name: Validate checked-in screenshots
       run: python3 scripts/validate-screenshots.py
 
     # Pre-create and boot the exact simulator used by xcodebuild. This avoids
-    # CoreSimulator creation/boot races seen on macos-26 runners.
+    # CoreSimulator creation/boot races seen on GitHub's macOS runners.
     - name: Resolve and warm simulator
       id: sim
       run: |

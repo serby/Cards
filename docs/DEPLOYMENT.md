@@ -6,11 +6,13 @@ Cards ships with GitHub Actions driving plain `xcodebuild` and the scripts in `s
 
 | Workflow | Runs on | What it does |
 |----------|---------|--------------|
-| `ci.yml` (CI) | Every push to `main` and every pull request, on `macos-26` | The build, the metadata and changelog checks, the release check, the tests, and checks on the checked-in and freshly captured screenshots. It does not run SwiftLint, so lint locally |
-| `release.yml` (Release to App Store) | `v*` tags, on `macos-26` | Stamps a build number, archives and signs (`scripts/build-ipa.sh`), uploads (`scripts/deploy-appstore.sh`), then attaches the build to the version, sets What's New from the tag message and submits for review (`scripts/asc-submit.sh`) |
+| `ci.yml` (CI) | Every push to `main` and every pull request, on `xcode-27` | The build, the metadata and changelog checks, the release check, the tests, and checks on the checked-in and freshly captured screenshots. It does not run SwiftLint, so lint locally |
+| `release.yml` (Release to App Store) | `v*` tags, on `xcode-27` | Stamps a build number, archives and signs (`scripts/build-ipa.sh`), uploads (`scripts/deploy-appstore.sh`), then attaches the build to the version, sets What's New from the tag message and submits for review (`scripts/asc-submit.sh`) |
 | `app-store-listing.yml` (App Store listing) | By hand | Gives the editable version its number with **prepare version**, then uploads the text in `metadata/` and the images in `screenshots/store/`. It does not upload or attach builds |
 | `website.yml` (Deploy Website) | Pushes to `main` that change `Website/src/`, or by hand | Deploys the website to Cloudflare |
 | `export-asc-creds.yml` | By hand | One-off credential export. It writes the App Store Connect key to a downloadable artifact in a public repository, so do not run it, and delete it |
+
+Both macOS workflows run on GitHub's `xcode-27` image and select the Xcode named in `.xcode-version` with `scripts/xcode-env.sh`, the same one local builds use. They stop if the image lacks it. CI's simulators use the newest iOS runtime that Xcode's SDK supports (`scripts/ci-resolve-sim.sh`).
 
 There is no TestFlight workflow. To put a build on TestFlight, run `make deploy-testflight` locally with an App Store Connect API key in the environment.
 

@@ -8,10 +8,17 @@ on:
 
 jobs:
   release:
-    runs-on: macos-26
+    # The Xcode 27 image, so the App Store build uses the same Xcode as local builds (.xcode-version).
+    runs-on: xcode-27
 
     steps:
     - uses: actions/checkout@v5
+
+    - name: Select the Xcode in .xcode-version
+      run: |
+        source scripts/xcode-env.sh
+        echo "DEVELOPER_DIR=$DEVELOPER_DIR" >> "$GITHUB_ENV"
+        "$DEVELOPER_DIR/usr/bin/xcodebuild" -version
 
     # Bump CFBundleVersion to a strictly-increasing value (UTC seconds since
     # 2026-01-01). Avoids the App Store Connect 409

@@ -18,7 +18,7 @@ make test              # unit and UI tests
 make sim               # build, boot a simulator, install and launch
 ```
 
-Needs Xcode 27.1, SwiftLint, and Node 24 for the release check.
+Needs Xcode 27.1, the version pinned in `.xcode-version` that CI also uses, SwiftLint, and Node 24 for the release check.
 
 ## Developing
 

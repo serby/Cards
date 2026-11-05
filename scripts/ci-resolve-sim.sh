@@ -1,6 +1,7 @@
 #!/bin/bash
 # Pick the highest-version iOS runtime that supports the optional requested
-# device type, ensure the simulator is created and booted, then write its exact
+# device type and is no newer than the selected Xcode's iOS SDK (a runner can
+# carry runtimes from a newer Xcode that this one cannot build for), ensure the simulator is created and booted, then write its exact
 # name, runtime version, model, and UDID to stdout for $GITHUB_OUTPUT.
 #
 # Usage:
@@ -8,7 +9,7 @@
 #   scripts/ci-resolve-sim.sh "iPhone 16 Pro Max"
 #   scripts/ci-resolve-sim.sh "iPad Pro 13-inch (M4)"
 #
-# Workaround for two macos-26 runner issues seen on 2026-06-18:
+# Workaround for two GitHub macOS runner issues seen on 2026-06-18:
 #   1. rules_apple's test runner re-creates a simulator named
 #      "New-<DEVICE>-<VERSION>" — pre-creating that name avoids its slow
 #      creation/boot loop.
@@ -19,13 +20,18 @@ set -euo pipefail
 
 PREFERRED_DEVICE="${1:-}"
 
-PICK=$(xcrun simctl list -j devicetypes runtimes | PREFERRED_DEVICE="$PREFERRED_DEVICE" python3 -c '
+SDK_VERSION=$(xcrun --sdk iphonesimulator --show-sdk-version)
+
+PICK=$(xcrun simctl list -j devicetypes runtimes | PREFERRED_DEVICE="$PREFERRED_DEVICE" SDK_VERSION="$SDK_VERSION" python3 -c '
 import json, os, re, sys
 data = json.load(sys.stdin)
 preferred = os.environ["PREFERRED_DEVICE"]
+version = lambda v: tuple(int(x) for x in v.split("."))
+sdk = version(os.environ["SDK_VERSION"])
 rts = [r for r in data["runtimes"]
-       if r.get("isAvailable") and r["platform"] == "iOS"]
-rts.sort(key=lambda r: tuple(int(x) for x in r["version"].split(".")), reverse=True)
+       if r.get("isAvailable") and r["platform"] == "iOS"
+       and version(r["version"])[:len(sdk)] <= sdk]
+rts.sort(key=lambda r: version(r["version"]), reverse=True)
 
 for rt in rts:
     supported = {x["identifier"] for x in rt.get("supportedDeviceTypes", [])}

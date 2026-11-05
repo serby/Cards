@@ -1,9 +1,17 @@
 .PHONY: check-release test test-unit test-e2e test-coverage coverage-run coverage-report coverage-clean build clean sim device-hub device test-tsan capture-screenshots validate-screenshots deploy-testflight deploy-appstore check-metadata upload-metadata upload-screenshots store-screenshots
 
-# Same choice as scripts/xcode-env.sh: XCODE_APP, else Xcode 27.1 when installed,
-# else whatever xcode-select points at.
-XCODE_APP ?= $(wildcard /Applications/Xcode27.1.app)
-DEVELOPER_DIR := $(if $(XCODE_APP),$(XCODE_APP)/Contents/Developer,$(shell xcode-select -p))
+# The Xcode named in .xcode-version, chosen as scripts/xcode-env.sh does, so local
+# builds and CI use the same version. There is no fallback to xcode-select.
+XCODE_VERSION := $(shell tr -d '[:space:]' < .xcode-version)
+XCODE_APP ?= $(firstword $(wildcard /Applications/Xcode$(XCODE_VERSION).app /Applications/Xcode_$(XCODE_VERSION).app /Applications/Xcode-$(XCODE_VERSION).app))
+ifeq ($(XCODE_APP),)
+$(error Xcode $(XCODE_VERSION), from .xcode-version, is not installed in /Applications. Install it, or set XCODE_APP to it)
+endif
+DEVELOPER_DIR := $(XCODE_APP)/Contents/Developer
+XCODE_ACTUAL := $(shell $(DEVELOPER_DIR)/usr/bin/xcodebuild -version 2>/dev/null | sed -n '1s/^Xcode //p')
+ifneq ($(XCODE_ACTUAL),$(XCODE_VERSION))
+$(error $(XCODE_APP) is not Xcode $(XCODE_VERSION), the version in .xcode-version$(if $(XCODE_ACTUAL), (it is $(XCODE_ACTUAL))))
+endif
 DEVICE_HUB_APP ?= $(DEVELOPER_DIR)/../Applications/DeviceHub.app
 SIMULATOR_DEVICE ?= iPhone 16 Pro
 SIMULATOR_VERSION ?= 18.1
