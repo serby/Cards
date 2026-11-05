@@ -9,6 +9,7 @@ let componentStories: [Story] = [
     proximityLabelStory,
     cardLocationRowStory,
     cardWidgetStory,
+    cameraUnavailableStory,
     scannerPlaceholderStory
 ]
 
@@ -261,6 +262,26 @@ private let cardWidgetStory = Story(
     return AnyView(
         CardWidgetView(card: knobs.bool("Has card") ? card : nil)
             .widgetPreviewFrame(knobs.bool("Has card") ? color : .standard)
+            .padding()
+    )
+}
+
+@MainActor
+private let cameraUnavailableStory = Story(
+    id: "camera-unavailable",
+    title: "CameraUnavailableView",
+    section: "Components",
+    knobs: [
+        .options("Reason", ["denied", "unavailable"], "denied")
+    ],
+    gallery: [
+        (name: "Access off", view: AnyView(CameraUnavailableView(reason: .denied).frame(height: 250))),
+        (name: "No camera", view: AnyView(CameraUnavailableView(reason: .unavailable).frame(height: 250)))
+    ]
+) { knobs in
+    AnyView(
+        CameraUnavailableView(reason: knobs.option("Reason") == "denied" ? .denied : .unavailable)
+            .frame(height: 250)
             .padding()
     )
 }

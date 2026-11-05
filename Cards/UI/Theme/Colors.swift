@@ -3,6 +3,8 @@ import SwiftUI
 public extension Color {
     static let primaryBackground = Color(UIColor.systemBackground)
     static let secondaryBackground = Color(UIColor.secondarySystemBackground)
+    /// A row of a form or list: white in light mode, so it stands out from the grey behind it.
+    static let rowBackground = Color(UIColor.secondarySystemGroupedBackground)
     static let primaryText = Color(UIColor.label)
     static let secondaryText = Color(UIColor.secondaryLabel)
     static let tertiaryText = Color(UIColor.tertiaryLabel)

@@ -46,6 +46,28 @@ public struct CameraScannerView: UIViewControllerRepresentable {
 public struct ScannerOverlayView: View {
     @Binding var scannedCode: String?
     @Binding var barcodeType: BarcodeType?
+    @State private var camera = CameraState.current
+
+    /// Whether the camera can be used, asked before the scanner starts so a
+    /// refusal shows a message rather than a black box.
+    private enum CameraState {
+        case undecided
+        case ready
+        case denied
+        case unavailable
+
+        static var current: Self {
+            guard AVCaptureDevice.default(for: .video) != nil else { return .unavailable }
+            switch AVCaptureDevice.authorizationStatus(for: .video) {
+            case .authorized:
+                return .ready
+            case .notDetermined:
+                return .undecided
+            default:
+                return .denied
+            }
+        }
+    }
 
     public init(scannedCode: Binding<String?>, barcodeType: Binding<BarcodeType?>) {
         _scannedCode = scannedCode
@@ -53,14 +75,31 @@ public struct ScannerOverlayView: View {
     }
 
     public var body: some View {
-        CameraScannerView(scannedCode: $scannedCode, barcodeType: $barcodeType)
-            .overlay {
-                Rectangle()
-                    .fill(Color.red.opacity(0.8))
-                    .frame(height: 2)
+        Group {
+            switch camera {
+            case .ready:
+                CameraScannerView(scannedCode: $scannedCode, barcodeType: $barcodeType)
+                    .overlay {
+                        Rectangle()
+                            .fill(Color.red.opacity(0.8))
+                            .frame(height: 2)
+                    }
+                    .accessibilityIdentifier("scannerView")
+                    .accessibilityLabel("Barcode scanner")
+            case .undecided:
+                Color.black
+                    .task {
+                        camera = await AVCaptureDevice.requestAccess(for: .video) ? .ready : .denied
+                    }
+            case .denied:
+                CameraUnavailableView(reason: .denied) {
+                    guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
+                    UIApplication.shared.open(url)
+                }
+            case .unavailable:
+                CameraUnavailableView(reason: .unavailable)
             }
-            .clipShape(RoundedRectangle(cornerRadius: 12))
-            .accessibilityIdentifier("scannerView")
-            .accessibilityLabel("Barcode scanner")
+        }
+        .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 }
