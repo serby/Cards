@@ -18,13 +18,14 @@ final class CardsUITests: XCTestCase {
         return element.waitForExistence(timeout: timeout)
     }
     
-    @MainActor
     /// Waits for a label to change. A predicate re-reads the element; `wait(for:toEqual:)` missed the change.
+    @MainActor
     func waitForLabel(_ element: XCUIElement, _ label: String, timeout: TimeInterval) -> Bool {
         let predicate = NSPredicate(format: "label == %@", label)
         return XCTWaiter.wait(for: [expectation(for: predicate, evaluatedWith: element)], timeout: timeout) == .completed
     }
 
+    @MainActor
     func debugElements(_ app: XCUIApplication) {
         print("=== DEBUG: All TextFields ===")
         for textField in app.textFields.allElementsBoundByIndex {

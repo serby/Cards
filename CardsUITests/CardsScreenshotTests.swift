@@ -89,9 +89,9 @@ final class CardsScreenshotTests: XCTestCase {
         app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", name)).firstMatch
     }
 
-    @MainActor
     /// Whether the keyboard has left the screen. On the iPhone Duo's outer display
     /// it stays in the hierarchy below the screen once put away, so it never stops existing.
+    @MainActor
     private func waitForKeyboardToGo(_ app: XCUIApplication, timeout: TimeInterval) -> Bool {
         let deadline = Date.now.addingTimeInterval(timeout)
         repeat {
@@ -104,6 +104,7 @@ final class CardsScreenshotTests: XCTestCase {
         return false
     }
 
+    @MainActor
     private func attach(_ app: XCUIApplication, name: String) {
         let screenshot = app.screenshot()
         let attachment = XCTAttachment(screenshot: screenshot)
