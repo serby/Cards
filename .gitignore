@@ -20,16 +20,11 @@ DerivedData/
 *.xcuserdatad
 xcuserdata/
 
-# Fastlane
-fastlane/report.xml
-fastlane/Preview.html
-fastlane/test_output
-fastlane/README.md
+# Xcode build output. Fastlane is no longer used, but this Mac's Xcode has a
+# custom build location (Settings > Locations > Advanced: relative to the
+# workspace, fastlane/derived_data/Build/Products) set for other projects, so
+# every build of Cards writes here. Safe to delete; the next build recreates it.
 fastlane/derived_data/
-
-# Ruby
-Gemfile.lock
-vendor/
 
 # Certificates
 *.p12
@@ -44,7 +39,6 @@ vendor/
 
 # macOS
 .DS_Store
-fastlane/.env
 
 # Swift Package Manager
 .build/
