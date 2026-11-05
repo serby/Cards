@@ -11,6 +11,7 @@ As someone using VoiceOver, I want every card read in plain words, so that I can
 - On the card screen, the name reads "Card name: <name>" and is a heading.
 - The barcode reads "Barcode for <name>", with the hint "This is a <type> barcode with code <code>".
 - The number reads "Card code: " and then the code character by character (1.3).
+- The copy button reads "Copy card code". After a copy it reads "Copied", and VoiceOver announces "Card code copied" (1.3).
 - The date reads "Created on <date>", with the full month, such as "Created on 4 November 2026 at 09:41".
 - Edit reads "Edit card", with the hint "Tap to edit this card's details".
 - The brightness button reads "Brightness Boost", with the hint "Toggles screen brightness to maximum for easier barcode scanning".

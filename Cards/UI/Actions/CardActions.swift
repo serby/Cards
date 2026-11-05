@@ -30,17 +30,21 @@ public struct CardDetailActions {
     /// Called when the location picker opens, so the map can show where you are.
     public var requestLocationAccess: () -> Void
     public var findPlace: (String) async -> PlaceMatch?
+    /// Puts the card's code on the clipboard.
+    public var copyCode: () -> Void
 
     public init(
         editCard: @escaping () -> Void = {},
         addLocation: @escaping (CardLocation) -> Void = { _ in },
         requestLocationAccess: @escaping () -> Void = {},
-        findPlace: @escaping (String) async -> PlaceMatch? = { _ in nil }
+        findPlace: @escaping (String) async -> PlaceMatch? = { _ in nil },
+        copyCode: @escaping () -> Void = {}
     ) {
         self.editCard = editCard
         self.addLocation = addLocation
         self.requestLocationAccess = requestLocationAccess
         self.findPlace = findPlace
+        self.copyCode = copyCode
     }
 }
 

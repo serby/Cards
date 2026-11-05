@@ -19,6 +19,12 @@ final class CardsUITests: XCTestCase {
     }
     
     @MainActor
+    /// Waits for a label to change. A predicate re-reads the element; `wait(for:toEqual:)` missed the change.
+    func waitForLabel(_ element: XCUIElement, _ label: String, timeout: TimeInterval) -> Bool {
+        let predicate = NSPredicate(format: "label == %@", label)
+        return XCTWaiter.wait(for: [expectation(for: predicate, evaluatedWith: element)], timeout: timeout) == .completed
+    }
+
     func debugElements(_ app: XCUIApplication) {
         print("=== DEBUG: All TextFields ===")
         for textField in app.textFields.allElementsBoundByIndex {
@@ -86,6 +92,26 @@ final class CardsUITests: XCTestCase {
 
         XCTAssertTrue(waitForElement(app.descendants(matching: .any)["cardProximityText"].firstMatch))
         XCTAssertTrue(addHere.waitForNonExistence(timeout: 3))
+    }
+
+    @MainActor
+    func testCopyCardCode() throws {
+        let app = XCUIApplication()
+        app.launchArguments += ["-uiTesting", "-screenshotSeed"]
+        app.launch()
+        dismissNotificationPrompt()
+
+        let nectar = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Nectar")).firstMatch
+        XCTAssertTrue(waitForElement(nectar))
+        nectar.tap()
+
+        // The clipboard itself is not read: that asks for permission to paste.
+        let copy = app.buttons["copyCodeButton"]
+        XCTAssertTrue(waitForElement(copy))
+        XCTAssertEqual(copy.label, "Copy card code")
+        copy.tap()
+        XCTAssertTrue(waitForLabel(copy, "Copied", timeout: 2))
+        XCTAssertTrue(waitForLabel(copy, "Copy card code", timeout: 4))
     }
 
     @MainActor

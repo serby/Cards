@@ -60,13 +60,14 @@ As a card holder, I want to open a card and see its barcode and number, so that 
 - The card screen shows the card face in the card's colour (COL-3): the name on a white panel at the top, the barcode in its frame (BAR-2), and the number and the date the card was added on a white panel below.
 - When the card has places and the app knows where you are, the top panel also says how far away the nearest is, as "At Westway" or "350 m · Westway" (PLACE-6) (1.3).
 - The number is in a monospaced font, and it can be selected and copied (1.3).
+- A copy button beside the number puts it on the clipboard, for typing it into a website or another app. The icon turns into a tick for about a second and a half, and a success haptic plays. The number stays centred on its panel (1.3).
 - The date shows the abbreviated date and the time, such as "4 Nov 2026 at 09:41".
 - The toolbar has the brightness button (BAR-4) and Edit (CARD-5).
 - Below the card, "Add current location" opens the map to add a place (PLACE-4) (1.3).
 - Opening a card raises the screen brightness when Brightness Boost is on (BAR-4).
 
 **Since:** 1.0
-**Where:** `Cards/UI/Screens/CardDetailView.swift`, `Cards/Features/CardDetailScreen.swift`, `CardsUITests/CardsUITests.swift` (`testAdd`), `CardsUITests/CardsScreenshotTests.swift`
+**Where:** `Cards/UI/Screens/CardDetailView.swift`, `Cards/Features/CardDetailScreen.swift`, `Cards/UI/Actions/CardActions.swift`, `CardsUITests/CardsUITests.swift` (`testAdd`, `testCopyCardCode`), `CardsUITests/CardsScreenshotTests.swift`
 
 ### CARD-5: Edit a card
 

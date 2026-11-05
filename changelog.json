@@ -28,11 +28,15 @@
         },
         {
           "type": "new",
-          "text": "Turn arrival notifications off for one card in its settings, or for every card in Settings."
+          "text": "Turn arrival notifications off for one card when you edit it, or for every card in Settings."
         },
         {
           "type": "new",
           "text": "Pinch to zoom when scanning a barcode."
+        },
+        {
+          "type": "new",
+          "text": "Copy a card's number with the button beside it."
         },
         {
           "type": "new",

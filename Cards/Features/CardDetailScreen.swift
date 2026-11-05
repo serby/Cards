@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 public struct CardDetailScreen: View {
     @AppStorage("brightnessBoost") private var brightnessBoost = true
@@ -29,7 +30,8 @@ public struct CardDetailScreen: View {
                 editCard: { navigationManager.navigate(to: .editCard(item.code)) },
                 addLocation: addLocation,
                 requestLocationAccess: locationService.requestAccess,
-                findPlace: PostcodeLookup.find
+                findPlace: PostcodeLookup.find,
+                copyCode: { UIPasteboard.general.string = item.code }
             )
         )
     }

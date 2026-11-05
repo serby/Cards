@@ -14,6 +14,9 @@ public struct CardDetailView: View {
     @Environment(\.accessibilityAnnouncer) private var announcer
     @State private var originalBrightness: CGFloat?
     @State private var showsLocationPicker = false
+    /// Counts copies, so each one plays the haptic and shows the tick afresh.
+    @State private var copies = 0
+    @State private var showsCopied = false
 
     public init(
         card: CardDetail,
@@ -52,13 +55,22 @@ public struct CardDetailView: View {
                     .accessibilityLabel("Barcode for \(card.name)")
 
                 VStack(spacing: 4) {
-                    Text(card.code)
-                        .font(.title3.monospaced().weight(.semibold))
-                        .foregroundStyle(CardPanel.ink)
-                        .textSelection(.enabled)
-                        .accessibilityIdentifier("cardCodeText")
-                        .accessibilityLabel(Text("Card code: ") + Text(card.code).speechSpellsOutCharacters())
-                        .accessibilityAddTraits(.isStaticText)
+                    HStack(spacing: 0) {
+                        // As wide as the copy button, so the number stays centred on the panel.
+                        Color.clear
+                            .frame(width: Self.copyButtonSize, height: 1)
+                            .accessibilityHidden(true)
+                        Text(card.code)
+                            .font(.title3.monospaced().weight(.semibold))
+                            .foregroundStyle(CardPanel.ink)
+                            .multilineTextAlignment(.center)
+                            .frame(maxWidth: .infinity)
+                            .textSelection(.enabled)
+                            .accessibilityIdentifier("cardCodeText")
+                            .accessibilityLabel(Text("Card code: ") + Text(card.code).speechSpellsOutCharacters())
+                            .accessibilityAddTraits(.isStaticText)
+                        copyCodeButton
+                    }
 
                     Text("\(card.timestamp, format: Date.FormatStyle(date: .abbreviated, time: .shortened))")
                         .font(.caption)
@@ -122,6 +134,36 @@ public struct CardDetailView: View {
                     .accessibilityHint("Tap to edit this card's details")
             }
         }
+    }
+
+    private static let copyButtonSize: CGFloat = 44
+
+    /// Copies the number, for typing it into a website or another app. The icon
+    /// turns into a tick for a moment to show it worked.
+    private var copyCodeButton: some View {
+        Button {
+            actions.copyCode()
+            copies += 1
+            announcer.announce("Card code copied")
+        } label: {
+            Image(systemName: showsCopied ? "checkmark" : "doc.on.doc")
+                .font(.body.weight(.semibold))
+                .foregroundStyle(CardPanel.secondaryInk)
+                .contentTransition(.symbolEffect(.replace))
+                .frame(width: Self.copyButtonSize, height: Self.copyButtonSize)
+                .contentShape(.rect)
+        }
+        .buttonStyle(.plain)
+        .sensoryFeedback(.success, trigger: copies)
+        .task(id: copies) {
+            guard copies > 0 else { return }
+            showsCopied = true
+            // A tap while the tick shows starts the moment again.
+            guard (try? await Task.sleep(for: .seconds(1.5))) != nil else { return }
+            showsCopied = false
+        }
+        .accessibilityIdentifier("copyCodeButton")
+        .accessibilityLabel(showsCopied ? "Copied" : "Copy card code")
     }
 
     /// A quiet way to remember this place for the card, without opening the editor.

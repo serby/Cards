@@ -11,8 +11,9 @@ Every version of Card Barcodes and what it changed, newest first. This file is g
 - Add the places you use a card, from the map or by postcode, and see how far away they are.
 - Arrive at one of a card's places and a notification reminds you, and opens the card when you tap it.
 - Add where you are to a card straight from the card, with Add current location.
-- Turn arrival notifications off for one card in its settings, or for every card in Settings.
+- Turn arrival notifications off for one card when you edit it, or for every card in Settings.
 - Pinch to zoom when scanning a barcode.
+- Copy a card's number with the button beside it.
 - See what changed in each version in Settings > What's New.
 
 ### Improved
