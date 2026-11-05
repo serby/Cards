@@ -13,7 +13,7 @@
     "color": "graphite",
     "layout": "screen",
     "title": "Ready at the till",
-    "subtitle": "A bright, clear barcode, first time"
+    "subtitle": "A bright, clear barcode"
   },
   {
     "file": "03_Widget",
@@ -37,6 +37,6 @@
     "color": "purple",
     "layout": "screen",
     "title": "Any colour you like",
-    "subtitle": "23 colours, or pick your own"
+    "subtitle": "Pick your own to match your card"
   }
 ]
