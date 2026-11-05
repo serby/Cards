@@ -204,7 +204,6 @@ public struct LocationPickerView: View {
                 notFound = true
                 return
             }
-            radius = CardLocation.defaultRadius
             if name.isEmpty { name = match.name }
             withAnimation {
                 position = .region(
