@@ -79,7 +79,10 @@ public struct SettingsListView: View {
                 Toggle("Arrival Notifications", isOn: $arrivalNotifications)
                     .tint(.accent)
                     .accessibilityIdentifier("arrivalNotificationsToggle")
-                Text("Shows a card's barcode on your Lock Screen when you arrive at one of its places")
+                Text("""
+                    Reminds you when you arrive at one of a card's places. \
+                    To stop one card reminding you, turn off Notify When I Arrive when you edit it.
+                    """)
                     .font(.caption)
                     .foregroundColor(.tertiaryText)
                 if arrivalNotifications && state.notificationsBlocked {
@@ -129,13 +132,20 @@ public struct SettingsListView: View {
             Button("Delete All", role: .destructive, action: actions.deleteAllCards)
             Button("Cancel", role: .cancel) {}
         } message: {
-            Text("This will permanently delete all \(state.cardCount) cards. This action cannot be undone.")
+            Text("This will permanently delete \(deletedCards). This action cannot be undone.")
         }
         .alert("Import Result", isPresented: Binding(get: { message != nil }, set: { if !$0 { message = nil } })) {
             Button("OK") { message = nil }
         } message: {
             Text(message ?? "")
         }
+    }
+}
+
+extension SettingsListView {
+    /// "your card" or "all 6 cards", for the delete confirmation.
+    private var deletedCards: String {
+        state.cardCount == 1 ? "your card" : "all \(cardCount(state.cardCount))"
     }
 }
 

@@ -53,19 +53,38 @@ public struct CardDraft: Hashable, Sendable {
     public var barcodeType: BarcodeType
     public var color: CardColor
     public var locations: [CardLocation]
+    public var notifiesOnArrival: Bool
 
     public init(
         name: String = "",
         code: String = "",
         barcodeType: BarcodeType = .code128,
         color: CardColor = .standard,
-        locations: [CardLocation] = []
+        locations: [CardLocation] = [],
+        notifiesOnArrival: Bool = true
     ) {
         self.name = name
         self.code = code
         self.barcodeType = barcodeType
         self.color = color
         self.locations = locations
+        self.notifiesOnArrival = notifiesOnArrival
+    }
+}
+
+public extension CardDraft {
+    var trimmedName: String { name.trimmingCharacters(in: .whitespacesAndNewlines) }
+    var trimmedCode: String { code.trimmingCharacters(in: .whitespacesAndNewlines) }
+
+    /// Whether another card already uses this code. The code is how a card is
+    /// found from links, notifications and the widget, so two cards cannot share one.
+    func codeIsTaken(by takenCodes: Set<String>) -> Bool {
+        takenCodes.contains(trimmedCode)
+    }
+
+    /// A card needs a name and a code of its own.
+    func canSave(takenCodes: Set<String>) -> Bool {
+        !trimmedName.isEmpty && !trimmedCode.isEmpty && !codeIsTaken(by: takenCodes)
     }
 }
 

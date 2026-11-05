@@ -131,6 +131,9 @@ private let cardEditStory = Story(
         .options("Type", BarcodeType.allNames, BarcodeType.code128.rawValue),
         .options("Colour", CardColor.allNames, CardDraft.sample.color.rawValue),
         .number("Locations", 1, in: 0...Double(CardLocation.samples.count), step: 1),
+        .toggle("Notify on arrival", true),
+        .toggle("Arrival notifications on", true),
+        .toggle("Code already used", false),
         .toggle("Shows scanner", false),
         .toggle("Autofocus name", false),
         .toggle("Map opens at Westway", true)
@@ -157,7 +160,8 @@ private let cardEditStory = Story(
                 code: knobs.string("Code"),
                 barcodeType: .named(knobs.option("Type")),
                 color: .named(knobs.option("Colour")),
-                locations: Array(CardLocation.samples.prefix(knobs.integer("Locations")))
+                locations: Array(CardLocation.samples.prefix(knobs.integer("Locations"))),
+                notifiesOnArrival: knobs.bool("Notify on arrival")
             )
         },
         set: { (updated: CardDraft) in
@@ -166,6 +170,7 @@ private let cardEditStory = Story(
             knobs.select(updated.barcodeType.rawValue, for: "Type")
             knobs.select(updated.color.rawValue, for: "Colour")
             knobs.set(Double(updated.locations.count), for: "Locations")
+            knobs.set(updated.notifiesOnArrival, for: "Notify on arrival")
         }
     )
     return pushed {
@@ -173,6 +178,8 @@ private let cardEditStory = Story(
             draft: draft,
             autofocusesName: knobs.bool("Autofocus name"),
             mapCentre: knobs.bool("Map opens at Westway") ? CardLocation.sample.coordinate : nil,
+            takenCodes: knobs.bool("Code already used") ? [knobs.string("Code")] : [],
+            arrivalNotificationsEnabled: knobs.bool("Arrival notifications on"),
             showsScanner: knobs.bool("Shows scanner")
         ) {
             ScannerPlaceholderView()

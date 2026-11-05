@@ -1,3 +1,4 @@
+import SwiftData
 import SwiftUI
 
 public struct CardEditScreen: View {
@@ -5,6 +6,8 @@ public struct CardEditScreen: View {
     private let navigationManager: NavigationManager?
     private let onSave: ((CardItem) -> Void)?
     @Environment(LocationService.self) private var locationService
+    @Query private var cards: [CardItem]
+    @AppStorage(ArrivalNotifier.enabledKey) private var arrivalNotifications = true
 
     @State private var draft: CardDraft
     @State private var scannedCode: String?
@@ -26,7 +29,8 @@ public struct CardEditScreen: View {
                 code: cardItem.code,
                 barcodeType: cardItem.getBarcodeType(),
                 color: cardItem.getColor(),
-                locations: cardItem.locations
+                locations: cardItem.locations,
+                notifiesOnArrival: cardItem.notifiesOnArrival
             )
         )
     }
@@ -52,6 +56,8 @@ public struct CardEditScreen: View {
                 draft: $draft,
                 actions: actions,
                 mapCentre: locationService.current?.coordinate,
+                takenCodes: takenCodes,
+                arrivalNotificationsEnabled: arrivalNotifications,
                 scanner: {
                     ScannerOverlayView(scannedCode: $scannedCode, barcodeType: $scannedBarcodeType)
                 }
@@ -61,7 +67,9 @@ public struct CardEditScreen: View {
                 draft: $draft,
                 actions: actions,
                 autofocusesName: true,
-                mapCentre: locationService.current?.coordinate
+                mapCentre: locationService.current?.coordinate,
+                takenCodes: takenCodes,
+                arrivalNotificationsEnabled: arrivalNotifications
             )
         }
     }
@@ -74,12 +82,19 @@ public struct CardEditScreen: View {
         )
     }
 
+    /// Codes every other card uses. A new card is not in the store yet, so it is never among them.
+    private var takenCodes: Set<String> {
+        Set(cards.filter { $0 !== cardItem }.map(\.code))
+    }
+
     private func save() {
-        cardItem.name = draft.name
-        cardItem.code = draft.code
+        guard draft.canSave(takenCodes: takenCodes) else { return }
+        cardItem.name = draft.trimmedName
+        cardItem.code = draft.trimmedCode
         cardItem.type = draft.barcodeType.rawValue
         cardItem.color = draft.color.rawValue
         cardItem.locations = draft.locations
+        cardItem.notifiesOnArrival = draft.notifiesOnArrival
 
         if let onSave {
             onSave(cardItem)

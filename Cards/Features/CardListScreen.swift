@@ -30,7 +30,8 @@ public struct CardListScreen: View {
         .navigationDestination(for: NavigationRoute.self) { route in
             destinationView(for: route)
         }
-        .task(id: watchedArrivals) {
+        // Again when the cards change and as you move, so the nearest places are the ones watched.
+        .task(id: ArrivalWatch(cards: watchedArrivals, area: ArrivalNotifier.area(of: locationService.current))) {
             if arrivals.contains(where: { !$0.locations.isEmpty }) {
                 locationService.start()
             }
@@ -41,8 +42,9 @@ public struct CardListScreen: View {
         }
     }
 
-    /// The cards whose barcodes go on the Lock Screen on arrival: none when the
-    /// Settings switch is off, which also cancels any already scheduled.
+    /// The cards that remind you on arrival: none when the Settings switch is
+    /// off, which also cancels any already scheduled. Each card's own switch is
+    /// applied when the arrivals are planned.
     private var watchedArrivals: [ArrivalNotifier.Card] {
         arrivalNotifications ? arrivals : []
     }
@@ -53,7 +55,13 @@ public struct CardListScreen: View {
 
     private var arrivals: [ArrivalNotifier.Card] {
         cardItems.map {
-            ArrivalNotifier.Card(name: $0.name, code: $0.code, barcodeType: $0.getBarcodeType(), locations: $0.locations)
+            ArrivalNotifier.Card(
+                name: $0.name,
+                code: $0.code,
+                barcodeType: $0.getBarcodeType(),
+                locations: $0.locations,
+                notifies: $0.notifiesOnArrival
+            )
         }
     }
 
@@ -85,6 +93,8 @@ public struct CardListScreen: View {
                 ),
                 navigationManager: navigationManager,
                 onSave: { updatedCard in
+                    // New cards go at the end of the list.
+                    updatedCard.order = CardItem.nextOrder(after: cardItems)
                     modelContext.insert(updatedCard)
                     navigationManager.navigate(to: .card(updatedCard.code))
                 }
@@ -122,4 +132,11 @@ public struct CardListScreen: View {
             try? modelContext.save()
         }
     }
+}
+
+/// What the arrival schedule depends on, so it is planned again only when that changes.
+private struct ArrivalWatch: Hashable {
+    let cards: [ArrivalNotifier.Card]
+    // swiftlint:disable:next discouraged_optional_collection
+    let area: [Int]?
 }

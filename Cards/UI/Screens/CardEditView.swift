@@ -9,11 +9,17 @@ public struct CardEditView<Scanner: View>: View {
     private let autofocusesName: Bool
     /// Where the location picker opens: the user's last known location, if any.
     private let mapCentre: CLLocationCoordinate2D?
+    /// Codes other cards already use, which this card cannot take.
+    private let takenCodes: Set<String>
+    /// The Settings switch for every card's arrival notifications.
+    private let arrivalNotificationsEnabled: Bool
     private let showsScanner: Bool
     private let scanner: () -> Scanner
 
     @FocusState private var focusedField: Field?
     @State private var showsLocationPicker = false
+    /// The name takes focus once, not each time the form is seen again after switching tabs.
+    @State private var hasAutofocused = false
 
     private enum Field {
         case name, code
@@ -24,6 +30,8 @@ public struct CardEditView<Scanner: View>: View {
         actions: CardEditActions = CardEditActions(),
         autofocusesName: Bool = false,
         mapCentre: CLLocationCoordinate2D? = nil,
+        takenCodes: Set<String> = [],
+        arrivalNotificationsEnabled: Bool = true,
         showsScanner: Bool = true,
         @ViewBuilder scanner: @escaping () -> Scanner
     ) {
@@ -31,6 +39,8 @@ public struct CardEditView<Scanner: View>: View {
         self.actions = actions
         self.autofocusesName = autofocusesName
         self.mapCentre = mapCentre
+        self.takenCodes = takenCodes
+        self.arrivalNotificationsEnabled = arrivalNotificationsEnabled
         self.showsScanner = showsScanner
         self.scanner = scanner
     }
@@ -43,7 +53,6 @@ public struct CardEditView<Scanner: View>: View {
                         .frame(height: 250)
                         .listRowInsets(EdgeInsets())
                 }
-                .accessibilityIdentifier("scannerSection")
             }
 
             Section {
@@ -73,8 +82,13 @@ public struct CardEditView<Scanner: View>: View {
                         .accessibilityLabel("Card code")
                         .accessibilityHint("Enter the barcode number for this card")
                 }
+            } footer: {
+                if draft.codeIsTaken(by: takenCodes) {
+                    Label("Another card already uses this code.", systemImage: "exclamationmark.circle")
+                        .foregroundStyle(Color.secondaryText)
+                        .accessibilityIdentifier("codeTakenMessage")
+                }
             }
-            .accessibilityIdentifier("cardDetailsSection")
 
             Section {
                 Picker("Barcode Type", selection: $draft.barcodeType) {
@@ -88,18 +102,23 @@ public struct CardEditView<Scanner: View>: View {
                 .accessibilityLabel("Barcode type")
                 .accessibilityHint("Select the type of barcode for this card")
             }
-            .accessibilityIdentifier("barcodeTypeSection")
 
             Section("Colour") {
                 CardColorPicker(selection: $draft.color)
             }
-            .accessibilityIdentifier("cardColorSection")
 
             Section {
                 ForEach(draft.locations) { location in
                     CardLocationRow(location)
                 }
                 .onDelete { draft.locations.remove(atOffsets: $0) }
+
+                // Only a card with somewhere to arrive can notify you.
+                if !draft.locations.isEmpty {
+                    Toggle("Notify When I Arrive", isOn: $draft.notifiesOnArrival)
+                        .tint(.accent)
+                        .disabled(!arrivalNotificationsEnabled)
+                }
 
                 Button {
                     showsLocationPicker = true
@@ -110,9 +129,8 @@ public struct CardEditView<Scanner: View>: View {
             } header: {
                 Text("Locations")
             } footer: {
-                Text("When you arrive at one of these places, the barcode appears on your Lock Screen.")
+                Text(locationsFooter)
             }
-            .accessibilityIdentifier("cardLocationsSection")
         }
         .sheet(isPresented: $showsLocationPicker) {
             LocationPickerView(
@@ -126,17 +144,35 @@ public struct CardEditView<Scanner: View>: View {
         .navigationBarTitleDisplayMode(.inline)
         .accessibilityIdentifier("editCardForm")
         .task {
-            guard autofocusesName else { return }
+            guard autofocusesName, !hasAutofocused else { return }
+            hasAutofocused = true
             try? await Task.sleep(for: .seconds(0.6))
             focusedField = .name
         }
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button("Save", action: actions.save)
+                    .disabled(!draft.canSave(takenCodes: takenCodes))
                     .accessibilityIdentifier("saveCardButton")
                     .accessibilityLabel("Save card")
-                    .accessibilityHint("Save changes to this card")
+                    .accessibilityHint(
+                        draft.canSave(takenCodes: takenCodes) ? "Save changes to this card" : "Needs a name and a code no other card uses"
+                    )
             }
+        }
+    }
+}
+
+extension CardEditView {
+    private var locationsFooter: String {
+        if draft.locations.isEmpty {
+            "Add a place to be reminded when you arrive there."
+        } else if !arrivalNotificationsEnabled {
+            "Arrival notifications are off for every card in Settings."
+        } else if draft.notifiesOnArrival {
+            "When you arrive at one of these places, a notification reminds you. Tap it to open the card."
+        } else {
+            "This card won't remind you when you arrive."
         }
     }
 }
@@ -147,13 +183,17 @@ public extension CardEditView where Scanner == EmptyView {
         draft: Binding<CardDraft>,
         actions: CardEditActions = CardEditActions(),
         autofocusesName: Bool = false,
-        mapCentre: CLLocationCoordinate2D? = nil
+        mapCentre: CLLocationCoordinate2D? = nil,
+        takenCodes: Set<String> = [],
+        arrivalNotificationsEnabled: Bool = true
     ) {
         self.init(
             draft: draft,
             actions: actions,
             autofocusesName: autofocusesName,
             mapCentre: mapCentre,
+            takenCodes: takenCodes,
+            arrivalNotificationsEnabled: arrivalNotificationsEnabled,
             showsScanner: false,
             scanner: { EmptyView() }
         )

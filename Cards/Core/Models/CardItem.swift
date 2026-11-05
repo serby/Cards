@@ -11,6 +11,9 @@ public final class CardItem: Identifiable {
     public var color: String = CardColor.standard.rawValue
     /// Where the card is used. Optional: most cards have none.
     public var locations: [CardLocation] = []
+    /// Whether arriving at one of `locations` sends a reminder. Settings can turn
+    /// them off for every card at once.
+    public var notifiesOnArrival: Bool = true
 
     public init(
         timestamp: Date = Date(),
@@ -19,7 +22,8 @@ public final class CardItem: Identifiable {
         barcodeType: BarcodeType? = nil,
         order: Int? = nil,
         color: CardColor = .standard,
-        locations: [CardLocation] = []
+        locations: [CardLocation] = [],
+        notifiesOnArrival: Bool = true
     ) {
         self.timestamp = timestamp
         self.code = code
@@ -28,6 +32,7 @@ public final class CardItem: Identifiable {
         self.order = order ?? 0
         self.color = color.rawValue
         self.locations = locations
+        self.notifiesOnArrival = notifiesOnArrival
     }
 
     public func getBarcodeType() -> BarcodeType {
@@ -54,15 +59,18 @@ public extension WidgetCard {
 }
 
 public struct CardItemDTO: Codable {
-    public let timestamp: Date
+    /// Every field but the name and code is optional, so older exports and
+    /// hand-written files still import.
+    public let timestamp: Date?
     public let code: String
     public let name: String
-    public let order: Int
-    public let type: String
-    /// Optional so exports made before these fields existed still import.
+    public let order: Int?
+    public let type: String?
     public let color: String?
     // swiftlint:disable:next discouraged_optional_collection
     public let locations: [CardLocation]?  // nil in exports made before locations existed
+    // swiftlint:disable:next discouraged_optional_boolean
+    public let notifiesOnArrival: Bool?  // nil in exports made before the per-card setting
 
     public init(from card: CardItem) {
         timestamp = card.timestamp
@@ -72,17 +80,19 @@ public struct CardItemDTO: Codable {
         type = card.type
         color = card.color
         locations = card.locations
+        notifiesOnArrival = card.notifiesOnArrival
     }
 
     public func toCardItem() -> CardItem {
         CardItem(
-            timestamp: timestamp,
+            timestamp: timestamp ?? Date(),
             code: code,
             name: name,
-            barcodeType: BarcodeType(rawValue: type),
+            barcodeType: type.flatMap(BarcodeType.init(rawValue:)),
             order: order,
             color: CardColor.stored(color),
-            locations: locations ?? []
+            locations: locations ?? [],
+            notifiesOnArrival: notifiesOnArrival ?? true
         )
     }
 }

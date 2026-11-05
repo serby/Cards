@@ -4,7 +4,7 @@ import UIKit
 
 public struct SettingsScreen: View {
     @Environment(\.modelContext) private var modelContext
-    @Query private var cards: [CardItem]
+    @Query(sort: \CardItem.order) private var cards: [CardItem]
     @AppStorage("brightnessBoost") private var brightnessBoost = true
     @AppStorage(ArrivalNotifier.enabledKey) private var arrivalNotifications = true
     @Environment(\.scenePhase) private var scenePhase
@@ -76,12 +76,10 @@ public struct SettingsScreen: View {
             return
         }
 
-        for dto in dtos {
-            modelContext.insert(dto.toCardItem())
-        }
-
+        let result = CardImport.cards(from: dtos, existing: cards)
+        result.added.forEach(modelContext.insert)
         try? modelContext.save()
-        message = "Successfully imported \(dtos.count) cards"
+        message = CardImport.summary(result)
     }
 
     private func deleteAllCards() {

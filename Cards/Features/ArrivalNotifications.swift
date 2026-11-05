@@ -1,10 +1,10 @@
 import CoreLocation
 import UserNotifications
 
-/// Puts a card's barcode on the Lock Screen when you arrive at one of its
-/// locations. Each location becomes a location-triggered local notification
-/// carrying the barcode image, so iOS watches the places itself: no background
-/// location, no server, and nothing running while the app is closed.
+/// Reminds you of a card when you arrive at one of its locations. Each location
+/// becomes a location-triggered local notification, so iOS watches the places
+/// itself: no background location, no server, and nothing running while the app
+/// is closed. Tapping the notification opens the card.
 @MainActor
 public enum ArrivalNotifier {
     /// What a card needs to be watched for. Hashable so callers can tell when
@@ -14,17 +14,20 @@ public enum ArrivalNotifier {
         public let code: String
         public let barcodeType: BarcodeType
         public let locations: [CardLocation]
+        /// The card's own switch; a card that is off is never watched.
+        public let notifies: Bool
 
-        public init(name: String, code: String, barcodeType: BarcodeType, locations: [CardLocation]) {
+        public init(name: String, code: String, barcodeType: BarcodeType, locations: [CardLocation], notifies: Bool = true) {
             self.name = name
             self.code = code
             self.barcodeType = barcodeType
             self.locations = locations
+            self.notifies = notifies
         }
     }
 
     /// One place to watch, and the card to show there.
-    struct Arrival: Equatable {
+    struct Arrival: Hashable {
         let card: Card
         let location: CardLocation
     }
@@ -39,18 +42,20 @@ public enum ArrivalNotifier {
 
     // What was last scheduled; nil until the first run of this launch.
     // swiftlint:disable:next discouraged_optional_collection
-    private static var scheduled: [Card]?
+    private static var scheduled: Set<Arrival>?
 
     /// Replaces every scheduled arrival with one per location of `cards`. Asks for
     /// notification permission the first time a card has a location.
+    /// Called again as you move, so with more than `regionLimit` places the nearest
+    /// are watched; it does nothing unless the set of places to watch has changed.
     public static func reschedule(_ cards: [Card], near location: CLLocation?) async {
-        guard cards != scheduled else { return }
-        scheduled = cards
+        let arrivals = plan(cards, near: location)
+        guard Set(arrivals) != scheduled else { return }
+        scheduled = Set(arrivals)
 
         let center = UNUserNotificationCenter.current()
         center.removeAllPendingNotificationRequests()
 
-        let arrivals = plan(cards, near: location)
         guard !arrivals.isEmpty,
               (try? await center.requestAuthorization(options: [.alert, .sound])) == true else {
             return
@@ -66,10 +71,19 @@ public enum ArrivalNotifier {
         await UNUserNotificationCenter.current().notificationSettings().authorizationStatus == .denied
     }
 
+    /// A cell of roughly a kilometre round `location`. The list screen plans the
+    /// arrivals again when it changes, which is often enough for the nearest
+    /// places to stay the ones watched.
+    public static func area(of location: CLLocation?) -> [Int]? { // swiftlint:disable:this discouraged_optional_collection
+        location.map { location in
+            [Int((location.coordinate.latitude * 100).rounded()), Int((location.coordinate.longitude * 100).rounded())]
+        }
+    }
+
     /// The places to watch, nearest first when `location` is known, capped at
     /// the region limit.
     static func plan(_ cards: [Card], near location: CLLocation?) -> [Arrival] {
-        let arrivals = cards.flatMap { card in
+        let arrivals = cards.filter(\.notifies).flatMap { card in
             card.locations.map { Arrival(card: card, location: $0) }
         }
         guard let location else { return Array(arrivals.prefix(regionLimit)) }
@@ -87,6 +101,7 @@ public enum ArrivalNotifier {
         content.threadIdentifier = arrival.card.code
         content.userInfo = [codeKey: arrival.card.code]
         content.relevanceScore = 1
+        content.sound = .default
         if let attachment = barcodeAttachment(for: arrival.card) {
             content.attachments = [attachment]
         }

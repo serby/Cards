@@ -37,7 +37,7 @@ final class CardsScreenshotTests: XCTestCase {
         let suffix = isPad ? "_iPad" : ProcessInfo.processInfo.environment["SCREENSHOT_SUFFIX"] ?? ""
 
         XCTAssertTrue(app.buttons["addCardButton"].waitForExistence(timeout: 5))
-        // Cards with locations ask for notifications, for the Lock Screen arrivals.
+        // Cards with locations ask for notifications, for the arrival reminders.
         let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
         let permission = springboard.alerts.firstMatch
         if permission.waitForExistence(timeout: 5) {
