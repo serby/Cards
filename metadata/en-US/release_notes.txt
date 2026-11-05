@@ -7,5 +7,5 @@ Turn arrival notifications on or off in Settings.
 Pinch to zoom when scanning a barcode.
 Cards show their full color in the list, with names you can read on any color.
 Card screens have a new design, with the name and number on white panels.
-A new app icon that suppo
+A new app icon shows a barcode card behind a QR code card.
 VoiceOver spells out a card's number, and buttons in light mode use a deeper pink that is easier to read.

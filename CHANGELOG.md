@@ -18,7 +18,7 @@ Every version of Card Barcodes and what it changed, newest first. This file is g
 
 - Cards show their full colour in the list, with names you can read on any colour.
 - Card screens have a new design, with the name and number on white panels.
-- A new app icon that suppo
+- A new app icon shows a barcode card behind a QR code card.
 - VoiceOver spells out a card's number, and buttons in light mode use a deeper pink that is easier to read.
 
 ## 1.1 (20 June 2026)
