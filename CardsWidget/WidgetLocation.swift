@@ -4,7 +4,7 @@ import CoreLocation
 /// one, and otherwise waits a few seconds for a new one before giving up.
 @MainActor
 enum WidgetLocation {
-    static let maximumAge: TimeInterval = 5 * 60
+    static let maximumAge: TimeInterval = 2 * 60
     static let timeout: Duration = .seconds(10)
 
     static func current() async -> CLLocation? {

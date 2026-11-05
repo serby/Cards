@@ -10,7 +10,7 @@ As a card holder, I want my Home Screen to show the card for where I am, so that
 - By default it shows the card whose nearest place is closest to you, measured to the edge of each place's circle (PLACE-6), with its distance and place name.
 - When no card has a place, or the widget has no location, it shows the card at the top of the list (CARD-7).
 - It only asks for a location when some card has a place, and only when iOS lets the widget use location (`isAuthorizedForWidgetUpdates`). iOS describes it as "Your location lets the widget show the card for the place you are at."
-- It uses a fix up to 5 minutes old when there is one. Otherwise it waits up to 10 seconds for a new one, and then uses the last fix the device has, however old.
+- It uses a fix up to 2 minutes old when there is one (1.3). Otherwise it waits up to 10 seconds for a new one, and then uses the last fix the device has, however old.
 - The preview in the widget gallery shows your cards without asking for a location.
 
 **Since:** 1.3
