@@ -95,8 +95,9 @@ final class CardsScreenshotTests: XCTestCase {
     private func waitForKeyboardToGo(_ app: XCUIApplication, timeout: TimeInterval) -> Bool {
         let deadline = Date.now.addingTimeInterval(timeout)
         repeat {
-            let keyboard = app.keyboards.firstMatch
-            if !keyboard.exists || keyboard.frame.minY >= app.frame.maxY {
+            // One snapshot, so the keyboard cannot go between checking it and reading its frame.
+            guard let keyboard = try? app.keyboards.firstMatch.snapshot() else { return true }
+            if keyboard.frame.minY >= app.frame.maxY {
                 return true
             }
             Thread.sleep(forTimeInterval: 0.2)
