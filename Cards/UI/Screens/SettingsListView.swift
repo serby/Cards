@@ -29,31 +29,9 @@ public struct SettingsListView: View {
 
     public var body: some View {
         List {
-            Section {
-                if let version = state.appVersion, let build = state.appBuild {
-                    HStack {
-                        Text("Version")
-                            .foregroundColor(.primaryText)
-                        Spacer()
-                        Text("\(version) (\(build))")
-                            .foregroundColor(.secondaryText)
-                    }
-                }
 
-                if let url = state.authorURL {
-                    Link(destination: url) {
-                        HStack {
-                            Text("Created by \(state.authorName)")
-                                .foregroundColor(.primaryText)
-                            Spacer()
-                            Image(systemName: "arrow.up.forward.square")
-                                .foregroundColor(.accent)
-                                .accessibilityLabel("External link")
-                        }
-                    }
-                }
-
-                if !state.changelog.isEmpty {
+            if !state.changelog.isEmpty {
+                Section {
                     NavigationLink {
                         ChangelogView(versions: state.changelog)
                     } label: {
@@ -111,6 +89,31 @@ public struct SettingsListView: View {
                     showDeleteConfirmation = true
                 }
                 .disabled(state.cardCount == 0)
+            }
+
+            Section {
+                if let version = state.appVersion, let build = state.appBuild {
+                    HStack {
+                        Text("Version")
+                            .foregroundColor(.primaryText)
+                        Spacer()
+                        Text("\(version) (\(build))")
+                            .foregroundColor(.secondaryText)
+                    }
+                }
+
+                if let url = state.authorURL {
+                    Link(destination: url) {
+                        HStack {
+                            Text("Created by \(state.authorName)")
+                                .foregroundColor(.primaryText)
+                            Spacer()
+                            Image(systemName: "arrow.up.forward.square")
+                                .foregroundColor(.accent)
+                                .accessibilityLabel("External link")
+                        }
+                    }
+                }
             }
         }
         .listStyle(.insetGrouped)
