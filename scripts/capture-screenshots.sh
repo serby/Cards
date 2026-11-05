@@ -1,8 +1,8 @@
 #!/bin/bash
 # Capture the App Store screenshots of the app by running the screenshot UI
 # tests on a target simulator, then extracting the attachments into
-# screenshots/<locale>/. These are the raw captures CI compares against; the
-# images uploaded to the App Store are composed from them (make store-screenshots).
+# screenshots/<locale>/. The images uploaded to the App Store are composed from
+# them (make store-screenshots). This runs locally only; CI captures nothing.
 #
 # The app is uninstalled first, so the widget test adds the only widget to a
 # clean Home Screen, and the status bar shows 9:41 with full signal and battery.

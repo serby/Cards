@@ -6,7 +6,7 @@ Cards ships with GitHub Actions driving plain `xcodebuild` and the scripts in `s
 
 | Workflow | Runs on | What it does |
 |----------|---------|--------------|
-| `ci.yml` (CI) | Every push to `main` and every pull request, on `xcode-27` | The build, the metadata and changelog checks, the release check, the tests, and checks on the checked-in and freshly captured screenshots. It does not run SwiftLint, so lint locally |
+| `ci.yml` (CI) | Every push to `main` and every pull request, on `xcode-27` | Three jobs in parallel: the build and the unit tests; the release check; and, on Linux, the check that every App Store image is present plus the metadata and changelog checks. It captures no screenshots and runs no UI tests or SwiftLint: those run locally before a commit. A newer push cancels an older run, and pushes that only change docs, the spec or the website skip CI |
 | `release.yml` (Release to App Store) | `v*` tags, on `xcode-27` | Stamps a build number, archives and signs (`scripts/build-ipa.sh`), uploads (`scripts/deploy-appstore.sh`), then attaches the build to the version, sets What's New from the tag message and submits for review (`scripts/asc-submit.sh`) |
 | `app-store-listing.yml` (App Store listing) | By hand | Gives the editable version its number with **prepare version**, then uploads the text in `metadata/` and the images in `screenshots/store/`. It does not upload or attach builds |
 | `website.yml` (Deploy Website) | Pushes to `main` that change `Website/src/`, or by hand | Deploys the website to Cloudflare |

@@ -95,6 +95,7 @@ store-screenshots:
 	TEST_RUNNER_CARDS_STORE_SCREENSHOTS=1 $(XCODEBUILD) test -destination '$(DESTINATION)' \
 		-only-testing:CardsTests/StoreScreenshotTests
 	python3 scripts/validate-screenshots.py
+	node scripts/check-store-images.ts
 
 validate-screenshots:
 	python3 scripts/validate-screenshots.py
