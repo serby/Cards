@@ -1,15 +1,15 @@
 # Arrival notifications
 
-When you arrive at one of a card's places, its barcode appears on your Lock Screen. Each place is a location-triggered local notification that iOS watches itself: there is no background location, no server, and nothing runs while the app is closed.
+When you arrive at one of a card's places, a notification reminds you, and tapping it opens the card. Each place is a location-triggered local notification that iOS watches itself: there is no background location, no server, and nothing runs while the app is closed.
 
-### ARR-1: See the barcode on my Lock Screen when I arrive
+### ARR-1: Get a reminder when I arrive
 
-As a card holder, I want the right card's barcode to appear when I reach the shop, so that it is ready before I get to the till.
+As a card holder, I want a reminder when I reach the shop, so that I open the right card before I get to the till.
 
 - Each place of each card (PLACE-1) is scheduled as a notification that fires when you enter its circle. Leaving the circle does nothing.
 - It fires every time you enter, without needing to be scheduled again.
 - The notification's title is the card's name and its text is "You're at <place>. Your barcode is ready."
-- It carries the barcode as an image on white with a quiet zone, ready to scan (BAR-2). A code that can't be drawn sends the notification without the image (BAR-3).
+- The app attaches the barcode to the notification as an image on white (BAR-2), but the barcode does not show on the Lock Screen: the notification appears as its title and text. A code that can't be drawn sends the notification without the attachment (BAR-3).
 - Notifications for the same card are grouped together.
 - While the app is open, an arrival still shows as a banner and in Notification Centre.
 - The app schedules from the Cards list: the first time the list appears after launch, and whenever a card's name, code, barcode type or places change, it removes every scheduled arrival and schedules the current ones (ARR-3).

@@ -9,8 +9,8 @@ Open a card and the screen brightens, so the scanner reads it first time. The nu
 YOUR NEAREST CARD ON THE HOME SCREEN
 Add the widget and it shows the barcode of the card for where you are, or a card you choose. Tap it to open the card.
 
-ON YOUR LOCK SCREEN WHEN YOU ARRIVE
-Add the places you use a card, from the map or by ZIP code. When you get there, a notification with its barcode appears on your Lock Screen. The list shows how far away each card's places are, and you can add where you are straight from a card.
+A REMINDER WHEN YOU ARRIVE
+Add the places you use a card, from the map or by ZIP code. When you get there, a notification reminds you, and tapping it opens the card. The list shows how far away each card's places are, and you can add where you are straight from a card.
 
 EVERY CARD IN ITS OWN COLOR
 Choose from 23 colors or pick any color you like. Text stays readable on all of them.

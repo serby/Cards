@@ -48,7 +48,7 @@ Only write what the code does. If a criterion is wrong, fix the criterion or the
 | [barcodes.md](barcodes.md) | BAR | Supported barcode types, how codes are drawn, codes that can't be drawn, and the brightness boost |
 | [colours-and-design.md](colours-and-design.md) | COL | The palette, custom colours, the card face, full-colour list rows, gradients, readable text, appearance and the app icon |
 | [places.md](places.md) | PLACE | Adding places on the map or by postcode, the radius, Add current location, removing places, distances and location permission |
-| [arrival-notifications.md](arrival-notifications.md) | ARR | The barcode on the Lock Screen on arrival, opening the card from it, the 20-region limit, permission and the Settings switch |
+| [arrival-notifications.md](arrival-notifications.md) | ARR | A reminder on arrival, opening the card from it, the 20-region limit, permission and the Settings switch |
 | [widget.md](widget.md) | WID | The Home Screen widget: nearest or chosen card, refresh, opening the card, layouts, tinted Home Screens and the snapshot |
 | [sync-and-data.md](sync-and-data.md) | DATA | iCloud sync, export and import as JSON, old exports, deleting every card, and where the store lives |
 | [settings.md](settings.md) | SET | The Settings screen and What's New |

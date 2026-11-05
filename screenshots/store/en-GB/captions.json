@@ -28,7 +28,7 @@
     "screen": "04_LocationPicker",
     "color": "red",
     "layout": "screen",
-    "title": "On your Lock Screen when you arrive",
+    "title": "A reminder when you arrive",
     "subtitle": "Add the places you use each card"
   },
   {

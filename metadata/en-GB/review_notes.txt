@@ -4,6 +4,6 @@ To add a card by scanning, open https://cards.serby.net/demo.html on another scr
 
 To see a card's places and distances, open a card, tap Edit, then Add Location, and add a place on the map or by postcode or ZIP code. Allow location access when asked. The list then shows how far away the card's places are.
 
-Arrival notifications: with notifications allowed, iOS shows a notification with the card's barcode when you arrive at one of its places. They can be turned off in Settings > Arrival Notifications.
+Arrival notifications: with notifications allowed, iOS shows a notification when you arrive at one of its places, and tapping it opens the card. They can be turned off in Settings > Arrival Notifications.
 
 Widget: on the Home Screen, long-press, tap Edit > Add Widget, and choose Card Barcodes. It shows the card nearest to you, or one chosen by long-pressing the widget and tapping Edit Widget.
