@@ -10,7 +10,8 @@ Read [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) before changing anything. Its nu
 6. **Models stay CloudKit- and export-compatible:** defaults on every property, optional DTO fields, legacy-import tests.
 7. **Swift 6, no warnings, clean lint.**
 8. **Accessibility is part of done.**
-9. **Test logic, persistence and promises;** refresh screenshot references when the screens they show change.
+9. **Test logic, persistence and promises;** refresh the screenshots, raw and store, when a change to the screens they show is agreed to ship.
 10. **One concern per commit, straight on `main`:** no branches or pull requests (one contributor). Conventional prefix, body says why. A push to `main` runs CI and then uploads to TestFlight, so run the validation loop first.
+11. **Shape features in the simulator before they ship.** Build, test and run anything Paul needs to see in the simulator, and show him screenshots. Commit, but push only once he agrees it ships as a new version, with the screenshots refreshed in the same push. Fixes, tooling and docs that change nothing on screen can be pushed when the loop passes.
 
 Validation loop after every change: `swiftlint lint`, `make build`, `make test`, plus `make check-release` when touching `Cards/Development` or the hooks.

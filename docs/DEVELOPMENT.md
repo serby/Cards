@@ -32,13 +32,26 @@ The deployment target is iOS 18.0. The app is built with the iOS 27 SDK, so anyt
 
 ## 2. The everyday loop
 
+### Shape features in the simulator before they ship
+
+Anything Paul needs to see and shape, such as a new screen, a new flow or a change to how something looks, is reviewed in the simulator before it goes anywhere:
+
+1. Build it, run the loop below, and run it in the simulator (`make sim`; launch with `-uiTesting -screenshotSeed` for the seeded cards and a fixed location).
+2. Show it: say what changed and share simulator screenshots of each affected screen, in light and dark mode where it matters.
+3. Iterate on the feedback. Commit as you go, but do not push: a push to `main` uploads a TestFlight build, and it is not ready for testers until Paul says so.
+4. Once Paul agrees it ships as a new version of the app, refresh the screenshots (`make capture-screenshots`, then `make store-screenshots`), commit them, run the loop again and push. Update the App Store listing when that version is being prepared for release ([Update the App Store listing](#update-the-app-store-listing)).
+
+Fixes, tooling and documentation that change nothing on screen do not need this and can be pushed when the loop passes.
+
+### The loop
+
 Run these in order after every change, and fix what fails before moving on:
 
 1. `swiftlint lint`
 2. `make build`
 3. `make test`, or `make test-unit` while iterating on logic
 4. `make check-release` whenever you add or move code in `Cards/Development`, touch `Cards/App/DevelopmentHooks.swift`, or add a preview
-5. `make capture-screenshots` whenever the list, the Add Card form or Settings change, then look at every changed PNG before committing it
+5. `make capture-screenshots` and `make store-screenshots` when a change to what the screenshots show is agreed to ship (above), then look at every changed PNG before committing it
 
 | Command | What it does |
 |---------|-------------|
@@ -51,7 +64,8 @@ Run these in order after every change, and fix what fails before moving on:
 | `make check-release` | Build Release and fail if any development code reached it ([rule 1](#rule-1-development-code-never-ships)) |
 | `make sim` | Build, boot the simulator, install and launch |
 | `make device` | Build and install on a connected iPhone |
-| `make capture-screenshots` | Refresh the en-US and en-GB iPhone and iPad App Store screenshots |
+| `make capture-screenshots` | Capture the raw screenshots on iPhone, iPad and iPhone Duo in en-US and en-GB |
+| `make store-screenshots` | Compose the App Store images from the raw screenshots and their captions |
 | `make validate-screenshots` | Check the committed screenshot set |
 | `make deploy-testflight`, `make deploy-appstore` | Archive, export and upload |
 
@@ -185,17 +199,22 @@ The target builds in Swift 6 language mode with strict concurrency, `SWIFT_TREAT
 - Unit tests use Swift Testing (`@Test`, parameterised with `arguments:`); UI and screenshot tests use XCTest.
 - Test pure logic directly (distances, the arrival plan, palette contrast) and persistence through a real in-memory container.
 - UI tests launch with `-uiTesting` for an in-memory store and the shipping UI; the screenshot test adds `-screenshotSeed`.
-- A UI change that shows up in the App Store screenshots must come with refreshed references, or CI fails.
+- A UI change that shows up in the App Store screenshots must be pushed with refreshed references, or CI fails. Refresh them when the change is agreed to ship, not while it is still being shaped ([section 2](#shape-features-in-the-simulator-before-they-ship)).
 
 ### Rule 10: Commits tell a story, straight on `main`
 
-- **Work on `main`.** Cards has one contributor, so there are no feature branches and no pull requests: commit to `main` and push. Pushing is the release step, because a push to `main` runs CI and, when CI passes, `deploy.yml` uploads a TestFlight build. Push when the change is ready for testers, and run the loop in section 2 first so CI is a formality.
+- **Work on `main`.** Cards has one contributor, so there are no feature branches and no pull requests: commit to `main` and push. Pushing is the release step, because a push to `main` runs CI and, when CI passes, `deploy.yml` uploads a TestFlight build. Push when the change is ready for testers, and run the loop in section 2 first so CI is a formality. A feature Paul needs to see is ready only once he has agreed it ships ([section 2](#shape-features-in-the-simulator-before-they-ship)).
 - **Build numbers are automatic.** The deploy job passes a build number from the time on the runner to `scripts/build-ipa.sh` as `BUILD_NUMBER`, which sets `CURRENT_PROJECT_VERSION` for the app and widget together, and commits nothing back, so `main` never moves under you.
 - One concern per commit, with a conventional prefix: `feat`, `fix`, `refactor`, `style`, `test`, `build`, `ci`, `docs`, `chore`.
 - The subject says what changed; the body says why, and anything a reviewer could trip over.
 - Each commit builds. Run the loop in section 2 before committing.
 - Someone else may be editing the tree: read `git status` and `git diff` before staging, and stage by hunk when a file mixes your change with theirs.
 - Write British English in prose, comments and UI copy ("colour"), and Swift's spelling in identifiers (`color`).
+
+
+### Rule 11: Features are agreed in the simulator before they ship
+
+A change Paul needs to see is built, tested and run in the simulator, and shown to him with screenshots, before it is pushed. It is pushed, with its screenshots refreshed in the same push, only once he agrees it ships as a new version of the app. Fixes, tooling and documentation that change nothing on screen are exempt. The steps are in [section 2](#shape-features-in-the-simulator-before-they-ship).
 
 ## 5. Recipes
 
