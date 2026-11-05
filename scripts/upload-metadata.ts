@@ -15,8 +15,9 @@
 // Usage: node scripts/upload-metadata.ts [--version 1.3] [--dry-run]
 // --version picks the editable version by its number (default: the only one).
 // --dry-run shows each change, current against new, and writes nothing.
-// Needs ASC_KEY_ID, ASC_ISSUER_ID and ASC_KEY_CONTENT (see scripts/asc.ts). In
-// CI, run the "App Store listing" workflow, which has them.
+// Needs ASC_KEY_ID, ASC_ISSUER_ID and ASC_KEY_CONTENT (see
+// scripts/lib/app-store-connect.ts). In CI, run the "App Store listing"
+// workflow, which has them.
 
 import { parseArgs } from "node:util";
 import {
@@ -29,7 +30,7 @@ import {
     type AppStoreVersionAttributes,
     type Resource,
     editableAppInfoStates,
-} from "./asc.ts";
+} from "./lib/app-store-connect.ts";
 import { checkMetadata, hasErrors, printReport, reviewNotesLocale, type Field, type LocaleMetadata } from "./check-metadata.ts";
 
 const bundleId = process.env.BUNDLE_ID ?? "net.serby.Cards";
@@ -147,12 +148,12 @@ async function chooseVersion(asc: AppStoreConnect, appId: string, versionString:
     if (versionString) {
         const match = versions.find((version) => version.attributes.versionString === versionString);
         if (!match) {
-            throw new Error(`No editable App Store version ${versionString} (editable: ${listed}). Prepare it with: node scripts/asc-version.ts --version ${versionString}`);
+            throw new Error(`No editable App Store version ${versionString} (editable: ${listed}). Prepare it with: node scripts/prepare-app-store-version.ts --version ${versionString}`);
         }
         return match;
     }
     const [only, ...others] = versions;
-    if (!only) throw new Error("No editable App Store version. Create one with: node scripts/asc-version.ts --version <number>");
+    if (!only) throw new Error("No editable App Store version. Create one with: node scripts/prepare-app-store-version.ts --version <number>");
     if (others.length > 0) throw new Error(`Several editable App Store versions (${listed}); pick one with --version`);
     return only;
 }

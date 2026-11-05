@@ -2,7 +2,7 @@ import UIKit
 import XCTest
 
 /// Captures App Store screenshots. Run via:
-///   scripts/capture-screenshots.sh
+///   node scripts/capture-screenshots.ts
 ///
 /// Each call to `attach` produces an XCTAttachment in the xcresult bundle with
 /// `.keepAlways` lifetime so the capture script can extract it post-test. The

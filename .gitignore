@@ -51,7 +51,6 @@ Cards.mobileprovision
 build/
 
 # Coverage
-.coverage-stash/
 coverage-html/
 
 # Kiro task notes (local only)

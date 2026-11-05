@@ -114,5 +114,5 @@ As a card holder, I want the app's icon to fit my Home Screen style, so that it 
 - It has light, dark and tinted versions, which iOS picks to match the Home Screen.
 
 **Since:** 1.0
-**Where:** `Cards/Assets.xcassets/AppIcon.appiconset`, `DesignAssets/Icon.svg`, `scripts/generate-app-icons.sh`
+**Where:** `Cards/Assets.xcassets/AppIcon.appiconset`, `DesignAssets/Icon.svg`, `scripts/generate-app-icons.ts`
 **Notes:** 1.0 and 1.1 had a pink viewfinder icon, with dark and tinted versions since 1.0.

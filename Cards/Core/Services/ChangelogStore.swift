@@ -1,7 +1,8 @@
 import Foundation
 
-/// Reads changelog.json, the file scripts/changelog.ts generates CHANGELOG.md and
-/// the App Store's What's New from, which the app bundles so Settings can show it.
+/// Reads changelog.json, the file scripts/generate-changelog.ts generates
+/// CHANGELOG.md and the App Store's What's New from, which the app bundles so
+/// Settings can show it.
 public enum ChangelogStore {
     /// The bundled changelog, newest version first, in the English the user reads:
     /// American where an entry has an "en-US" text and the region is the US.

@@ -15,5 +15,6 @@ Read [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) before changing anything. Its nu
 11. **Shape features in the simulator before they ship.** Build, test and run anything Paul needs to see in the simulator, and show him screenshots. Commit, but push only once he agrees it ships as a new version, with the screenshots refreshed in the same push. Fixes, tooling and docs that change nothing on screen can be pushed when the loop passes.
 12. **Mark changes with the release skill, [.claude/skills/release/SKILL.md](.claude/skills/release/SKILL.md).** `changelog.json` records every change people notice and generates `CHANGELOG.md`, the App Store's What's New and Settings > What's New. The same skill releases a version.
 13. **Keep [spec/](spec/README.md) current.** It describes the whole app as user stories. A change that adds or alters behaviour updates the matching stories in the same commit.
+14. **Scripts are TypeScript, named for what they do.** All code is Swift or TypeScript: no Python, shell or JavaScript scripts. Run scripts with `node scripts/<verb>-<thing>.ts`; shared code lives in `scripts/lib/`; Xcode tools go through `scripts/lib/xcode.ts`; unused scripts are deleted.
 
 Validation loop after every change: `swiftlint lint`, `make build`, `make test`, plus `make check-release` when touching `Cards/Development` or the hooks.

@@ -20,10 +20,9 @@ If something here turns out to be wrong, fix the guide in the same change.
 
 | Tool | Why | Notes |
 |------|-----|-------|
-| Xcode 27.1 | Builds, tests, simulators | The version is pinned in `.xcode-version`, and local builds and CI must use it. The Makefile and `scripts/xcode-env.sh` use `XCODE_APP` if set, else `/Applications/Xcode<version>.app` (or `Xcode_<version>.app`, as on GitHub's runners), and stop with an error if that Xcode is missing or is another version. CI runs on GitHub's `xcode-27` image. To move to a new Xcode, change `.xcode-version`, and the `runs-on` image in `ci.yml` and `release.yml` if the major version changes, in one commit |
+| Xcode 27.1 | Builds, tests, simulators | The version is pinned in `.xcode-version`, and local builds and CI must use it. `scripts/lib/xcode.ts`, which every script and the Makefile (through `scripts/select-xcode.ts`) use, takes `XCODE_APP` if set, else `/Applications/Xcode<version>.app` (or `Xcode_<version>.app`, as on GitHub's runners), and stop with an error if that Xcode is missing or is another version. CI runs on GitHub's `xcode-27` image. To move to a new Xcode, change `.xcode-version`, and the `runs-on` image in `ci.yml` and `release.yml` if the major version changes, in one commit |
 | SwiftLint | Lint, run before every build | `.swiftlint.yml` at the root |
-| Node 24 | `scripts/check-release-clean.ts` | Runs TypeScript directly, no install step |
-| Python 3 | `scripts/validate-screenshots.py` | Ships with macOS |
+| Node 24 | Every script in `scripts/` ([rule 14](#rule-14-scripts-are-typescript-named-for-what-they-do)) | Runs TypeScript directly, no install step |
 | librsvg, ImageMagick | App icon rendering only | `brew install librsvg imagemagick` |
 
 Open the project with `open Cards.xcodeproj`. There is no generator step: the project is checked in, and the app target reads every file under `Cards/` through a file system synchronised group, so a new file or folder on disk is in the build with nothing to add.
@@ -60,14 +59,16 @@ Run these in order after every change, and fix what fails before moving on:
 | `make test-unit` | `CardsTests` only |
 | `make test-e2e` | `CardsUITests` only |
 | `make test-tsan` | Unit tests under the thread sanitiser |
-| `make test-coverage` | Tests plus an HTML coverage report in `coverage-html/` |
+| `make test-coverage` | Tests on iPhone and iPad plus an HTML coverage report in `coverage-html/` |
+| `make coverage-report` | The report from the last coverage run, without testing again |
+| `make check` | The quick checks: metadata, changelog, raw screenshots and store images |
 | `make check-release` | Build Release and fail if any development code reached it ([rule 1](#rule-1-development-code-never-ships)) |
-| `make sim` | Build, boot the simulator, install and launch |
+| `make sim` | Build, boot the simulator, show it in Device Hub, install and launch |
 | `make device` | Build and install on a connected iPhone |
 | `make capture-screenshots` | Capture the raw screenshots on iPhone, iPad and iPhone Duo in en-US and en-GB |
 | `make store-screenshots` | Compose the App Store images from the raw screenshots and their captions |
-| `make validate-screenshots` | Check the committed screenshot set |
-| `make deploy-testflight`, `make deploy-appstore` | Archive, export and upload |
+| `make check-screenshots` | Check the raw captures and that every store image is present |
+| `make upload-build` | Archive, export and upload a build to App Store Connect |
 
 Override `SIMULATOR_DEVICE` and `SIMULATOR_VERSION` on the command line to target another simulator.
 
@@ -204,7 +205,7 @@ The target builds in Swift 6 language mode with strict concurrency, `SWIFT_TREAT
 ### Rule 10: Commits tell a story, straight on `main`
 
 - **Work on `main`.** Cards has one contributor, so there are no feature branches and no pull requests: commit to `main` and push. A push to `main` runs CI; nothing is uploaded until a version is tagged ([section 8](#8-releasing)). Push when the change is ready to ship, and run the loop in section 2 first so CI is a formality. A feature Paul needs to see is ready only once he has agreed it ships ([section 2](#shape-features-in-the-simulator-before-they-ship)).
-- **Build numbers are automatic.** The release job passes a build number from the time on the runner to `scripts/build-ipa.sh` as `BUILD_NUMBER`, which sets `CURRENT_PROJECT_VERSION` for the app and widget together, and commits nothing back, so `main` never moves under you.
+- **Build numbers are automatic.** The release job passes a build number from the time on the runner to `scripts/build-ipa.ts` as `BUILD_NUMBER`, which sets `CURRENT_PROJECT_VERSION` for the app and widget together, and commits nothing back, so `main` never moves under you.
 - One concern per commit, with a conventional prefix: `feat`, `fix`, `refactor`, `style`, `test`, `build`, `ci`, `docs`, `chore`.
 - The subject says what changed; the body says why, and anything a reviewer could trip over.
 - Each commit builds. Run the loop in section 2 before committing.
@@ -218,11 +219,23 @@ A change Paul needs to see is built, tested and run in the simulator, and shown 
 
 ### Rule 12: Mark changes with the release skill
 
-`changelog.json` is the one record of what changed for the people using the app, newest version first. `node scripts/changelog.ts generate` writes `CHANGELOG.md` and each locale's `metadata/<locale>/release_notes.txt` from it, the app bundles it for Settings > What's New, and CI's `node scripts/changelog.ts check` fails when a generated file is stale or the newest version is not the app's. The release skill ([.claude/skills/release/SKILL.md](../.claude/skills/release/SKILL.md)) is the standard way to add entries, from the commits, and to release a version. Never edit `CHANGELOG.md` or `release_notes.txt` by hand.
+`changelog.json` is the one record of what changed for the people using the app, newest version first. `node scripts/generate-changelog.ts` writes `CHANGELOG.md` and each locale's `metadata/<locale>/release_notes.txt` from it, the app bundles it for Settings > What's New, and CI's `node scripts/check-changelog.ts` fails when a generated file is stale or the newest version is not the app's. The release skill ([.claude/skills/release/SKILL.md](../.claude/skills/release/SKILL.md)) is the standard way to add entries, from the commits, and to release a version. Never edit `CHANGELOG.md` or `release_notes.txt` by hand.
 
 ### Rule 13: Keep the spec current
 
 [spec/](../spec/README.md) describes the whole app as user stories with acceptance criteria. A change that adds or alters behaviour updates the matching stories in the same commit, and a new feature adds new ones, marked "In preparation for <version>" until it ships.
+
+### Rule 14: Scripts are TypeScript, named for what they do
+
+All code in the project is Swift or TypeScript. The app, the widget and the tests are Swift; every script and helper is TypeScript in `scripts/`. There is no Python, Ruby, JavaScript or shell script, and no shell, Python or Node logic embedded in another file.
+
+- **Run them with Node 24:** `node scripts/<name>.ts`. Node strips the types itself, so there is no build step and no npm install. That means no enums, no namespaces and no constructor parameter properties; use `import type` for types and give import paths their `.ts` extension. Use only Node's built-in modules.
+- **Name a script with a verb** that says what it does: `check-metadata.ts`, `capture-screenshots.ts`, `submit-for-review.ts`. A script does one job; if it needs subcommands, split it.
+- **Share code through `scripts/lib/`,** whose modules are named for what they provide (`app-store-connect.ts`, `xcode.ts`, `simulator.ts`, `changelog.ts`) and are never run directly.
+- **Run Xcode's tools through `scripts/lib/xcode.ts`,** so every script uses the Xcode in `.xcode-version`.
+- **Start every script with a comment** saying what it does and a `// Usage:` line.
+- **Keep the Makefile and the workflows thin.** A Makefile recipe or a workflow step only runs tools and scripts in order. Any logic, loop, condition or parsing, beyond a GitHub expression, belongs in a script.
+- **Delete what nothing uses.** A script with no caller in the Makefile, a workflow, another script or this guide is removed, not kept in case.
 
 ## 5. Recipes
 
@@ -260,11 +273,11 @@ In Xcode, **File > Add Package Dependencies**, add the product to the `Cards` ta
 
 ### Change the app icon
 
-Edit `DesignAssets/Icon.svg`, run `scripts/generate-app-icons.sh`, and commit the SVG with the regenerated PNGs.
+Edit `DesignAssets/Icon.svg`, run `node scripts/generate-app-icons.ts`, and commit the SVG with the regenerated PNGs.
 
 ### Mark a change
 
-Ask for the release skill ("mark the changes"), or follow [.claude/skills/release/SKILL.md](../.claude/skills/release/SKILL.md) by hand: add the entries to `changelog.json`, update `spec/`, then run `node scripts/changelog.ts generate` and `node scripts/changelog.ts check`. The first change after a release starts the next version, which means bumping `MARKETING_VERSION` too.
+Ask for the release skill ("mark the changes"), or follow [.claude/skills/release/SKILL.md](../.claude/skills/release/SKILL.md) by hand: add the entries to `changelog.json`, update `spec/`, then run `node scripts/generate-changelog.ts` and `node scripts/check-changelog.ts`. The first change after a release starts the next version, which means bumping `MARKETING_VERSION` too.
 
 ### Publish a new App Store version
 
@@ -273,10 +286,10 @@ The release skill runs these steps; they are here for reference.
 1. Set `MARKETING_VERSION` in the project-level build settings to the new version (for example `1.3`); the app and the widget inherit it, and App Store Connect rejects an extension whose version differs from its app. Commit and push, and wait for CI to pass.
 2. Tag the commit with an annotated tag whose name matches the version and whose message is its What's New from the changelog, then push the tag:
    ```bash
-   git tag -a v1.3 -F <(node scripts/changelog.ts notes 1.3)
+   git tag -a v1.3 -F <(node scripts/print-release-notes.ts 1.3)
    git push origin v1.3
    ```
-3. `release.yml` stamps a build number, archives, signs and uploads, waits for Apple to process the build, creates the App Store version, attaches the build, sets "What's New" in every localisation and submits it for review (`scripts/asc-submit.sh`). A tag without a message stops the workflow before it uploads anything.
+3. `release.yml` runs `scripts/release-version.ts`, which stamps a build number, archives, signs and uploads (`scripts/build-ipa.ts`, `scripts/upload-build.ts`), waits for Apple to process the build, creates the App Store version, attaches the build, sets "What's New" in every localisation and submits it for review (`scripts/submit-for-review.ts`). A tag without a message stops the workflow before it uploads anything.
 5. The store listing (text and screenshots) is separate: see [Update the App Store listing](#update-the-app-store-listing).
 
 ### Update the App Store listing
@@ -308,17 +321,17 @@ Xcode 27 has no Simulator.app; `make sim` opens Device Hub to show the screen, a
 - Every Apple ID comes with a free Personal Team, so "Paul Serby (Personal Team)" in the team menu is not the paid team; it belongs to whichever Apple ID is signed in, which may be a work one. If the menu has no plain "Paul Serby", the Apple ID that owns the paid team is not signed in to Xcode.
 - To build to a device, sign in to Xcode (**Settings > Accounts**) with the Apple ID that is a member of `ZMBFPG86J4`, select that team in **Signing & Capabilities** for both configurations, and let Xcode register the device and create the development profile.
 - The widget is `net.serby.Cards.Widget`, and it shares the App Group `group.net.serby.Cards` with the app. Xcode registered both, and assigned the group to both App IDs, on the first device build with automatic signing. Do that again (`make device`) after adding a capability: the App Store Connect API cannot assign App Groups.
-- CI keeps no provisioning profiles. `.github/actions/install-signing` imports the distribution certificate and runs `scripts/asc-profiles.ts`, which installs an App Store profile per bundle ID named `Cards CI App Store <bundle ID>`, creating it, or replacing it when Apple has invalidated it after a capability change. `scripts/build-ipa.sh` signs with those names.
+- CI keeps no provisioning profiles. `.github/actions/install-signing` imports the distribution certificate (`scripts/install-signing-certificate.ts`) and runs `scripts/install-signing-profiles.ts`, which installs an App Store profile per bundle ID named `Cards CI App Store <bundle ID>`, creating it, or replacing it when Apple has invalidated it after a capability change. `scripts/build-ipa.ts` signs with those names.
 - Never sign this app with a company team you happen to belong to.
 - Debug builds use `Cards/Cards.Debug.entitlements`, which points at the **Development** CloudKit environment, and Release builds use `Cards/Cards.entitlements`, which points at **Production**. A debug build on your own iPhone therefore syncs a separate set of cards from the App Store app, and can never damage the live data.
 - CloudKit change pushes are not enabled yet: the app has neither the `remote-notification` background mode nor the Push Notifications capability, so other devices' changes arrive when the app is opened rather than straight away (CloudKit logs "BUG IN CLIENT OF CLOUDKIT: … require the 'remote-notification' background mode"). Enabling it changes the App ID; add the capability with a device build, and CI replaces the invalidated profile on its next run.
-- `scripts/build-ipa.sh` passes `DEVELOPMENT_TEAM` (default `ZMBFPG86J4`) itself, so archives do not depend on the project's team setting.
+- `scripts/build-ipa.ts` passes `DEVELOPMENT_TEAM` (default `ZMBFPG86J4`) itself, so archives do not depend on the project's team setting.
 
 ## 8. Releasing
 
 1. Push to `main` (rule 10). CI runs the build and the unit tests, the release check, and the metadata, changelog and store image checks, in parallel. It does not capture screenshots or run UI tests or SwiftLint, so the local loop is the real check. Nothing is uploaded on a push.
 2. If the build adds stored fields, deploy the CloudKit schema first; Production rejects records whose type or fields it does not have, with "Cannot create new type … in production schema" or "Cannot create or modify field …". Launch a Debug build once with `-initializeCloudKitSchema`, on a device or simulator signed in to iCloud, and wait for the log line "CloudKit schema initialised in the Development environment". Then open the [CloudKit Console](https://icloud.developer.apple.com/dashboard/), choose `iCloud.net.serby.Cards`, and use **Deploy Schema Changes** to copy the Development schema to Production.
-3. `make deploy-testflight` or `make deploy-appstore` archive with `scripts/build-ipa.sh` and upload with an App Store Connect API key (`ASC_KEY_ID`, `ASC_ISSUER_ID`, `ASC_KEY_CONTENT`). In CI, `release.yml` builds, uploads and submits to the App Store on `v*` tags. There is no TestFlight upload in CI; run `make deploy-testflight` to put a build on TestFlight by hand.
+3. `make upload-build` archives with `scripts/build-ipa.ts` and uploads with an App Store Connect API key (`ASC_KEY_ID`, `ASC_ISSUER_ID`, `ASC_KEY_CONTENT`). In CI, `release.yml` builds, uploads and submits to the App Store on `v*` tags. There is no TestFlight upload in CI; run `make upload-build` to put a build on TestFlight by hand.
 4. The **App Store listing** workflow pushes the listing text from `metadata/` and the store images from `screenshots/store/` ([section 5](#update-the-app-store-listing)).
 
 `.github/workflows/ci.yml`, `release.yml` and `app-store-listing.yml` are the source of truth for the pipelines; `docs/CICD_SETUP.md` and `docs/DEPLOYMENT.md` cover the one-off account and secrets setup.
@@ -331,7 +344,7 @@ Xcode 27 has no Simulator.app; `make sim` opens Device Hub to show the screen, a
 | "Device … isn't registered in your developer account" | Building to a device or "My Mac (Designed for iPad)" with a team that has not registered it. Select `ZMBFPG86J4`; Xcode offers to register it |
 | Release build fails with "has no member 'sample'" or similar | Production code, often a preview left beside a view, names something in `Cards/Development`. Move the preview or go through `DevelopmentHooks` |
 | `make check-release` lists a declaration | That development type or member is reachable from production code. Find the reference and route it through a hook |
-| `asc-profiles.ts` fails with "No App ID net.serby.Cards.Widget" | The App ID or its App Group is not registered. Run `make device` once, signed in to the paid team, so Xcode registers them |
+| `install-signing-profiles.ts` fails with "No App ID net.serby.Cards.Widget" | The App ID or its App Group is not registered. Run `make device` once, signed in to the paid team, so Xcode registers them |
 | Upload fails because the extension's `CFBundleVersion` or `CFBundleShortVersionString` differs from the app's | A version was set on one target or in an Info.plist. Keep both in the project-level build settings, and pass build numbers as `BUILD_NUMBER` |
 | Cards are missing after an update | The store moved. Build the container with `CardStore.configuration` ([rule 6](#rule-6-models-stay-cloudkit--and-export-compatible)) |
 | The app behaves like an older build | `simctl install` kept the old binary; uninstall, then install |

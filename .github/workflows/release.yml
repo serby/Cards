@@ -1,5 +1,9 @@
 name: Release to App Store
 
+# A v* tag builds and uploads the app, then submits the version for App Store
+# review with the tag's annotation as What's New. A manual run builds and
+# uploads but submits nothing. scripts/release-version.ts does the work.
+
 on:
   push:
     tags:
@@ -14,54 +18,17 @@ jobs:
     steps:
     - uses: actions/checkout@v5
 
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 24
+
+    # Assigned first so that a missing Xcode fails the step: inside echo's
+    # arguments the failure would be lost.
     - name: Select the Xcode in .xcode-version
       run: |
-        source scripts/xcode-env.sh
-        echo "DEVELOPER_DIR=$DEVELOPER_DIR" >> "$GITHUB_ENV"
-        "$DEVELOPER_DIR/usr/bin/xcodebuild" -version
-
-    # Bump CFBundleVersion to a strictly-increasing value (UTC seconds since
-    # 2026-01-01). Avoids the App Store Connect 409
-    # ENTITY_ERROR.ATTRIBUTE.INVALID.DUPLICATE we hit on the first attempt.
-    # Annotated tag is the source of truth for release notes ("What's New").
-    # Tag name (vX.Y.Z) drives the marketing version. Lightweight tags don't
-    # carry a message; require an annotated tag.
-    - name: Resolve release metadata
-      id: meta
-      if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') }}
-      run: |
-        TAG="${GITHUB_REF#refs/tags/}"
-        VERSION="${TAG#v}"
-        # actions/checkout points the tag straight at the commit, dropping the
-        # annotation, so fetch the tag object itself before reading its message.
-        git fetch --force --no-tags --depth=1 origin "+refs/tags/${TAG}:refs/tags/${TAG}"
-        if [[ "$(git cat-file -t "refs/tags/${TAG}")" != "tag" ]]; then
-          echo "::error::Tag ${TAG} is lightweight. Use 'git tag -a ${TAG} -m \"release notes\"'."
-          exit 1
-        fi
-        # The annotation, without any signature block.
-        WHATS_NEW=$(git for-each-ref "refs/tags/${TAG}" --format='%(contents)' | awk '/-----BEGIN PGP SIGNATURE-----/ { exit } { print }')
-        if [[ -z "$WHATS_NEW" ]]; then
-          echo "::error::Tag ${TAG} is lightweight or has no message. Use 'git tag -a ${TAG} -m \"release notes\"'."
-          exit 1
-        fi
-        {
-          echo "version=${VERSION}"
-          echo "whats_new<<EOF"
-          echo "${WHATS_NEW}"
-          echo "EOF"
-        } >> "$GITHUB_OUTPUT"
-        echo "Marketing version: ${VERSION}"
-        echo "What's New:"
-        echo "${WHATS_NEW}"
-
-    - name: Bump CFBundleVersion
-      id: build_version
-      run: |
-        BUILD=$(( ( $(date -u +%s) - 1767225600 ) / 60 ))
-        echo "Setting CFBundleVersion to $BUILD"
-        echo "BUILD_NUMBER=$BUILD" >> "$GITHUB_ENV"
-        echo "build=${BUILD}" >> "$GITHUB_OUTPUT"
+        developer_dir="$(node scripts/select-xcode.ts)"
+        echo "DEVELOPER_DIR=$developer_dir" >> "$GITHUB_ENV"
+        "$developer_dir/usr/bin/xcodebuild" -version
 
     - name: Install signing
       uses: ./.github/actions/install-signing
@@ -73,26 +40,17 @@ jobs:
         asc-issuer-id: ${{ secrets.ASC_ISSUER_ID }}
         asc-key-content: ${{ secrets.ASC_KEY_CONTENT }}
 
-    - name: Upload to App Store
+    # Stamps a build number, builds and uploads, and on a tag also attaches the
+    # build to the version, sets What's New from the tag and submits for review.
+    - name: Release
       env:
         ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
         ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
         ASC_KEY_CONTENT: ${{ secrets.ASC_KEY_CONTENT }}
-      run: scripts/deploy-appstore.sh
+        # Only a pushed v* tag is released for review; empty on a manual run.
+        RELEASE_TAG: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') && github.ref_name || '' }}
+      run: node scripts/release-version.ts
 
-    # Auto-create the version, attach the build, set release notes, and submit
-    # for review. Skipped for workflow_dispatch (no tag = no release notes).
-    - name: Submit for review
-      if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') }}
-      env:
-        ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
-        ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
-        ASC_KEY_CONTENT: ${{ secrets.ASC_KEY_CONTENT }}
-        MARKETING_VERSION: ${{ steps.meta.outputs.version }}
-        BUILD_VERSION: ${{ steps.build_version.outputs.build }}
-        WHATS_NEW: ${{ steps.meta.outputs.whats_new }}
-      run: scripts/asc-submit.sh
-
-    - name: Clean up keychain
+    - name: Remove the keychain
       if: ${{ always() }}
-      run: security delete-keychain $RUNNER_TEMP/app-signing.keychain-db || true
+      run: node scripts/install-signing-certificate.ts --remove

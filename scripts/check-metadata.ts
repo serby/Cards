@@ -275,9 +275,9 @@ export function printReport(report: MetadataReport): void {
         row.limit || "-",
         row.status,
     ]);
-    const widths = header.map((title, column) => Math.max(title.length, ...lines.map((line) => line[column].length)));
+    const widths = header.map((title, column) => Math.max(title.length, ...lines.map((line) => (line[column] ?? "").length)));
     const format = (line: string[]): string =>
-        line.map((cell, column) => (column === 2 ? cell.padStart(widths[column]) : cell.padEnd(widths[column]))).join("  ").trimEnd();
+        line.map((cell, column) => (column === 2 ? cell.padStart(widths[column] ?? 0) : cell.padEnd(widths[column] ?? 0))).join("  ").trimEnd();
     console.log(format(header));
     for (const line of lines) console.log(format(line));
 

@@ -1,4 +1,4 @@
-// A small App Store Connect API client shared by the TypeScript release scripts.
+// A small App Store Connect API client shared by the TypeScript scripts.
 //
 // Credentials come from the environment, as in CI:
 //   ASC_KEY_ID, ASC_ISSUER_ID, and ASC_KEY_CONTENT (the .p8 text), or a key file

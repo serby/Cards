@@ -1,6 +1,6 @@
 # Changelog
 
-Every version of Card Barcodes and what it changed, newest first. This file is generated from `changelog.json` by `node scripts/changelog.ts generate`: edit that, not this. The app shows the same list in Settings > What's New.
+Every version of Card Barcodes and what it changed, newest first. This file is generated from `changelog.json` by `node scripts/generate-changelog.ts`: edit that, not this. The app shows the same list in Settings > What's New.
 
 ## 1.3 (5 November 2026)
 

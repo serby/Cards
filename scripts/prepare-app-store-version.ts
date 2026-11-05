@@ -13,10 +13,11 @@
 // With neither --version nor --build it reports the editable version and its
 // build.
 //
-// Usage: node scripts/asc-version.ts [--version 1.3] [--build latest] [--dry-run]
-// Needs ASC_KEY_ID, ASC_ISSUER_ID and ASC_KEY_CONTENT (see scripts/asc.ts). In
-// CI, the "App Store listing" workflow with "prepare version" ticked runs it
-// with --version only: the release workflow uploads the build and attaches it.
+// Usage: node scripts/prepare-app-store-version.ts [--version 1.3] [--build latest] [--dry-run]
+// Needs ASC_KEY_ID, ASC_ISSUER_ID and ASC_KEY_CONTENT (see
+// scripts/lib/app-store-connect.ts). In CI, the "App Store listing" workflow
+// with "prepare version" ticked runs it with --version only: the release
+// workflow uploads the build and attaches it.
 
 import { parseArgs } from "node:util";
 import {
@@ -30,7 +31,7 @@ import {
     type AppStoreVersionAttributes,
     type Resource,
     editableAppInfo,
-} from "./asc.ts";
+} from "./lib/app-store-connect.ts";
 
 const bundleId = process.env.BUNDLE_ID ?? "net.serby.Cards";
 const platform = "IOS";
@@ -153,7 +154,7 @@ async function buildsOf(asc: AppStoreConnect, appId: string, versionString: stri
 }
 
 function noBuildError(versionString: string): Error {
-    return new Error(`No unexpired App Store build of ${versionString}. Upload one with make deploy-testflight, or tag v${versionString}, whose release workflow uploads and attaches its own`);
+    return new Error(`No unexpired App Store build of ${versionString}. Upload one with make upload-build, or tag v${versionString}, whose release workflow uploads and attaches its own`);
 }
 
 async function waitForProcessing(asc: AppStoreConnect, versionString: string, build: Build): Promise<Build> {

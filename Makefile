@@ -1,40 +1,31 @@
-.PHONY: check-release test test-unit test-e2e test-coverage coverage-run coverage-report coverage-clean build clean sim device-hub device test-tsan capture-screenshots validate-screenshots deploy-testflight deploy-appstore check-metadata upload-metadata upload-screenshots store-screenshots
+# Each target runs tools and scripts in order, with no logic of its own
+# (docs/DEVELOPMENT.md, rule 14). Logic lives in scripts/.
 
-# The Xcode named in .xcode-version, chosen as scripts/xcode-env.sh does, so local
-# builds and CI use the same version. There is no fallback to xcode-select.
-XCODE_VERSION := $(shell tr -d '[:space:]' < .xcode-version)
-XCODE_APP ?= $(firstword $(wildcard /Applications/Xcode$(XCODE_VERSION).app /Applications/Xcode_$(XCODE_VERSION).app /Applications/Xcode-$(XCODE_VERSION).app))
-ifeq ($(XCODE_APP),)
-$(error Xcode $(XCODE_VERSION), from .xcode-version, is not installed in /Applications. Install it, or set XCODE_APP to it)
+# The Xcode named in .xcode-version, chosen by scripts/select-xcode.ts as every
+# script chooses it, so local builds and CI use the same version.
+DEVELOPER_DIR := $(shell node scripts/select-xcode.ts)
+ifeq ($(DEVELOPER_DIR),)
+$(error No Xcode selected: see the error above)
 endif
-DEVELOPER_DIR := $(XCODE_APP)/Contents/Developer
-XCODE_ACTUAL := $(shell $(DEVELOPER_DIR)/usr/bin/xcodebuild -version 2>/dev/null | sed -n '1s/^Xcode //p')
-ifneq ($(XCODE_ACTUAL),$(XCODE_VERSION))
-$(error $(XCODE_APP) is not Xcode $(XCODE_VERSION), the version in .xcode-version$(if $(XCODE_ACTUAL), (it is $(XCODE_ACTUAL))))
-endif
-DEVICE_HUB_APP ?= $(DEVELOPER_DIR)/../Applications/DeviceHub.app
-SIMULATOR_DEVICE ?= iPhone 16 Pro
-SIMULATOR_VERSION ?= 18.1
-
-PROJECT := Cards.xcodeproj
-SCHEME := Cards
-DD := build/dd
-DESTINATION := platform=iOS Simulator,name=$(SIMULATOR_DEVICE),OS=$(SIMULATOR_VERSION)
-
 export DEVELOPER_DIR
 
-XCODEBUILD := xcodebuild -project $(PROJECT) -scheme $(SCHEME) -derivedDataPath $(DD)
+SIMULATOR_DEVICE ?= iPhone 16 Pro
+SIMULATOR_VERSION ?= 18.1
+DESTINATION := platform=iOS Simulator,name=$(SIMULATOR_DEVICE),OS=$(SIMULATOR_VERSION)
+XCODEBUILD := xcodebuild -project Cards.xcodeproj -scheme Cards -derivedDataPath build/dd
 
-# Where the .app actually lands. Never assume $(DD)/Build/Products: Xcode honours
-# a per-user "Custom" build location preference (Settings > Locations), which
-# overrides -derivedDataPath for build products. Ask xcodebuild instead.
-built_products_dir = $(shell xcodebuild -project $(PROJECT) -scheme $(SCHEME) -derivedDataPath $(DD) -destination '$(1)' -showBuildSettings 2>/dev/null | awk -F' = ' '/ BUILT_PRODUCTS_DIR = /{print $$2; exit}')
+.PHONY: build clean test test-unit test-e2e test-tsan test-coverage coverage-report sim device \
+	check check-release check-metadata check-changelog check-screenshots \
+	capture-screenshots store-screenshots upload-build upload-metadata upload-screenshots
 
 build:
 	$(XCODEBUILD) build -destination '$(DESTINATION)'
 
 clean:
-	rm -rf $(DD) build/release
+	rm -rf build/dd build/release build/cov coverage-html
+
+test:
+	$(XCODEBUILD) test -destination '$(DESTINATION)'
 
 test-unit:
 	$(XCODEBUILD) test -destination '$(DESTINATION)' -only-testing:CardsTests
@@ -42,89 +33,62 @@ test-unit:
 test-e2e:
 	$(XCODEBUILD) test -destination '$(DESTINATION)' -only-testing:CardsUITests
 
-test:
-	$(XCODEBUILD) test -destination '$(DESTINATION)'
-
 test-tsan:
-	$(XCODEBUILD) test -destination '$(DESTINATION)' \
-		-only-testing:CardsTests \
-		-enableThreadSanitizer YES
+	$(XCODEBUILD) test -destination '$(DESTINATION)' -only-testing:CardsTests -enableThreadSanitizer YES
 
-# Run tests (iPhone + iPad) with coverage in the SHARED build/cov DerivedData,
-# then stash the resulting profdata. Re-run as many times as needed; each call
-# adds another file to .coverage-stash/. Fast on subsequent calls (incremental).
-coverage-run:
-	scripts/coverage-run.sh
+# Tests on iPhone and iPad with coverage, merged into an HTML report in coverage-html/.
+test-coverage:
+	PHONE_SIM="$(SIMULATOR_DEVICE)" SIMULATOR_VERSION=$(SIMULATOR_VERSION) node scripts/report-test-coverage.ts --open
 
-# One-shot: run once and render the report from the stash.
-test-coverage: coverage-run coverage-report
-
-# Render an HTML report by merging the last N stashed profdata files
-# (default N=2; override with N=5 etc.).
-N ?= 2
+# The report from the last test-coverage run, without testing again.
 coverage-report:
-	scripts/coverage-report.sh $(N) --open
+	node scripts/report-test-coverage.ts --report-only --open
 
-coverage-clean:
-	rm -rf .coverage-stash build/cov coverage-html
+# Builds, boots the simulator, shows it in Device Hub, installs and launches.
+sim:
+	node scripts/run-in-simulator.ts --device "$(SIMULATOR_DEVICE)" --os $(SIMULATOR_VERSION)
 
-sim: build
-	$(eval SIM_ID := $(shell xcrun simctl list devices available -j | python3 -c "import sys,json; version='$(SIMULATOR_VERSION)'.replace('.','-'); name='$(SIMULATOR_DEVICE)'; ds=[d for runtime,devs in json.load(sys.stdin)['devices'].items() if runtime.endswith('iOS-'+version) for d in devs if d['isAvailable'] and d['name']==name]; ds.sort(key=lambda d: d.get('state') != 'Booted'); print(ds[0]['udid'] if ds else '')"))
-	@if [ -z "$(SIM_ID)" ]; then echo "No $(SIMULATOR_DEVICE) simulator on iOS $(SIMULATOR_VERSION) available"; exit 1; fi
-	@if [ ! -d "$(DEVICE_HUB_APP)" ]; then echo "Device Hub not found at $(DEVICE_HUB_APP)"; exit 1; fi
-	xcrun simctl boot $(SIM_ID) 2>/dev/null || true
-	xcrun simctl bootstatus $(SIM_ID) -b
-	open "$(DEVICE_HUB_APP)"
-	$(eval APP_DIR := $(call built_products_dir,$(DESTINATION)))
-	@if [ ! -d "$(APP_DIR)/Cards.app" ]; then echo "No Cards.app in $(APP_DIR)"; exit 1; fi
-	xcrun simctl install $(SIM_ID) "$(APP_DIR)/Cards.app"
-	xcrun simctl launch --terminate-running-process $(SIM_ID) net.serby.Cards
+# Builds and runs on a connected iPhone.
+device:
+	node scripts/run-on-device.ts
 
-device-hub: sim
-
-capture-screenshots:
-	for locale in en-US en-GB; do \
-		for device in "iPhone 17 Pro Max" "iPad Pro 13-inch (M4)" "iPhone Duo"; do \
-			scripts/capture-screenshots.sh "$$device" "$$locale" || exit 1; \
-		done; \
-	done
-
-# Composes the App Store images in screenshots/store/<locale>/ from the raw
-# captures and each locale's captions.json.
-store-screenshots:
-	TEST_RUNNER_CARDS_STORE_SCREENSHOTS=1 $(XCODEBUILD) test -destination '$(DESTINATION)' \
-		-only-testing:CardsTests/StoreScreenshotTests
-	python3 scripts/validate-screenshots.py
-	node scripts/check-store-images.ts
-
-validate-screenshots:
-	python3 scripts/validate-screenshots.py
+# The quick checks CI runs, plus the raw screenshot check CI leaves to you.
+check: check-metadata check-changelog check-screenshots
 
 # Builds Release and fails if anything from Cards/Development reached it.
 check-release:
-	node scripts/check-release-clean.ts
-
-deploy-testflight:
-	scripts/deploy-testflight.sh
-
-deploy-appstore:
-	scripts/deploy-appstore.sh
+	node scripts/check-release-build.ts
 
 # Checks metadata/ against App Store Connect's limits, offline.
 check-metadata:
 	node scripts/check-metadata.ts
+
+check-changelog:
+	node scripts/check-changelog.ts
+
+# Checks the raw captures, and that every store image is present.
+check-screenshots:
+	node scripts/check-screenshots.ts
+	node scripts/check-store-images.ts
+
+# Captures the raw screenshots on iPhone, iPad and iPhone Duo in en-US and en-GB.
+capture-screenshots:
+	node scripts/capture-screenshots.ts
+
+# Composes the App Store images in screenshots/store/<locale>/ from the raw
+# captures and each locale's captions.json, then checks them.
+store-screenshots:
+	TEST_RUNNER_CARDS_STORE_SCREENSHOTS=1 $(XCODEBUILD) test -destination '$(DESTINATION)' \
+		-only-testing:CardsTests/StoreScreenshotTests
+	node scripts/check-screenshots.ts
+	node scripts/check-store-images.ts
+
+# Archives, signs and uploads a build to App Store Connect, for TestFlight or review.
+upload-build:
+	node scripts/upload-build.ts
 
 upload-metadata:
 	node scripts/upload-metadata.ts
 
 upload-screenshots:
 	node scripts/upload-screenshots.ts
-
-device:
-	$(XCODEBUILD) build -destination 'generic/platform=iOS' -allowProvisioningUpdates
-	$(eval DEVICE_ID := $(shell xcrun devicectl list devices --json-output /tmp/cards_devices.json >/dev/null 2>&1; python3 -c "import json; devs=[d for d in json.load(open('/tmp/cards_devices.json'))['result']['devices'] if 'iPhone' in d.get('hardwareProperties',{}).get('marketingName','') and d['connectionProperties']['tunnelState']=='connected']; print(devs[0]['identifier'] if devs else '')"))
-	@if [ -z "$(DEVICE_ID)" ]; then echo "No iPhone connected"; exit 1; fi
-	$(eval APP_DIR := $(call built_products_dir,generic/platform=iOS))
-	@if [ ! -d "$(APP_DIR)/Cards.app" ]; then echo "No Cards.app in $(APP_DIR)"; exit 1; fi
-	xcrun devicectl device install app --device $(DEVICE_ID) "$(APP_DIR)/Cards.app"
-	xcrun devicectl device process launch --device $(DEVICE_ID) net.serby.Cards

@@ -1,18 +1,21 @@
-// Fails if development-only code reaches a release build.
+// Builds the app in Release and checks that no development-only code shipped
+// in it.
 //
-// Builds the app in Release for the simulator (unsigned), then looks in the
-// binary for anything declared under Cards/Development: its types, and the
-// static members it adds to production types (sample data, simulated
-// effects). Also fails on SwiftUI preview registrations and on the UI-testing
-// launch keys. See docs/DEVELOPMENT.md, "Development code never ships".
+// Builds Release for the simulator (unsigned) with the Xcode pinned in
+// .xcode-version, then looks in the binary for anything declared under
+// Cards/Development: its types, and the static members it adds to production
+// types (sample data, simulated effects). Also fails on SwiftUI preview
+// registrations and on the UI-testing launch keys. See docs/DEVELOPMENT.md,
+// "Development code never ships".
 //
-// Usage: node scripts/check-release-clean.ts [--no-build]
+// Usage: node scripts/check-release-build.ts [--no-build]
+//   --no-build  check the last Release build instead of building again
 
 import { execFileSync } from "node:child_process";
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
+import { capture, root, run, xcodeEnv } from "./lib/xcode.ts";
 
-const root = join(import.meta.dirname, "..");
 const developmentDir = join(root, "Cards", "Development");
 const xcodebuildArgs = [
     "-project", join(root, "Cards.xcodeproj"),
@@ -23,10 +26,6 @@ const xcodebuildArgs = [
     // A generic simulator build makes every architecture; one is enough to inspect.
     "ARCHS=arm64",
 ];
-
-function run(command: string, args: string[]): string {
-    return execFileSync(command, args, { encoding: "utf8", maxBuffer: 256 * 1024 * 1024 });
-}
 
 function swiftFiles(dir: string): string[] {
     return readdirSync(dir).flatMap((name) => {
@@ -47,7 +46,7 @@ function developmentDeclarations(): Map<string, string> {
         }
         // Static members added to production types, e.g. `CardSummary.samples`.
         for (const block of source.matchAll(/^(?:public )?extension (\w+)[^{]*\{([\s\S]*?)^\}/gm)) {
-            for (const member of block[2].matchAll(/static (?:let|var|func) (\w+)/g)) {
+            for (const member of (block[2] ?? "").matchAll(/static (?:let|var|func) (\w+)/g)) {
                 found.set(`Cards.${block[1]}.${member[1]}`, where);
             }
         }
@@ -63,18 +62,20 @@ if (!process.argv.includes("--no-build")) {
     run("xcodebuild", [...xcodebuildArgs, "build", "CODE_SIGNING_ALLOWED=NO", "-quiet"]);
 }
 
-const settings = run("xcodebuild", [...xcodebuildArgs, "-showBuildSettings"]);
+const settings = capture("xcodebuild", [...xcodebuildArgs, "-showBuildSettings"]);
 const productsDir = settings.match(/^\s*BUILT_PRODUCTS_DIR = (.+)$/m)?.[1];
 if (!productsDir) throw new Error("Could not find BUILT_PRODUCTS_DIR");
 const binary = join(productsDir, "Cards.app", "Cards");
 
 console.log(`==> Checking ${relative(root, binary)}`);
+// capture() cannot feed a command its input, so this one passes the pinned Xcode itself.
 const demangled = execFileSync("swift", ["demangle"], {
-    input: run("nm", ["-a", binary]),
+    input: capture("nm", ["-a", binary]),
+    env: xcodeEnv(),
     encoding: "utf8",
     maxBuffer: 256 * 1024 * 1024,
 });
-const strings = run("strings", ["-a", binary]);
+const strings = capture("strings", ["-a", binary]);
 
 const problems: string[] = [];
 for (const [name, file] of developmentDeclarations()) {

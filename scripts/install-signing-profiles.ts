@@ -5,21 +5,26 @@
 // rather than keeping copies in secrets that go stale whenever a capability
 // changes: Apple marks a profile invalid when its App ID changes, and this
 // replaces it. Each profile is named "Cards CI App Store <bundle ID>", the name
-// scripts/build-ipa.sh signs with.
+// scripts/build-ipa.ts signs with. On CI, scripts/install-signing-certificate.ts
+// runs this once it has imported the certificate.
 //
 // The App IDs and their App Group must already exist: Xcode registers them the
 // first time someone builds for a device (`make device`). The API cannot assign
 // App Groups, so this script does not try to create App IDs.
 //
-// Usage: KEYCHAIN_PATH=... node scripts/asc-profiles.ts net.serby.Cards net.serby.Cards.Widget
+// Usage: KEYCHAIN_PATH=... node scripts/install-signing-profiles.ts net.serby.Cards net.serby.Cards.Widget
 //   KEYCHAIN_PATH  keychain holding the Apple Distribution certificate to sign with
+//                  (default: the keychain search list)
+// Needs ASC_KEY_ID, ASC_ISSUER_ID and ASC_KEY_CONTENT (see scripts/lib/app-store-connect.ts).
 
 import { execFileSync } from "node:child_process";
 import { X509Certificate } from "node:crypto";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
-import { AppStoreConnect, query, type Resource } from "./asc.ts";
+import { AppStoreConnect, errorMessage, query, type Resource } from "./lib/app-store-connect.ts";
+
+const usage = "Usage: KEYCHAIN_PATH=... node scripts/install-signing-profiles.ts <bundle ID>...";
 
 export const profileName = (bundleId: string): string => `Cards CI App Store ${bundleId}`;
 
@@ -55,12 +60,13 @@ function keychainSerials(keychain: string | undefined): Set<string> {
     return new Set(certificates.map((text) => normaliseSerial(new X509Certificate(text).serialNumber)));
 }
 
-async function main(): Promise<void> {
-    const bundleIds = process.argv.slice(2);
-    if (bundleIds.length === 0) throw new Error("Usage: node scripts/asc-profiles.ts <bundle ID>...");
+/// Installs a usable App Store profile for each bundle ID, signed by the
+/// distribution certificate in `keychain` (default: the keychain search list).
+export async function installSigningProfiles(bundleIds: string[], keychain: string | undefined): Promise<void> {
+    if (bundleIds.length === 0) throw new Error(usage);
     const asc = new AppStoreConnect();
 
-    const serials = keychainSerials(process.env.KEYCHAIN_PATH);
+    const serials = keychainSerials(keychain);
     if (serials.size === 0) throw new Error("No Apple Distribution certificate in the keychain");
     const certificates = await asc.all<Certificate>(
         `/v1/certificates?${query({ "filter[certificateType]": "DISTRIBUTION,IOS_DISTRIBUTION", limit: 200 })}`,
@@ -144,5 +150,17 @@ async function createProfile(asc: AppStoreConnect, bundle: Resource<BundleId>, c
 }
 
 if (import.meta.main) {
-    await main();
+    const args = process.argv.slice(2);
+    if (args.includes("--help") || args.includes("-h")) {
+        console.log(usage);
+    } else {
+        try {
+            const unknown = args.find((arg) => arg.startsWith("-"));
+            if (unknown) throw new Error(`unknown option ${unknown}. ${usage}`);
+            await installSigningProfiles(args, process.env.KEYCHAIN_PATH);
+        } catch (error) {
+            console.error(`error: ${errorMessage(error)}`);
+            process.exitCode = 1;
+        }
+    }
 }

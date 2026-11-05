@@ -2,7 +2,7 @@ import XCTest
 
 /// Captures the Home Screen widget for the App Store by adding it the way a
 /// person would: long-press the Home Screen, Edit, Add Widget, Card Barcodes.
-/// Run via scripts/capture-screenshots.sh, which uninstalls the app first so no
+/// Run via scripts/capture-screenshots.ts, which uninstalls the app first so no
 /// earlier widget is left on the Home Screen.
 final class CardsWidgetScreenshotTests: XCTestCase {
     override func setUpWithError() throws {

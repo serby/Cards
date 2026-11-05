@@ -2,8 +2,9 @@ name: Install signing
 description: >
   Imports the Apple Distribution certificate into a temporary keychain and
   installs App Store profiles for the app and its widget, creating or renewing
-  them through the App Store Connect API (scripts/asc-profiles.ts). Delete the
-  keychain afterwards with `security delete-keychain "$RUNNER_TEMP/app-signing.keychain-db"`.
+  them through the App Store Connect API (scripts/install-signing-certificate.ts,
+  which runs scripts/install-signing-profiles.ts). Delete the keychain afterwards
+  with `node scripts/install-signing-certificate.ts --remove`.
 
 inputs:
   certificate-base64:
@@ -29,29 +30,13 @@ runs:
       with:
         node-version: 24
 
-    - name: Import the certificate
+    - name: Install the certificate and profiles
       shell: bash
       env:
         BUILD_CERTIFICATE_BASE64: ${{ inputs.certificate-base64 }}
         P12_PASSWORD: ${{ inputs.p12-password }}
         KEYCHAIN_PASSWORD: ${{ inputs.keychain-password }}
-      run: |
-        CERTIFICATE_PATH="$RUNNER_TEMP/build_certificate.p12"
-        KEYCHAIN_PATH="$RUNNER_TEMP/app-signing.keychain-db"
-        echo -n "$BUILD_CERTIFICATE_BASE64" | base64 --decode -o "$CERTIFICATE_PATH"
-        security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
-        security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
-        security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
-        security import "$CERTIFICATE_PATH" -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
-        security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
-        security list-keychain -d user -s "$KEYCHAIN_PATH"
-        rm -f "$CERTIFICATE_PATH"
-
-    - name: Install provisioning profiles
-      shell: bash
-      env:
-        KEYCHAIN_PATH: ${{ runner.temp }}/app-signing.keychain-db
         ASC_KEY_ID: ${{ inputs.asc-key-id }}
         ASC_ISSUER_ID: ${{ inputs.asc-issuer-id }}
         ASC_KEY_CONTENT: ${{ inputs.asc-key-content }}
-      run: node scripts/asc-profiles.ts net.serby.Cards net.serby.Cards.Widget
+      run: node scripts/install-signing-certificate.ts net.serby.Cards net.serby.Cards.Widget

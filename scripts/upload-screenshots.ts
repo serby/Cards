@@ -12,13 +12,14 @@
 //
 // Usage: node scripts/upload-screenshots.ts [--version 1.3] [--dry-run] [--replace]
 //   --replace  send every image again, even ones already there
-// Needs ASC_KEY_ID, ASC_ISSUER_ID and ASC_KEY_CONTENT (see scripts/asc.ts). In
-// CI, run the "App Store listing" workflow, which has them.
+// Needs ASC_KEY_ID, ASC_ISSUER_ID and ASC_KEY_CONTENT (see
+// scripts/lib/app-store-connect.ts). In CI, run the "App Store listing"
+// workflow, which has them.
 
 import { createHash } from "node:crypto";
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { basename, join } from "node:path";
-import { AppStoreConnect, AppStoreConnectError, editableVersions, errorMessage, findApp, versionState, type Resource } from "./asc.ts";
+import { AppStoreConnect, AppStoreConnectError, editableVersions, errorMessage, findApp, versionState, type Resource } from "./lib/app-store-connect.ts";
 
 const root = join(import.meta.dirname, "..");
 const screenshotsDir = join(root, "screenshots", "store");

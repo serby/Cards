@@ -49,7 +49,7 @@ jobs:
     # changelog.json must be valid, start with the app's version, and match the
     # files generated from it.
     - name: Check the changelog
-      run: node scripts/changelog.ts check
+      run: node scripts/check-changelog.ts
 
   # Development code (Cards/Development: Storybook, previews, sample data,
   # UI-test hooks) must never reach a release build.
@@ -59,62 +59,38 @@ jobs:
     steps:
     - uses: actions/checkout@v5
 
-    - name: Select the Xcode in .xcode-version
-      run: |
-        source scripts/xcode-env.sh
-        echo "DEVELOPER_DIR=$DEVELOPER_DIR" >> "$GITHUB_ENV"
-        "$DEVELOPER_DIR/usr/bin/xcodebuild" -version
-
     - uses: actions/setup-node@v4
       with:
         node-version: 24
 
+    - name: Select the Xcode in .xcode-version
+      run: |
+        developer_dir="$(node scripts/select-xcode.ts)"
+        echo "DEVELOPER_DIR=$developer_dir" >> "$GITHUB_ENV"
+        "$developer_dir/usr/bin/xcodebuild" -version
+
     - name: Check release build has no development code
-      run: node scripts/check-release-clean.ts
+      run: node scripts/check-release-build.ts
 
   build-and-test:
     runs-on: xcode-27
     steps:
     - uses: actions/checkout@v5
 
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 24
+
     - name: Select the Xcode in .xcode-version
       run: |
-        source scripts/xcode-env.sh
-        echo "DEVELOPER_DIR=$DEVELOPER_DIR" >> "$GITHUB_ENV"
-        "$DEVELOPER_DIR/usr/bin/xcodebuild" -version
+        developer_dir="$(node scripts/select-xcode.ts)"
+        echo "DEVELOPER_DIR=$developer_dir" >> "$GITHUB_ENV"
+        "$developer_dir/usr/bin/xcodebuild" -version
 
     # The simulator boots in the background while the app and tests build, since
     # each takes minutes on a fresh runner, then the unit tests run on it.
     - name: Build and run the unit tests
-      run: |
-        scripts/ci-resolve-sim.sh "iPhone 16 Pro Max" > /tmp/sim.env 2> /tmp/sim.log &
-        sim=$!
-        xcodebuild build-for-testing \
-          -project Cards.xcodeproj \
-          -scheme Cards \
-          -destination 'generic/platform=iOS Simulator' \
-          -derivedDataPath build/dd \
-          -enableCodeCoverage NO \
-          ARCHS=arm64
-        if ! wait "$sim"; then
-          cat /tmp/sim.log
-          exit 1
-        fi
-        cat /tmp/sim.log
-        udid=$(sed -n 's/^udid=//p' /tmp/sim.env)
-        xcodebuild test-without-building \
-          -project Cards.xcodeproj \
-          -scheme Cards \
-          -destination "id=$udid" \
-          -derivedDataPath build/dd \
-          -only-testing:CardsTests \
-          -resultBundlePath /tmp/CardsTests.xcresult \
-          -testLanguage en \
-          -testRegion US \
-          -enableCodeCoverage NO \
-          -collect-test-diagnostics never \
-          -retry-tests-on-failure \
-          -test-iterations 2
+      run: node scripts/run-unit-tests.ts
 
     - name: Upload test result bundle
       if: ${{ failure() }}
