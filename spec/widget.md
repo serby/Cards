@@ -48,11 +48,11 @@ As a card holder, I want to tap the widget to open the card, so that I can show 
 
 - Tapping the widget, away from the refresh button, opens the app on that card's screen, through its `cards://cards/card/<code>` link (NAV-2).
 - Any code works in the link, including codes with "/", spaces or accented letters.
+- The link brings the Cards tab forward, so the card shows even when Settings was open (NAV-1).
 - With no cards, tapping the widget opens the app.
 
 **Since:** 1.3
-**Where:** `CardsWidget/CardWidget.swift:15`, `Cards/UI/ViewState/CardWidgetState.swift`, `Cards/Core/Navigation/NavigationRoute.swift`, `CardsTests/NavigationTests.swift` (`cardLinksRoundTripAnyCode`)
-**Notes:** The link doesn't switch tabs. With Settings showing, the card opens on the Cards tab behind it (NAV-1).
+**Where:** `CardsWidget/CardWidget.swift:15`, `Cards/UI/ViewState/CardWidgetState.swift`, `Cards/Core/Navigation/NavigationRoute.swift`, `Cards/Core/Navigation/NavigationManager.swift`, `CardsTests/NavigationTests.swift` (`cardLinksRoundTripAnyCode`), `CardsTests/CardFixesTests.swift` (`openingACardBringsTheCardsTabForward`)
 
 ### WID-5: Read the widget at a glance
 
@@ -90,5 +90,5 @@ As a card holder, I want the widget to reflect the cards I have, so that it neve
 - Until the app has written the copy, or if it can't be read, the widget shows its empty state (WID-5).
 
 **Since:** 1.3
-**Where:** `Cards/Core/Services/WidgetSnapshot.swift`, `Cards/Features/CardListScreen.swift:39-52`, `CardsTests/WidgetTests.swift` (`snapshotRoundTripsAndSkipsUnchangedWrites`, `snapshotThatCannotBeReadIsEmpty`)
+**Where:** `Cards/Core/Services/WidgetSnapshot.swift`, `Cards/Features/CardListScreen.swift:40-54`, `CardsTests/WidgetTests.swift` (`snapshotRoundTripsAndSkipsUnchangedWrites`, `snapshotThatCannotBeReadIsEmpty`)
 **Notes:** Only the app writes the copy, so cards that arrive through iCloud reach the widget once the app is opened on that device. A new widget added before the app has ever been opened shows "No cards yet".

@@ -12,6 +12,7 @@ As a card holder, I want one screen for the app's settings and data, so that I k
 - Locations has the Arrival Notifications switch, its caption, and the message when notifications are off for the app (ARR-5) (1.3).
 - Data has "Export as JSON" (DATA-2), "Import JSON" (DATA-3) and "Delete All Cards" (DATA-5).
 - Brightness Boost and Arrival Notifications are on by default. Both are kept on the device and don't sync (DATA-1).
+- Each card also has its own arrival switch, in its edit form rather than here, which syncs with the card (ARR-6) (1.3).
 
 **Since:** 1.0
 **Where:** `Cards/UI/Screens/SettingsListView.swift`, `Cards/Features/SettingsScreen.swift`, `Cards/UI/ViewState/CardViewState.swift`

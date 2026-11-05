@@ -28,11 +28,15 @@
         },
         {
           "type": "new",
-          "text": "Turn arrival notifications on or off in Settings."
+          "text": "Turn arrival notifications off for one card in its settings, or for every card in Settings."
         },
         {
           "type": "new",
           "text": "Pinch to zoom when scanning a barcode."
+        },
+        {
+          "type": "new",
+          "text": "See what changed in each version in Settings > What's New."
         },
         {
           "type": "improved",
@@ -50,6 +54,30 @@
         {
           "type": "improved",
           "text": "VoiceOver spells out a card's number, and buttons in light mode use a deeper pink that is easier to read."
+        },
+        {
+          "type": "improved",
+          "text": "The Cards tab keeps your place when you switch to Settings and back."
+        },
+        {
+          "type": "fixed",
+          "text": "New cards go to the end of the list, not the top."
+        },
+        {
+          "type": "fixed",
+          "text": "A card needs a name and a code to save, and two cards cannot share a code."
+        },
+        {
+          "type": "fixed",
+          "text": "Importing skips cards you already have, and adds the rest to the end of the list in the order they were exported."
+        },
+        {
+          "type": "fixed",
+          "text": "The scanner says when the camera is off or missing, instead of showing a black box."
+        },
+        {
+          "type": "fixed",
+          "text": "Messages say \"1 card\", not \"1 cards\"."
         }
       ]
     },

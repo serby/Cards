@@ -16,6 +16,7 @@ As someone using VoiceOver, I want every card read in plain words, so that I can
 - The brightness button reads "Brightness Boost", with the hint "Toggles screen brightness to maximum for easier barcode scanning".
 - "Add current location" has the hint "Opens a map to save where you are as one of this card's places" (1.3).
 - In the edit form the fields read "Card name" and "Card code", the type menu "Barcode type", and Save "Save card".
+- Save's hint is "Save changes to this card", or "Needs a name and a code no other card uses" while it is disabled (CARD-3, CARD-9) (1.3).
 
 **Since:** 1.0
 **Where:** `Cards/UI/Screens/CardListView.swift`, `Cards/UI/Screens/CardDetailView.swift`, `Cards/UI/Screens/CardEditView.swift`, `Cards/UI/Components/BarcodeView.swift`, `Cards/UI/Components/ProximityLabel.swift`, `CardsUITests/CardsUITests.swift`
@@ -41,7 +42,7 @@ As a card holder who uses large text, I want the app to grow with my text size, 
 - Distances never wrap: they stay on one line (PLACE-6).
 
 **Since:** 1.0
-**Where:** `Cards/UI/Screens/CardListView.swift:45-50`, `Cards/UI/Screens/LocationPickerView.swift:232-246`, `Cards/UI/Components/ProximityLabel.swift`
+**Where:** `Cards/UI/Screens/CardListView.swift:45-50`, `Cards/UI/Screens/LocationPickerView.swift:231-245`, `Cards/UI/Components/ProximityLabel.swift`
 
 ### A11Y-4: Use every control with VoiceOver and touch
 
@@ -53,10 +54,11 @@ As someone using VoiceOver, I want every control labelled and every image that a
 - The radius slider reads "Radius" with its value, such as "200 m" (1.3).
 - The map's pin and ring, the place icons, the field icons in the location sheet and the tick on a swatch are hidden from VoiceOver (1.3).
 - The external link icon in Settings reads "External link" (1.1).
+- When the camera can't be used, its title and text read as one item, such as "No camera, Type the card's code below.", Open Settings is a separate button, and the icon is hidden (CARD-2) (1.3).
 - The widget reads as one item with a hint, and its barcode image is hidden (WID-5).
 
 **Since:** 1.0
-**Where:** `Cards/UI/Components/CardColorPicker.swift`, `Cards/UI/Components/CardLocationRow.swift`, `Cards/UI/Screens/LocationPickerView.swift`, `Cards/UI/Screens/SettingsListView.swift`, `Cards/UI/Components/CardWidgetView.swift`
+**Where:** `Cards/UI/Components/CardColorPicker.swift`, `Cards/UI/Components/CardLocationRow.swift`, `Cards/UI/Screens/LocationPickerView.swift`, `Cards/UI/Screens/SettingsListView.swift`, `Cards/UI/Components/CameraUnavailableView.swift`, `Cards/UI/Components/CardWidgetView.swift`
 
 ### A11Y-5: Feel that something happened
 

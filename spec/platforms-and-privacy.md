@@ -35,7 +35,7 @@ As a card holder with an iPhone Duo, I want the app to work on it, so that my ca
 - The App Store screenshots are captured on the iPhone Duo's outer display, among other devices.
 
 **Since:** 1.3
-**Where:** `Cards/UI/Screens/CardEditView.swift:125`, `CardsUITests/CardsScreenshotTests.swift`, `CardsUITests/CardsWidgetScreenshotTests.swift`
+**Where:** `Cards/UI/Screens/CardEditView.swift:146`, `CardsUITests/CardsScreenshotTests.swift`, `CardsUITests/CardsWidgetScreenshotTests.swift`
 **Notes:** Nothing in the app's code targets iPhone Duo. 1.3 is the first version captured and described for it.
 
 ### PLAT-4: Use the app without an account, ads or tracking
@@ -55,7 +55,7 @@ As a card holder, I want an app that doesn't watch me, so that I can trust it wi
 
 As a card holder, I want my location to stay on my phone, so that nobody learns where I go.
 
-- Your current location is only used on the device: for distances (PLACE-6), the widget's nearest card (WID-1) and where the map opens (PLACE-1).
+- Your current location is only used on the device: for distances (PLACE-6), the widget's nearest card (WID-1), where the map opens (PLACE-1) and which places are watched for arrivals (ARR-3).
 - The places you add are stored with the card, and sync and export with it (DATA-1, DATA-2).
 - Arrival notifications are watched by iOS on the device, with no server involved (ARR-1).
 - The map and the postcode search use Apple's map services, which receive the area shown or the text searched for (PLACE-2).
@@ -68,10 +68,11 @@ As a card holder, I want my location to stay on my phone, so that nobody learns 
 As a card holder, I want the camera used only when I am scanning a card, so that it is never on without me knowing.
 
 - The camera only runs while the add form is showing (CARD-2), and stops when the form goes away or a code is read.
+- The form asks for camera access before it starts the camera, and never starts it while access is off (CARD-2) (1.3).
 - Frames are read on the device for barcodes and never recorded, stored or sent.
 
 **Since:** 1.0
-**Where:** `Cards/Scanner/ScannerViewControllerDelegate.swift`, `Cards/Scanner/CameraScannerView.swift:21-26`
+**Where:** `Cards/Scanner/ScannerViewControllerDelegate.swift`, `Cards/Scanner/CameraScannerView.swift:21-26`, `Cards/Scanner/CameraScannerView.swift:46-105`
 
 ### PLAT-7: Read the app in English
 

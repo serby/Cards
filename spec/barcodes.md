@@ -19,10 +19,10 @@ As a card holder, I want the app to handle the barcodes loyalty and membership c
 
 As a card holder, I want the barcode drawn large and clean, so that the till's scanner reads it first time.
 
-- Codes are drawn on the device by RSBarcodes_Swift, through one helper, so the card screen, the Lock Screen notification and the widget draw the same bars (1.3).
+- Codes are drawn on the device by RSBarcodes_Swift, through one helper, so the card screen, the arrival notification's attachment and the widget draw the same bars (1.3).
 - On the card screen the code is drawn 400 points wide and a third as high for a strip, or 400 by 400 for a square code, at the screen's scale, then fitted to the width of the card.
 - The bars sit on a white tile inside a grey, translucent frame, and the white stays white in dark mode (COL-3).
-- The notification's image is the code on white with a 60 pixel quiet zone: 1,200 by 400 pixels for a strip, 600 by 600 for a square code (ARR-1).
+- The image attached to an arrival notification is the code on white with a 60 pixel quiet zone: 1,200 by 400 pixels for a strip, 600 by 600 for a square code. It does not show on the Lock Screen (ARR-1).
 - The widget's image is one opaque image of the code on white with a quiet zone, so it stays scannable on tinted Home Screens (WID-6).
 
 **Since:** 1.0
@@ -39,7 +39,7 @@ As a card holder, I want to be told when a card's code can't be drawn as its bar
 - The number is still shown under the barcode, so it can be typed in at the till.
 
 **Since:** 1.0
-**Where:** `Cards/UI/Components/BarcodeView.swift:20-28`, `Cards/UI/Components/CardWidgetView.swift:139-143`, `Cards/Features/ArrivalNotifications.swift:90-92`, `CardsTests/BarcodeViewTests.swift` (`barcodeOnWhiteAddsAQuietZone`)
+**Where:** `Cards/UI/Components/BarcodeView.swift:20-28`, `Cards/UI/Components/CardWidgetView.swift:139-143`, `Cards/Features/ArrivalNotifications.swift:105-107`, `CardsTests/BarcodeViewTests.swift` (`barcodeOnWhiteAddsAQuietZone`)
 
 ### BAR-4: Brighten the screen while a card is open
 

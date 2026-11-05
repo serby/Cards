@@ -11,8 +11,9 @@ Every version of Card Barcodes and what it changed, newest first. This file is g
 - Add the places you use a card, from the map or by postcode, and see how far away they are.
 - Arrive at one of a card's places and a notification reminds you, and opens the card when you tap it.
 - Add where you are to a card straight from the card, with Add current location.
-- Turn arrival notifications on or off in Settings.
+- Turn arrival notifications off for one card in its settings, or for every card in Settings.
 - Pinch to zoom when scanning a barcode.
+- See what changed in each version in Settings > What's New.
 
 ### Improved
 
@@ -20,6 +21,15 @@ Every version of Card Barcodes and what it changed, newest first. This file is g
 - Card screens have a new design, with the name and number on white panels.
 - A new app icon shows a barcode card behind a QR code card.
 - VoiceOver spells out a card's number, and buttons in light mode use a deeper pink that is easier to read.
+- The Cards tab keeps your place when you switch to Settings and back.
+
+### Fixed
+
+- New cards go to the end of the list, not the top.
+- A card needs a name and a code to save, and two cards cannot share a code.
+- Importing skips cards you already have, and adds the rest to the end of the list in the order they were exported.
+- The scanner says when the camera is off or missing, instead of showing a black box.
+- Messages say "1 card", not "1 cards".
 
 ## 1.1 (20 June 2026)
 
