@@ -78,6 +78,8 @@ public struct SettingsState: Hashable, Sendable {
     public let cardCount: Int
     /// Notifications are switched off for the app in the Settings app.
     public let notificationsBlocked: Bool
+    /// Every version and its changes, newest first, for What's New.
+    public let changelog: [ChangelogVersion]
 
     public init(
         appVersion: String?,
@@ -85,7 +87,8 @@ public struct SettingsState: Hashable, Sendable {
         authorName: String,
         authorURL: URL?,
         cardCount: Int,
-        notificationsBlocked: Bool = false
+        notificationsBlocked: Bool = false,
+        changelog: [ChangelogVersion] = []
     ) {
         self.appVersion = appVersion
         self.appBuild = appBuild
@@ -93,5 +96,6 @@ public struct SettingsState: Hashable, Sendable {
         self.authorURL = authorURL
         self.cardCount = cardCount
         self.notificationsBlocked = notificationsBlocked
+        self.changelog = changelog
     }
 }

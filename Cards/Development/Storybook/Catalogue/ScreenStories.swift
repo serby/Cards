@@ -8,6 +8,7 @@ let screenStories: [Story] = [
     cardEditStory,
     locationPickerStory,
     settingsStory,
+    changelogStory,
     importCardsStory
 ]
 
@@ -256,6 +257,7 @@ private let settingsStory = Story(
         .toggle("Brightness boost", true),
         .toggle("Arrival notifications", true),
         .toggle("Notifications blocked", false),
+        .toggle("Has What's New", true),
         .text("Message", "")
     ],
     gallery: [
@@ -291,7 +293,8 @@ private let settingsStory = Story(
         authorName: knobs.string("Author"),
         authorURL: URL(string: knobs.string("Author URL")),
         cardCount: knobs.integer("Card count"),
-        notificationsBlocked: knobs.bool("Notifications blocked")
+        notificationsBlocked: knobs.bool("Notifications blocked"),
+        changelog: knobs.bool("Has What's New") ? ChangelogVersion.samples : []
     )
     // An empty Message knob means no alert.
     let message = Binding<String?>(
@@ -350,3 +353,25 @@ private let importCardsStory = Story(
 private let sampleExportJSON = """
 [{"code":"9780201379624","color":"indigo","name":"Boots Advantage","order":0,"timestamp":"2023-11-14T22:13:20Z","type":"EAN-13"}]
 """
+
+@MainActor
+private let changelogStory = Story(
+    id: "changelog",
+    title: "ChangelogView",
+    section: "Screens",
+    galleryLayout: .oneAtATime,
+    knobs: [
+        .number("Versions", 2, in: 0...Double(ChangelogVersion.samples.count), step: 1),
+        .toggle("Newest in preparation", true)
+    ],
+    gallery: [
+        (name: "Two versions", view: pushed { ChangelogView(versions: ChangelogVersion.samples) }),
+        (name: "Empty", view: pushed { ChangelogView(versions: []) })
+    ]
+) { knobs in
+    var versions = Array(ChangelogVersion.samples.prefix(knobs.integer("Versions")))
+    if let newest = versions.first, !knobs.bool("Newest in preparation") {
+        versions[0] = ChangelogVersion(version: newest.version, date: Date(timeIntervalSince1970: 1_780_000_000), changes: newest.changes)
+    }
+    return pushed { ChangelogView(versions: versions) }
+}

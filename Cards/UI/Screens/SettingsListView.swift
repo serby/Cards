@@ -52,6 +52,16 @@ public struct SettingsListView: View {
                         }
                     }
                 }
+
+                if !state.changelog.isEmpty {
+                    NavigationLink {
+                        ChangelogView(versions: state.changelog)
+                    } label: {
+                        Text("What's New")
+                            .foregroundColor(.primaryText)
+                    }
+                    .accessibilityIdentifier("whatsNewRow")
+                }
             }
 
             Section {

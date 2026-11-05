@@ -9,6 +9,8 @@ public struct SettingsScreen: View {
     @AppStorage(ArrivalNotifier.enabledKey) private var arrivalNotifications = true
     @Environment(\.scenePhase) private var scenePhase
     @State private var notificationsBlocked = false
+    /// Read once: it ships with the app and does not change while it runs.
+    private static let changelog = ChangelogStore.bundled()
 
     @State private var message: String?
     @State private var showExportSheet = false
@@ -23,7 +25,8 @@ public struct SettingsScreen: View {
                 authorName: "Paul Serby",
                 authorURL: URL(string: "https://github.com/serby"),
                 cardCount: cards.count,
-                notificationsBlocked: notificationsBlocked
+                notificationsBlocked: notificationsBlocked,
+                changelog: Self.changelog
             ),
             brightnessBoost: $brightnessBoost,
             arrivalNotifications: $arrivalNotifications,

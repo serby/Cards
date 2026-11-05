@@ -145,3 +145,26 @@ public extension CardWidgetState {
 
     static let invalidCode = CardWidgetState(name: "Broken Card", code: "not-a-valid-ean", barcodeType: .ean13, color: .purple)
 }
+
+public extension ChangelogVersion {
+    static let samples: [ChangelogVersion] = [
+        ChangelogVersion(
+            version: "1.3",
+            date: nil,
+            changes: [
+                ChangelogChange(kind: .new, text: "Add the Home Screen widget to see the barcode of the card for where you are."),
+                ChangelogChange(kind: .new, text: "Give each card a colour from 23, or pick any colour you like."),
+                ChangelogChange(kind: .improved, text: "Cards show their full colour in the list."),
+                ChangelogChange(kind: .fixed, text: "The message for a code that cannot be drawn is readable in dark mode.")
+            ]
+        ),
+        ChangelogVersion(
+            version: "1.1",
+            date: Date(timeIntervalSince1970: 1_767_268_800),
+            changes: [
+                ChangelogChange(kind: .new, text: "Scan a barcode with the camera to add a card."),
+                ChangelogChange(kind: .improved, text: "The screen brightens when you open a card.")
+            ]
+        )
+    ]
+}
