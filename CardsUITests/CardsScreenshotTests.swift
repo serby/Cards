@@ -58,11 +58,16 @@ final class CardsScreenshotTests: XCTestCase {
         let nameField = app.textFields["Card name"]
         XCTAssertTrue(nameField.waitForExistence(timeout: 5))
         // The name field takes focus on its own after a moment, bringing up the
-        // keyboard when the simulator shows one. Scrolling the form puts it away.
-        let focused = NSPredicate(format: "hasKeyboardFocus == true")
-        _ = XCTWaiter.wait(for: [expectation(for: focused, evaluatedWith: nameField)], timeout: 3)
-        app.descendants(matching: .any)["editCardForm"].firstMatch.swipeDown()
-        XCTAssertTrue(app.keyboards.firstMatch.waitForNonExistence(timeout: 3))
+        // keyboard when the simulator shows one. Return puts it away. Scrolling
+        // would too, but a scroll up shrinks the tab bar to a single button.
+        if app.keyboards.firstMatch.waitForExistence(timeout: 4) {
+            app.typeText("\n")
+            // In case Return does not do it on some display; a swipe is the fallback.
+            if !waitForKeyboardToGo(app, timeout: 1.5) {
+                app.descendants(matching: .any)["editCardForm"].firstMatch.swipeDown()
+            }
+        }
+        XCTAssertTrue(waitForKeyboardToGo(app, timeout: 3))
         attach(app, name: "03_EditCard\(suffix)")
 
         // Below the palette on smaller screens, such as the iPhone Duo's outer display.
@@ -85,6 +90,20 @@ final class CardsScreenshotTests: XCTestCase {
     }
 
     @MainActor
+    /// Whether the keyboard has left the screen. On the iPhone Duo's outer display
+    /// it stays in the hierarchy below the screen once put away, so it never stops existing.
+    private func waitForKeyboardToGo(_ app: XCUIApplication, timeout: TimeInterval) -> Bool {
+        let deadline = Date.now.addingTimeInterval(timeout)
+        repeat {
+            let keyboard = app.keyboards.firstMatch
+            if !keyboard.exists || keyboard.frame.minY >= app.frame.maxY {
+                return true
+            }
+            Thread.sleep(forTimeInterval: 0.2)
+        } while Date.now < deadline
+        return false
+    }
+
     private func attach(_ app: XCUIApplication, name: String) {
         let screenshot = app.screenshot()
         let attachment = XCTAttachment(screenshot: screenshot)
