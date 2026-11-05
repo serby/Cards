@@ -31,6 +31,5 @@ As a card holder, I want to read what each version of the app changed, so that I
 - A change of a kind the app doesn't know is left out, and the rest of the changelog still shows.
 - `changelog.json` is also the source of `CHANGELOG.md` and the App Store's What's New text (`scripts/changelog.ts`), so the app and the store say the same thing.
 
-**Since:** In preparation for 1.3
+**Since:** 1.3
 **Where:** `Cards/UI/Screens/ChangelogView.swift`, `Cards/Core/Services/ChangelogStore.swift`, `Cards/Core/Models/Changelog.swift`, `Cards/UI/Screens/SettingsListView.swift`, `changelog.json`, `scripts/changelog.ts`, `CardsTests/ChangelogTests.swift`
-**Notes:** Written against the work in progress, before it was committed. Check each criterion against the code when it is on `main`.
