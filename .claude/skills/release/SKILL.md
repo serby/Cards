@@ -32,7 +32,7 @@ Ask Paul before submitting: it publishes to the App Store and cannot be taken ba
 3. **Date it:** set the version's `date` to today, then `generate`. The date is the day it is released on the App Store, which normally follows approval within a day or two. If Apple releases it on a different day, correct the date the next time you mark changes.
 4. **Settle the spec:** change any "In preparation for <version>" stories to "Since: <version>".
 5. **Screenshots:** if any screen the App Store shows has changed, run `make capture-screenshots`, then `make store-screenshots`, and look at every changed image.
-6. **Validate:** run the loop in `docs/DEVELOPMENT.md` section 2, plus `node scripts/changelog.ts check` and `node scripts/check-metadata.ts`. Commit, push, and wait for CI and the TestFlight deploy to pass.
+6. **Validate:** run the loop in `docs/DEVELOPMENT.md` section 2, plus `node scripts/changelog.ts check` and `node scripts/check-metadata.ts`. Commit, push, and wait for CI to pass.
 7. **Prepare the listing:** run the App Store listing workflow. Do a dry run first, then for real:
 
    ```bash

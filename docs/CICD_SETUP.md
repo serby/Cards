@@ -92,7 +92,7 @@ git tag v1.0.0
 git push origin v1.0.0
 ```
 
-This will trigger the deployment workflow and upload to TestFlight.
+This triggers `release.yml`, which builds, uploads and submits the version for App Store review. Pushes to `main` only run CI.
 
 ## Troubleshooting
 

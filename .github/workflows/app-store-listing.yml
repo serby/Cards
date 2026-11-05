@@ -18,7 +18,7 @@ on:
         type: string
         required: false
       prepare-version:
-        description: "Prepare the version first: set its number and attach its newest build (needs a version)"
+        description: "Prepare the version first: give it its number, creating it if needed (needs a version). The release workflow attaches the build"
         type: boolean
         default: false
       metadata:
@@ -72,7 +72,7 @@ jobs:
         ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
         ASC_KEY_CONTENT: ${{ secrets.ASC_KEY_CONTENT }}
       run: |
-        args=(--version "$VERSION" --build latest)
+        args=(--version "$VERSION")
         if [[ "$DRY_RUN" == "true" ]]; then args+=(--dry-run); fi
         node scripts/asc-version.ts "${args[@]}"
 

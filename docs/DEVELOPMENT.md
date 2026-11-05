@@ -38,7 +38,7 @@ Anything Paul needs to see and shape, such as a new screen, a new flow or a chan
 
 1. Build it, run the loop below, and run it in the simulator (`make sim`; launch with `-uiTesting -screenshotSeed` for the seeded cards and a fixed location).
 2. Show it: say what changed and share simulator screenshots of each affected screen, in light and dark mode where it matters.
-3. Iterate on the feedback. Commit as you go, but do not push: a push to `main` uploads a TestFlight build, and it is not ready for testers until Paul says so.
+3. Iterate on the feedback. Commit as you go, but do not push: `main` is what the next version ships from, and the change is not ready until Paul says so.
 4. Once Paul agrees it ships as a new version of the app, refresh the screenshots (`make capture-screenshots`, then `make store-screenshots`), commit them, run the loop again and push. Update the App Store listing when that version is being prepared for release ([Update the App Store listing](#update-the-app-store-listing)).
 
 Fixes, tooling and documentation that change nothing on screen do not need this and can be pushed when the loop passes.
@@ -203,8 +203,8 @@ The target builds in Swift 6 language mode with strict concurrency, `SWIFT_TREAT
 
 ### Rule 10: Commits tell a story, straight on `main`
 
-- **Work on `main`.** Cards has one contributor, so there are no feature branches and no pull requests: commit to `main` and push. Pushing is the release step, because a push to `main` runs CI and, when CI passes, `deploy.yml` uploads a TestFlight build. Push when the change is ready for testers, and run the loop in section 2 first so CI is a formality. A feature Paul needs to see is ready only once he has agreed it ships ([section 2](#shape-features-in-the-simulator-before-they-ship)).
-- **Build numbers are automatic.** The deploy job passes a build number from the time on the runner to `scripts/build-ipa.sh` as `BUILD_NUMBER`, which sets `CURRENT_PROJECT_VERSION` for the app and widget together, and commits nothing back, so `main` never moves under you.
+- **Work on `main`.** Cards has one contributor, so there are no feature branches and no pull requests: commit to `main` and push. A push to `main` runs CI; nothing is uploaded until a version is tagged ([section 8](#8-releasing)). Push when the change is ready to ship, and run the loop in section 2 first so CI is a formality. A feature Paul needs to see is ready only once he has agreed it ships ([section 2](#shape-features-in-the-simulator-before-they-ship)).
+- **Build numbers are automatic.** The release job passes a build number from the time on the runner to `scripts/build-ipa.sh` as `BUILD_NUMBER`, which sets `CURRENT_PROJECT_VERSION` for the app and widget together, and commits nothing back, so `main` never moves under you.
 - One concern per commit, with a conventional prefix: `feat`, `fix`, `refactor`, `style`, `test`, `build`, `ci`, `docs`, `chore`.
 - The subject says what changed; the body says why, and anything a reviewer could trip over.
 - Each commit builds. Run the loop in section 2 before committing.
@@ -270,14 +270,13 @@ Ask for the release skill ("mark the changes"), or follow [.claude/skills/releas
 
 The release skill runs these steps; they are here for reference.
 
-1. Set `MARKETING_VERSION` in the project-level build settings to the new version (for example `1.3`); the app and the widget inherit it, and App Store Connect rejects an extension whose version differs from its app. Commit and push. Every push to `main` puts a build on TestFlight.
-2. Wait for that push's CI and TestFlight deploy to finish; App Store Connect rejects two uploads arriving at once.
-3. Tag the commit with an annotated tag whose name matches the version and whose message is its What's New from the changelog, then push the tag:
+1. Set `MARKETING_VERSION` in the project-level build settings to the new version (for example `1.3`); the app and the widget inherit it, and App Store Connect rejects an extension whose version differs from its app. Commit and push, and wait for CI to pass.
+2. Tag the commit with an annotated tag whose name matches the version and whose message is its What's New from the changelog, then push the tag:
    ```bash
    git tag -a v1.3 -F <(node scripts/changelog.ts notes 1.3)
    git push origin v1.3
    ```
-4. `release.yml` stamps a build number, archives, signs and uploads, waits for Apple to process the build, creates the App Store version, attaches the build, sets "What's New" in every localisation and submits it for review (`scripts/asc-submit.sh`). A tag without a message stops the workflow before it uploads anything.
+3. `release.yml` stamps a build number, archives, signs and uploads, waits for Apple to process the build, creates the App Store version, attaches the build, sets "What's New" in every localisation and submits it for review (`scripts/asc-submit.sh`). A tag without a message stops the workflow before it uploads anything.
 5. The store listing (text and screenshots) is separate: see [Update the App Store listing](#update-the-app-store-listing).
 
 ### Update the App Store listing
@@ -287,7 +286,7 @@ Everything on the App Store product page lives in the repository, so it can be c
 - **Text:** `metadata/<locale>/`: `name.txt` (30 characters), `subtitle.txt` (30), `keywords.txt` (100 bytes, comma-separated, no words already in the name or subtitle), `promotional_text.txt` (170), `description.txt` (4,000), `release_notes.txt` ("What's New", 4,000), `review_notes.txt` for App Review, and the URLs. `node scripts/check-metadata.ts` (`make check-metadata`) checks every limit, and CI runs it. Write en-GB in British English and en-US in American, and keep both saying the same thing. The annotated release tag's message should match `release_notes.txt`.
 - **Raw screenshots:** `make capture-screenshots` (about half an hour) captures each screen on the iPhone 17 Pro Max, iPad Pro 13-inch and iPhone Duo simulators in both locales, into `screenshots/<locale>/`, with the status bar at 9:41. `CardsScreenshotTests` takes the list, a card, the edit form and the map; `CardsWidgetScreenshotTests` adds the widget to the Home Screen as a person would and keeps a band of the screen round it. Look at every changed PNG and commit them in their own `test:` commit; CI compares the list, card and edit shots with them.
 - **Store images:** `make store-screenshots` composes what is uploaded: `screenshots/store/<locale>/`, one image per entry in that folder's `captions.json` for each device. An entry names the image (`file`), the raw capture it shows (`screen`), a card colour for the background (`color`), a `title` and `subtitle`, and a `layout`: `screen` frames a whole screen, `band` shows a strip such as the widget's edge to edge. Edit the captions or order, run it again and look at the result. The composer is `Cards/Development/StoreScreenshot.swift`, rendered by `StoreScreenshotTests`, which only runs when `make store-screenshots` turns it on.
-- **Uploading:** after pushing, run the **App Store listing** workflow (Actions tab, or `gh workflow run app-store-listing.yml`). It updates the editable App Store version: with **prepare version** and a version number it first renames that version and attaches the newest processed build of it, then uploads the text and makes each display type's screenshots match `screenshots/store/`: images already there with the same name and checksum are kept, the rest are sent, and it waits for Apple to process them all. Apple can take a quarter of an hour per image on a slow day, so if a run reports images still processing, run it again later: it sends nothing new and reports their state. `--replace` sends everything again. Tick **dry run** to see what would change. `make upload-metadata` and `make upload-screenshots` do the same parts locally, given an API key in the environment.
+- **Uploading:** after pushing, run the **App Store listing** workflow (Actions tab, or `gh workflow run app-store-listing.yml`). It updates the editable App Store version: with **prepare version** and a version number it first gives the editable version that number, or creates it, then uploads the text and makes each display type's screenshots match `screenshots/store/`: images already there with the same name and checksum are kept, the rest are sent, and it waits for Apple to process them all. Apple can take a quarter of an hour per image on a slow day, so if a run reports images still processing, run it again later: it sends nothing new and reports their state. `--replace` sends everything again. Tick **dry run** to see what would change. `make upload-metadata` and `make upload-screenshots` do the same parts locally, given an API key in the environment.
 - **Screenshot sizes:** iPhone 6.9" 1320 × 2868 (App Store Connect scales them for smaller iPhones), iPad 13" 2064 × 2752, and iPhone Duo's outer display 1398 × 2034 (the simulator boots folded; App Store Connect also takes the inner display's 2007 × 2853). The Duo display type is `APP_IPHONE_DUO`, which App Store Connect accepts although the published API spec does not list it yet. Images must have no alpha channel.
 
 ## 6. Running and driving the simulator
@@ -317,12 +316,12 @@ Xcode 27 has no Simulator.app; `make sim` opens Device Hub to show the screen, a
 
 ## 8. Releasing
 
-1. Push to `main` (rule 10). CI runs lint, the build, the release check, the tests and the screenshot comparison, and when it is green `deploy.yml` uploads to TestFlight.
+1. Push to `main` (rule 10). CI runs the build, the metadata and changelog checks, the release check, the tests and the screenshot checks, but not SwiftLint. Nothing is uploaded on a push.
 2. If the build adds stored fields, deploy the CloudKit schema first; Production rejects records whose type or fields it does not have, with "Cannot create new type … in production schema" or "Cannot create or modify field …". Launch a Debug build once with `-initializeCloudKitSchema`, on a device or simulator signed in to iCloud, and wait for the log line "CloudKit schema initialised in the Development environment". Then open the [CloudKit Console](https://icloud.developer.apple.com/dashboard/), choose `iCloud.net.serby.Cards`, and use **Deploy Schema Changes** to copy the Development schema to Production.
-3. `make deploy-testflight` or `make deploy-appstore` archive with `scripts/build-ipa.sh` and upload with an App Store Connect API key (`ASC_KEY_ID`, `ASC_ISSUER_ID`, `ASC_KEY_CONTENT`). In CI, `deploy.yml` uploads to TestFlight after CI passes on `main`, and `release.yml` submits to the App Store on `v*` tags.
+3. `make deploy-testflight` or `make deploy-appstore` archive with `scripts/build-ipa.sh` and upload with an App Store Connect API key (`ASC_KEY_ID`, `ASC_ISSUER_ID`, `ASC_KEY_CONTENT`). In CI, `release.yml` builds, uploads and submits to the App Store on `v*` tags. There is no TestFlight upload in CI; run `make deploy-testflight` to put a build on TestFlight by hand.
 4. The **App Store listing** workflow pushes the listing text from `metadata/` and the store images from `screenshots/store/` ([section 5](#update-the-app-store-listing)).
 
-`.github/workflows/ci.yml`, `deploy.yml` and `release.yml` are the source of truth for the pipelines; `docs/CICD_SETUP.md` and `docs/DEPLOYMENT.md` cover the one-off account and secrets setup.
+`.github/workflows/ci.yml`, `release.yml` and `app-store-listing.yml` are the source of truth for the pipelines; `docs/CICD_SETUP.md` and `docs/DEPLOYMENT.md` cover the one-off account and secrets setup.
 
 ## 9. Troubleshooting
 
