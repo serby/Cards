@@ -34,18 +34,17 @@ struct CardsApp: App {
 
     @ViewBuilder
     private var tabView: some View {
-        TabView {
-            Tab("Cards", systemImage: "barcode") {
-                let nav = Bindable(navigationManager)
+        let nav = Bindable(navigationManager)
+        TabView(selection: nav.tab) {
+            // The stack keeps its place when you switch tabs, so a card opened from
+            // a link or notification while Settings was showing is still there.
+            Tab("Cards", systemImage: "barcode", value: AppTab.cards) {
                 NavigationStack(path: nav.navigationPath) {
                     CardListScreen()
                         .environment(navigationManager)
                 }
-                .onAppear {
-                    navigationManager.resetToRoot()
-                }
             }
-            Tab("Settings", systemImage: "gearshape") {
+            Tab("Settings", systemImage: "gearshape", value: AppTab.settings) {
                 NavigationStack {
                     SettingsScreen()
                 }

@@ -64,11 +64,11 @@ enum DevelopmentHooks {
 
     /// Tabs that only exist while developing: the Storybook, kept out of UI
     /// tests so they see the shipping UI. Never shown in release.
-    @TabContentBuilder<Never>
-    static var tabs: some TabContent<Never> {
+    @TabContentBuilder<AppTab>
+    static var tabs: some TabContent<AppTab> {
         // A tab builder cannot be empty, so release keeps the tab and drops it here.
         if showsStorybook {
-            Tab("Storybook", systemImage: "square.grid.2x2") {
+            Tab("Storybook", systemImage: "square.grid.2x2", value: AppTab.storybook) {
                 storybook
             }
         }
