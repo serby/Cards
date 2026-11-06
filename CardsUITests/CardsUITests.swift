@@ -14,6 +14,18 @@ import XCTest
 class CardsUITests: XCTestCase {
     /// Launch arguments for a variant of the suite, such as another language.
     class var variantArguments: [String] { [] }
+    /// Whether the variant lays the app out right to left.
+    class var isRightToLeft: Bool { false }
+
+    /// Whether the tile `first` comes before `second` in the grid: on an earlier
+    /// row, or on the same row nearer its leading edge, the right right to left.
+    @MainActor
+    func readsBefore(_ first: XCUIElement, _ second: XCUIElement) -> Bool {
+        let one = first.frame
+        let other = second.frame
+        guard abs(one.minY - other.minY) < 1 else { return one.minY < other.minY }
+        return Self.isRightToLeft ? one.maxX > other.maxX : one.minX < other.minX
+    }
 
     override func setUpWithError() throws {
         continueAfterFailure = false
@@ -26,22 +38,6 @@ class CardsUITests: XCTestCase {
         return XCTWaiter.wait(for: [expectation(for: predicate, evaluatedWith: element)], timeout: timeout) == .completed
     }
 
-    @MainActor
-    func debugElements(_ app: XCUIApplication) {
-        print("=== DEBUG: All TextFields ===")
-        for textField in app.textFields.allElementsBoundByIndex {
-            print("TextField: '\(textField.identifier)' - label: '\(textField.label)' - exists: \(textField.exists)")
-        }
-        print("=== DEBUG: All Buttons ===")
-        for button in app.buttons.allElementsBoundByIndex {
-            print("Button: '\(button.identifier)' - label: '\(button.label)' - exists: \(button.exists)")
-        }
-        print("=== DEBUG: All Static ===")
-        for text in app.staticTexts.allElementsBoundByIndex {
-            print("Static Text: '\(text.identifier)' - label: '\(text.label)' - exists: \(text.exists)")
-        }
-    }
-    
     @MainActor
     func testAdd() throws {
         let app = XCUIApplication()
@@ -84,13 +80,14 @@ class CardsUITests: XCTestCase {
         let joesMarket = app.buttons[SeededCard.joesMarket]
         let localRoast = app.buttons[SeededCard.localRoast]
         XCTAssertTrue(joesMarket.waitForExistence(timeout: 5))
-        XCTAssertLessThan(joesMarket.frame.minY, localRoast.frame.minY)
+        // Side by side on the grid's first row.
+        XCTAssertTrue(readsBefore(joesMarket, localRoast), "Joe's Market is not first")
 
         let moveDown = app.buttons["moveCardDownMenuItem"]
         XCTAssertTrue(app.openMenu(on: joesMarket, showing: moveDown), "The card's menu did not open")
         XCTAssertFalse(app.buttons["moveCardUpMenuItem"].exists, "The first card offered to move up")
         moveDown.tap()
-        XCTAssertTrue(waitUntil { localRoast.frame.minY < joesMarket.frame.minY }, "Joe's Market did not move below Local Roast Coffee")
+        XCTAssertTrue(waitUntil { readsBefore(localRoast, joesMarket) }, "Joe's Market did not move after Local Roast Coffee")
 
         let delete = app.buttons["deleteCardMenuItem"]
         XCTAssertTrue(app.openMenu(on: joesMarket, showing: delete), "The card's menu did not open")
@@ -244,13 +241,17 @@ class CardsUITests: XCTestCase {
         let honeycomb = tile(app, "Honeycomb Rewards")
         let joesMarket = tile(app, "Joe's Market")
         XCTAssertTrue(waitForElement(honeycomb))
-        honeycomb.press(forDuration: 1, thenDragTo: joesMarket)
+        // Moved as soon as the tile lifts, before its menu opens: the menu now
+        // offers Move Up and Move Down too, opens in the drag's path, and after
+        // a one-second press the drag ran onto it and never left the tile.
+        // Held over the target so it takes the drop.
+        honeycomb.press(forDuration: 0.6, thenDragTo: joesMarket, withVelocity: .slow, thenHoldForDuration: 1)
 
-        // Honeycomb Rewards is now first, at the top left, and Joe's Market moved along beside it.
-        let moved = NSPredicate { _, _ in
-            honeycomb.frame.minX < joesMarket.frame.minX && abs(honeycomb.frame.minY - joesMarket.frame.minY) < 1
-        }
-        XCTAssertEqual(XCTWaiter.wait(for: [expectation(for: moved, evaluatedWith: nil)], timeout: 5), .completed)
+        // Honeycomb Rewards is now first, and Joe's Market moved along beside it.
+        XCTAssertTrue(
+            waitUntil { readsBefore(honeycomb, joesMarket) && abs(honeycomb.frame.minY - joesMarket.frame.minY) < 1 },
+            "Honeycomb Rewards did not take Joe's Market's place"
+        )
     }
 
     /// Location order puts the cards with places first and Honeycomb Rewards, which has
@@ -293,7 +294,7 @@ class CardsUITests: XCTestCase {
         XCTAssertEqual(cardHere.label, "Joe's Market, You're at Joe's Market Notting Hill")
         XCTAssertTrue(tile(app, "Local Roast Coffee").exists)
         cardHere.tap()
-        XCTAssertTrue(waitForElement(app.staticTexts["Card name: Joe's Market"]))
+        XCTAssertTrue(waitForLabel(app.staticTexts["cardNameText"], "Joe's Market", timeout: 5))
     }
 
     @MainActor
@@ -375,6 +376,7 @@ final class CardsRightToLeftUITests: CardsUITests {
     override static var variantArguments: [String] {
         ["-AppleTextDirection", "YES", "-NSForceRightToLeftWritingDirection", "YES"]
     }
+    override static var isRightToLeft: Bool { true }
 
     /// The first tab, Cards, is drawn on the right.
     @MainActor
