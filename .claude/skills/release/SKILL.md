@@ -5,9 +5,9 @@ description: The standard way to mark changes to Card Barcodes and release them.
 
 # Release: mark changes and ship versions
 
-`changelog.json` at the repository root is the single record of what changed for the people using the app. `node scripts/generate-changelog.ts` turns it into `CHANGELOG.md` and each locale's `metadata/<locale>/release_notes.txt` (the App Store's What's New), and the app bundles it for Settings > What's New. CI runs `node scripts/check-changelog.ts`, which fails if a generated file is stale or if the newest version in the changelog is not the app's `MARKETING_VERSION`. `spec/` holds the user stories for the whole app.
+`changelog.json` at the repository root is the single record of what changed for the people using the app, in every language the app and its App Store listing ship in. `node scripts/generate-changelog.ts` turns it into `CHANGELOG.md` (British English) and each store locale's `metadata/<locale>/release_notes.txt` (the App Store's What's New, one per folder in `metadata/`), and the app bundles it for Settings > What's New, which shows each change in the app's language. CI runs `node scripts/check-changelog.ts`, which fails if a generated file is stale or if the newest version in the changelog is not the app's `MARKETING_VERSION`. `spec/` holds the user stories for the whole app.
 
-Read `AGENTS.md` and `docs/DEVELOPMENT.md` first. Rule 11 applies: a change Paul needs to see is only marked and pushed once he has agreed it ships.
+Read `AGENTS.md` and `docs/DEVELOPMENT.md` first, and `l10n/context.md` with the style guide in `l10n/languages/` for each language you translate into. Rule 11 applies: a change Paul needs to see is only marked and pushed once he has agreed it ships.
 
 ## Mark changes
 
@@ -19,8 +19,9 @@ Run this whenever an agreed change is about to be pushed, or when asked to mark 
    - **Wording:** one short sentence each, saying what the person can do or what changed: "Give each card a colour from 23, or pick any colour you like."
    - **Spelling:** `text` is British English. Add `"en-US"` only where American English differs (colour/color, till/checkout, postcode/ZIP code).
    - **Voice:** Paul's, as [docs/LANGUAGE.md](../../../docs/LANGUAGE.md) sets out. Plain and active, no hype, no exclamation marks, "it is" and "that is" in full, no em-dashes, never "land" for shipping, and no real brand names.
+   - **Translations:** every entry of the version in preparation carries a translation for each of the app's languages (the project's `knownRegions` besides `en`: today `"es"`, `"de"` and `"ja"`), beside `text`. Add a regional key only where a store listing's wording differs from its language's, as `"en-US"` does for English: `"es-MX"` for Mexican Spanish (agregar for añadir, ícono for icono, lealtad for fidelización). Translate the meaning, not the words, as each style guide asks, and use the app's own translations of the screens and settings an entry names, so What's New and the app agree (`node scripts/l10n.ts export --lang <code> --force --out -` shows them). `check-changelog.ts` fails while the newest version lacks a text for any store locale. Older versions may stay in English; the app shows their British English.
 4. **Update the spec.** For each change, update the matching stories in `spec/`, or add new ones with an ID, acceptance criteria and "Since:" the version. Keep `spec/README.md`'s index current.
-5. **Generate and check:** `node scripts/generate-changelog.ts`, then `node scripts/check-changelog.ts` and `node scripts/check-metadata.ts`.
+5. **Generate and check:** `node scripts/generate-changelog.ts`, then `node scripts/check-changelog.ts` and `node scripts/check-metadata.ts`. Read each locale's `release_notes.txt` through once: it is what the App Store shows in that language.
 6. **Commit** the changelog, generated files and spec together as `docs(changelog): <what>`. Commit the version bump separately as `chore: version <x.y>`, explaining why.
 
 ## Release a version
@@ -48,4 +49,4 @@ Ask Paul before submitting: it publishes to the App Store and cannot be taken ba
    git push origin v<version>
    ```
 
-   `release.yml` builds, uploads, attaches the build, sets What's New from the tag and submits it for review. Watch it through to the end and report the result.
+   `release.yml` builds, uploads, attaches the build, sets What's New (en-GB from the tag, every other locale from its `release_notes.txt`) and submits it for review. Watch it through to the end and report the result.

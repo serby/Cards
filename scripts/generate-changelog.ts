@@ -1,18 +1,21 @@
-// Generates everything that shows changelog.json outside the app: CHANGELOG.md
-// and each locale's metadata/<locale>/release_notes.txt, the App Store's What's
-// New for the newest version. It fails, writing nothing, if changelog.json is
-// malformed, and leaves files that are already up to date alone.
+// Generates everything that shows changelog.json outside the app: CHANGELOG.md,
+// in British English, and metadata/<locale>/release_notes.txt for every store
+// locale (each folder in metadata/), the App Store's What's New for the newest
+// version in that listing's language. It fails, writing nothing, if
+// changelog.json is malformed or the newest version lacks a store locale's
+// text, and leaves files that are already up to date alone.
 //
 // Usage: node scripts/generate-changelog.ts
 
 import { writeFileSync } from "node:fs";
-import { load, staleOutputs, throwIfProblems, validate } from "./lib/changelog.ts";
+import { load, readLocales, staleOutputs, throwIfProblems, validate } from "./lib/changelog.ts";
 
 function main(): void {
     if (process.argv.length > 2) throw new Error("Usage: node scripts/generate-changelog.ts");
     const changelog = load();
-    throwIfProblems(validate(changelog));
-    for (const output of staleOutputs(changelog)) {
+    const locales = readLocales();
+    throwIfProblems(validate(changelog, locales));
+    for (const output of staleOutputs(changelog, locales)) {
         writeFileSync(output.path, output.text);
         console.log(`wrote ${output.name}`);
     }

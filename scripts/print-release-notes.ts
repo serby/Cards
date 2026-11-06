@@ -1,14 +1,16 @@
 // Prints a version's What's New from changelog.json, one change a line, new
-// first, for the release tag's message. British English unless --locale
-// en-US asks for American.
+// first, for the release tag's message. British English (en-GB) unless
+// --locale names another store locale, a folder in metadata/. It fails if the
+// version has no text in that locale for a change, as an older version may not.
 //
-// Usage: node scripts/print-release-notes.ts <version> [--locale en-US]
+// Usage: node scripts/print-release-notes.ts <version> [--locale <store locale>]
 // For example: git tag -a v1.3 -F <(node scripts/print-release-notes.ts 1.3)
+//              node scripts/print-release-notes.ts 1.4 --locale es-MX
 
 import { parseArgs } from "node:util";
-import { isLocale, load, locales, releaseNotes } from "./lib/changelog.ts";
+import { load, readLocales, releaseNotes } from "./lib/changelog.ts";
 
-const usage = "Usage: node scripts/print-release-notes.ts <version> [--locale en-US]";
+const usage = "Usage: node scripts/print-release-notes.ts <version> [--locale <store locale>]";
 
 function main(): void {
     const { values, positionals } = parseArgs({
@@ -20,7 +22,8 @@ function main(): void {
     if (positionals.length !== 1) throw new Error(usage);
     const [versionString] = positionals;
     const locale = values.locale;
-    if (!isLocale(locale)) throw new Error(`--locale must be one of ${locales.join(", ")}`);
+    const { store } = readLocales();
+    if (!store.includes(locale)) throw new Error(`--locale must be a store locale: ${store.join(", ")}`);
     const version = load().versions.find((entry) => entry.version === versionString);
     if (!version) throw new Error(`No version ${versionString} in changelog.json`);
     process.stdout.write(releaseNotes(version, locale));

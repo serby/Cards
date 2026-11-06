@@ -6,53 +6,96 @@
       "changes": [
         {
           "type": "new",
-          "text": "Share a card as a link someone can add to their own Card Barcodes, or as a picture."
+          "text": "Share a card as a link someone can add to their own Card Barcodes, or as a picture.",
+          "es": "Comparte una tarjeta como un enlace que otra persona puede añadir a su propio Card Barcodes, o como una imagen.",
+          "es-MX": "Comparte una tarjeta como un enlace que otra persona puede agregar a su propio Card Barcodes, o como una imagen.",
+          "de": "Teile eine Karte als Link, den jemand in sein eigenes Card Barcodes übernehmen kann, oder als Bild.",
+          "ja": "カードを、相手が自分のCard Barcodesに追加できるリンクとして、または画像として共有できます。"
         },
         {
           "type": "new",
-          "text": "Search your cards, and sort them by last viewed, your own order or the nearest place."
+          "text": "Search your cards, and sort them by last viewed, your own order or the nearest place.",
+          "es": "Busca tus tarjetas y ordénalas por última visualización, en tu propio orden o por el lugar más cercano.",
+          "de": "Durchsuche deine Karten und sortiere sie nach zuletzt angesehen, nach deiner eigenen Reihenfolge oder nach dem nächsten Ort.",
+          "ja": "カードを検索して、最後に見た順、自分で決めた順、近い場所の順に並べ替えられます。"
         },
         {
           "type": "new",
-          "text": "Give each card an icon, from 76 in 16 groups, shown on its tile and on the card."
+          "text": "Give each card an icon, from 76 in 16 groups, shown on its tile and on the card.",
+          "es": "Pon a cada tarjeta un icono, entre 76 repartidos en 16 grupos, que aparece en la lista y en la propia tarjeta.",
+          "es-MX": "Ponle a cada tarjeta un ícono, entre 76 repartidos en 16 grupos, que aparece en la lista y en la propia tarjeta.",
+          "de": "Gib jeder Karte ein Symbol, aus 76 in 16 Gruppen, zu sehen in der Liste und auf der Karte.",
+          "ja": "16のグループに分かれた76個のアイコンから、カードごとにアイコンを選べます。アイコンは一覧とカードに表示されます。"
         },
         {
           "type": "new",
-          "text": "Add a card from a photo, a screenshot or a PDF of its barcode, such as an e-ticket."
+          "text": "Add a card from a photo, a screenshot or a PDF of its barcode, such as an e-ticket.",
+          "es": "Añade una tarjeta desde una foto, una captura de pantalla o un PDF de su código de barras, como una entrada electrónica.",
+          "es-MX": "Agrega una tarjeta desde una foto, una captura de pantalla o un PDF de su código de barras, como un boleto electrónico.",
+          "de": "Füge eine Karte aus einem Foto, einem Bildschirmfoto oder einem PDF ihres Barcodes hinzu, etwa aus einem E-Ticket.",
+          "ja": "バーコードが写った写真、スクリーンショット、PDF（電子チケットなど）からカードを追加できます。"
         },
         {
           "type": "new",
-          "text": "A card with several places lists the five nearest and how far away each is. Tap one to open it in Maps."
+          "text": "A card with several places lists the five nearest and how far away each is. Tap one to open it in Maps.",
+          "es": "Una tarjeta con varios lugares muestra los cinco más cercanos y a qué distancia está cada uno. Toca uno para abrirlo en Mapas.",
+          "de": "Eine Karte mit mehreren Orten zeigt die fünf nächsten und wie weit jeder entfernt ist. Tippe auf einen, um ihn in Apple Karten zu öffnen.",
+          "ja": "複数の場所があるカードでは、近い5か所とそれぞれまでの距離が表示されます。タップするとマップで開きます。"
         },
         {
           "type": "new",
-          "text": "Show the card for where you are in full above your other cards, with a new switch in Settings."
+          "text": "Show the card for where you are in full above your other cards, with a new switch in Settings.",
+          "es": "Muestra entera la tarjeta del lugar donde estás encima de tus demás tarjetas, con una nueva opción en Ajustes.",
+          "es-MX": "Muestra completa la tarjeta del lugar donde estás arriba de tus demás tarjetas, con una nueva opción en Ajustes.",
+          "de": "Zeige die Karte für den Ort, an dem du bist, vollständig über deinen anderen Karten, mit einem neuen Schalter in den Einstellungen.",
+          "ja": "「設定」の新しいスイッチで、今いる場所のカードをほかのカードの上に大きく表示できます。"
         },
         {
           "type": "new",
           "text": "Find a place by searching for a shop, a street, a town or a postcode. Places are named from the map, and you can change the name.",
-          "en-US": "Find a place by searching for a store, a street, a town or a ZIP code. Places are named from the map, and you can change the name."
+          "en-US": "Find a place by searching for a store, a street, a town or a ZIP code. Places are named from the map, and you can change the name.",
+          "es": "Encuentra un lugar buscando una tienda, una calle, una población o un código postal. Los lugares toman su nombre del mapa, y puedes cambiarlo.",
+          "es-MX": "Encuentra un lugar buscando una tienda, una calle, una ciudad o un código postal. Los lugares toman su nombre del mapa, y puedes cambiarlo.",
+          "de": "Finde einen Ort, indem du nach einem Geschäft, einer Straße, einer Stadt oder einer Postleitzahl suchst. Orte bekommen ihren Namen automatisch, und du kannst ihn ändern.",
+          "ja": "お店、通り、町、郵便番号で場所を検索できます。場所の名前はマップから付けられ、変更もできます。"
         },
         {
           "type": "new",
-          "text": "Change a place you have added to a card."
+          "text": "Change a place you have added to a card.",
+          "es": "Cambia un lugar que hayas añadido a una tarjeta.",
+          "es-MX": "Cambia un lugar que hayas agregado a una tarjeta.",
+          "de": "Ändere einen Ort, den du einer Karte hinzugefügt hast.",
+          "ja": "カードに追加した場所を変更できます。"
         },
         {
           "type": "new",
-          "text": "Import cards from a JSON file, as well as by pasting."
+          "text": "Import cards from a JSON file, as well as by pasting.",
+          "es": "Importa tarjetas desde un archivo JSON, además de pegándolas.",
+          "de": "Importiere Karten aus einer JSON-Datei, nicht nur durch Einsetzen.",
+          "ja": "ペーストに加えて、JSONファイルからもカードを読み込めます。"
         },
         {
           "type": "improved",
           "text": "The camera focuses on a card held close. Tap to focus, or turn on the torch in low light.",
-          "en-US": "The camera focuses on a card held close. Tap to focus, or turn on the flashlight in low light."
+          "en-US": "The camera focuses on a card held close. Tap to focus, or turn on the flashlight in low light.",
+          "es": "La cámara enfoca una tarjeta que tengas cerca. Toca para enfocar, o enciende la linterna si hay poca luz.",
+          "de": "Die Kamera stellt auf eine nah gehaltene Karte scharf. Tippe zum Scharfstellen, oder schalte bei wenig Licht die Taschenlampe ein.",
+          "ja": "近づけたカードにもカメラのピントが合います。タップしてピントを合わせたり、暗い場所ではライトをつけたりできます。"
         },
         {
           "type": "improved",
-          "text": "Your cards are laid out in a grid, two across on iPhone and four on iPad. Press and hold a card to delete it, or delete it from its edit screen."
+          "text": "Your cards are laid out in a grid, two across on iPhone and four on iPad. Press and hold a card to delete it, or delete it from its edit screen.",
+          "es": "Tus tarjetas se muestran en una cuadrícula, de dos en dos en el iPhone y de cuatro en cuatro en el iPad. Mantén pulsada una tarjeta para eliminarla, o elimínala desde su pantalla de edición.",
+          "es-MX": "Tus tarjetas se muestran en una cuadrícula, de dos en dos en el iPhone y de cuatro en cuatro en el iPad. Mantén presionada una tarjeta para eliminarla, o elimínala desde su pantalla de edición.",
+          "de": "Deine Karten erscheinen in einem Raster, zwei nebeneinander auf dem iPhone und vier auf dem iPad. Halte eine Karte gedrückt, um sie zu löschen, oder lösche sie beim Bearbeiten.",
+          "ja": "カードがグリッドで表示されます（iPhoneでは2列、iPadでは4列）。カードを長押しして削除するか、編集画面から削除できます。"
         },
         {
           "type": "fixed",
-          "text": "Opening a card no longer plays a haptic, which it only did the first time."
+          "text": "Opening a card no longer plays a haptic, which it only did the first time.",
+          "es": "Abrir una tarjeta ya no produce una respuesta háptica, algo que solo ocurría la primera vez.",
+          "de": "Beim Öffnen einer Karte gibt es kein haptisches Feedback mehr, das es nur beim ersten Mal gab.",
+          "ja": "カードを開いたときに触覚フィードバックが発生しなくなりました。以前は最初の1回だけ発生していました。"
         }
       ]
     },
