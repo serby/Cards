@@ -5,7 +5,11 @@
 //      processing, polling every 30 seconds for up to 30 minutes;
 //   3. find the App Store version MARKETING_VERSION, or create it;
 //   4. attach the build to the version;
-//   5. set What's New on every localisation of the version;
+//   5. set What's New on every localisation of the version: en-GB's from
+//      WHATS_NEW, the release tag's message, and each other's from
+//      metadata/<locale>/release_notes.txt, which scripts/generate-changelog.ts
+//      writes from changelog.json in that listing's language and CI checks. A
+//      localisation without that file gets WHATS_NEW too;
 //   6. submit it for review: reuse the app's review submission that is ready for
 //      review, or create one, add the version to it, and submit it.
 //
@@ -14,13 +18,17 @@
 // Usage: MARKETING_VERSION=1.3 BUILD_VERSION=... WHATS_NEW=... node scripts/submit-for-review.ts [--dry-run]
 //   MARKETING_VERSION  the App Store version, such as 1.3
 //   BUILD_VERSION      CFBundleVersion of the uploaded build to attach
-//   WHATS_NEW          the release notes
+//   WHATS_NEW          en-GB's release notes, and any localisation's without
+//                      a metadata/<locale>/release_notes.txt
 //   BUNDLE_ID          the app (default net.serby.Cards)
 //   --dry-run          report what it would do, sending only GET requests and
 //                      not waiting; BUILD_VERSION and WHATS_NEW are optional
 // Needs ASC_KEY_ID, ASC_ISSUER_ID and ASC_KEY_CONTENT (see scripts/lib/app-store-connect.ts).
 
+import { existsSync, readFileSync } from "node:fs";
+import { join } from "node:path";
 import { parseArgs } from "node:util";
+import { metadataDir } from "./check-metadata.ts";
 import {
     AppStoreConnect,
     AppStoreConnectError,
@@ -36,6 +44,9 @@ import {
 const usage = "Usage: MARKETING_VERSION=1.3 BUILD_VERSION=<CFBundleVersion> WHATS_NEW=<release notes> node scripts/submit-for-review.ts [--dry-run]";
 
 const platform = "IOS";
+/// The localisation whose What's New is WHATS_NEW, the release tag's message,
+/// which scripts/print-release-notes.ts writes in British English.
+const tagLocale = "en-GB";
 /// Apple's processing takes 5 to 30 minutes: 60 polls, 30 seconds apart.
 const processingAttempts = 60;
 const pollSeconds = 30;
@@ -216,28 +227,39 @@ async function attachBuild(asc: AppStoreConnect, versionId: string | undefined, 
     console.log("    Attached");
 }
 
+/// A localisation's What's New, and where it comes from: WHATS_NEW for en-GB,
+/// else metadata/<locale>/release_notes.txt, else WHATS_NEW again.
+export function whatsNewFor(locale: string, whatsNew: string | undefined, dir: string = metadataDir): { text: string | undefined; source: string } {
+    const file = join(dir, locale, "release_notes.txt");
+    const notes = locale !== tagLocale && existsSync(file) ? readFileSync(file, "utf8").trim() : "";
+    if (notes) return { text: notes, source: `metadata/${locale}/release_notes.txt` };
+    return { text: whatsNew, source: locale === tagLocale ? "WHATS_NEW" : `WHATS_NEW, as there is no metadata/${locale}/release_notes.txt` };
+}
+
 /// Step 5.
 async function setWhatsNew(asc: AppStoreConnect, versionId: string | undefined, options: SubmissionOptions): Promise<void> {
     const { whatsNew, dryRun } = options;
     console.log("==> Setting 'What's New' on all version localisations");
     if (!versionId) {
-        console.log("    Would set it on every localisation of the new version");
+        console.log(`    Would set it on every localisation of the new version: ${tagLocale}'s from WHATS_NEW, the others' from metadata/<locale>/release_notes.txt`);
         return;
     }
     const localizations = await asc.all<LocalizationAttributes>(`/v1/appStoreVersions/${versionId}/appStoreVersionLocalizations`);
     if (localizations.length === 0) console.log("    !! The version has no localisations");
     for (const localization of localizations) {
         const { locale } = localization.attributes;
+        const { text, source } = whatsNewFor(locale, whatsNew);
+        const warning = source.startsWith("WHATS_NEW,") ? "!! " : "";
         if (dryRun) {
-            const current = localization.attributes.whatsNew ?? "";
-            const note = whatsNew === undefined ? (current ? "it has one now" : "it is empty now") : current === whatsNew ? "it already reads that" : current ? "replacing what it has" : "it is empty now";
-            console.log(`    ${locale}: would set What's New (${note})`);
+            const current = (localization.attributes.whatsNew ?? "").trim();
+            const note = text === undefined ? (current ? "it has one now" : "it is empty now") : current === text.trim() ? "it already reads that" : current ? "replacing what it has" : "it is empty now";
+            console.log(`    ${warning}${locale}: would set What's New from ${source} (${note})`);
             continue;
         }
         await asc.patch(`/v1/appStoreVersionLocalizations/${localization.id}`, {
-            data: { type: "appStoreVersionLocalizations", id: localization.id, attributes: { whatsNew } },
+            data: { type: "appStoreVersionLocalizations", id: localization.id, attributes: { whatsNew: text } },
         });
-        console.log(`    ${locale} updated`);
+        console.log(`    ${warning}${locale} updated from ${source}`);
     }
 }
 

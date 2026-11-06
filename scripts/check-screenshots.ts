@@ -1,6 +1,6 @@
 // Checks the raw App Store captures in screenshots/<locale>/, before they are
-// committed: there are exactly the en-GB and en-US folders (besides store/),
-// each holds exactly the expected PNGs, the iPhone, iPad and iPhone Duo screens
+// committed: there is exactly one folder (besides store/) for each store locale,
+// the folders in metadata/, each holds exactly the expected PNGs, the iPhone, iPad and iPhone Duo screens
 // are the right size, every file is an 8-bit RGB or RGBA PNG and none is
 // suspiciously small. capture-screenshots.ts runs it after each capture, and
 // the Makefile before it composes the store images. CI does not: it only checks
@@ -11,6 +11,7 @@
 
 import { closeSync, existsSync, openSync, readdirSync, readSync, statSync } from "node:fs";
 import { join, resolve } from "node:path";
+import { storeLocales } from "./lib/locales.ts";
 
 const root = join(import.meta.dirname, "..");
 
@@ -35,7 +36,7 @@ const expectedFiles = new Map<string, Size | undefined>([
     ["05_Widget_Duo.png", undefined],
     ["05_Widget_iPad.png", undefined],
 ]);
-const locales = ["en-GB", "en-US"];
+const locales = storeLocales();
 /// Smaller than this and a capture is probably blank or broken.
 const minimumBytes = 50_000;
 const pngSignature = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);

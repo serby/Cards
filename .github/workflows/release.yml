@@ -1,8 +1,9 @@
 name: Release to App Store
 
 # A v* tag builds and uploads the app, then submits the version for App Store
-# review with the tag's annotation as What's New. A manual run builds and
-# uploads but submits nothing. scripts/release-version.ts does the work.
+# review with the tag's annotation as en-GB's What's New and each other
+# localisation's from metadata/<locale>/release_notes.txt. A manual run builds
+# and uploads but submits nothing. scripts/release-version.ts does the work.
 
 on:
   push:
@@ -41,7 +42,8 @@ jobs:
         asc-key-content: ${{ secrets.ASC_KEY_CONTENT }}
 
     # Stamps a build number, builds and uploads, and on a tag also attaches the
-    # build to the version, sets What's New from the tag and submits for review.
+    # build to the version, sets What's New (en-GB's from the tag, the others'
+    # from metadata/) and submits for review.
     - name: Release
       env:
         ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}

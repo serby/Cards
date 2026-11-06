@@ -3,25 +3,30 @@
 // The images uploaded to the App Store are composed from them (make
 // store-screenshots). This runs locally only; CI captures nothing.
 //
-// With no arguments it captures every device in both locales, which takes about
-// half an hour; with a device, one device in one locale (en-US unless given).
-// The app is uninstalled first, so the widget test adds the only widget to a
-// clean Home Screen, and the status bar shows 9:41 with full signal and battery.
+// With no arguments it captures every device in every store locale (the
+// folders in metadata/), which takes about a quarter of an hour a locale; with a
+// device, one device in one locale (en-US unless given). Each locale runs in its
+// language and region, filling in the likely region where the locale names
+// none (ja runs in Japanese in Japan). The app is uninstalled first, so the
+// widget test adds the only widget to a clean Home Screen, and the status bar
+// shows 9:41 with full signal and battery.
 // After each capture it runs check-screenshots.ts over the whole set.
 //
 // Usage: node scripts/capture-screenshots.ts [<device> [<locale>]]
-//   node scripts/capture-screenshots.ts                                  # every device, en-US and en-GB
+//   node scripts/capture-screenshots.ts                                  # every device, every store locale
+//   node scripts/capture-screenshots.ts "iPhone 17 Pro Max" ja
 //   node scripts/capture-screenshots.ts "iPad Pro 13-inch (M4)" en-GB
 //   node scripts/capture-screenshots.ts "iPhone Duo" en-GB               # outer display, "_Duo" names
 
 import { execFileSync } from "node:child_process";
 import { copyFileSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync } from "node:fs";
 import { join } from "node:path";
+import { languageOf, regionOf, storeLocales } from "./lib/locales.ts";
 import { bootSimulator } from "./lib/simulator.ts";
 import { root, run } from "./lib/xcode.ts";
 
 const devices = ["iPhone 17 Pro Max", "iPad Pro 13-inch (M4)", "iPhone Duo"];
-const locales = ["en-US", "en-GB"];
+const locales = storeLocales();
 const bundleIdentifier = "net.serby.Cards";
 const resultBundle = "/tmp/Cards-screenshots.xcresult";
 const exportFolder = "/tmp/Cards-screenshots-export";
@@ -73,9 +78,8 @@ function copyAttachments(outFolder: string, suffix: string): void {
 async function capture(device: string, locale: string): Promise<void> {
     const outFolder = join(root, "screenshots", locale);
     const set = captureSet(device);
-    const dash = locale.indexOf("-");
-    const language = dash < 0 ? locale : locale.slice(0, dash);
-    const region = dash < 0 ? locale : locale.slice(dash + 1);
+    const language = languageOf(locale);
+    const region = regionOf(locale);
 
     console.log("==> Resolving simulator");
     const simulator = await bootSimulator(device);
@@ -97,7 +101,7 @@ async function capture(device: string, locale: string): Promise<void> {
         "--batteryLevel", "100",
     ]);
 
-    console.log(`==> Running screenshot test on ${simulator.device} (iOS ${simulator.version})`);
+    console.log(`==> Running screenshot test on ${simulator.device} (iOS ${simulator.version}) in ${language}, ${region}`);
     rmSync(resultBundle, { recursive: true, force: true });
     rmSync(exportFolder, { recursive: true, force: true });
     run(
@@ -137,6 +141,10 @@ if (args.length > 2) {
     process.exit(2);
 }
 const device = args[0];
+if (args[1] !== undefined && !locales.includes(args[1])) {
+    console.error(`error: ${args[1]} is not a store locale (${locales.join(", ")})`);
+    process.exit(2);
+}
 const runs = device
     ? [{ device, locale: args[1] ?? "en-US" }]
     : locales.flatMap((locale) => devices.map((each) => ({ device: each, locale })));

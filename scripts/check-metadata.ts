@@ -3,13 +3,18 @@
 // halfway through an upload.
 //
 // metadata/<locale>/<field>.txt holds one field per file (name, subtitle,
-// keywords, description, promotional_text, release_notes, review_notes,
-// marketing_url, support_url, privacy_url), and metadata/copyright.txt the
-// copyright line. Every locale must have the same set of files. Lengths are in
-// Unicode code points, except keywords, which App Store Connect limits in UTF-8
-// bytes. A keyword that repeats a word of the name or subtitle is a warning, not
-// an error: it is legal, but Apple already indexes those words, so it wastes
-// bytes.
+// keywords, description, promotional_text, release_notes, marketing_url,
+// support_url, privacy_url), and metadata/copyright.txt the copyright line.
+// Every folder is a store locale, and every locale must have the same set of
+// files, except review_notes.txt: App Store Connect keeps one set of notes for
+// App Review per version, so only en-GB has them, and the file in any other
+// locale is an error. Lengths are in Unicode code points, except keywords,
+// which App Store Connect limits in UTF-8 bytes. A name or subtitle with the
+// word "free" in the listing's language is an error: App Store Review
+// Guideline 2.3.7 keeps price words out of them (and out of the screenshot
+// captions, which scripts/check-store-images.ts checks). A keyword that repeats
+// a word of the name or subtitle is a warning, not an error: it is legal, but
+// Apple already indexes those words, so it wastes bytes.
 //
 // Usage: node scripts/check-metadata.ts [metadata directory]
 // Exits 1 if anything is an error. scripts/upload-metadata.ts runs the same
@@ -18,11 +23,27 @@
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { basename, join } from "node:path";
 import { parseArgs } from "node:util";
+import { languageOf } from "./lib/locales.ts";
 
 export const metadataDir = join(import.meta.dirname, "..", "metadata");
 
-/// App Store Connect takes review notes once per version, not per locale; these are the ones uploaded.
+/// App Store Connect takes review notes once per version, not per locale, so only this locale has them.
 export const reviewNotesLocale = "en-GB";
+
+/// The word "free" in each listing language, which App Store Review Guideline
+/// 2.3.7 keeps out of the name, subtitle and screenshot captions. Add a
+/// language's words with its first listing.
+const priceWords: Record<string, RegExp> = {
+    en: /(?<![\p{L}\p{N}])free(?![\p{L}\p{N}])/iu,
+    es: /(?<![\p{L}\p{N}])(gratis|gratuit[ao]s?)(?![\p{L}\p{N}])/iu,
+    de: /(?<![\p{L}\p{N}])(kostenlos(e[mnrs]?)?|gratis|umsonst)(?![\p{L}\p{N}])/iu,
+    ja: /無料/u,
+};
+
+/// The price word in text written for a store locale, if it has one.
+export function priceWord(text: string, locale: string): string | undefined {
+    return priceWords[languageOf(locale)]?.exec(text)?.[0];
+}
 
 export const fieldNames = [
     "name",
@@ -173,6 +194,10 @@ function checkField(field: Field, value: string, locale: string, metadata: Local
         if (url && url.protocol !== "https:") error(`"${value}" must use https`);
     }
     if (field === "keywords") checkKeywords(value, locale, metadata, findings);
+    if ((field === "name" || field === "subtitle") && looksLikeLocale(locale)) {
+        const word = priceWord(value, locale);
+        if (word) error(`has "${word}"; App Store Review Guideline 2.3.7 keeps price words out of the name and subtitle`);
+    }
 
     const raised = findings.slice(before);
     const status = raised.some((finding) => finding.level === "error") ? "error" : raised.length > 0 ? "warning" : "ok";
@@ -215,7 +240,18 @@ export function checkMetadata(dir: string = metadataDir): MetadataReport {
         locales.set(locale, metadata);
     }
 
-    const allFiles = new Set([...filesByLocale.values()].flatMap((files) => [...files]));
+    // Review notes are version-wide, so they are only in reviewNotesLocale.
+    for (const [locale, files] of filesByLocale) {
+        if (locale !== reviewNotesLocale && files.delete("review_notes.txt")) {
+            findings.push({
+                level: "error",
+                locale,
+                field: "review_notes",
+                message: `only ${reviewNotesLocale} has review notes: App Store Connect keeps one set for the version, and uploads ${reviewNotesLocale}'s, so delete this one`,
+            });
+        }
+    }
+    const allFiles = new Set([...filesByLocale.values()].flatMap((files) => [...files]).filter((name) => name !== "review_notes.txt"));
     for (const [locale, files] of filesByLocale) {
         for (const file of [...allFiles].filter((name) => !files.has(name)).sort()) {
             const others = [...filesByLocale].filter(([, other]) => other.has(file)).map(([name]) => name);
@@ -225,6 +261,7 @@ export function checkMetadata(dir: string = metadataDir): MetadataReport {
 
     for (const [locale, metadata] of locales) {
         for (const field of fieldNames) {
+            if (field === "review_notes" && locale !== reviewNotesLocale) continue;
             const value = metadata[field];
             if (value === undefined) {
                 // Missing from every locale; a file missing from only some is reported above.
@@ -235,18 +272,6 @@ export function checkMetadata(dir: string = metadataDir): MetadataReport {
                 continue;
             }
             rows.push(checkField(field, value, locale, metadata, findings));
-        }
-    }
-
-    const reviewNotes = locales.get(reviewNotesLocale)?.review_notes;
-    for (const [locale, metadata] of locales) {
-        if (locale !== reviewNotesLocale && metadata.review_notes !== undefined && metadata.review_notes !== reviewNotes) {
-            findings.push({
-                level: "warning",
-                locale,
-                field: "review_notes",
-                message: `differs from ${reviewNotesLocale}'s; App Store Connect keeps one set of review notes, and only ${reviewNotesLocale}'s are uploaded`,
-            });
         }
     }
 

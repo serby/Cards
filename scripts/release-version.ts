@@ -1,9 +1,10 @@
 // Releases the app from CI. release.yml runs it once signing is installed.
 //
 // With RELEASE_TAG, which release.yml sets on a push of a v* tag, it:
-//   1. reads the tag's annotation as What's New, and its name, less the v, as
-//      the marketing version. The tag must be annotated with a message; a
-//      lightweight tag stops the release before anything is built;
+//   1. reads the tag's annotation as en-GB's What's New, and its name, less
+//      the v, as the marketing version. The tag must be annotated with a
+//      message; a lightweight tag stops the release before anything is built.
+//      The other localisations take theirs from metadata/<locale>/release_notes.txt;
 //   2. stamps a build number;
 //   3. builds and uploads the app (scripts/upload-build.ts);
 //   4. submits the version for review (scripts/submit-for-review.ts).
@@ -96,7 +97,7 @@ async function main(): Promise<void> {
             throw new Error(`Tag ${tag} is version ${release.version}, but the project's MARKETING_VERSION is ${projectVersion}`);
         }
         console.log(`Marketing version: ${release.version}`);
-        console.log("What's New:");
+        console.log("What's New (en-GB; the other localisations from metadata/<locale>/release_notes.txt):");
         console.log(release.whatsNew);
     } else {
         console.log("No RELEASE_TAG: uploading only, not submitting for review");
