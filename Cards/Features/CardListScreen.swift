@@ -63,16 +63,7 @@ public struct CardListScreen: View {
     }
 
     private func detail(_ item: CardItem) -> CardDetail {
-        CardDetail(
-            id: item.code,
-            name: item.name,
-            code: item.code,
-            barcodeType: item.getBarcodeType(),
-            timestamp: item.timestamp,
-            color: item.getColor(),
-            proximity: item.locations.proximity(to: locationService.current),
-            symbol: item.symbol
-        )
+        CardDetail(item, near: locationService.current)
     }
 
     /// The cards that remind you on arrival: none when the Settings switch is

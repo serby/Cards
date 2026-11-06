@@ -16,16 +16,7 @@ public struct CardDetailScreen: View {
     }
 
     public var body: some View {
-        let card = CardDetail(
-            id: item.code,
-            name: item.name,
-            code: item.code,
-            barcodeType: item.getBarcodeType(),
-            timestamp: item.timestamp,
-            color: item.getColor(),
-            proximity: item.locations.proximity(to: locationService.current),
-            symbol: item.symbol
-        )
+        let card = CardDetail(item, near: locationService.current)
         CardDetailView(
             card: card,
             brightnessBoost: $brightnessBoost,
