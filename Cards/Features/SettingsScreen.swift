@@ -7,7 +7,7 @@ public struct SettingsScreen: View {
     @Query(sort: \CardItem.order) private var cards: [CardItem]
     @AppStorage("brightnessBoost") private var brightnessBoost = true
     @AppStorage(ArrivalPlan.enabledKey) private var arrivalNotifications = true
-    @AppStorage("showsCardWhereYouAre") private var showsCardWhereYouAre = false
+    @AppStorage(DeviceSettings.showsCardWhereYouAreKey) private var showsCardWhereYouAre = false
     @Environment(ArrivalScheduler.self) private var arrivalScheduler
     @Environment(\.clipboard) private var clipboard
     @Environment(\.fileReader) private var fileReader

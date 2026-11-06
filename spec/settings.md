@@ -38,21 +38,13 @@ As a card holder, I want to read what each version of the app changed, so that I
 
 As a card holder, I want the card for the place I am in shown in full above my other cards, so that I can scan it straight away.
 
-- Settings > Locations has a "Show Card Where I Am" switch, below Arrival Notifications, with the caption "Shows the card for where you are at the top of your cards." It is off until you turn it on, and it is kept on the device and doesn't sync (the `showsCardWhereYouAre` user default).
-- With the switch on, when you are inside one of a card's places (PLACE-6), the Cards tab shows that card in full above the grid: its face, name, barcode and number, as on the card screen (CARD-4). If you are inside places for several cards, it shows the card whose place is nearest.
-- Tapping the full card opens it.
-    }
-
-- Settings > Locations has a "Show Card Where I Am" switch, with a caption saying it shows the card for where you are at the top of your cards. It is off until you turn it on, and it is kept on the device.
-- With the switch on, when you are inside one of a card's places (PLACE-6), the Cards tab shows that card in full above the grid: its face, name, barcode and number, as on the card screen (CARD-4), at most 560 points wide and centred. If you are inside places for several cards, it shows the one whose place's middle you are nearest, and the first in custom order on a tie. It is the card Location order puts first (CARD-11).
+- Settings > Locations has a "Show Card Where I Am" switch, below Arrival Notifications, with the caption "Shows the card for where you are at the top of your cards." It is off until you turn it on.
+- The switch is kept on the device under `showsCardWhereYouAre` and doesn't sync, so each device has its own (DATA-1).
+- With the switch on, when you are inside one of a card's places (PLACE-6), the Cards tab shows that card in full above the grid: its face, name, barcode and number, as on the card screen (CARD-4), at most 560 points wide and centred. If you are inside places for several cards, it shows the one whose place you are nearest the middle of, which is also the first card in Location order (CARD-11).
 - Tapping the full card opens it. VoiceOver reads it as one button, the name and where you are, as "Tesco Clubcard, You're at Tesco Express", with the hint "Opens the card for where you are".
 - It goes while you search (CARD-11), and comes back when the search is cleared.
 - When you leave the place, or turn the switch off, the full card goes and the grid moves up.
 - The card still appears in the grid as well.
-- The switch is kept on the device under `showsCardWhereYouAre`, so each device has its own.
 
 **Since:** In preparation for 1.4
-**Where:** `Cards/UI/Screens/SettingsListView.swift`, `Cards/Features/SettingsScreen.swift`, `Cards/UI/Screens/CardListView.swift`, `Cards/Features/CardListScreen.swift`, `CardsUITests/CardsUITests.swift` (`testShowCardWhereIAmSwitch`)
-    }
-
-**Where:** `Cards/UI/Screens/SettingsListView.swift`, `Cards/Features/SettingsScreen.swift`, `Cards/UI/Screens/CardListView.swift`, `Cards/Features/CardListScreen.swift`, `Cards/Core/Models/CardArrangement.swift`, `Cards/Core/Models/DeviceSettings.swift`, `CardsTests/CardArrangementTests.swift`, `CardsUITests/CardsUITests.swift` (`testCardWhereYouAre`)
+**Where:** `Cards/UI/Screens/SettingsListView.swift`, `Cards/Features/SettingsScreen.swift`, `Cards/UI/Screens/CardListView.swift`, `Cards/Features/CardListScreen.swift`, `CardsUITests/CardsUITests.swift` (`testShowCardWhereIAmSwitch`), `Cards/Core/Models/CardArrangement.swift`, `Cards/Core/Models/DeviceSettings.swift`, `CardsTests/CardArrangementTests.swift`, `CardsUITests/CardsUITests.swift` (`testCardWhereYouAre`)
