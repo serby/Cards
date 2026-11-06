@@ -47,6 +47,7 @@ excluded:
   - DerivedData
   - .build
   - fastlane
+  - .claude
   - vendor
   - build
   - Cards/GeneratedMocks.swift
