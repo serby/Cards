@@ -6,24 +6,31 @@ Sending a card to someone else, as a link they can add to their own Card Barcode
 
 As a card holder, I want to send a card to someone, so that they can add it to their own phone without typing it in.
 
-- The card screen's toolbar has a share button at the top right. It opens a menu with "Share Link" and "Share Image" (SHARE-2).
-- Share Link opens the share sheet with a link to `https://cards.serby.net/add#…`. The part after `#` holds the whole card: its name, code, barcode type, colour, symbol (CARD-12), places (PLACE-1) and arrival switch (ARR-6).
+- The card screen's toolbar has a share button, the share icon, at the top right. Reading from the left, the toolbar is share, brightness (BAR-4) and Edit (CARD-5), so the brightness button and Edit stay where they were. VoiceOver reads it as "Share card".
+- The share button opens a menu with "Share Link" and "Share Image" (SHARE-2).
+- Share Link opens the share sheet with a link to `https://cards.serby.net/add#…`, titled with the card's name. The part after `#` holds the whole card: its name, code, barcode type, colour, symbol (CARD-12), places (PLACE-1) with their names, positions and radii, and arrival switch (ARR-6).
+- The link carries nothing else: not when the card was added, where it sits in the list, or when it was last opened (CARD-11).
 - The card travels in the part after `#`, which browsers never send to a server, so the card's code does not reach cards.serby.net.
+- The same card always makes the same link.
 - On a phone with Card Barcodes, opening the link opens the app (SHARE-3). Without it, the link opens a page on cards.serby.net that explains what was shared and links to the App Store.
 
 **Since:** In preparation for 1.4
-**Where:** `Cards/UI/Screens/CardDetailView.swift`, `Cards/Features/CardDetailScreen.swift`, `Cards/Core/Navigation/NavigationRoute.swift`, `Website/src/add.html`
+**Where:** `Cards/UI/Screens/CardDetailView.swift`, `Cards/Features/CardDetailScreen.swift`, `Cards/UI/ViewState/CardShare.swift`, `Cards/Core/Models/SharedCard.swift`, `Cards/Core/Navigation/SharedCardLink.swift`, `CardsTests/SharingTests.swift`, `CardsUITests/CardSharingUITests.swift` (`testShareMenuOffersALinkAndAnImage`)
+**Notes:** The part after `#` is a `SharedCard`, a small format of its own rather than the export's `CardItemDTO`, which carries the sharer's dates and order. It is JSON in base64url without padding, with the keys `v` (the format version, 1), `name`, `code`, `type`, `color`, `symbol` (left out when there is none), `places` (each `name`, `latitude`, `longitude` and `radius`, left out when there are none) and `notifiesOnArrival`.
 
 ### SHARE-2: Share a card as an image
 
 As a card holder, I want to send a picture of a card, so that someone can scan it from their own screen or keep it without the app.
 
-- Share Image opens the share sheet with a PNG of the card face: its colour, name, symbol, barcode and number in text, as on the card screen (CARD-4), on its own without the toolbar or the rest of the screen.
-- The image is drawn at three times screen scale, so the barcode stays sharp enough to scan when shown on another screen (BAR-2).
+- Share Image opens the share sheet with a PNG of the card face: its colour, name, symbol, barcode, number in text and the date it was added, as on the card screen (CARD-4), on its own without the toolbar or the rest of the screen.
+- The picture leaves out the copy button and how far away the card's places are, because where you are is not part of the card.
+- It is always drawn in light appearance, 360 points wide at three times screen scale (1,080 pixels), so the barcode stays sharp enough to scan when shown on another screen (BAR-2). A card in the default colour sits on white.
+- The file is called after the card, such as "Boots Advantage.png", with any "/", "\" or ":" in the name turned into "-", or "Card.png" when the name is empty.
+- The picture is drawn only when the share sheet asks for it, so opening a card does no extra work.
 - The share sheet can save the image to Photos, which asks for permission to add photos the first time.
 
 **Since:** In preparation for 1.4
-**Where:** `Cards/UI/Screens/CardDetailView.swift`, `Cards/Features/CardDetailScreen.swift`
+**Where:** `Cards/UI/Screens/CardDetailView.swift`, `Cards/Features/CardDetailScreen.swift`, `Cards/Features/CardShareImage.swift`, `Cards/UI/ViewState/CardShare.swift` (`CardImage`), `CardsTests/SharingTests.swift` (`theSharedImageIsTheFaceAtThreeTimesScale`, `imageFileNamesComeFromTheCardsName`), `CardsUITests/CardSharingUITests.swift`
 
 ### SHARE-3: Add a card someone shared with me
 

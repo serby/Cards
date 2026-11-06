@@ -98,6 +98,18 @@ public extension CardDetail {
     )
 }
 
+public extension CardShare {
+    /// The share menu's link and picture for `card`, made as the card screen makes them.
+    @MainActor
+    static func sample(for card: CardDetail) -> CardShare {
+        let shared = SharedCard(name: card.name, code: card.code, barcodeType: card.barcodeType, color: card.color, symbol: card.symbol)
+        return CardShare(
+            link: SharedCardLink(card: shared).url ?? URL(fileURLWithPath: "/"),
+            image: CardImage(cardName: card.name) { CardShareImage.png(of: card) }
+        )
+    }
+}
+
 public extension CardDraft {
     static let sample = CardDraft(
         name: "Westway",

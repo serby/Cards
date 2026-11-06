@@ -64,7 +64,7 @@ As a card holder, I want to open a card and see its barcode and number, so that 
 - The number is in a monospaced font, and it can be selected and copied (1.3).
 - A copy button beside the number puts it on the clipboard, for typing it into a website or another app. The icon turns into a tick for about a second and a half, and a success haptic plays. The number stays centred on its panel (1.3).
 - The date shows the abbreviated date and the time, such as "4 Nov 2026 at 09:41".
-- The toolbar has the brightness button (BAR-4) and Edit (CARD-5).
+- The toolbar has the brightness button (BAR-4) and Edit (CARD-5). In preparation for 1.4 a share button comes first, to their left (SHARE-1).
 - Below the card, "Add current location" opens the map to add a place (PLACE-4) (1.3).
 - Opening a card raises the screen brightness when Brightness Boost is on (BAR-4).
 - In preparation for 1.4: opening a card records when it was last viewed, for the Last viewed order (CARD-11). Coming back to the card from its edit form counts as opening it again.

@@ -16,19 +16,21 @@ public struct CardDetailScreen: View {
     }
 
     public var body: some View {
+        let card = CardDetail(
+            id: item.code,
+            name: item.name,
+            code: item.code,
+            barcodeType: item.getBarcodeType(),
+            timestamp: item.timestamp,
+            color: item.getColor(),
+            proximity: item.locations.proximity(to: locationService.current),
+            symbol: item.symbol
+        )
         CardDetailView(
-            card: CardDetail(
-                id: item.code,
-                name: item.name,
-                code: item.code,
-                barcodeType: item.getBarcodeType(),
-                timestamp: item.timestamp,
-                color: item.getColor(),
-                proximity: item.locations.proximity(to: locationService.current),
-                symbol: item.symbol
-            ),
+            card: card,
             brightnessBoost: $brightnessBoost,
             mapCentre: locationService.current?.coordinate,
+            share: share(of: card),
             actions: CardDetailActions(
                 editCard: { navigationManager.navigate(to: .editCard(item.code)) },
                 addLocation: addLocation,
@@ -45,6 +47,13 @@ public struct CardDetailScreen: View {
     private func recordView() {
         item.lastViewed = .now
         try? modelContext.save()
+    }
+
+    /// The link that adds this card to someone else's app, and its picture,
+    /// drawn only if the share sheet asks for it.
+    private func share(of card: CardDetail) -> CardShare? {
+        guard let link = SharedCardLink(card: SharedCard(item)).url else { return nil }
+        return CardShare(link: link, image: CardImage(cardName: card.name) { CardShareImage.png(of: card) })
     }
 
     private func addLocation(_ location: CardLocation) {

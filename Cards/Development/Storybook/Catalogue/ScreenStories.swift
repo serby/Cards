@@ -103,14 +103,15 @@ private let cardDetailStory = Story(
         SymbolKnob.knob(CardDetail.sample.symbol),
         .number("Created (days ago)", 30, in: 0...3_650, step: 1),
         .toggle("Brightness boost", true),
-        .toggle("Map opens at Westway", true)
+        .toggle("Map opens at Westway", true),
+        .toggle("Share menu", true)
     ] + ProximityKnobs.knobs(place: "Boots Westfield", distance: 320),
     gallery: [CardDetail.sample, .qr, .invalidCode].map { card in
         (
             name: card.name,
             view: pushed {
                 Stateful(true) { boost in
-                    CardDetailView(card: card, brightnessBoost: boost)
+                    CardDetailView(card: card, brightnessBoost: boost, share: .sample(for: card))
                 }
             }
         )
@@ -130,7 +131,8 @@ private let cardDetailStory = Story(
         CardDetailView(
             card: card,
             brightnessBoost: knobs.boolBinding("Brightness boost"),
-            mapCentre: knobs.bool("Map opens at Westway") ? CardLocation.sample.coordinate : nil
+            mapCentre: knobs.bool("Map opens at Westway") ? CardLocation.sample.coordinate : nil,
+            share: knobs.bool("Share menu") ? .sample(for: card) : nil
         )
     }
 }

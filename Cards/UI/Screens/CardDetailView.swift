@@ -9,6 +9,8 @@ public struct CardDetailView: View {
     private let actions: CardDetailActions
     /// Where the location picker opens: the user's last known location, if any.
     private let mapCentre: CLLocationCoordinate2D?
+    /// What the share menu sends; no share button without it.
+    private let share: CardShare?
 
     @Environment(\.screenBrightness) private var screenBrightness
     @Environment(\.accessibilityAnnouncer) private var announcer
@@ -22,11 +24,13 @@ public struct CardDetailView: View {
         card: CardDetail,
         brightnessBoost: Binding<Bool>,
         mapCentre: CLLocationCoordinate2D? = nil,
+        share: CardShare? = nil,
         actions: CardDetailActions = CardDetailActions()
     ) {
         self.card = card
         _brightnessBoost = brightnessBoost
         self.mapCentre = mapCentre
+        self.share = share
         self.actions = actions
     }
 
@@ -65,6 +69,13 @@ public struct CardDetailView: View {
             Task { await brightness.fade(to: originalBrightness, duration: 0.2) }
         }
         .toolbar {
+            // Share first, so brightness and Edit keep the places they had at the trailing edge.
+            if let share {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    shareMenu(share)
+                }
+            }
+
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button {
                     brightnessBoost.toggle()
@@ -88,6 +99,27 @@ public struct CardDetailView: View {
     }
 
     private static let copyButtonSize: CGFloat = 44
+
+    /// Sends the card as a link someone can add (SHARE-1), or as a picture (SHARE-2).
+    private func shareMenu(_ share: CardShare) -> some View {
+        Menu {
+            ShareLink(item: share.link, subject: Text(card.name), preview: SharePreview(card.name)) {
+                Label("Share Link", systemImage: "link")
+            }
+            .accessibilityIdentifier("shareLinkButton")
+
+            ShareLink(item: share.image, preview: SharePreview(card.name, image: share.image)) {
+                Label("Share Image", systemImage: "photo")
+            }
+            .accessibilityIdentifier("shareImageButton")
+        } label: {
+            Image(systemName: "square.and.arrow.up")
+                .accessibilityHidden(true)
+        }
+        .accessibilityIdentifier("shareCardButton")
+        .accessibilityLabel("Share card")
+        .accessibilityHint("Shares this card as a link to add it, or as an image")
+    }
 
     /// Copies the number, for typing it into a website or another app. The icon
     /// turns into a tick for a moment to show it worked.
