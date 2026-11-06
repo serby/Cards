@@ -33,7 +33,8 @@ public struct CardDetailActions {
     public var addLocation: (CardLocation) -> Void
     /// Called when the location picker opens, so the map can show where you are.
     public var requestLocationAccess: () -> Void
-    public var findPlace: (String) async -> PlaceMatch?
+    /// Finds and names places in the location picker.
+    public var placeSearch: PlaceSearch
     /// Puts the card's code on the clipboard.
     public var copyCode: () -> Void
 
@@ -41,13 +42,13 @@ public struct CardDetailActions {
         editCard: @escaping () -> Void = {},
         addLocation: @escaping (CardLocation) -> Void = { _ in },
         requestLocationAccess: @escaping () -> Void = {},
-        findPlace: @escaping (String) async -> PlaceMatch? = { _ in nil },
+        placeSearch: PlaceSearch = .unavailable,
         copyCode: @escaping () -> Void = {}
     ) {
         self.editCard = editCard
         self.addLocation = addLocation
         self.requestLocationAccess = requestLocationAccess
-        self.findPlace = findPlace
+        self.placeSearch = placeSearch
         self.copyCode = copyCode
     }
 }
@@ -57,7 +58,8 @@ public struct CardEditActions {
     public var save: () -> Void
     /// Called when the location picker opens, so the map can show where you are.
     public var requestLocationAccess: () -> Void
-    public var findPlace: (String) async -> PlaceMatch?
+    /// Finds and names places in the location picker.
+    public var placeSearch: PlaceSearch
     /// Deletes the card being edited, once the person has confirmed. Nil when
     /// adding a card, which has nothing to delete yet, so the form offers none.
     public var delete: (() -> Void)?
@@ -65,12 +67,12 @@ public struct CardEditActions {
     public init(
         save: @escaping () -> Void = {},
         requestLocationAccess: @escaping () -> Void = {},
-        findPlace: @escaping (String) async -> PlaceMatch? = { _ in nil },
+        placeSearch: PlaceSearch = .unavailable,
         delete: (() -> Void)? = nil
     ) {
         self.save = save
         self.requestLocationAccess = requestLocationAccess
-        self.findPlace = findPlace
+        self.placeSearch = placeSearch
         self.delete = delete
     }
 }

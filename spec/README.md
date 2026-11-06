@@ -47,7 +47,7 @@ Only write what the code does. If a criterion is wrong, fix the criterion or the
 | [cards.md](cards.md) | CARD | The list and grid, search and order, adding by scanning, typing or from a photo or a file, opening, editing, deleting, reordering, naming and icons, and keeping each card's code its own |
 | [barcodes.md](barcodes.md) | BAR | Supported barcode types, how codes are drawn, codes that can't be drawn, the brightness boost, and how the camera focuses on and lights up a card |
 | [colours-and-design.md](colours-and-design.md) | COL | The palette, custom colours, the card face, full-colour list rows, gradients, readable text, appearance and the app icon |
-| [places.md](places.md) | PLACE | Adding places on the map or by postcode, the radius, Add current location, removing places, distances, a card's nearest places and location permission |
+| [places.md](places.md) | PLACE | Adding places on the map or by searching, naming them from the map, the radius, Add current location, removing places, distances, a card's nearest places and location permission |
 | [arrival-notifications.md](arrival-notifications.md) | ARR | A reminder on arrival, opening the card from it, the 20-region limit and watching the nearest places as you move, permission, the Settings switch and each card's own switch |
 | [widget.md](widget.md) | WID | The Home Screen widget: nearest or chosen card, refresh, opening the card, layouts, tinted Home Screens and the snapshot |
 | [sync-and-data.md](sync-and-data.md) | DATA | iCloud sync, export and import as JSON without duplicates, old exports, deleting every card, and where the store lives |

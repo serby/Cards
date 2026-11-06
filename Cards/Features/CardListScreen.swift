@@ -169,6 +169,7 @@ private struct ArrivalWatch: Hashable {
             .environment(NavigationManager())
             .environment(LocationService())
             .environment(ArrivalScheduler(notifications: .silent))
+            .environment(\.placeSearch, .sample)
     }
     .modelContainer(for: CardItem.self, inMemory: true)
 }

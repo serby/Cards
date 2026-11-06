@@ -193,7 +193,7 @@ public struct CardEditView<Scanner: View>: View {
         .sheet(isPresented: $showsLocationPicker) {
             LocationPickerView(
                 centre: mapCentre,
-                findPlace: actions.findPlace,
+                search: actions.placeSearch,
                 onAppear: actions.requestLocationAccess,
                 onAdd: { draft.locations.append($0) }
             )
@@ -201,7 +201,7 @@ public struct CardEditView<Scanner: View>: View {
         .sheet(item: $editingLocation) { location in
             LocationPickerView(
                 editing: location,
-                findPlace: actions.findPlace,
+                search: actions.placeSearch,
                 onAppear: actions.requestLocationAccess,
                 onSave: { draft.update($0) }
             )

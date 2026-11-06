@@ -89,8 +89,9 @@ final class CardsUITests: XCTestCase {
         XCTAssertFalse(app.buttons["chooseBarcodeFileButton"].exists, "Editing a card should not offer Choose File")
     }
 
-    /// Adding where you are from the card screen saves it to the card, which then
-    /// reads as "here" and stops offering to add it again.
+    /// Adding where you are from the card screen saves it to the card, named
+    /// for the place under the pin, and the card then reads as "here" and stops
+    /// offering to add it again (PLACE-4, PLACE-10).
     @MainActor
     func testAddCurrentLocationFromCard() throws {
         let app = launchWithSeededCards()
@@ -104,6 +105,8 @@ final class CardsUITests: XCTestCase {
         XCTAssertTrue(waitForElement(addHere))
         addHere.tap()
         XCTAssertTrue(waitForElement(app.descendants(matching: .any)["locationPickerMap"].firstMatch))
+        // UI tests search the made-up places, which put Joe's Market beside the seed's location.
+        XCTAssertTrue(waitForValue(app.textFields["locationNameField"], "Joe's Market Notting Hill", timeout: 10))
         app.buttons["addLocationButton"].tap()
 
         XCTAssertTrue(waitForElement(app.descendants(matching: .any)["cardProximityText"].firstMatch))
@@ -291,5 +294,31 @@ final class CardsUITests: XCTestCase {
         XCTAssertTrue(waitForElement(app.buttons["locationRow_Joe's Market Holland Park"]))
         XCTAssertFalse(app.buttons["locationRow_Joe's Market Notting Hill"].exists)
         XCTAssertTrue(app.buttons["locationRow_Joe's Market Kensington"].exists, "The other place is left as it was")
+    }
+
+    /// Typing in the picker's search field suggests places; choosing one moves
+    /// the map there and names the place after it (PLACE-2, PLACE-10).
+    @MainActor
+    func testFindAPlaceBySearch() throws {
+        let app = launchWithSeededCards()
+
+        let honeycomb = tile(app, "Honeycomb Rewards")
+        XCTAssertTrue(waitForElement(honeycomb))
+        honeycomb.tap()
+        app.buttons["addCurrentLocationButton"].tap()
+        let search = app.textFields["placeSearchField"]
+        XCTAssertTrue(waitForElement(search))
+        search.tap()
+        search.typeText("Local Roast")
+        let suggestion = app.buttons["placeSuggestion_Local Roast Notting Hill"]
+        XCTAssertTrue(waitForElement(suggestion))
+        XCTAssertTrue(app.buttons["placeSuggestion_Local Roast Portobello"].exists)
+        suggestion.tap()
+
+        XCTAssertTrue(waitForValue(app.textFields["locationNameField"], "Local Roast Notting Hill"))
+        app.buttons["addLocationButton"].tap()
+        let proximity = app.descendants(matching: .any)["cardProximityText"].firstMatch
+        XCTAssertTrue(waitForElement(proximity))
+        XCTAssertTrue(proximity.label.contains("Local Roast Notting Hill"), proximity.label)
     }
 }

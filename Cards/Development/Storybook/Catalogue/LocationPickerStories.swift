@@ -10,46 +10,67 @@ let locationPickerStory = Story(
     galleryLayout: .oneAtATime,
     knobs: [
         .options("Start at", PickerStart.allCases.map(\.rawValue), PickerStart.boulderBarn.rawValue),
-        .toggle("Postcode found", true),
+        .options("Search", SearchBehaviour.allCases.map(\.rawValue), SearchBehaviour.finds.rawValue),
+        .text("Search text", ""),
         .toggle("Editing Boulder Barn", false)
     ],
     gallery: [
-        (
-            name: "Boulder Barn",
-            view: AnyView(
-                LocationPickerView(
-                    initialPosition: .region(CardLocation.previewRegion),
-                    findPlace: { _ in nil },
-                    onAdd: { _ in }
-                )
-            )
-        ),
+        (name: "Boulder Barn", view: AnyView(picker(searching: .sample))),
+        (name: "Suggestions", view: AnyView(picker(searching: .sample, for: "Joe"))),
+        (name: "No place found", view: AnyView(picker(searching: .noMatches, for: "Corner Grocer"))),
+        (name: "Searching", view: AnyView(picker(searching: .searching, for: "Local Roast"))),
+        (name: "Offline", view: AnyView(picker(searching: .failing(.offline), for: "Local Roast"))),
+        (name: "Search not working", view: AnyView(picker(searching: .failing(.unavailable), for: "Local Roast"))),
         (
             name: "Editing Nordic Nest Wembley",
-            view: AnyView(
-                LocationPickerView(editing: CardLocation.samples[2], findPlace: { _ in nil }, onSave: { _ in })
-            )
+            view: AnyView(LocationPickerView(editing: CardLocation.samples[2], search: .sample, onSave: { _ in }))
         )
     ]
 ) { knobs in
     let start = PickerStart(rawValue: knobs.option("Start at")) ?? .boulderBarn
-    let found = knobs.bool("Postcode found")
+    let behaviour = SearchBehaviour(rawValue: knobs.option("Search")) ?? .finds
+    let text = knobs.string("Search text")
     let editing = knobs.bool("Editing Boulder Barn")
-    let findPlace: (String) async -> PlaceMatch? = { query in
-        found ? PlaceMatch(name: query.uppercased(), latitude: 51.5203, longitude: -0.2094) : nil
-    }
     return AnyView(
         Group {
             if editing {
-                // Editing opens on the place, so "Start at" does not apply.
-                LocationPickerView(editing: .sample, findPlace: findPlace, onSave: { _ in })
+                // Editing opens on the place with an empty search, so "Start at" and the text do not apply.
+                LocationPickerView(editing: .sample, search: behaviour.search, onSave: { _ in })
             } else {
-                LocationPickerView(initialPosition: start.position, findPlace: findPlace, onAdd: { _ in })
+                LocationPickerView(initialPosition: start.position, search: behaviour.search, query: text, onAdd: { _ in })
             }
         }
-        // The start position is read once, so a new choice needs a fresh picker.
-        .id("\(start)-\(editing)")
+        // The start position and search text are read once, so a new choice needs a fresh picker.
+        .id("\(start)-\(behaviour)-\(text)-\(editing)")
     )
+}
+
+@MainActor
+private func picker(searching search: PlaceSearch, for query: String = "") -> LocationPickerView {
+    LocationPickerView(initialPosition: .region(CardLocation.previewRegion), search: search, query: query, onAdd: { _ in })
+}
+
+private enum SearchBehaviour: String, CaseIterable {
+    case finds = "Finds places"
+    case findsNothing = "Finds nothing"
+    case searching = "Still searching"
+    case offline = "Offline"
+    case notWorking = "Not working"
+
+    var search: PlaceSearch {
+        switch self {
+        case .finds:
+            .sample
+        case .findsNothing:
+            .noMatches
+        case .searching:
+            .searching
+        case .offline:
+            .failing(.offline)
+        case .notWorking:
+            .failing(.unavailable)
+        }
+    }
 }
 
 private enum PickerStart: String, CaseIterable {

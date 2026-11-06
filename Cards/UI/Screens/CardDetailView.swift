@@ -58,7 +58,7 @@ public struct CardDetailView: View {
         .sheet(isPresented: $showsLocationPicker) {
             LocationPickerView(
                 centre: mapCentre,
-                findPlace: actions.findPlace,
+                search: actions.placeSearch,
                 onAppear: actions.requestLocationAccess,
                 onAdd: actions.addLocation
             )

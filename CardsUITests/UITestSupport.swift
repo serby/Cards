@@ -7,6 +7,12 @@ extension XCTestCase {
         return element.waitForExistence(timeout: timeout)
     }
 
+    /// Waits for a field to hold `value`, as one MapKit fills in does.
+    @MainActor
+    func waitForValue(_ element: XCUIElement, _ value: String, timeout: TimeInterval = 5) -> Bool {
+        XCTWaiter.wait(for: [expectation(for: NSPredicate(format: "value == %@", value), evaluatedWith: element)], timeout: timeout) == .completed
+    }
+
     /// Launches with the six screenshot cards, in custom order and without the
     /// card for where you are, whatever an earlier run left in those settings.
     @MainActor

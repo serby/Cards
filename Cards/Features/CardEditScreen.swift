@@ -9,7 +9,7 @@ public struct CardEditScreen: View {
     @Environment(LocationService.self) private var locationService
     @Query private var cards: [CardItem]
     @Environment(\.modelContext) private var modelContext
-    @Environment(\.postcodeLookup) private var postcodeLookup
+    @Environment(\.placeSearch) private var placeSearch
     @AppStorage(ArrivalPlan.enabledKey) private var arrivalNotifications = true
     @Environment(\.fileReader) private var fileReader
     @Environment(\.barcodeImageReader) private var barcodeImageReader
@@ -85,7 +85,7 @@ public struct CardEditScreen: View {
         CardEditActions(
             save: save,
             requestLocationAccess: locationService.requestAccess,
-            findPlace: postcodeLookup.find,
+            placeSearch: placeSearch,
             delete: isNewCard ? nil : { delete() }
         )
     }
@@ -169,6 +169,7 @@ public struct CardEditScreen: View {
         CardEditScreen(cardItem: sampleCardItem, navigationManager: NavigationManager())
     }
     .environment(LocationService())
+    .environment(\.placeSearch, .sample)
     .modelContainer(for: CardItem.self, inMemory: true)
 }
 #endif

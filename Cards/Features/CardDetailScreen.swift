@@ -5,7 +5,7 @@ public struct CardDetailScreen: View {
     @AppStorage("brightnessBoost") private var brightnessBoost = true
     @Environment(LocationService.self) private var locationService
     @Environment(\.modelContext) private var modelContext
-    @Environment(\.postcodeLookup) private var postcodeLookup
+    @Environment(\.placeSearch) private var placeSearch
     @Environment(\.clipboard) private var clipboard
     private let item: CardItem
     private let navigationManager: NavigationManager
@@ -26,7 +26,7 @@ public struct CardDetailScreen: View {
                 editCard: { navigationManager.navigate(to: .editCard(item.code)) },
                 addLocation: addLocation,
                 requestLocationAccess: locationService.requestAccess,
-                findPlace: postcodeLookup.find,
+                placeSearch: placeSearch,
                 copyCode: { clipboard.write(item.code) }
             )
         )
@@ -65,6 +65,7 @@ public struct CardDetailScreen: View {
         CardDetailScreen(item: item, navigationManager: NavigationManager())
     }
     .environment(LocationService())
+    .environment(\.placeSearch, .sample)
     .modelContainer(for: CardItem.self, inMemory: true)
 }
 

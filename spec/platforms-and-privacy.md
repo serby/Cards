@@ -58,10 +58,10 @@ As a card holder, I want my location to stay on my phone, so that nobody learns 
 - Your current location is only used on the device: for distances (PLACE-6), the widget's nearest card (WID-1), where the map opens (PLACE-1) and which places are watched for arrivals (ARR-3).
 - The places you add are stored with the card, and sync and export with it (DATA-1, DATA-2).
 - Arrival notifications are watched by iOS on the device, with no server involved (ARR-1).
-- The map and the postcode search use Apple's map services, which receive the area shown or the text searched for (PLACE-2).
+- The map and the place search use Apple's map services, which receive the area shown or the text searched for (PLACE-2). In preparation for 1.4 naming a place sends Apple Maps the point under the pin, or where you are when the sheet opens (PLACE-10).
 
 **Since:** 1.3
-**Where:** `Cards/Core/Services/LocationService.swift`, `CardsWidget/WidgetLocation.swift`, `Cards/Core/Services/PostcodeLookup.swift`, `Cards/Features/ArrivalScheduler.swift`, `Cards/Core/Services/NotificationClient.swift`, `Website/src/privacy.html`
+**Where:** `Cards/Core/Services/LocationService.swift`, `CardsWidget/WidgetLocation.swift`, `Cards/Core/Services/PlaceSearch+MapKit.swift`, `Cards/Features/ArrivalScheduler.swift`, `Cards/Core/Services/NotificationClient.swift`, `Website/src/privacy.html`
 
 ### PLAT-6: Know the camera is only used to scan
 

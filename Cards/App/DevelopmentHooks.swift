@@ -65,6 +65,17 @@ enum DevelopmentHooks {
         #endif
     }
 
+    /// How the location picker finds and names places: MapKit, except in UI
+    /// tests, which search the made-up places in docs/LANGUAGE.md so every run
+    /// finds the same ones and no real business reaches a screenshot.
+    static var placeSearch: PlaceSearch {
+        #if DEBUG
+        isUITesting ? .sample : .live
+        #else
+        .live
+        #endif
+    }
+
     #if DEBUG
     private static var screenshotSeedRequested: Bool {
         CommandLine.arguments.contains("-screenshotSeed")

@@ -85,7 +85,7 @@ Cards/
     Models/        CardItem (SwiftData), CardItemDTO, BarcodeType, CardColor, CardLocation, WidgetCard, ArrivalAlert
     Navigation/    NavigationRoute, NavigationManager, SharedCardLink, deep links
     Services/      CardStore, LocationService, PerformanceTracker, and the clients (rule 15):
-                   NotificationClient, PostcodeLookup, Clipboard, WidgetSnapshot, FileReader
+                   NotificationClient, PlaceSearch, Clipboard, WidgetSnapshot, FileReader
   UI/            Every view, as a pure function of view state and actions
     Screens/       CardListView, CardDetailView, CardEditView, LocationPickerView, SharedCardView, SettingsListView
     Components/    BarcodeView, BarcodeImage, CardColorPicker, CardLocationRow, CardWidgetView, ProximityLabel, …
@@ -196,7 +196,7 @@ The target builds in Swift 6 language mode with strict concurrency, `SWIFT_TREAT
 - Keep non-`Sendable` framework values inside the function that made them; return your own `Sendable` struct (`PlaceMatch`) instead.
 - With several closures, use labelled closure arguments, not trailing closure syntax.
 - Silence a lint rule only on the line that needs it, with `// swiftlint:disable:next rule_name` and a comment saying why.
-- Never update `Map` content from `onMapCameraChange`: MapKit re-applies the camera and loops. Draw camera-relative overlays in screen space, as `LocationPickerView` does with its radius ring.
+- Never update `Map` content from `onMapCameraChange`: MapKit re-applies the camera and loops. Draw camera-relative overlays in screen space, as `LocationPickerView` does with its pin and radius ring (`MapPinRing`).
 
 ### Rule 8: Accessibility is part of done
 
@@ -254,7 +254,7 @@ The app's Swift follows a few long-standing design principles, applied where the
 - **No global mutable state.** No `static var` that stores state, no singletons of our own and no mutable top-level variables. State belongs to an instance someone owns: an `@Observable` model created once at the composition root and passed down (`LocationService`, `NavigationManager`, `ArrivalScheduler`), a view's `@State`, or SwiftData. Immutable `static let` constants and loggers are fine. `DevelopmentHooks` is the one deliberate exception, because rule 1 needs it to be static.
 - **Inject every dependency with a side effect.** Anything that reaches the system or the outside world, such as notifications, location, geocoding, the clipboard, opening URLs, the widget's App Group file, screen brightness or VoiceOver, is a dependency:
   - **Model it** as a small `Sendable` struct of closures, a client, with a `.live` value. The `.live` value, or the factory it is built from (such as `WidgetSnapshot.file(at:)`, which tests point at a temporary file), is the only place the system API is called.
-  - **Provide it** through SwiftUI's environment, with `.live` as the default, and read it with `@Environment` in connectors and effects. `ScreenBrightness` and `AccessibilityAnnouncer` in `UI/Environment` are the pattern, and `PostcodeLookup`, `Clipboard` and `WidgetSnapshot` in `Core/Services` follow it.
+  - **Provide it** through SwiftUI's environment, with `.live` as the default, and read it with `@Environment` in connectors and effects. `ScreenBrightness` and `AccessibilityAnnouncer` in `UI/Environment` are the pattern, and `PlaceSearch`, `Clipboard` and `WidgetSnapshot` in `Core/Services` follow it.
   - **Prefer SwiftUI's own environment actions** where they exist, such as `openURL`.
   - **Outside views,** such as the widget's timeline provider (`WidgetSnapshot`, `WidgetLocation`) and `ArrivalScheduler` (`NotificationClient`), take clients in `init`, defaulting to `.live`.
   - **Keep clients small.** A client exposes only the operations its callers use (interface segregation).

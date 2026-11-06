@@ -28,6 +28,7 @@ private struct EditCardStory: View {
         // Adding a card offers a photo or a file under the camera, as the app does.
         CardEditView(
             draft: $draft,
+            actions: CardEditActions(placeSearch: .sample),
             showsScanner: showsScanner,
             barcodeImport: showsScanner ? .always(.found([FoundBarcode.samples[1]])) : nil
         ) {
@@ -142,7 +143,8 @@ private let cardDetailStory = Story(
             card: card,
             brightnessBoost: knobs.boolBinding("Brightness boost"),
             mapCentre: knobs.bool("Map opens at Boulder Barn") ? CardLocation.sample.coordinate : nil,
-            share: knobs.bool("Share menu") ? .sample(for: card) : nil
+            share: knobs.bool("Share menu") ? .sample(for: card) : nil,
+            actions: CardDetailActions(placeSearch: .sample)
         )
     }
 }
@@ -219,7 +221,7 @@ private let cardEditStory = Story(
     return pushed {
         CardEditView(
             draft: draft,
-            actions: CardEditActions(delete: knobs.bool("Can delete") ? {} : nil),
+            actions: CardEditActions(placeSearch: .sample, delete: knobs.bool("Can delete") ? {} : nil),
             autofocusesName: knobs.bool("Autofocus name"),
             mapCentre: knobs.bool("Map opens at Boulder Barn") ? CardLocation.sample.coordinate : nil,
             takenCodes: knobs.bool("Code already used") ? [knobs.string("Code")] : [],
