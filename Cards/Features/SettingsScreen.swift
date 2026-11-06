@@ -7,6 +7,7 @@ public struct SettingsScreen: View {
     @Query(sort: \CardItem.order) private var cards: [CardItem]
     @AppStorage("brightnessBoost") private var brightnessBoost = true
     @AppStorage(ArrivalPlan.enabledKey) private var arrivalNotifications = true
+    @AppStorage("showsCardWhereYouAre") private var showsCardWhereYouAre = false
     @Environment(ArrivalScheduler.self) private var arrivalScheduler
     @Environment(\.clipboard) private var clipboard
     @Environment(\.openURL) private var openURL
@@ -33,6 +34,7 @@ public struct SettingsScreen: View {
             ),
             brightnessBoost: $brightnessBoost,
             arrivalNotifications: $arrivalNotifications,
+            showsCardWhereYouAre: $showsCardWhereYouAre,
             message: $message,
             actions: SettingsActions(
                 exportCards: { showExportSheet = true },

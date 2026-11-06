@@ -263,6 +263,7 @@ private let settingsStory = Story(
         .number("Card count", 6, in: 0...50, step: 1),
         .toggle("Brightness boost", true),
         .toggle("Arrival notifications", true),
+        .toggle("Show card where I am", false),
         .toggle("Notifications blocked", false),
         .toggle("Has What's New", true),
         .text("Message", "")
@@ -313,6 +314,7 @@ private let settingsStory = Story(
             state: state,
             brightnessBoost: knobs.boolBinding("Brightness boost"),
             arrivalNotifications: knobs.boolBinding("Arrival notifications"),
+            showsCardWhereYouAre: knobs.boolBinding("Show card where I am"),
             message: message
         )
     }

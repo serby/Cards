@@ -9,7 +9,7 @@ As a card holder, I want one screen for the app's settings and data, so that I k
 - The Settings tab shows a grouped list titled "Settings", in this order (1.3):
   - "What's New" on its own at the top (SET-2).
   - Display, with the Brightness Boost switch and its caption (BAR-4).
-  - Locations, with the Arrival Notifications switch, its caption, and the message when notifications are off for the app (ARR-5).
+  - Locations, with the Arrival Notifications switch, its caption, and the message when notifications are off for the app (ARR-5), then the Show Card Where I Am switch and its caption (SET-3) (in preparation for 1.4).
   - Data, with "Export as JSON" (DATA-2), "Import JSON" (DATA-3) and "Delete All Cards" (DATA-5).
   - Last, "Version", with the version and build number, as "1.3 (<build>)", and "Created by Paul Serby", which opens https://github.com/serby and has an external link icon. The Version row only shows when both numbers are known.
 - Brightness Boost and Arrival Notifications are on by default. Both are kept on the device and don't sync (DATA-1).
@@ -38,11 +38,11 @@ As a card holder, I want to read what each version of the app changed, so that I
 
 As a card holder, I want the card for the place I am in shown in full above my other cards, so that I can scan it straight away.
 
-- Settings > Locations has a "Show Card Where I Am" switch, with a caption saying it shows the card for where you are at the top of your cards. It is off until you turn it on, and it is kept on the device.
+- Settings > Locations has a "Show Card Where I Am" switch, below Arrival Notifications, with the caption "Shows the card for where you are at the top of your cards." It is off until you turn it on, and it is kept on the device and doesn't sync (the `showsCardWhereYouAre` user default).
 - With the switch on, when you are inside one of a card's places (PLACE-6), the Cards tab shows that card in full above the grid: its face, name, barcode and number, as on the card screen (CARD-4). If you are inside places for several cards, it shows the card whose place is nearest.
 - Tapping the full card opens it.
 - When you leave the place, or turn the switch off, the full card goes and the grid moves up.
 - The card still appears in the grid as well.
 
 **Since:** In preparation for 1.4
-**Where:** `Cards/UI/Screens/SettingsListView.swift`, `Cards/Features/SettingsScreen.swift`, `Cards/UI/Screens/CardListView.swift`, `Cards/Features/CardListScreen.swift`
+**Where:** `Cards/UI/Screens/SettingsListView.swift`, `Cards/Features/SettingsScreen.swift`, `Cards/UI/Screens/CardListView.swift`, `Cards/Features/CardListScreen.swift`, `CardsUITests/CardsUITests.swift` (`testShowCardWhereIAmSwitch`)

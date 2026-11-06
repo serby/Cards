@@ -6,6 +6,7 @@ public struct SettingsListView: View {
     private let state: SettingsState
     @Binding private var brightnessBoost: Bool
     @Binding private var arrivalNotifications: Bool
+    @Binding private var showsCardWhereYouAre: Bool
     @Binding private var message: String?
     private let actions: SettingsActions
 
@@ -17,12 +18,14 @@ public struct SettingsListView: View {
         state: SettingsState,
         brightnessBoost: Binding<Bool>,
         arrivalNotifications: Binding<Bool> = .constant(true),
+        showsCardWhereYouAre: Binding<Bool> = .constant(false),
         message: Binding<String?> = .constant(nil),
         actions: SettingsActions = SettingsActions()
     ) {
         self.state = state
         _brightnessBoost = brightnessBoost
         _arrivalNotifications = arrivalNotifications
+        _showsCardWhereYouAre = showsCardWhereYouAre
         _message = message
         self.actions = actions
     }
@@ -71,6 +74,12 @@ public struct SettingsListView: View {
                     .foregroundColor(.accent)
                     .accessibilityIdentifier("openNotificationSettingsButton")
                 }
+                Toggle("Show Card Where I Am", isOn: $showsCardWhereYouAre)
+                    .tint(.accent)
+                    .accessibilityIdentifier("showsCardWhereYouAreToggle")
+                Text("Shows the card for where you are at the top of your cards.")
+                    .font(.caption)
+                    .foregroundColor(.tertiaryText)
             } header: {
                 Text("Locations")
                     .foregroundColor(.secondaryText)
