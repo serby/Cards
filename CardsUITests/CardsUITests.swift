@@ -143,6 +143,21 @@ final class CardsUITests: XCTestCase {
         XCTAssertEqual(toggle.value as? String, before)
     }
 
+    /// Typing in the search field narrows the grid to the names that match (CARD-11).
+    @MainActor
+    func testSearchFiltersCards() throws {
+        let app = launchWithSeededCards()
+        let search = app.searchFields.firstMatch
+        XCTAssertTrue(waitForElement(search))
+        search.tap()
+        search.typeText("nec")
+        XCTAssertTrue(waitForElement(tile(app, "Nectar")))
+        XCTAssertTrue(tile(app, "Tesco Clubcard").waitForNonExistence(timeout: 3))
+
+        search.typeText("zzz")
+        XCTAssertTrue(waitForElement(app.staticTexts["No Cards Match"]))
+    }
+
     /// A long press on a tile offers Delete, which removes the card at once (CARD-6, CARD-10).
     @MainActor
     func testDeleteFromTheLongPressMenu() throws {
@@ -174,11 +189,35 @@ final class CardsUITests: XCTestCase {
         XCTAssertEqual(XCTWaiter.wait(for: [expectation(for: moved, evaluatedWith: nil)], timeout: 5), .completed)
     }
 
-    /// Launches with the six screenshot cards.
+    /// Location order puts the cards with places first and Nectar, which has
+    /// none, last; custom order puts it back (CARD-11). The choice is kept, so
+    /// the test ends on custom order.
+    @MainActor
+    func testSortMenuChangesTheOrder() throws {
+        let app = XCUIApplication()
+        // Not pinned, as launchWithSeededCards does, so the menu can change it.
+        app.launchArguments += ["-uiTesting", "-screenshotSeed"]
+        app.launch()
+        dismissNotificationPrompt()
+        let nectar = tile(app, "Nectar")
+        let ikea = tile(app, "IKEA Family")
+        XCTAssertTrue(waitForElement(nectar))
+
+        choose(app, sortOrder: "Location")
+        let nectarLast = NSPredicate { _, _ in nectar.frame.minY > ikea.frame.minY || nectar.frame.minX > ikea.frame.minX }
+        XCTAssertEqual(XCTWaiter.wait(for: [expectation(for: nectarLast, evaluatedWith: nil)], timeout: 5), .completed)
+
+        choose(app, sortOrder: "Custom Order")
+        let nectarFirst = NSPredicate { _, _ in abs(nectar.frame.minY - ikea.frame.minY) < 1 && nectar.frame.minX < ikea.frame.minX }
+        XCTAssertEqual(XCTWaiter.wait(for: [expectation(for: nectarFirst, evaluatedWith: nil)], timeout: 5), .completed)
+    }
+
+    /// Launches with the six screenshot cards, in custom order whatever an
+    /// earlier run left in that setting.
     @MainActor
     private func launchWithSeededCards() -> XCUIApplication {
         let app = XCUIApplication()
-        app.launchArguments += ["-uiTesting", "-screenshotSeed"]
+        app.launchArguments += ["-uiTesting", "-screenshotSeed", "-cardSortOrder", "custom"]
         app.launch()
         dismissNotificationPrompt()
         return app
@@ -189,6 +228,14 @@ final class CardsUITests: XCTestCase {
     @MainActor
     private func tile(_ app: XCUIApplication, _ name: String) -> XCUIElement {
         app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", name)).firstMatch
+    }
+
+    @MainActor
+    private func choose(_ app: XCUIApplication, sortOrder: String) {
+        app.buttons["sortMenu"].tap()
+        let option = app.buttons[sortOrder]
+        XCTAssertTrue(waitForElement(option))
+        option.tap()
     }
 
     /// Cards with locations ask for notifications once; answer so the alert

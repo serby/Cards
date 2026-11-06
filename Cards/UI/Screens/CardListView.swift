@@ -1,19 +1,29 @@
 import SwiftUI
 
-/// The Cards tab: every card as a tile in a grid. Driven entirely by its
-/// inputs and `actions`.
+/// The Cards tab: every card as a tile in a grid, with search and a choice of
+/// order. Driven entirely by its inputs and `actions`.
 public struct CardListView: View {
     private let cards: [CardSummary]
+    @Binding private var search: String
+    @Binding private var sortOrder: CardSortOrder
     private let actions: CardListActions
     @State private var toolbarVisible = true
+    @State private var searchPresented = false
     @State private var deleteTrigger = false
     @State private var dropTarget: CardSummary.ID?
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
-    /// - Parameter cards: The cards to show, in order.
-    public init(cards: [CardSummary], actions: CardListActions = CardListActions()) {
+    /// - Parameter cards: The cards to show, already searched and in order.
+    public init(
+        cards: [CardSummary],
+        search: Binding<String> = .constant(""),
+        sortOrder: Binding<CardSortOrder> = .constant(.custom),
+        actions: CardListActions = CardListActions()
+    ) {
         self.cards = cards
+        _search = search
+        _sortOrder = sortOrder
         self.actions = actions
     }
 
@@ -26,8 +36,10 @@ public struct CardListView: View {
         .overlay { emptyState }
         .background(Color.primaryBackground)
         .navigationTitle("Cards")
+        .searchable(text: $search, isPresented: $searchPresented)
         .sensoryFeedback(trigger: deleteTrigger, { SensoryFeedback.impact(weight: .medium) })
-        .toolbar(toolbarVisible ? .visible : .hidden, for: .navigationBar)
+        // Kept while searching, so the search field does not scroll away under you.
+        .toolbar(toolbarVisible || searchPresented || isSearching ? .visible : .hidden, for: .navigationBar)
         .toolbar { toolbarItems }
         .onScrollGeometryChange(for: CGFloat.self) { geometry in
             geometry.contentOffset.y
@@ -37,6 +49,11 @@ public struct CardListView: View {
             }
         }
     }
+
+    private var isSearching: Bool { CardArrangement.isFiltering(search) }
+
+    /// Only custom order can be rearranged, and only with every card showing.
+    private var canReorder: Bool { sortOrder == .custom && !isSearching }
 
     /// Two columns on iPhone and four on iPad, halved at the accessibility text
     /// sizes so names stay readable (A11Y-3).
@@ -51,18 +68,18 @@ public struct CardListView: View {
     private var grid: some View {
         LazyVGrid(columns: columns, spacing: 12) {
             ForEach(cards) { card in
-                reorderable(
-                    CardTileView(
-                        card: card,
-                        isDropTarget: dropTarget == card.id,
-                        onTap: { actions.selectCard(card.id) },
-                        onDelete: {
-                            deleteTrigger.toggle()
-                            actions.deleteCard(card.id)
-                        }
-                    ),
-                    card: card
+                CardTileView(
+                    card: card,
+                    isDropTarget: dropTarget == card.id,
+                    onTap: { actions.selectCard(card.id) },
+                    onDelete: {
+                        deleteTrigger.toggle()
+                        actions.deleteCard(card.id)
+                    }
                 )
+                .if(canReorder) { tile in
+                    reorderable(tile, card: card)
+                }
             }
         }
         .animation(.default, value: cards.map(\.id))
@@ -89,13 +106,21 @@ public struct CardListView: View {
     @ViewBuilder
     private var emptyState: some View {
         if cards.isEmpty {
-            ContentUnavailableView {
-                Label("No Cards Yet", systemImage: "barcode.viewfinder")
-            } description: {
-                Text("Scan the barcode on a loyalty card to add it.")
-            } actions: {
-                Button("Add Card", action: actions.addCard)
-                    .buttonStyle(.borderedProminent)
+            if isSearching {
+                ContentUnavailableView {
+                    Label("No Cards Match", systemImage: "magnifyingglass")
+                } description: {
+                    Text("Check the spelling, or try another name.")
+                }
+            } else {
+                ContentUnavailableView {
+                    Label("No Cards Yet", systemImage: "barcode.viewfinder")
+                } description: {
+                    Text("Scan the barcode on a loyalty card to add it.")
+                } actions: {
+                    Button("Add Card", action: actions.addCard)
+                        .buttonStyle(.borderedProminent)
+                }
             }
         }
     }
@@ -103,12 +128,50 @@ public struct CardListView: View {
     @ToolbarContentBuilder
     private var toolbarItems: some ToolbarContent {
         ToolbarItem(placement: .topBarTrailing) {
+            Menu {
+                Picker("Sort By", selection: $sortOrder) {
+                    ForEach(CardSortOrder.allCases) { order in
+                        Label(order.title, systemImage: order.systemImage)
+                            .tag(order)
+                    }
+                }
+            } label: {
+                Label("Sort", systemImage: "arrow.up.arrow.down")
+            }
+            .foregroundColor(.accent)
+            .accessibilityIdentifier("sortMenu")
+        }
+        ToolbarItem(placement: .topBarTrailing) {
             Button(action: actions.addCard) {
                 Image(systemName: "barcode.viewfinder")
             }
             .foregroundColor(.accent)
             .accessibilityIdentifier("addCardButton")
             .accessibilityLabel("Add Card")
+        }
+    }
+}
+
+extension CardSortOrder {
+    var title: String {
+        switch self {
+        case .lastViewed:
+            "Last Viewed"
+        case .custom:
+            "Custom Order"
+        case .location:
+            "Location"
+        }
+    }
+
+    var systemImage: String {
+        switch self {
+        case .lastViewed:
+            "clock"
+        case .custom:
+            "line.3.horizontal"
+        case .location:
+            "location"
         }
     }
 }

@@ -9,12 +9,17 @@ public struct CardListScreen: View {
     @Environment(ArrivalScheduler.self) private var arrivalScheduler
     @Environment(\.widgetSnapshot) private var widgetSnapshot
     @AppStorage(ArrivalPlan.enabledKey) private var arrivalNotifications = true
+    @AppStorage(DeviceSettings.cardSortOrderKey) private var sortOrder = CardSortOrder.custom
+    @State private var search = ""
 
     public init() {}
 
     public var body: some View {
         CardListView(
-            cards: cardItems.map(summary),
+            cards: CardArrangement.arranged(cardItems, by: sortOrder, search: search, near: locationService.current)
+                .map(summary),
+            search: $search,
+            sortOrder: $sortOrder,
             actions: CardListActions(
                 selectCard: { code in navigationManager.navigate(to: .card(code)) },
                 addCard: { navigationManager.navigate(to: .newCard) },

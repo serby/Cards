@@ -53,26 +53,35 @@ private let cardListStory = Story(
         .number("Cards", 6, in: 0...Double(CardSummary.samples.count), step: 1),
         .toggle("Colours", true),
         .toggle("Distances", true),
-        .toggle("Symbols", true)
+        .toggle("Symbols", true),
+        .text("Search", ""),
+        .options("Sort", CardSortOrder.allCases.map(\.rawValue), CardSortOrder.custom.rawValue)
     ],
     gallery: [
         (name: "Empty", view: pushed { CardListView(cards: []) }),
         (name: "Single", view: pushed { CardListView(cards: Array(CardSummary.samples.prefix(1))) }),
         (name: "Full", view: pushed { CardListView(cards: CardSummary.samples) }),
-        (name: "Long name", view: pushed { CardListView(cards: [.longName] + CardSummary.samples) })
+        (name: "Long name", view: pushed { CardListView(cards: [.longName] + CardSummary.samples) }),
+        (name: "Search, no match", view: pushed { CardListView(cards: [], search: .constant("Waitrose")) })
     ]
 ) { knobs in
-    pushed {
+    let search = knobs.string("Search")
+    let sortOrder = Binding(get: { CardSortOrder(rawValue: knobs.option("Sort")) ?? .custom }, set: { knobs.select($0.rawValue, for: "Sort") })
+    return pushed {
         CardListView(
-            cards: CardSummary.samples.prefix(knobs.integer("Cards")).map { card in
-                CardSummary(
-                    id: card.id,
-                    name: card.name,
-                    color: knobs.bool("Colours") ? card.color : .standard,
-                    proximity: knobs.bool("Distances") ? card.proximity : nil,
-                    symbol: knobs.bool("Symbols") ? card.symbol : nil
-                )
-            }
+            cards: CardSummary.samples.prefix(knobs.integer("Cards"))
+                .filter { CardArrangement.name($0.name, matches: search) }
+                .map { card in
+                    CardSummary(
+                        id: card.id,
+                        name: card.name,
+                        color: knobs.bool("Colours") ? card.color : .standard,
+                        proximity: knobs.bool("Distances") ? card.proximity : nil,
+                        symbol: knobs.bool("Symbols") ? card.symbol : nil
+                    )
+                },
+            search: knobs.stringBinding("Search"),
+            sortOrder: sortOrder
         )
     }
 }

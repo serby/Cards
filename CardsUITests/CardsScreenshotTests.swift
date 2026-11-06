@@ -25,7 +25,9 @@ final class CardsScreenshotTests: XCTestCase {
     @MainActor
     func testCaptureScreenshots() throws {
         let app = XCUIApplication()
-        app.launchArguments += ["-uiTesting", "-screenshotSeed"]
+        // The cards in custom order, whatever the simulator's own setting says,
+        // so every capture shows the same grid.
+        app.launchArguments += ["-uiTesting", "-screenshotSeed", "-cardSortOrder", "custom"]
         app.launchEnvironment["CARDS_UI_TESTING"] = "1"
         app.launchEnvironment["CARDS_SCREENSHOT_SEED"] = "1"
         app.launch()

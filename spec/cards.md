@@ -163,18 +163,19 @@ As a card holder, I want my cards laid out in a grid, so that I can see more of 
 
 As a card holder, I want to search my cards and choose their order, so that the card I need is always easy to reach.
 
-- The Cards tab has a search field. Typing filters the grid to cards whose name contains the text, ignoring case and accents. Clearing the search shows every card again.
-- The search shows "No cards match" when nothing matches.
-- A sort menu in the toolbar offers three orders:
-  - **Last viewed:** the card opened most recently comes first. Cards never opened follow, in custom order.
-  - **Custom order:** the order you set by dragging (CARD-10), as before.
-  - **Location:** cards with a place come first, nearest first (PLACE-6). Cards without places, or when the app does not know where you are, follow in custom order.
-- The chosen order is kept on the device and is still chosen the next time the app opens. It starts as custom order.
-- Only custom order can be rearranged by dragging.
+- The Cards tab has a search field, "Search", where iOS puts it: below the title on iPhone, which iOS 26 and later keep out of sight until you pull the grid down, and in the toolbar on iPad from iOS 26. Typing filters the grid to cards whose name contains the text, ignoring case and accents, spaces at either end, and whether apostrophes and quotes are curly, so "sainsbury’s" finds "Sainsbury's Nectar". Clearing or cancelling the search shows every card again.
+- When nothing matches, the grid gives way to "No Cards Match" and "Check the spelling, or try another name."
+- A sort menu, an up and down arrow labelled "Sort" beside the add button, offers three orders, with a tick by the chosen one:
+  - **Last Viewed:** the card opened most recently comes first. Cards opened at the same moment, and then the cards never opened, follow in custom order.
+  - **Custom Order:** the order you set by dragging (CARD-7, CARD-10), as before.
+  - **Location:** cards with a place come first, by the distance to the edge of their nearest place (PLACE-6). Between places you are inside, the one whose middle you are nearer comes first, and equal distances keep custom order. Cards without places follow in custom order, and when the app does not know where you are every card is in custom order. Choosing it doesn't ask for location permission (PLACE-7). The order changes as you move.
+- The search applies in every order.
+- The chosen order is kept on the device, under `cardSortOrder`, and doesn't sync. It is still chosen the next time the app opens, and starts as custom order.
+- Only custom order can be rearranged by dragging, and only with nothing in the search field.
 - Opening a card records when it was last viewed. That date is stored with the card, so it syncs (DATA-1) and is exported (DATA-2).
 
 **Since:** In preparation for 1.4
-**Where:** `Cards/UI/Screens/CardListView.swift`, `Cards/Features/CardListScreen.swift`, `Cards/Core/Models/CardItem.swift`
+**Where:** `Cards/UI/Screens/CardListView.swift`, `Cards/Features/CardListScreen.swift`, `Cards/Core/Models/CardArrangement.swift`, `Cards/Core/Models/CardSortOrder.swift`, `Cards/Core/Models/DeviceSettings.swift`, `Cards/Core/Models/CardItem.swift`, `CardsTests/CardArrangementTests.swift`, `CardsUITests/CardsUITests.swift` (`testSearchFiltersCards`, `testSortMenuChangesTheOrder`)
 
 ### CARD-12: Give a card a symbol
 
