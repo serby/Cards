@@ -27,10 +27,10 @@ As a card holder, I want to send a picture of a card, so that someone can scan i
 - It is always drawn in light appearance, 360 points wide at three times screen scale (1,080 pixels), so the barcode stays sharp enough to scan when shown on another screen (BAR-2). A card in the default colour sits on white.
 - The file is called after the card, such as "Boots Advantage.png", with any "/", "\" or ":" in the name turned into "-", or "Card.png" when the name is empty.
 - The picture is drawn only when the share sheet asks for it, so opening a card does no extra work.
-- The share sheet can save the image to Photos, which asks for permission to add photos the first time.
+- The share sheet offers Save Image, which saves the picture to Photos. The first time, iOS asks for permission to add photos, saying "Saves the picture of a card you share to your photos." The app never asks to read Photos.
 
 **Since:** In preparation for 1.4
-**Where:** `Cards/UI/Screens/CardDetailView.swift`, `Cards/Features/CardDetailScreen.swift`, `Cards/Features/CardShareImage.swift`, `Cards/UI/ViewState/CardShare.swift` (`CardImage`), `CardsTests/SharingTests.swift` (`theSharedImageIsTheFaceAtThreeTimesScale`, `imageFileNamesComeFromTheCardsName`), `CardsUITests/CardSharingUITests.swift`
+**Where:** `Cards/UI/Screens/CardDetailView.swift`, `Cards/Features/CardDetailScreen.swift`, `Cards/Features/CardShareImage.swift`, `Cards/UI/ViewState/CardShare.swift` (`CardImage`), `Info.plist` (`NSPhotoLibraryAddUsageDescription`), `CardsTests/SharingTests.swift` (`theSharedImageIsTheFaceAtThreeTimesScale`, `imageFileNamesComeFromTheCardsName`), `CardsUITests/CardSharingUITests.swift`
 
 ### SHARE-3: Add a card someone shared with me
 
