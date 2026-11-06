@@ -7,7 +7,7 @@ public enum CardGeometry {
     /// The card face.
     public static let cornerRadius: CGFloat = 28
     /// From the card's edge to its panels, and between panels.
-    public static let inset: CGFloat = 12
+    public static let inset: CGFloat = 16
     /// The panels on a card face: the text and the barcode's frame.
     public static let panelCornerRadius = cornerRadius - inset
     /// The barcode's translucent frame, around the white the bars sit on.

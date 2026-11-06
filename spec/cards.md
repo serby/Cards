@@ -148,7 +148,7 @@ As a card holder, I want my cards laid out in a grid, so that I can see more of 
 
 - The Cards tab shows the cards as tiles in a grid: two columns on iPhone, and four where the screen is wide (an iPad, unless the app has a narrow part of the screen beside another app, when it has two). The order runs left to right, then on to the next row.
 - At the accessibility text sizes the grid has half as many columns, one on iPhone and two on iPad, so names have room (A11Y-3).
-- Each tile is filled with the card's colour at full strength, in its gradient (COL-4), with the card face's rounded corners. Its symbol, if it has one, is at the top (CARD-12). At the bottom are its name, in the colour's ink, and how far away its nearest place is, on a white panel whose corners nest inside the tile's (PLACE-6).
+- Each tile is filled with the card's colour at full strength, in its gradient (COL-4), with the card face's rounded corners. Along the top are its symbol on the left, if it has one (CARD-12), and on the right how far away its nearest place is, on a white panel whose corners nest inside the tile's (PLACE-6). Its name, in the colour's ink, is at the bottom.
 - A tile is at least 112 points high, growing with the text size up to 200 points, and names wrap rather than being cut short. The tiles in a row are as tall as the tallest.
 - Tapping a tile opens the card (CARD-4). Opening a card plays no haptic (A11Y-5).
 - A long press on a tile lifts it and shows a menu with Delete, and the system plays its haptic as the menu appears. Delete removes the card at once, with the medium haptic swiping had in the list (CARD-6).

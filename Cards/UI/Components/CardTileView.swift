@@ -29,29 +29,33 @@ public struct CardTileView: View {
     public var body: some View {
         Button(action: onTap) {
             VStack(alignment: .leading, spacing: 8) {
-                if let symbol = card.symbol {
-                    // The name already says what the card is (CARD-12).
-                    Image(systemName: symbol)
-                        .font(.title2)
-                        .foregroundStyle(card.color.ink)
-                        .accessibilityHidden(true)
+                HStack {
+                    if let symbol = card.symbol {
+                        // The name already says what the card is (CARD-12).
+                        Image(systemName: symbol)
+                            .font(.title2)
+                            .foregroundStyle(card.color.ink)
+                            .accessibilityHidden(true)
+                    }
+                    Spacer()
+                    if let proximity = card.proximity {
+                        // On a white panel, as text on a card colour is, its corners
+                        // nested inside the tile's (docs/STYLE.md).
+                        ProximityLabel(proximity, highlightsHere: false)
+                            .font(.subheadline.weight(.medium))
+                            .foregroundStyle(CardPanel.ink)
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 6)
+                            .background(CardPanel.fill, in: .rect(cornerRadius: CardGeometry.panelCornerRadius))
+                    }
                 }
                 Spacer(minLength: 0)
                 Text(card.name)
                     .font(.headline)
                     .foregroundStyle(card.color.ink)
                     .multilineTextAlignment(.leading)
-                if let proximity = card.proximity {
-                    // On a white panel, as text on a card colour is, its corners
-                    // nested inside the tile's (docs/STYLE.md).
-                    ProximityLabel(proximity, highlightsHere: false)
-                        .font(.subheadline.weight(.medium))
-                        .foregroundStyle(CardPanel.ink)
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 6)
-                        .background(CardPanel.fill, in: .rect(cornerRadius: CardGeometry.panelCornerRadius))
-                }
             }
+
             .padding(CardGeometry.inset)
             .frame(
                 maxWidth: .infinity,
@@ -74,6 +78,9 @@ public struct CardTileView: View {
             Button("Delete", systemImage: "trash", role: .destructive, action: onDelete)
         }
         // VoiceOver offers Delete in the actions rotor, as it did for the list's swipe.
+        // The name first, wherever the distance sits on the tile: "Joe's Market,
+        // You're at Joe's Market Notting Hill" (A11Y-1).
+        .accessibilityLabel(card.proximity.map { "\(card.name), \($0.spokenDescription)" } ?? card.name)
         .accessibilityAction(named: Text("Delete"), onDelete)
     }
 }
@@ -88,6 +95,15 @@ public struct CardTileView: View {
         }
         .padding()
     }
+}
+
+#Preview("Long Card Name") {
+    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
+        CardTileView(card: CardSummary.longName) {}
+        CardTileView(card: CardSummary.samples[0]) {}
+    }
+    .padding()
+    Spacer()
 }
 
 #Preview("Drop target") {

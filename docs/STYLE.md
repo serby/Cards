@@ -12,7 +12,7 @@ inner radius = outer radius − inset
 
 The curves then run parallel and the shapes read as one object. A radius picked by eye looks pinched (too large) or boxy (too small) against the shape around it, so never choose one; derive it.
 
-- **Card face:** `CardGeometry` holds the chain. The card is `cornerRadius` (28). Its panels sit `inset` (12) in, so they are `panelCornerRadius` (16). The barcode's frame is `barcodeFrame` (6) thick, so the white inside it is `barcodeCornerRadius` (10). `CardGeometryTests` checks each step.
+- **Card face:** `CardGeometry` holds the chain. The card is `cornerRadius` (28). Its panels sit `inset` (16) in, so they are `panelCornerRadius` (12). The barcode's frame is `barcodeFrame` (6) thick, so the white inside it is `barcodeCornerRadius` (6). `CardGeometryTests` checks each step.
 - **Widgets:** WidgetKit owns the widget's corner radius and margins, which differ between devices, so panels use `ContainerRelativeShape()`, which does the subtraction itself. Storybook's widget frame sets `.containerShape(.rect(cornerRadius: 22))` so stories match.
 - **Panels in a column line up:** the same width, the same radius, `inset` apart. The text panels and the barcode's frame on a card face are one column.
 - **A new nested shape** gets a constant in `CardGeometry`, derived from the shape it sits in, and a line in the test.
@@ -43,4 +43,4 @@ Card faces, list rows, the widget's background and the picker's swatches all fil
 - **Accent:** the brand pink `Color.accent` is for controls and links, and meets AA on the system background in both appearances.
 - **Quiet actions** beneath content, such as "Add current location" on a card: footnote size, secondary colour, borderless.
 - **Shadows** belong to the card face only.
-- **Words:** British English in everything the user reads ("colour"), Swift's spelling in identifiers (`color`).
+- **Words:** follow the language guide, [LANGUAGE.md](LANGUAGE.md): British English in everything the user reads ("colour"), Swift's spelling in identifiers (`color`), and made-up businesses, never real brands, in every example.

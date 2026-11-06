@@ -34,7 +34,7 @@ public struct ProximityLabel: View {
         .monospacedDigit()
         .lineLimit(1)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(accessibilityText)
+        .accessibilityLabel(proximity.spokenDescription)
     }
 
     private var text: String {
@@ -50,12 +50,16 @@ public struct ProximityLabel: View {
         }
     }
 
-    private var accessibilityText: String {
-        proximity.isHere ? "You're at \(proximity.placeName)" : "\(distance) from \(proximity.placeName)"
-    }
-
     private var distance: String {
         proximity.distance.distanceText
+    }
+}
+
+public extension CardProximity {
+    /// What VoiceOver says for the distance: "You're at Joe's Market Notting Hill",
+    /// or "350 m from Boulder Barn". Anything that shows a distance reads it this way.
+    var spokenDescription: String {
+        isHere ? "You're at \(placeName)" : "\(distance.distanceText) from \(placeName)"
     }
 }
 
