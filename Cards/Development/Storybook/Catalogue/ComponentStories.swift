@@ -3,7 +3,6 @@ import SwiftUI
 @MainActor
 let componentStories: [Story] = [
     barcodeStory,
-    spinnerStory,
     cardTileStory,
     cardColorPickerStory,
     proximityLabelStory,
@@ -48,26 +47,6 @@ private let barcodeStory = Story(
             barcodeType: .named(knobs.option("Type"))
         )
         .padding()
-    )
-}
-
-@MainActor
-private let spinnerStory = Story(
-    id: "spinner",
-    title: "Spinner",
-    section: "Components",
-    knobs: [
-        .toggle("Loading", true),
-        .number("Grace time", 0, in: 0...2, step: 0.25)
-    ],
-    gallery: [
-        (name: "Loading", view: AnyView(Spinner(isLoading: true))),
-        (name: "Idle", view: AnyView(Spinner(isLoading: false))),
-        (name: "Loading after 1s grace", view: AnyView(Spinner(isLoading: true, graceTime: 1)))
-    ]
-) { knobs in
-    AnyView(
-        Spinner(isLoading: knobs.bool("Loading"), graceTime: knobs.number("Grace time"))
     )
 }
 
