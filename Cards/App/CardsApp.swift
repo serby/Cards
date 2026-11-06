@@ -54,6 +54,11 @@ struct CardsApp: App {
             }
             DevelopmentHooks.tabs
         }
+        // Presented from the root, over whatever the Cards tab shows, so Cancel
+        // leaves it as it was. Inside the tint, so the sheet takes the accent.
+        .sheet(item: nav.sharedCard) { link in
+            SharedCardScreen(link: link, navigationManager: navigationManager)
+        }
         .tint(.accent)
         .environment(locationService)
         .environment(arrivalScheduler)
@@ -67,10 +72,6 @@ struct CardsApp: App {
             if let url = activity.webpageURL {
                 navigationManager.handleDeepLink(url)
             }
-        }
-        // Presented from the root, over whatever the Cards tab shows, so Cancel leaves it as it was.
-        .sheet(item: nav.sharedCard) { link in
-            SharedCardScreen(link: link, navigationManager: navigationManager)
         }
         .tabBarMinimizeBehaviorIfAvailable()
     }

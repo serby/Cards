@@ -1,5 +1,6 @@
 @testable import Cards
 import Foundation
+import SwiftUI
 import Testing
 import UIKit
 
@@ -203,6 +204,13 @@ struct SharingTests {
         #expect(card.notifiesOnArrival == false)
         #expect(card.locations.map(\.name) == ["Tesco Express"])
         #expect(card.locations.first?.id != tesco.locations.first?.id)
+    }
+
+    /// The sheet's Add Card and Open Card buttons put the system background's
+    /// colour, white or black, on the accent.
+    @Test func theSheetsButtonTextIsReadableOnTheAccent() {
+        #expect(WCAG.contrast(0xFFFFFF, Color.accentLightRGB) >= WCAG.minimumTextContrast)
+        #expect(WCAG.contrast(0x000000, Color.accentDarkRGB) >= WCAG.minimumTextContrast)
     }
 
     // MARK: The image

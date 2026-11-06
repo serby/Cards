@@ -76,6 +76,9 @@ public struct SharedCardView: View {
         Button(action: action) {
             Text(title)
                 .font(.headline)
+                // White on the light accent and black on the dark one, which both
+                // meet WCAG AA; white on the dark accent would not.
+                .foregroundStyle(Color.primaryBackground)
                 .frame(maxWidth: .infinity)
         }
         .buttonStyle(.borderedProminent)
