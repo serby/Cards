@@ -47,7 +47,9 @@ public extension CardSummary {
 
     static let longName = CardSummary(
         id: "0000000000001",
-        name: "A loyalty card with an extremely long name that will certainly wrap"
+        name: "A loyalty card with an extremely long name that will certainly wrap",
+        color: .yellow,
+        proximity: CardProximity(placeName: "Long Way", distance: 1_800)
     )
 
     /// The Symbol knob's choice for a card without one.
