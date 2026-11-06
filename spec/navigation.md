@@ -28,7 +28,8 @@ As a card holder, I want a link to open a card directly, so that the widget and 
 - A link to a code no card has shows "Card not found".
 - Opening a link replaces whatever was showing on the Cards tab: a card link leaves the card on top of the list, and an edit link the edit form on top of the card.
 - Every link the app reads selects the Cards tab, from Settings too (NAV-1) (1.3).
+- In preparation for 1.4: share links, `https://cards.serby.net/add#…` (a universal link) and `cards://cards/add#…`, ask whether to add the card in them (SHARE-3). They show a sheet over the Cards tab instead of replacing what it shows. Other `https` links, and `https://cards.serby.net` links to any other page, are ignored.
 
 **Since:** 1.0
-**Where:** `Cards/Core/Navigation/NavigationRoute.swift`, `Cards/Core/Navigation/NavigationManager.swift`, `Cards/Features/CardListScreen.swift:101-137`, `Info.plist`, `CardsTests/NavigationTests.swift`, `CardsTests/CardFixesTests.swift` (`openingACardBringsTheCardsTabForward`)
+**Where:** `Cards/Core/Navigation/NavigationRoute.swift`, `Cards/Core/Navigation/NavigationManager.swift`, `Cards/Features/CardListScreen.swift:101-137`, `Info.plist`, `CardsTests/NavigationTests.swift`, `CardsTests/CardFixesTests.swift` (`openingACardBringsTheCardsTabForward`), `Cards/Core/Navigation/SharedCardLink.swift`, `Cards/App/CardsApp.swift`
 **Notes:** `NavigationRoute.path` gives "/cards/card/<code>", which `NavigationRoute.from(path:)` doesn't read back: it expects "/card/<code>". Only the tests use either (`Cards/Core/Navigation/NavigationRoute.swift:22-37`).

@@ -68,6 +68,20 @@ public struct CardEditActions {
     }
 }
 
+/// What the "Add Card?" sheet raises. Cancel just closes the sheet.
+@MainActor
+public struct SharedCardActions {
+    /// Adds the shared card and opens it.
+    public var add: () -> Void
+    /// Opens the card already in the app with the shared card's code.
+    public var open: () -> Void
+
+    public init(add: @escaping () -> Void = {}, open: @escaping () -> Void = {}) {
+        self.add = add
+        self.open = open
+    }
+}
+
 @MainActor
 public struct SettingsActions {
     public var exportCards: () -> Void

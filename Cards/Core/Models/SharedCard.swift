@@ -111,7 +111,7 @@ public extension SharedCard {
         CardImport.cards(from: [CardItemDTO(from: cardItem(addedAt: addedAt))], existing: existing)
     }
 
-    /// A new card with these details, added at `addedAt`. Each place gets a new id.
+    /// A new card with these details, added at `addedAt`.
     func cardItem(addedAt: Date) -> CardItem {
         CardItem(
             timestamp: addedAt,
@@ -119,10 +119,15 @@ public extension SharedCard {
             name: name,
             barcodeType: barcodeType,
             color: color,
-            locations: places.map { CardLocation(name: $0.name, latitude: $0.latitude, longitude: $0.longitude, radius: $0.radius) },
+            locations: locations,
             notifiesOnArrival: notifiesOnArrival,
             symbol: symbol
         )
+    }
+
+    /// The places as locations of the recipient's own, each with a new id.
+    var locations: [CardLocation] {
+        places.map { CardLocation(name: $0.name, latitude: $0.latitude, longitude: $0.longitude, radius: $0.radius) }
     }
 }
 

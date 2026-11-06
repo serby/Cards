@@ -36,11 +36,14 @@ As a card holder, I want to send a picture of a card, so that someone can scan i
 
 As a card holder, I want to look at a card someone sent me before I add it, so that I only keep the cards I want.
 
-- Opening a share link (SHARE-1) brings Card Barcodes forward on the Cards tab (NAV-1) and shows a sheet titled "Add Card?" with the card's face, name, barcode and places.
-- "Add Card" adds it at the end of the list (CARD-3), then opens it. "Cancel" adds nothing.
-- If a card with the same code is already in the app, the sheet says "You already have this card." and offers "Open Card" instead of Add, because codes are unique (CARD-9).
-- A link whose card cannot be read shows "This link doesn't contain a card." and adds nothing.
+- Opening a share link (SHARE-1), as `https://cards.serby.net/add#…` or as `cards://cards/add#…`, brings Card Barcodes forward on the Cards tab (NAV-1) and shows a sheet titled "Add Card?" with the card's face, name, symbol, barcode and number, and its places under "Locations" when it has any.
+- The sheet opens over whatever the Cards tab was showing, which stays as it was, so Cancel goes back to it.
+- The face shows no distance, and its date is when the sheet opened, which becomes the date the card was added.
+- "Add Card", at the bottom, adds it by the import rules (DATA-3): at the end of the list (CARD-3), with its code and name trimmed and its places as new places of your own. Then the sheet closes on the new card's screen. "Cancel" adds nothing.
+- If a card with the same code is already in the app, by the import rules' comparison of trimmed codes, the sheet says "You already have this card." and offers "Open Card" instead of Add, because codes are unique (CARD-9). Open Card closes the sheet on that card's screen. If the card arrives through iCloud while the sheet is open, Add Card opens it instead of adding a second.
+- A link whose card cannot be read shows "This link doesn't contain a card." with a "Done" button, and adds nothing. That is a link with nothing after the `#`, text that is not a card, a card without a name or a code, a card in a newer format, or anything over 16,384 characters.
+- Opening a card from anywhere else, such as a notification, closes the sheet.
 
 **Since:** In preparation for 1.4
-**Where:** `Cards/Features/CardListScreen.swift`, `Cards/Core/Navigation/NavigationRoute.swift`, `Cards/App/CardsApp.swift`
-**Notes:** Opening the link in the app needs cards.serby.net to serve an `apple-app-site-association` file for the app, and the app to have the Associated Domains capability for `applinks:cards.serby.net`.
+**Where:** `Cards/App/CardsApp.swift` (`onOpenURL`, `onContinueUserActivity`, the sheet), `Cards/Core/Navigation/NavigationManager.swift` (`sharedCard`, `show(_:)`, `handleDeepLink(_:)`), `Cards/Core/Navigation/SharedCardLink.swift`, `Cards/Core/Models/SharedCard.swift` (`importResult(existing:addedAt:)`), `Cards/Features/SharedCardScreen.swift`, `Cards/UI/Screens/SharedCardView.swift`, `Cards/UI/ViewState/SharedCardState.swift`, `CardsTests/SharingTests.swift`, `CardsTests/NavigationTests.swift` (`shareLinksShowTheCardOverTheCardsTab`, `openingACardClosesTheSharedCardSheet`), `CardsUITests/CardSharingUITests.swift` (`testAddACardFromAShareLink`, `testALinkWithoutACardSaysSo`)
+**Notes:** Opening the https link in the app needs cards.serby.net to serve an `apple-app-site-association` file for the app, and the app to have the Associated Domains capability for `applinks:cards.serby.net`. The `cards://` form works without either, which is how the simulator and the UI tests open share links.

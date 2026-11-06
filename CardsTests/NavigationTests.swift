@@ -232,4 +232,30 @@ struct NavigationTests {
         #expect(NavigationRoute.from(url: try #require(URL(string: "https://cards/card/1"))) == nil)
         #expect(NavigationRoute.from(url: try #require(URL(string: "cards://other/card/1"))) == nil)
     }
+
+    /// SHARE-3: both forms of share link ask about the card on the Cards tab,
+    /// over whatever it was showing.
+    @Test(arguments: ["https://cards.serby.net/add#abc", "cards://cards/add#abc"])
+    func shareLinksShowTheCardOverTheCardsTab(_ string: String) throws {
+        navigationManager.navigate(to: .editCard("123"))
+        navigationManager.tab = .settings
+        navigationManager.handleDeepLink(try #require(URL(string: string)))
+        #expect(navigationManager.sharedCard == SharedCardLink(payload: "abc"))
+        #expect(navigationManager.tab == .cards)
+        #expect(navigationManager.currentRoute == .editCard("123"))
+        #expect(navigationManager.navigationPath.count == 2)
+    }
+
+    @Test func openingACardClosesTheSharedCardSheet() {
+        navigationManager.show(SharedCardLink(payload: "abc"))
+        navigationManager.navigate(to: .card("123"))
+        #expect(navigationManager.sharedCard == nil)
+        #expect(navigationManager.currentRoute == .card("123"))
+    }
+
+    @Test func otherWebLinksAreIgnored() throws {
+        navigationManager.handleDeepLink(try #require(URL(string: "https://cards.serby.net/privacy.html")))
+        #expect(navigationManager.sharedCard == nil)
+        #expect(navigationManager.currentRoute == .cards)
+    }
 }

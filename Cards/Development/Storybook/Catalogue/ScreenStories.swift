@@ -7,6 +7,7 @@ let screenStories: [Story] = [
     cardDetailStory,
     cardEditStory,
     locationPickerStory,
+    sharedCardStory,
     settingsStory,
     changelogStory,
     importCardsStory

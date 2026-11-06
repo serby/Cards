@@ -62,6 +62,16 @@ struct CardsApp: App {
             performanceTracker.recordAppLaunch()
         }
         .onOpenURL(perform: navigationManager.handleDeepLink)
+        // A universal link, such as a card shared from cards.serby.net (SHARE-3).
+        .onContinueUserActivity(NSUserActivityTypeBrowsingWeb) { activity in
+            if let url = activity.webpageURL {
+                navigationManager.handleDeepLink(url)
+            }
+        }
+        // Presented from the root, over whatever the Cards tab shows, so Cancel leaves it as it was.
+        .sheet(item: nav.sharedCard) { link in
+            SharedCardScreen(link: link, navigationManager: navigationManager)
+        }
         .tabBarMinimizeBehaviorIfAvailable()
     }
 
