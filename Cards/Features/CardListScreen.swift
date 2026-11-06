@@ -163,3 +163,15 @@ private struct ArrivalWatch: Hashable {
     // swiftlint:disable:next discouraged_optional_collection
     let area: [Int]?
 }
+
+#if DEBUG
+#Preview {
+    NavigationStack {
+        CardListScreen()
+            .environment(NavigationManager())
+            .environment(LocationService())
+            .environment(ArrivalScheduler(notifications: .silent))
+    }
+    .modelContainer(for: CardItem.self, inMemory: true)
+}
+#endif

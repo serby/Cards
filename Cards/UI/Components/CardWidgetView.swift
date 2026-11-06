@@ -167,3 +167,38 @@ private extension View {
             .accessibilityHint("Opens the card in Card Barcodes")
     }
 }
+
+#if DEBUG
+// This file is also built into the widget extension, which has none of
+// Cards/Development, so these previews carry their own data.
+#Preview("Nearby") {
+    CardWidgetView(card: CardWidgetState(
+        name: "Tesco Clubcard",
+        code: "5012345678900",
+        barcodeType: .ean13,
+        color: .blue,
+        proximity: CardProximity(placeName: "Tesco Express", distance: 120)
+    ))
+    .previewWidgetFrame(.blue)
+}
+
+#Preview("QR code") {
+    CardWidgetView(card: CardWidgetState(name: "Westway Climbing", code: "https://serby.net", barcodeType: .qrCode, color: .graphite))
+        .previewWidgetFrame(.graphite)
+}
+
+#Preview("No cards") {
+    CardWidgetView(card: nil)
+        .previewWidgetFrame(.standard)
+}
+
+private extension View {
+    /// The medium widget's size and corners, as WidgetKit draws it.
+    func previewWidgetFrame(_ color: CardColor) -> some View {
+        padding(16)
+            .frame(width: 338, height: 158)
+            .background(color.widgetFill, in: .rect(cornerRadius: 22))
+            .containerShape(.rect(cornerRadius: 22))
+    }
+}
+#endif

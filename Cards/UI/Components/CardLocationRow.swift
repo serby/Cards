@@ -27,3 +27,11 @@ public struct CardLocationRow: View {
         .accessibilityElement(children: .combine)
     }
 }
+
+#if DEBUG
+#Preview {
+    List {
+        CardLocationRow(.sample)
+    }
+}
+#endif

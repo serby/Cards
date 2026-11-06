@@ -2,10 +2,10 @@
 
 Read [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) before changing anything. Its numbered rules are the contract for every change; in short:
 
-1. **Development code never ships.** Storybook, previews, sample data, stand-ins and test seeds live in `Cards/Development` (excluded from Release). Production code reaches them only through `Cards/App/DevelopmentHooks.swift`, whose functions hold the `#if DEBUG`; no `#if DEBUG` anywhere else. Verify with `make check-release`.
+1. **Development code never ships.** Storybook, sample data, stand-ins and test seeds live in `Cards/Development` (excluded from Release); previews sit at the bottom of their view's file inside `#if DEBUG`. Production code reaches them only through `Cards/App/DevelopmentHooks.swift`, whose functions hold the `#if DEBUG`; the only other `#if DEBUG` is the one wrapping a view's previews at the bottom of its file. Verify with `make check-release`.
 2. **Views in `Cards/UI` are pure:** view state, actions and injected effects in, no store or device access.
 3. **Impure work lives in `Cards/Features` connectors and `Cards/Core/Services`.**
-4. **Every view has a story and a preview, and every parameter has a knob.** Screen stories use `galleryLayout: .oneAtATime`. Every main view and connector has a few useful `#Preview`s in `Cards/Development/Previews/<View>+Previews.swift`, never beside the view.
+4. **Every view has a story and a preview, and every parameter has a knob.** Screen stories use `galleryLayout: .oneAtATime`. Every main view and connector has a few useful `#Preview`s at the bottom of its own file, inside `#if DEBUG`.
 5. **Follow the visual style guide, [docs/STYLE.md](docs/STYLE.md).** Corners nest (inner radius = outer radius − inset), text on a card colour sits on a white panel or in the colour's ink over its readable gradient, colours show at full strength, and contrast is tested. Never lower a contrast threshold.
 6. **Models stay CloudKit- and export-compatible:** defaults on every property, optional DTO fields, legacy-import tests.
 7. **Swift 6, no warnings, clean lint.**

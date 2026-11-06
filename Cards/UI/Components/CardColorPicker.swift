@@ -91,3 +91,14 @@ private extension View {
             .contentShape(.circle)
     }
 }
+
+#if DEBUG
+#Preview {
+    @Previewable @State var color = CardColor.blue
+    Form {
+        Section("Colour") {
+            CardColorPicker(selection: $color)
+        }
+    }
+}
+#endif

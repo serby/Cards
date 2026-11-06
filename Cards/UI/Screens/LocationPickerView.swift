@@ -283,3 +283,13 @@ private extension View {
         .background(Color(UIColor.tertiarySystemFill), in: .rect(cornerRadius: 12))
     }
 }
+
+#if DEBUG
+#Preview {
+    LocationPickerView(
+        initialPosition: .region(CardLocation.previewRegion),
+        findPlace: { _ in nil },
+        onAdd: { _ in }
+    )
+}
+#endif

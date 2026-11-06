@@ -236,3 +236,36 @@ public struct ImportCardsView: View {
         dynamicTypeSize.isAccessibilitySize ? AnyLayout(VStackLayout(spacing: 12)) : AnyLayout(HStackLayout(spacing: 12))
     }
 }
+
+#if DEBUG
+#Preview("Empty") {
+    @Previewable @State var text = ""
+    ImportCardsView(importText: $text) {}
+}
+
+#Preview("Pasted export") {
+    @Previewable @State var text = #"[{"code": "9988776655443", "name": "Nectar"}]"#
+    ImportCardsView(importText: $text) {}
+}
+
+#Preview("With cards") {
+    @Previewable @State var boost = true
+    NavigationStack {
+        SettingsListView(state: .sample, brightnessBoost: $boost)
+    }
+}
+
+#Preview("Notifications blocked") {
+    @Previewable @State var arrivals = true
+    NavigationStack {
+        SettingsListView(state: .withNotificationsBlocked, brightnessBoost: .constant(true), arrivalNotifications: $arrivals)
+    }
+}
+
+#Preview("No cards") {
+    @Previewable @State var boost = false
+    NavigationStack {
+        SettingsListView(state: .noCards, brightnessBoost: $boost)
+    }
+}
+#endif

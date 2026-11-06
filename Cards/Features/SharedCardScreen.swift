@@ -63,3 +63,13 @@ public struct SharedCardScreen: View {
         navigationManager.navigate(to: .card(code))
     }
 }
+
+#if DEBUG
+#Preview {
+    SharedCardScreen(
+        link: SharedCardLink(card: SharedCard(name: "Library", code: "29876543210", color: .teal, symbol: "books.vertical.fill")),
+        navigationManager: NavigationManager()
+    )
+    .modelContainer(for: CardItem.self, inMemory: true)
+}
+#endif

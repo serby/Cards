@@ -93,3 +93,17 @@ extension ChangelogChange.Kind {
         }
     }
 }
+
+#if DEBUG
+#Preview("Two versions") {
+    NavigationStack {
+        ChangelogView(versions: ChangelogVersion.samples)
+    }
+}
+
+#Preview("Empty") {
+    NavigationStack {
+        ChangelogView(versions: [])
+    }
+}
+#endif

@@ -123,3 +123,13 @@ extension SettingsScreen {
         return CardImport.summary(result)
     }
 }
+
+#if DEBUG
+#Preview {
+    NavigationStack {
+        SettingsScreen()
+    }
+    .environment(ArrivalScheduler(notifications: .silent))
+    .modelContainer(for: CardItem.self, inMemory: true)
+}
+#endif

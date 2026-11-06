@@ -120,9 +120,9 @@ Development ──▶ anything          (nothing in production ──▶ Develop
 Development code is anything that exists to build, preview, test or demonstrate the app rather than to run it: the Storybook, `#Preview` blocks, sample data and fixtures, simulated effects and stand-in clients (`ScreenBrightness.simulated`, `AccessibilityAnnouncer.silent`, `NotificationClient.silent`), stand-in views (`ScannerPlaceholderView`), UI-test switches and screenshot seed data, and debugging aids (`Loader`). None of it may reach a release build, and none of it may clutter production code with `#if DEBUG`.
 
 1. **It lives in `Cards/Development/`.** The Release configuration of the `Cards` target excludes that folder (`EXCLUDED_SOURCE_FILE_NAMES`), so files there are plain Swift with no `#if DEBUG` of their own. The patterns cover three folder levels below `Cards/Development`; add a pattern in the project if you ever need a fourth.
-2. **Previews live in `Cards/Development/Previews/<View>+Previews.swift`,** not beside the view. Release builds type-check `#Preview` bodies even though they strip them, so a preview next to a view would drag sample data into the release compile. Open the previews file next to the view in Xcode to get the canvas, or use the Storybook.
+2. **Previews are the one exception: they sit at the bottom of the view's own file, inside `#if DEBUG`,** so Xcode's canvas shows them when the view is open. Release builds type-check `#Preview` bodies even though they strip them, so without the `#if DEBUG` a preview would drag sample data into the release compile. One `#if DEBUG … #endif` wraps all of a file's previews and nothing else. A view built into the widget extension too (`CardWidgetView`) cannot reach `Cards/Development`, so its previews carry their own data.
 3. **Production code reaches development code only through `Cards/App/DevelopmentHooks.swift`.** Each hook is one function or property whose body holds the `#if DEBUG` and returns something inert in release (`false`, nothing, an empty view). Call sites never contain `#if DEBUG`.
-4. **`#if DEBUG` appears nowhere else.** `grep -rn "#if DEBUG" Cards` must only list `DevelopmentHooks.swift`.
+4. **`#if DEBUG` appears nowhere else.** `grep -rn "#if DEBUG" Cards` lists `DevelopmentHooks.swift` and the files whose previews it wraps, and nothing else; around anything other than previews it is a mistake.
 5. **It is enforced.** A release build fails to compile if production code names anything in `Cards/Development` directly. On top of that, `make check-release` (and CI) builds Release and fails if any type or static member declared in `Cards/Development`, any SwiftUI preview, or a UI-testing launch key is in the binary.
 
 A hook looks like this; the caller just writes `DevelopmentHooks.isUITesting`:
@@ -168,7 +168,7 @@ Every view in `Cards/UI` has a story in `Cards/Development/Storybook/Catalogue`,
 
 Every main view, each screen, connector and reusable component, also has an Xcode preview, for the canvas while you work on it. Stories explore every parameter; previews show only the few states worth seeing at a glance.
 
-- **Where:** `Cards/Development/Previews/<View>+Previews.swift`, one file per view, so previews never ship (rule 1). Never put `#Preview` beside the view.
+- **Where:** at the bottom of the view's own file, in one `#if DEBUG … #endif` block, so the canvas shows them as you edit the view and they never ship (rule 1).
 - **What:** one to three named `#Preview`s of the states that matter, such as "Barcode" and "QR code", or "New card", "Already here" and "Unreadable link". Build them from `SampleData.swift`, and use `@Previewable @State` for bindings.
 - **Effects:** give previews the same stand-ins as stories (`.simulated`, `.silent`), and give connectors an in-memory model container and any environment objects they need.
 - **Not needed** for private subviews and small pieces of one view, such as a row inside a list, or for the live camera scanner.
@@ -273,7 +273,7 @@ The app's Swift follows a few long-standing design principles, applied where the
 1. Write the view in `Cards/UI/Components` or `Cards/UI/Screens`, taking view state and actions ([rule 2](#rule-2-views-are-pure)).
 2. Add any sample data it needs to `Cards/Development/SampleData.swift`.
 3. Add a story with a knob for every parameter to `ComponentStories.swift` or `ScreenStories.swift`, and list it in that file's story array ([rule 4](#rule-4-every-view-has-a-story-and-a-preview-and-every-parameter-has-a-knob)).
-4. Add its previews in `Cards/Development/Previews/<View>+Previews.swift` (rule 4).
+4. Add its previews at the bottom of the view's file, inside `#if DEBUG` (rule 4).
 5. Run the loop, including `make check-release`.
 
 ### Add a screen
