@@ -157,7 +157,7 @@ If a view needs a new capability, add an action or an injected effect; never rea
 
 Keep the logic of a service testable without the device: `ArrivalPlan` is pure, and `ArrivalScheduler` is tested through a stand-in `NotificationClient` rather than `UNUserNotificationCenter`.
 
-### Rule 4: Every view has a story, and every parameter has a knob
+### Rule 4: Every view has a story and a preview, and every parameter has a knob
 
 Every view in `Cards/UI` has a story in `Cards/Development/Storybook/Catalogue`, and every parameter of that view has a knob. Use the knob kinds in `Story.swift` (toggle, text, number, options) and give the story a gallery of the fixed variants worth eyeballing.
 
@@ -165,6 +165,13 @@ Every view in `Cards/UI` has a story in `Cards/Development/Storybook/Catalogue`,
 - Reuse the shared knobs rather than inventing new names: `ProximityKnobs` for anything that shows a distance.
 - Bindings to local state go through `Stateful`; bindings to knobs through `KnobValues.*Binding`.
 - A value read once at creation (a map's starting camera) needs `.id(knobValue)` so the story rebuilds when the knob changes.
+
+Every main view, each screen, connector and reusable component, also has an Xcode preview, for the canvas while you work on it. Stories explore every parameter; previews show only the few states worth seeing at a glance.
+
+- **Where:** `Cards/Development/Previews/<View>+Previews.swift`, one file per view, so previews never ship (rule 1). Never put `#Preview` beside the view.
+- **What:** one to three named `#Preview`s of the states that matter, such as "Barcode" and "QR code", or "New card", "Already here" and "Unreadable link". Build them from `SampleData.swift`, and use `@Previewable @State` for bindings.
+- **Effects:** give previews the same stand-ins as stories (`.simulated`, `.silent`), and give connectors an in-memory model container and any environment objects they need.
+- **Not needed** for private subviews and small pieces of one view, such as a row inside a list, or for the live camera scanner.
 
 ### Rule 5: Follow the visual style guide
 
@@ -265,8 +272,8 @@ The app's Swift follows a few long-standing design principles, applied where the
 
 1. Write the view in `Cards/UI/Components` or `Cards/UI/Screens`, taking view state and actions ([rule 2](#rule-2-views-are-pure)).
 2. Add any sample data it needs to `Cards/Development/SampleData.swift`.
-3. Add a story with a knob for every parameter to `ComponentStories.swift` or `ScreenStories.swift`, and list it in that file's story array ([rule 4](#rule-4-every-view-has-a-story-and-every-parameter-has-a-knob)).
-4. Add previews, if you want them, in `Cards/Development/Previews/<View>+Previews.swift`.
+3. Add a story with a knob for every parameter to `ComponentStories.swift` or `ScreenStories.swift`, and list it in that file's story array ([rule 4](#rule-4-every-view-has-a-story-and-a-preview-and-every-parameter-has-a-knob)).
+4. Add its previews in `Cards/Development/Previews/<View>+Previews.swift` (rule 4).
 5. Run the loop, including `make check-release`.
 
 ### Add a screen
