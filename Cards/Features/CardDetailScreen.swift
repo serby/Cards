@@ -36,6 +36,14 @@ public struct CardDetailScreen: View {
                 copyCode: { clipboard.write(item.code) }
             )
         )
+        .onAppear(perform: recordView)
+    }
+
+    /// Opening a card is what "Last viewed" sorts by (CARD-11). Stored with the
+    /// card, so it syncs and exports like its other fields.
+    private func recordView() {
+        item.lastViewed = .now
+        try? modelContext.save()
     }
 
     private func addLocation(_ location: CardLocation) {
