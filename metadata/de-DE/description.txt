@@ -1,0 +1,25 @@
+Card Barcodes bewahrt alle deine Kunden- und Mitgliedskarten auf deinem iPhone auf, bereit zum Scannen. Die App ist kostenlos, ohne Werbung, ohne In-App-Käufe und ohne Limit für deine Karten, und das bleibt auch so.
+
+BEREIT AN DER KASSE
+Öffne eine Karte, und der Bildschirm wird heller, damit der Scanner sie beim ersten Mal liest. Die Nummer steht unter dem Barcode, falls jemand sie eintippen muss.
+
+DIE RICHTIGE KARTE, WENN DU ANKOMMST
+Füge die Orte hinzu, an denen du eine Karte nutzt: mit der Stecknadel oder über die Suche nach einem Geschäft, einer Straße oder einer Postleitzahl. Wenn du dort bist, erinnert dich eine Mitteilung, und ein Tippen darauf öffnet die Karte. Das Widget auf dem Home-Bildschirm zeigt die Karte für den Ort, an dem du gerade bist, und bei einer Karte mit mehreren Orten siehst du die fünf nächsten.
+
+IN SEKUNDEN HINZUGEFÜGT
+Richte die Kamera auf den Barcode einer Karte, oder wähle ein Foto oder eine Datei davon. Card Barcodes liest QR-Codes, EAN-13, EAN-8, UPC-E, Code 128, Code 39, Code 93, Aztec und PDF417. Hat eine Karte keinen Barcode, tippst du ihre Nummer ein.
+
+SUCHEN UND TEILEN
+Durchsuche deine Karten und sortiere sie nach zuletzt angesehen, nach deiner eigenen Reihenfolge oder nach dem nächsten Ort. Teile eine Karte als Link, den jemand in sein eigenes Card Barcodes übernehmen kann, oder als Bild.
+
+JEDE KARTE IN IHRER FARBE
+Wähle aus 23 Farben oder einer ganz eigenen, und gib jeder Karte ein Symbol. Der Text bleibt auf jeder Farbe gut lesbar.
+
+AUF IPHONE UND IPAD
+Deine Karten werden über deinen eigenen iCloud-Account synchronisiert, so hast du sie auf deinem iPhone, iPad und iPhone Duo. Du musst kein Konto anlegen.
+
+PRIVAT
+Es gibt keine Werbung und keine Analysen, und nichts verfolgt dich. Dein Standort bleibt auf deinem Gerät. Nur Apple Karten wird gefragt, um die Orte zu finden und zu benennen, die du hinzufügst. Exportiere deine Karten jederzeit in eine Datei.
+
+FÜR ALLE
+Card Barcodes funktioniert mit VoiceOver, größerer Schrift und dem Dunkelmodus.

@@ -1,0 +1,25 @@
+Card Barcodes guarda todas tus tarjetas de fidelización y de socio en el iPhone, listas para escanear. Es gratis, sin anuncios, sin compras dentro de la app y sin límite de tarjetas, y siempre lo será.
+
+LISTA EN LA CAJA
+Abre una tarjeta y la pantalla se ilumina, para que el lector la lea a la primera. El número aparece bajo el código de barras por si hay que teclearlo.
+
+LA TARJETA ADECUADA AL LLEGAR
+Añade los lugares donde usas cada tarjeta, desde el mapa o buscando una tienda, una calle o un código postal. Al llegar, una notificación te lo recuerda y, al tocarla, se abre la tarjeta. El widget de la pantalla de inicio muestra la tarjeta del lugar donde estás, y una tarjeta con varios lugares muestra los cinco más cercanos.
+
+AÑADE UNA TARJETA EN SEGUNDOS
+Apunta la cámara al código de barras de una tarjeta, o elige una foto o un archivo donde aparezca. Card Barcodes lee códigos QR, EAN-13, EAN-8, UPC-E, Code 128, Code 39, Code 93, Aztec y PDF417. Si una tarjeta no tiene código de barras, escribe su número.
+
+BUSCA Y COMPARTE
+Busca tus tarjetas y ordénalas por la última vista, por tu propio orden o por el lugar más cercano. Comparte una tarjeta como un enlace que otra persona puede añadir a su propio Card Barcodes, o como una imagen.
+
+CADA TARJETA CON SU COLOR
+Elige entre 23 colores o el color que quieras, y pon un icono a cada tarjeta. El texto se lee bien en todos.
+
+EN TU IPHONE Y TU IPAD
+Tus tarjetas se sincronizan a través de tu propia cuenta de iCloud, así que están en tu iPhone, tu iPad y tu iPhone Duo. No hay que crear ninguna cuenta.
+
+PRIVADA
+No hay anuncios ni analíticas, y nada te rastrea. Tu ubicación se queda en tu dispositivo, salvo cuando se pide a Mapas de Apple que busque y ponga nombre a los lugares que añades. Exporta tus tarjetas a un archivo cuando quieras.
+
+PARA TODOS
+Card Barcodes funciona con VoiceOver, con tamaños de texto más grandes y con el modo oscuro.

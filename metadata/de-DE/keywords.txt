@@ -1,0 +1,1 @@
+Mitgliedskarte,Treuekarte,Bonuskarte,Punkte,Gutschein,Fitnessstudio,QR,Code,Scanner,Wallet,Widget

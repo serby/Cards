@@ -1,0 +1,1 @@
+tarjetas,lealtad,puntos,membresía,recompensas,monedero,cupones,gimnasio,qr,código,escáner,widget

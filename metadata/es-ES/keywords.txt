@@ -1,0 +1,1 @@
+tarjetas,fidelidad,puntos,socio,cartera,cupones,gimnasio,biblioteca,qr,código,escáner,widget,cerca
