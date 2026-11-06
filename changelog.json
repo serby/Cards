@@ -14,7 +14,15 @@
         },
         {
           "type": "new",
-          "text": "Give each card a symbol, shown on its tile and on the card."
+          "text": "Give each card an icon, from 76 in 16 groups, shown on its tile and on the card."
+        },
+        {
+          "type": "new",
+          "text": "Add a card from a photo, a screenshot or a PDF of its barcode, such as an e-ticket."
+        },
+        {
+          "type": "new",
+          "text": "A card with several places lists the five nearest and how far away each is. Tap one to open it in Maps."
         },
         {
           "type": "new",
@@ -27,6 +35,11 @@
         {
           "type": "new",
           "text": "Import cards from a JSON file, as well as by pasting."
+        },
+        {
+          "type": "improved",
+          "text": "The camera focuses on a card held close. Tap to focus, or turn on the torch in low light.",
+          "en-US": "The camera focuses on a card held close. Tap to focus, or turn on the flashlight in low light."
         },
         {
           "type": "improved",

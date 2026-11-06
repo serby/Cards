@@ -8,13 +8,16 @@ Every version of Card Barcodes and what it changed, newest first. This file is g
 
 - Share a card as a link someone can add to their own Card Barcodes, or as a picture.
 - Search your cards, and sort them by last viewed, your own order or the nearest place.
-- Give each card a symbol, shown on its tile and on the card.
+- Give each card an icon, from 76 in 16 groups, shown on its tile and on the card.
+- Add a card from a photo, a screenshot or a PDF of its barcode, such as an e-ticket.
+- A card with several places lists the five nearest and how far away each is. Tap one to open it in Maps.
 - Show the card for where you are in full above your other cards, with a new switch in Settings.
 - Change a place you have added to a card.
 - Import cards from a JSON file, as well as by pasting.
 
 ### Improved
 
+- The camera focuses on a card held close. Tap to focus, or turn on the torch in low light.
 - Your cards are laid out in a grid, two across on iPhone and four on iPad. Press and hold a card to delete it, or delete it from its edit screen.
 
 ### Fixed
