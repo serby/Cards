@@ -6,7 +6,9 @@ public struct CardListScreen: View {
     @Query(sort: \CardItem.order) private var cardItems: [CardItem]
     @Environment(NavigationManager.self) private var navigationManager
     @Environment(LocationService.self) private var locationService
-    @AppStorage(ArrivalNotifier.enabledKey) private var arrivalNotifications = true
+    @Environment(ArrivalScheduler.self) private var arrivalScheduler
+    @Environment(\.widgetSnapshot) private var widgetSnapshot
+    @AppStorage(ArrivalPlan.enabledKey) private var arrivalNotifications = true
 
     public init() {}
 
@@ -31,21 +33,21 @@ public struct CardListScreen: View {
             destinationView(for: route)
         }
         // Again when the cards change and as you move, so the nearest places are the ones watched.
-        .task(id: ArrivalWatch(cards: watchedArrivals, area: ArrivalNotifier.area(of: locationService.current))) {
+        .task(id: ArrivalWatch(cards: watchedArrivals, area: ArrivalPlan.area(of: locationService.current))) {
             if arrivals.contains(where: { !$0.locations.isEmpty }) {
                 locationService.start()
             }
-            await ArrivalNotifier.reschedule(watchedArrivals, near: locationService.current)
+            await arrivalScheduler.reschedule(watchedArrivals, near: locationService.current)
         }
         .task(id: widgetCards) {
-            WidgetSnapshot.publish(widgetCards)
+            widgetSnapshot.write(widgetCards)
         }
     }
 
     /// The cards that remind you on arrival: none when the Settings switch is
     /// off, which also cancels any already scheduled. Each card's own switch is
     /// applied when the arrivals are planned.
-    private var watchedArrivals: [ArrivalNotifier.Card] {
+    private var watchedArrivals: [ArrivalPlan.Card] {
         arrivalNotifications ? arrivals : []
     }
 
@@ -53,9 +55,9 @@ public struct CardListScreen: View {
         cardItems.map(WidgetCard.init)
     }
 
-    private var arrivals: [ArrivalNotifier.Card] {
+    private var arrivals: [ArrivalPlan.Card] {
         cardItems.map {
-            ArrivalNotifier.Card(
+            ArrivalPlan.Card(
                 name: $0.name,
                 code: $0.code,
                 barcodeType: $0.getBarcodeType(),
@@ -136,7 +138,7 @@ public struct CardListScreen: View {
 
 /// What the arrival schedule depends on, so it is planned again only when that changes.
 private struct ArrivalWatch: Hashable {
-    let cards: [ArrivalNotifier.Card]
+    let cards: [ArrivalPlan.Card]
     // swiftlint:disable:next discouraged_optional_collection
     let area: [Int]?
 }

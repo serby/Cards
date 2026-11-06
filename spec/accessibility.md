@@ -31,7 +31,7 @@ As someone using VoiceOver, I want to be told when the app changes the screen br
 - The brightness button announces "Brightness boost on" or "Brightness boost off" (BAR-4).
 
 **Since:** 1.0
-**Where:** `Cards/UI/Screens/CardDetailView.swift:94-157`, `Cards/UI/Environment/ScreenBrightness.swift:52-74`
+**Where:** `Cards/UI/Screens/CardDetailView.swift:94-157`, `Cards/UI/Environment/AccessibilityAnnouncer.swift`
 
 ### A11Y-3: Use the app at large text sizes
 

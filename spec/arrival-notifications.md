@@ -18,7 +18,7 @@ As a card holder, I want a reminder when I reach the shop, so that I open the ri
 - Deleting a card, or removing a place, cancels its arrivals when the list next schedules.
 
 **Since:** 1.3
-**Where:** `Cards/Features/ArrivalNotifications.swift`, `Cards/Features/CardListScreen.swift:33-66`, `CardsTests/CardLocationTests.swift` (`ArrivalNotifierTests`)
+**Where:** `Cards/Features/ArrivalScheduler.swift`, `Cards/Features/ArrivalPlan.swift`, `Cards/Core/Services/NotificationClient.swift`, `Cards/Features/CardListScreen.swift:35-68`, `CardsTests/CardLocationTests.swift` (`ArrivalPlanTests`), `CardsTests/ArrivalSchedulerTests.swift`
 **Notes:** Changes that reach a device through iCloud are only scheduled once the app is opened on it.
 
 ### ARR-2: Open the card from the notification
@@ -31,7 +31,7 @@ As a card holder, I want to tap the notification to open the card, so that I can
 - If the card no longer exists, the screen says "Card not found".
 
 **Since:** 1.3
-**Where:** `Cards/Features/ArrivalNotifications.swift:134-164`, `Cards/App/CardsApp.swift:13-21`, `Cards/Core/Navigation/NavigationManager.swift`, `CardsTests/CardFixesTests.swift` (`openingACardBringsTheCardsTabForward`)
+**Where:** `Cards/Features/ArrivalNotificationRouter.swift`, `Cards/App/CardsApp.swift:14-24`, `Cards/Core/Navigation/NavigationManager.swift`, `CardsTests/CardFixesTests.swift` (`openingACardBringsTheCardsTabForward`)
 
 ### ARR-3: Watch the places nearest to me when I have many
 
@@ -45,7 +45,7 @@ As a card holder with many places, I want the app to watch the places I am most 
 - The scheduled arrivals are only replaced when the places to watch change, so with 20 places or fewer moving changes nothing. With more than 20, the nearest 20 are watched once the app has a location.
 
 **Since:** 1.3
-**Where:** `Cards/Features/ArrivalNotifications.swift:39-95`, `Cards/Features/CardListScreen.swift:33-39`, `CardsTests/CardLocationTests.swift` (`nearestLocationsAreKeptWithinTheRegionLimit`, `everyLocationOfEveryCardIsWatched`, `cardsWithoutLocationsAreNotWatched`), `CardsTests/CardFixesTests.swift` (`theNearestPlacesAreWatchedOnceThereIsALocation`, `movingAboutAKilometreChangesTheArea`, `cardsSwitchedOffAreNotWatched`)
+**Where:** `Cards/Features/ArrivalPlan.swift:36-60`, `Cards/Features/CardListScreen.swift:35-41`, `CardsTests/CardLocationTests.swift` (`nearestLocationsAreKeptWithinTheRegionLimit`, `everyLocationOfEveryCardIsWatched`, `cardsWithoutLocationsAreNotWatched`), `CardsTests/CardFixesTests.swift` (`theNearestPlacesAreWatchedOnceThereIsALocation`, `movingAboutAKilometreChangesTheArea`, `cardsSwitchedOffAreNotWatched`)
 **Notes:** The app only follows your location while it is in use (PLACE-6), so the places are only chosen again while it is open. Once it is closed, iOS keeps watching the places chosen last, wherever you go.
 
 ### ARR-4: Be asked before the app sends notifications
@@ -57,7 +57,7 @@ As a card holder, I want the app to ask before it sends notifications, and only 
 - Arrivals also need location permission (PLACE-7).
 
 **Since:** 1.3
-**Where:** `Cards/Features/ArrivalNotifications.swift:47-66`, `CardsUITests/CardsUITests.swift` (`dismissNotificationPrompt`)
+**Where:** `Cards/Features/ArrivalScheduler.swift:27-40`, `CardsUITests/CardsUITests.swift` (`dismissNotificationPrompt`), `CardsTests/ArrivalSchedulerTests.swift` (`asksForPermissionOnlyWhenThereIsSomethingToSchedule`, `addsNothingWithoutPermission`)
 
 ### ARR-5: Turn arrival notifications off and on
 
@@ -72,7 +72,7 @@ As a card holder, I want a switch for arrival notifications, so that I can stop 
 - That check runs again each time the app comes back to the foreground.
 
 **Since:** 1.3
-**Where:** `Cards/UI/Screens/SettingsListView.swift`, `Cards/Features/SettingsScreen.swift`, `Cards/Features/CardListScreen.swift:45-50`, `CardsUITests/CardsUITests.swift` (`testArrivalNotificationsSwitch`)
+**Where:** `Cards/UI/Screens/SettingsListView.swift`, `Cards/Features/SettingsScreen.swift`, `Cards/Features/CardListScreen.swift:47-52`, `Cards/Features/ArrivalScheduler.swift:42-46`, `CardsUITests/CardsUITests.swift` (`testArrivalNotificationsSwitch`), `CardsTests/ArrivalSchedulerTests.swift` (`blockedInSettingsFollowsTheAuthorisationStatus`)
 **Notes:** The message only shows once notifications have been refused. Before the app has asked, there is nothing to show.
 
 ### ARR-6: Stop one card reminding me
@@ -92,5 +92,5 @@ As a card holder, I want to turn arrival notifications off for one card, so that
 - The switch only affects arrival notifications. Distances (PLACE-6) and the widget (WID-1) still use the card's places.
 
 **Since:** 1.3
-**Where:** `Cards/UI/Screens/CardEditView.swift:112-136`, `Cards/UI/Screens/CardEditView.swift:168-180`, `Cards/Features/CardEditScreen.swift`, `Cards/UI/ViewState/CardViewState.swift`, `Cards/Core/Models/CardItem.swift`, `Cards/Features/ArrivalNotifications.swift:85-95`, `Cards/Features/CardListScreen.swift:56-66`, `CardsTests/CardFixesTests.swift` (`cardsSwitchedOffAreNotWatched`, `notifyingIsKeptAndOlderExportsNotify`)
+**Where:** `Cards/UI/Screens/CardEditView.swift:112-136`, `Cards/UI/Screens/CardEditView.swift:168-180`, `Cards/Features/CardEditScreen.swift`, `Cards/UI/ViewState/CardViewState.swift`, `Cards/Core/Models/CardItem.swift`, `Cards/Features/ArrivalPlan.swift:48-60`, `Cards/Features/CardListScreen.swift:58-68`, `CardsTests/CardFixesTests.swift` (`cardsSwitchedOffAreNotWatched`, `notifyingIsKeptAndOlderExportsNotify`)
 **Notes:** Removing a card's last place in the form hides the switch, but the card keeps its choice, so the switch comes back as it was when a place is added again.

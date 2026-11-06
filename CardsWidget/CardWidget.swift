@@ -35,6 +35,14 @@ struct CardTimelineProvider: AppIntentTimelineProvider {
     /// WidgetKit spaces reloads out further when its daily budget runs low.
     static let refreshInterval: TimeInterval = 15 * 60
 
+    private let snapshot: WidgetSnapshot
+    private let location: WidgetLocation
+
+    init(snapshot: WidgetSnapshot = .live, location: WidgetLocation = .live) {
+        self.snapshot = snapshot
+        self.location = location
+    }
+
     func placeholder(in context: Context) -> CardEntry {
         CardEntry(
             date: .now,
@@ -56,14 +64,14 @@ struct CardTimelineProvider: AppIntentTimelineProvider {
     }
 
     private func entry(for configuration: SelectCardIntent, locate: Bool) async -> CardEntry {
-        let cards = WidgetSnapshot.read()
+        let cards = snapshot.read()
         let chosen = configuration.card?.code.flatMap { code in cards.first { $0.code == code } }
         let needsLocation = cards.contains { !$0.locations.isEmpty }
-        let location = locate && needsLocation ? await WidgetLocation.current() : nil
-        let card = chosen ?? cards.nearest(to: location)
+        let here = locate && needsLocation ? await location.current() : nil
+        let card = chosen ?? cards.nearest(to: here)
         return CardEntry(
             date: .now,
-            card: card?.state(near: location),
+            card: card?.state(near: here),
             followsLocation: chosen == nil && needsLocation
         )
     }

@@ -61,9 +61,9 @@ struct CardLocationTests {
 }
 
 @MainActor
-struct ArrivalNotifierTests {
-    private func card(_ name: String, _ locations: [CardLocation]) -> ArrivalNotifier.Card {
-        ArrivalNotifier.Card(name: name, code: name, barcodeType: .code128, locations: locations)
+struct ArrivalPlanTests {
+    private func card(_ name: String, _ locations: [CardLocation]) -> ArrivalPlan.Card {
+        ArrivalPlan.Card(name: name, code: name, barcodeType: .code128, locations: locations)
     }
 
     private func place(_ name: String, latitude: Double) -> CardLocation {
@@ -71,7 +71,7 @@ struct ArrivalNotifierTests {
     }
 
     @Test func cardsWithoutLocationsAreNotWatched() {
-        #expect(ArrivalNotifier.plan([card("Nectar", [])], near: nil).isEmpty)
+        #expect(ArrivalPlan.arrivals(for: [card("Nectar", [])], near: nil).isEmpty)
     }
 
     @Test func everyLocationOfEveryCardIsWatched() {
@@ -79,16 +79,28 @@ struct ArrivalNotifierTests {
             card("Costa", [place("A", latitude: 51), place("B", latitude: 52)]),
             card("Boots", [place("C", latitude: 53)])
         ]
-        let names = ArrivalNotifier.plan(cards, near: nil).map(\.location.name)
+        let names = ArrivalPlan.arrivals(for: cards, near: nil).map(\.location.name)
         #expect(names == ["A", "B", "C"])
     }
 
     @Test func nearestLocationsAreKeptWithinTheRegionLimit() {
         let places = (0..<30).map { place("P\($0)", latitude: 50 + Double($0) * 0.01) }
         let here = CLLocation(latitude: 50.295, longitude: 0)  // just north of P29, the furthest place from P0
-        let plan = ArrivalNotifier.plan([card("Costa", places)], near: here)
-        #expect(plan.count == ArrivalNotifier.regionLimit)
+        let plan = ArrivalPlan.arrivals(for: [card("Costa", places)], near: here)
+        #expect(plan.count == ArrivalPlan.regionLimit)
         #expect(plan.first?.location.name == "P29")
         #expect(!plan.contains { $0.location.name == "P0" })
+    }
+
+    @Test func theAlertNamesThePlaceAndCarriesTheBarcode() throws {
+        let westway = place("Westway", latitude: 51.52)
+        let arrival = try #require(ArrivalPlan.arrivals(for: [card("Costa", [westway])], near: nil).first)
+        let alert = ArrivalPlan.alert(for: arrival)
+        #expect(alert.id == "arrival.\(westway.id.uuidString)")
+        #expect(alert.title == "Costa")
+        #expect(alert.body == "You're at Westway. Your barcode is ready.")
+        #expect(alert.code == "Costa")
+        #expect(alert.place == westway)
+        #expect(alert.barcodePNG != nil)
     }
 }

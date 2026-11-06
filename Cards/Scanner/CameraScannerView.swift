@@ -47,6 +47,7 @@ public struct ScannerOverlayView: View {
     @Binding var scannedCode: String?
     @Binding var barcodeType: BarcodeType?
     @State private var camera = CameraState.current
+    @Environment(\.openURL) private var openURL
 
     /// Whether the camera can be used, asked before the scanner starts so a
     /// refusal shows a message rather than a black box.
@@ -94,7 +95,7 @@ public struct ScannerOverlayView: View {
             case .denied:
                 CameraUnavailableView(reason: .denied) {
                     guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
-                    UIApplication.shared.open(url)
+                    openURL(url)
                 }
             case .unavailable:
                 CameraUnavailableView(reason: .unavailable)

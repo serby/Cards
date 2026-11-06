@@ -39,7 +39,7 @@ As a card holder, I want to be told when a card's code can't be drawn as its bar
 - The number is still shown under the barcode, so it can be typed in at the till.
 
 **Since:** 1.0
-**Where:** `Cards/UI/Components/BarcodeView.swift:20-28`, `Cards/UI/Components/CardWidgetView.swift:139-143`, `Cards/Features/ArrivalNotifications.swift:105-107`, `CardsTests/BarcodeViewTests.swift` (`barcodeOnWhiteAddsAQuietZone`)
+**Where:** `Cards/UI/Components/BarcodeView.swift:20-28`, `Cards/UI/Components/CardWidgetView.swift:139-143`, `Cards/Core/Services/NotificationClient.swift:55-57`, `CardsTests/BarcodeViewTests.swift` (`barcodeOnWhiteAddsAQuietZone`)
 
 ### BAR-4: Brighten the screen while a card is open
 

@@ -7,6 +7,7 @@ struct CardsApp: App {
     @Environment(\.scenePhase) private var scenePhase
     @State private var navigationManager: NavigationManager
     @State private var locationService = LocationService(fixedLocation: DevelopmentHooks.screenshotLocation)
+    @State private var arrivalScheduler = ArrivalScheduler(notifications: .live)
     private let performanceTracker = PerformanceTracker()
     private let arrivalRouter: ArrivalNotificationRouter
 
@@ -14,6 +15,8 @@ struct CardsApp: App {
         let navigationManager = NavigationManager()
         _navigationManager = State(initialValue: navigationManager)
         // Set before launch finishes so a tap that launched the app is not missed.
+        // Handing iOS its delegate is wiring, so it is done here at the composition
+        // root rather than through the notification client.
         arrivalRouter = ArrivalNotificationRouter { code in
             navigationManager.navigate(to: .card(code))
         }
@@ -53,6 +56,7 @@ struct CardsApp: App {
         }
         .tint(.accent)
         .environment(locationService)
+        .environment(arrivalScheduler)
         .background(Color.primaryBackground)
         .onAppear {
             performanceTracker.recordAppLaunch()

@@ -91,7 +91,7 @@ As a card holder, I want the app to follow my phone's appearance, so that it is 
 - Palette and custom colours, panels and barcodes look the same in both modes. Default follows the mode.
 
 **Since:** 1.0
-**Where:** `Cards/UI/Theme/Colors.swift`, `Cards/App/CardsApp.swift:54`
+**Where:** `Cards/UI/Theme/Colors.swift`, `Cards/App/CardsApp.swift:57`
 
 ### COL-8: Keep a card's colour across versions
 

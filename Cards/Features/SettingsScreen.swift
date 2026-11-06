@@ -6,7 +6,10 @@ public struct SettingsScreen: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \CardItem.order) private var cards: [CardItem]
     @AppStorage("brightnessBoost") private var brightnessBoost = true
-    @AppStorage(ArrivalNotifier.enabledKey) private var arrivalNotifications = true
+    @AppStorage(ArrivalPlan.enabledKey) private var arrivalNotifications = true
+    @Environment(ArrivalScheduler.self) private var arrivalScheduler
+    @Environment(\.clipboard) private var clipboard
+    @Environment(\.openURL) private var openURL
     @Environment(\.scenePhase) private var scenePhase
     @State private var notificationsBlocked = false
     /// Read once: it ships with the app and does not change while it runs.
@@ -35,7 +38,7 @@ public struct SettingsScreen: View {
                 exportCards: { showExportSheet = true },
                 importCards: importJSON,
                 deleteAllCards: deleteAllCards,
-                readClipboard: { UIPasteboard.general.string },
+                readClipboard: { clipboard.read() },
                 openNotificationSettings: openNotificationSettings
             )
         )
@@ -44,13 +47,13 @@ public struct SettingsScreen: View {
         }
         // Checked again on coming back, in case notifications were allowed in Settings.
         .task(id: scenePhase) {
-            notificationsBlocked = await ArrivalNotifier.isBlockedInSettings()
+            notificationsBlocked = await arrivalScheduler.isBlockedInSettings()
         }
     }
 
     private func openNotificationSettings() {
         guard let url = URL(string: UIApplication.openNotificationSettingsURLString) else { return }
-        UIApplication.shared.open(url)
+        openURL(url)
     }
 
     private func exportJSON() -> String {

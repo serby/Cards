@@ -1,11 +1,12 @@
 import SwiftData
 import SwiftUI
-import UIKit
 
 public struct CardDetailScreen: View {
     @AppStorage("brightnessBoost") private var brightnessBoost = true
     @Environment(LocationService.self) private var locationService
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.postcodeLookup) private var postcodeLookup
+    @Environment(\.clipboard) private var clipboard
     private let item: CardItem
     private let navigationManager: NavigationManager
 
@@ -31,8 +32,8 @@ public struct CardDetailScreen: View {
                 editCard: { navigationManager.navigate(to: .editCard(item.code)) },
                 addLocation: addLocation,
                 requestLocationAccess: locationService.requestAccess,
-                findPlace: PostcodeLookup.find,
-                copyCode: { UIPasteboard.general.string = item.code }
+                findPlace: postcodeLookup.find,
+                copyCode: { clipboard.write(item.code) }
             )
         )
     }

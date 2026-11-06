@@ -82,9 +82,10 @@ One app target and one widget extension. The app is a single Swift module whose 
 Cards/
   App/           Entry point, and DevelopmentHooks: the only door into Development
   Core/          Models, navigation and services. No SwiftUI views
-    Models/        CardItem (SwiftData), CardItemDTO, BarcodeType, CardColor, CardLocation, WidgetCard
+    Models/        CardItem (SwiftData), CardItemDTO, BarcodeType, CardColor, CardLocation, WidgetCard, ArrivalAlert
     Navigation/    NavigationRoute, NavigationManager, deep links
-    Services/      CardStore, LocationService, PostcodeLookup, PerformanceTracker, WidgetSnapshot
+    Services/      CardStore, LocationService, PerformanceTracker, and the clients (rule 15):
+                   NotificationClient, PostcodeLookup, Clipboard, WidgetSnapshot
   UI/            Every view, as a pure function of view state and actions
     Screens/       CardListView, CardDetailView, CardEditView, LocationPickerView, SettingsListView
     Components/    BarcodeView, BarcodeImage, CardColorPicker, CardLocationRow, CardWidgetView, ProximityLabel, …
@@ -93,9 +94,10 @@ Cards/
     Environment/   Injected effects: ScreenBrightness, AccessibilityAnnouncer
     Theme/         Colours, the card palette
   Scanner/       Camera scanning (AVFoundation), pinch to zoom
-  Features/      Connectors: SwiftData, navigation, location and notifications in, view state out
+  Features/      Connectors: SwiftData, navigation, location and clients in, view state out;
+                 the arrival notifications (ArrivalPlan, ArrivalScheduler, ArrivalNotificationRouter)
   Development/   Never in a release build. Storybook, previews, sample data, stand-ins, test seeds
-CardsWidget/     The Home Screen widget extension: timeline, configuration intents, location
+CardsWidget/     The Home Screen widget extension: timeline, configuration intents, WidgetLocation
 CardsTests/      Unit tests (Swift Testing)
 CardsUITests/    UI and screenshot tests (XCTest)
 ```
@@ -114,7 +116,7 @@ Development ──▶ anything          (nothing in production ──▶ Develop
 
 ### Rule 1: Development code never ships
 
-Development code is anything that exists to build, preview, test or demonstrate the app rather than to run it: the Storybook, `#Preview` blocks, sample data and fixtures, simulated effects (`ScreenBrightness.simulated`, `AccessibilityAnnouncer.silent`), stand-in views (`ScannerPlaceholderView`), UI-test switches and screenshot seed data, and debugging aids (`Loader`). None of it may reach a release build, and none of it may clutter production code with `#if DEBUG`.
+Development code is anything that exists to build, preview, test or demonstrate the app rather than to run it: the Storybook, `#Preview` blocks, sample data and fixtures, simulated effects and stand-in clients (`ScreenBrightness.simulated`, `AccessibilityAnnouncer.silent`, `NotificationClient.silent`), stand-in views (`ScannerPlaceholderView`), UI-test switches and screenshot seed data, and debugging aids (`Loader`). None of it may reach a release build, and none of it may clutter production code with `#if DEBUG`.
 
 1. **It lives in `Cards/Development/`.** The Release configuration of the `Cards` target excludes that folder (`EXCLUDED_SOURCE_FILE_NAMES`), so files there are plain Swift with no `#if DEBUG` of their own. The patterns cover three folder levels below `Cards/Development`; add a pattern in the project if you ever need a fourth.
 2. **Previews live in `Cards/Development/Previews/<View>+Previews.swift`,** not beside the view. Release builds type-check `#Preview` bodies even though they strip them, so a preview next to a view would drag sample data into the release compile. Open the previews file next to the view in Xcode to get the canvas, or use the Storybook.
@@ -143,16 +145,16 @@ Views in `Cards/UI` never touch SwiftData, the camera, location, notifications, 
 
 - **View state** (`UI/ViewState`): plain `Sendable` value types such as `CardSummary` and `CardDetail`. Add a field here, with a default, rather than passing a model object.
 - **Actions** (`UI/Actions`): structs of closures, every one defaulting to a no-op, so a story or preview supplies only what it exercises.
-- **Injected effects** (`UI/Environment`): environment values whose default is the real thing (`.system`). Stories and previews swap in the substitutes from `Cards/Development/SimulatedEffects.swift`, so a story can never change the device's brightness or speak with VoiceOver.
+- **Injected effects** (`UI/Environment`): environment values whose default is the real thing (`.live`). Stories and previews swap in the substitutes from `Cards/Development/SimulatedEffects.swift`, so a story can never change the device's brightness or speak with VoiceOver.
 - **View slots** for anything device-bound: `CardEditView` is generic over its scanner, so the app passes the camera and stories pass `ScannerPlaceholderView`.
 
 If a view needs a new capability, add an action or an injected effect; never reach for a singleton or `@Environment(\.modelContext)` inside `Cards/UI`.
 
 ### Rule 3: Impure work lives in connectors and services
 
-`Cards/Features` holds one connector per screen (`CardListScreen`, `CardDetailScreen`, `CardEditScreen`, `SettingsScreen`). A connector reads `@Query`, `modelContext`, `NavigationManager` and `LocationService`, maps models to view state, and wires actions back to effects. Long-lived device services (`LocationService`) live in `Core/Services` and are injected with `.environment` from `CardsApp`; integration glue that also needs UI code (`ArrivalNotifier`, which renders barcodes) lives in `Features`.
+`Cards/Features` holds one connector per screen (`CardListScreen`, `CardDetailScreen`, `CardEditScreen`, `SettingsScreen`). A connector reads `@Query`, `modelContext`, `NavigationManager`, `LocationService` and the clients it needs from the environment ([rule 15](#rule-15-small-parts-injected-dependencies-no-global-state)), maps models to view state, and wires actions back to effects. Long-lived device services (`LocationService`) and clients live in `Core/Services`; the services are injected with `.environment` from `CardsApp`. Integration glue that also needs UI code (`ArrivalPlan` and `ArrivalScheduler`, which render barcodes) lives in `Features`.
 
-Keep the logic of a service testable without the device: `ArrivalNotifier.plan` is a pure function, and the tests cover it rather than `UNUserNotificationCenter`.
+Keep the logic of a service testable without the device: `ArrivalPlan` is pure, and `ArrivalScheduler` is tested through a stand-in `NotificationClient` rather than `UNUserNotificationCenter`.
 
 ### Rule 4: Every view has a story, and every parameter has a knob
 
@@ -198,7 +200,7 @@ The target builds in Swift 6 language mode with strict concurrency, `SWIFT_TREAT
 ### Rule 9: Test the logic, the persistence and the promises
 
 - Unit tests use Swift Testing (`@Test`, parameterised with `arguments:`); UI and screenshot tests use XCTest.
-- Test pure logic directly (distances, the arrival plan, palette contrast) and persistence through a real in-memory container.
+- Test pure logic directly (distances, the arrival plan, palette contrast), stateful services through stand-in clients (`ArrivalSchedulerTests`), and persistence through a real in-memory container.
 - UI tests launch with `-uiTesting` for an in-memory store and the shipping UI; the screenshot test adds `-screenshotSeed`.
 - A UI change that shows up in the App Store screenshots must be pushed with refreshed references, or CI fails. Refresh them when the change is agreed to ship, not while it is still being shaped ([section 2](#shape-features-in-the-simulator-before-they-ship)).
 
@@ -236,6 +238,25 @@ All code in the project is Swift or TypeScript. The app, the widget and the test
 - **Start every script with a comment** saying what it does and a `// Usage:` line.
 - **Keep the Makefile and the workflows thin.** A Makefile recipe or a workflow step only runs tools and scripts in order. Any logic, loop, condition or parsing, beyond a GitHub expression, belongs in a script.
 - **Delete what nothing uses.** A script with no caller in the Makefile, a workflow, another script or this guide is removed, not kept in case.
+
+### Rule 15: Small parts, injected dependencies, no global state
+
+The app's Swift follows a few long-standing design principles, applied where they pay rather than for their own sake.
+
+- **No global mutable state.** No `static var` that stores state, no singletons of our own and no mutable top-level variables. State belongs to an instance someone owns: an `@Observable` model created once at the composition root and passed down (`LocationService`, `NavigationManager`, `ArrivalScheduler`), a view's `@State`, or SwiftData. Immutable `static let` constants and loggers are fine. `DevelopmentHooks` is the one deliberate exception, because rule 1 needs it to be static.
+- **Inject every dependency with a side effect.** Anything that reaches the system or the outside world, such as notifications, location, geocoding, the clipboard, opening URLs, the widget's App Group file, screen brightness or VoiceOver, is a dependency:
+  - **Model it** as a small `Sendable` struct of closures, a client, with a `.live` value. The `.live` value, or the factory it is built from (such as `WidgetSnapshot.file(at:)`, which tests point at a temporary file), is the only place the system API is called.
+  - **Provide it** through SwiftUI's environment, with `.live` as the default, and read it with `@Environment` in connectors and effects. `ScreenBrightness` and `AccessibilityAnnouncer` in `UI/Environment` are the pattern, and `PostcodeLookup`, `Clipboard` and `WidgetSnapshot` in `Core/Services` follow it.
+  - **Prefer SwiftUI's own environment actions** where they exist, such as `openURL`.
+  - **Outside views,** such as the widget's timeline provider (`WidgetSnapshot`, `WidgetLocation`) and `ArrivalScheduler` (`NotificationClient`), take clients in `init`, defaulting to `.live`.
+  - **Keep clients small.** A client exposes only the operations its callers use (interface segregation).
+- **Stateful services are owned instances.** A service that has to remember something, such as `ArrivalScheduler`, `LocationService` and `NavigationManager`, is an `@Observable` class created once at the composition root, injected with `.environment(_:)`, and given its clients in `init`. It has no environment default, because a default would be a hidden shared instance; a screen without it fails at once rather than quietly using a second one.
+- **Wire everything at the composition root.** `CardsApp`, and the widget's entry point, create the long-lived models and live clients once, and hand iOS the delegates it calls, such as the arrival notification router. Nothing else calls a system singleton (`.shared`, `.current()`, `.standard`, `.default`, `.general`) except a client's `.live` value, and the camera scanner, which is itself the live camera component that stories replace with a placeholder.
+- **Case-less enums are for pure code only:** constants and stateless functions with no side effects, such as `CardGeometry`, `WCAG`, `CardImport` and `ArrivalPlan`. A case-less enum that touches the system is a dependency in disguise, so make it a client.
+- **One reason to change (single responsibility).** Views render, connectors connect a screen to its data, and services and clients each do one job. A file holds one main type, plus small types that only serve it (a view's private subviews, a model's DTO). Depend on the injected client, not on the concrete system API (dependency inversion). Add a protocol only at a dependency boundary that has, or will soon have, more than one implementation.
+- **Keep it simple (KISS, YAGNI).** Write the simplest code that meets today's need. Add generics, configuration or layers when a second real use arrives, not before.
+- **Don't repeat knowledge (DRY).** Every fact lives in one place: a colour, a radius, a rule such as "codes are unique", or a string the app and the store share. Code that only looks alike can stay apart until a third copy appears; then extract it.
+- **Test through the seams.** Logic is tested with stand-in clients, never by waiting on real notifications, location or the network.
 
 ## 5. Recipes
 

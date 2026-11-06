@@ -28,7 +28,7 @@ As a card holder, I want to pin a card to the widget, so that the card I use mos
 - Each widget on the Home Screen has its own choice.
 
 **Since:** 1.3
-**Where:** `CardsWidget/CardWidgetIntents.swift`, `CardsWidget/CardWidget.swift:58-69`
+**Where:** `CardsWidget/CardWidgetIntents.swift`, `CardsWidget/CardWidget.swift:66-77`
 
 ### WID-3: Find the nearest card again after moving
 
@@ -40,7 +40,7 @@ As a card holder, I want to refresh the widget when I have moved, so that it sho
 - A widget with a chosen card, or with no places to compare, has no refresh button and only reloads when the app's cards change (WID-7).
 
 **Since:** 1.3
-**Where:** `CardsWidget/CardWidget.swift:33-84`, `CardsWidget/CardWidgetIntents.swift:53-62`
+**Where:** `CardsWidget/CardWidget.swift:33-92`, `CardsWidget/CardWidgetIntents.swift:57-66`
 
 ### WID-4: Open the card from the widget
 
@@ -90,5 +90,5 @@ As a card holder, I want the widget to reflect the cards I have, so that it neve
 - Until the app has written the copy, or if it can't be read, the widget shows its empty state (WID-5).
 
 **Since:** 1.3
-**Where:** `Cards/Core/Services/WidgetSnapshot.swift`, `Cards/Features/CardListScreen.swift:40-54`, `CardsTests/WidgetTests.swift` (`snapshotRoundTripsAndSkipsUnchangedWrites`, `snapshotThatCannotBeReadIsEmpty`)
+**Where:** `Cards/Core/Services/WidgetSnapshot.swift`, `Cards/Features/CardListScreen.swift:42-56`, `CardsTests/WidgetTests.swift` (`snapshotRoundTripsAndSkipsUnchangedWrites`, `snapshotThatCannotBeReadIsEmpty`, `snapshotWithoutAnAppGroupReadsAndWritesNothing`)
 **Notes:** Only the app writes the copy, so cards that arrive through iCloud reach the widget once the app is opened on that device. A new widget added before the app has ever been opened shows "No cards yet".

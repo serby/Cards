@@ -7,7 +7,8 @@ public struct CardEditScreen: View {
     private let onSave: ((CardItem) -> Void)?
     @Environment(LocationService.self) private var locationService
     @Query private var cards: [CardItem]
-    @AppStorage(ArrivalNotifier.enabledKey) private var arrivalNotifications = true
+    @Environment(\.postcodeLookup) private var postcodeLookup
+    @AppStorage(ArrivalPlan.enabledKey) private var arrivalNotifications = true
 
     @State private var draft: CardDraft
     @State private var scannedCode: String?
@@ -78,7 +79,7 @@ public struct CardEditScreen: View {
         CardEditActions(
             save: save,
             requestLocationAccess: locationService.requestAccess,
-            findPlace: PostcodeLookup.find
+            findPlace: postcodeLookup.find
         )
     }
 

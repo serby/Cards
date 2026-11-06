@@ -50,7 +50,7 @@ As a card holder, I want to type a card's number in, so that I can keep a card t
 - Scrolling the form puts the keyboard away (1.3).
 
 **Since:** 1.0
-**Where:** `Cards/UI/Screens/CardEditView.swift`, `Cards/Features/CardEditScreen.swift`, `Cards/UI/ViewState/CardViewState.swift`, `Cards/Features/CardListScreen.swift:86-101`, `Cards/Core/Models/CardImport.swift`, `CardsUITests/CardsUITests.swift` (`testAdd`), `CardsTests/CardFixesTests.swift` (`aCardNeedsANameAndACodeOfItsOwn`, `newCardsGoAtTheEnd`)
+**Where:** `Cards/UI/Screens/CardEditView.swift`, `Cards/Features/CardEditScreen.swift`, `Cards/UI/ViewState/CardViewState.swift`, `Cards/Features/CardListScreen.swift:88-103`, `Cards/Core/Models/CardImport.swift`, `CardsUITests/CardsUITests.swift` (`testAdd`), `CardsTests/CardFixesTests.swift` (`aCardNeedsANameAndACodeOfItsOwn`, `newCardsGoAtTheEnd`)
 **Notes:** Before 1.3 Save was always enabled, and a new card was saved with `order` 0 and so landed among the cards at the top of the list.
 
 ### CARD-4: Open a card to show it
@@ -96,7 +96,7 @@ As a card holder, I want to delete a card I no longer use, so that the list only
 - Every card can be deleted at once from Settings (DATA-5).
 
 **Since:** 1.0
-**Where:** `Cards/UI/Screens/CardListView.swift`, `Cards/Features/CardListScreen.swift:110-121`
+**Where:** `Cards/UI/Screens/CardListView.swift`, `Cards/Features/CardListScreen.swift:112-123`
 
 ### CARD-7: Put my cards in the order I want
 
@@ -108,7 +108,7 @@ As a card holder, I want to move cards up and down the list, so that the ones I 
 - New cards, added in the form or imported, go at the end of the list (CARD-3, DATA-3) (1.3).
 
 **Since:** 1.0
-**Where:** `Cards/UI/Screens/CardListView.swift`, `Cards/Features/CardListScreen.swift:123-134`, `Cards/Core/Models/CardImport.swift`, `CardsTests/CardFixesTests.swift` (`newCardsGoAtTheEnd`)
+**Where:** `Cards/UI/Screens/CardListView.swift`, `Cards/Features/CardListScreen.swift:125-136`, `Cards/Core/Models/CardImport.swift`, `CardsTests/CardFixesTests.swift` (`newCardsGoAtTheEnd`)
 
 ### CARD-8: Tell my cards apart by name
 
@@ -120,7 +120,7 @@ As a card holder, I want each card to carry a name I choose, so that I know whic
 - Inside the app a card is identified by its code: the list rows, links (NAV-2), the widget's choice of card (WID-2) and arrival notifications all use it. That is why codes are unique (CARD-9).
 
 **Since:** 1.0
-**Where:** `Cards/Core/Models/CardItem.swift`, `Cards/UI/ViewState/CardViewState.swift`, `Cards/Features/CardListScreen.swift:106-108`
+**Where:** `Cards/Core/Models/CardItem.swift`, `Cards/UI/ViewState/CardViewState.swift`, `Cards/Features/CardListScreen.swift:108-110`
 
 ### CARD-9: Keep each card's code its own
 

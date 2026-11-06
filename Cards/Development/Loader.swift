@@ -2,16 +2,16 @@ import OSLog
 import SwiftUI
 
 /// Fakes a three-second load with signposts, for profiling the spinner in
-/// Instruments. Development only.
+/// Instruments. Development only: create one where you need it, such as in a
+/// view's `@State`.
 @MainActor
 @Observable
 public final class Loader {
-    public static let shared = Loader()
     public private(set) var isLoading = false
 
     private static let signpostLog = OSLog(subsystem: "net.serby.Cards", category: "Loader")
 
-    private init() {}
+    public init() {}
 
     public func load() {
         let signpostID = OSSignpostID(log: Self.signpostLog)

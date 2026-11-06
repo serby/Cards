@@ -74,24 +74,24 @@ struct CardFixesTests {
 
     @Test @MainActor func cardsSwitchedOffAreNotWatched() {
         let place = CardLocation(name: "Westway", latitude: 51.52, longitude: -0.209)
-        let on = ArrivalNotifier.Card(name: "Gym", code: "1", barcodeType: .code128, locations: [place])
-        let off = ArrivalNotifier.Card(name: "Pool", code: "2", barcodeType: .code128, locations: [place], notifies: false)
-        #expect(ArrivalNotifier.plan([on, off], near: nil).map(\.card.code) == ["1"])
+        let on = ArrivalPlan.Card(name: "Gym", code: "1", barcodeType: .code128, locations: [place])
+        let off = ArrivalPlan.Card(name: "Pool", code: "2", barcodeType: .code128, locations: [place], notifies: false)
+        #expect(ArrivalPlan.arrivals(for: [on, off], near: nil).map(\.card.code) == ["1"])
     }
 
     @Test @MainActor func theNearestPlacesAreWatchedOnceThereIsALocation() {
         let near = CardLocation(name: "Near", latitude: 51.5, longitude: -0.1)
-        let far = (0..<ArrivalNotifier.regionLimit).map { CardLocation(name: "Far \($0)", latitude: 55, longitude: Double($0)) }
-        let card = ArrivalNotifier.Card(name: "Gym", code: "1", barcodeType: .code128, locations: far + [near])
-        #expect(!ArrivalNotifier.plan([card], near: nil).map(\.location.name).contains("Near"))
-        #expect(ArrivalNotifier.plan([card], near: CLLocation(latitude: 51.5, longitude: -0.1)).first?.location.name == "Near")
+        let far = (0..<ArrivalPlan.regionLimit).map { CardLocation(name: "Far \($0)", latitude: 55, longitude: Double($0)) }
+        let card = ArrivalPlan.Card(name: "Gym", code: "1", barcodeType: .code128, locations: far + [near])
+        #expect(!ArrivalPlan.arrivals(for: [card], near: nil).map(\.location.name).contains("Near"))
+        #expect(ArrivalPlan.arrivals(for: [card], near: CLLocation(latitude: 51.5, longitude: -0.1)).first?.location.name == "Near")
     }
 
     @Test @MainActor func movingAboutAKilometreChangesTheArea() {
         let here = CLLocation(latitude: 51.5091, longitude: -0.1963)
-        #expect(ArrivalNotifier.area(of: here) == ArrivalNotifier.area(of: CLLocation(latitude: 51.5094, longitude: -0.1960)))
-        #expect(ArrivalNotifier.area(of: here) != ArrivalNotifier.area(of: CLLocation(latitude: 51.5191, longitude: -0.1963)))
-        #expect(ArrivalNotifier.area(of: nil) == nil)
+        #expect(ArrivalPlan.area(of: here) == ArrivalPlan.area(of: CLLocation(latitude: 51.5094, longitude: -0.1960)))
+        #expect(ArrivalPlan.area(of: here) != ArrivalPlan.area(of: CLLocation(latitude: 51.5191, longitude: -0.1963)))
+        #expect(ArrivalPlan.area(of: nil) == nil)
     }
 
     @Test func openingACardBringsTheCardsTabForward() {

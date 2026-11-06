@@ -61,7 +61,7 @@ As a card holder, I want my location to stay on my phone, so that nobody learns 
 - The map and the postcode search use Apple's map services, which receive the area shown or the text searched for (PLACE-2).
 
 **Since:** 1.3
-**Where:** `Cards/Core/Services/LocationService.swift`, `CardsWidget/WidgetLocation.swift`, `Cards/Core/Services/PostcodeLookup.swift`, `Cards/Features/ArrivalNotifications.swift`, `Website/src/privacy.html`
+**Where:** `Cards/Core/Services/LocationService.swift`, `CardsWidget/WidgetLocation.swift`, `Cards/Core/Services/PostcodeLookup.swift`, `Cards/Features/ArrivalScheduler.swift`, `Cards/Core/Services/NotificationClient.swift`, `Website/src/privacy.html`
 
 ### PLAT-6: Know the camera is only used to scan
 
@@ -72,7 +72,7 @@ As a card holder, I want the camera used only when I am scanning a card, so that
 - Frames are read on the device for barcodes and never recorded, stored or sent.
 
 **Since:** 1.0
-**Where:** `Cards/Scanner/ScannerViewControllerDelegate.swift`, `Cards/Scanner/CameraScannerView.swift:21-26`, `Cards/Scanner/CameraScannerView.swift:46-105`
+**Where:** `Cards/Scanner/ScannerViewControllerDelegate.swift`, `Cards/Scanner/CameraScannerView.swift:21-26`, `Cards/Scanner/CameraScannerView.swift:46-106`
 
 ### PLAT-7: Read the app in English
 

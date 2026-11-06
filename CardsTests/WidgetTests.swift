@@ -1,6 +1,7 @@
 @testable import Cards
 import CoreLocation
 import Foundation
+import Synchronization
 import Testing
 
 struct WidgetTests {
@@ -40,22 +41,47 @@ struct WidgetTests {
         #expect(WidgetCard(item) == WidgetCard(code: "123", name: "Gym", barcodeType: .qrCode, color: .teal, locations: [westway]))
     }
 
-    @Test func snapshotRoundTripsAndSkipsUnchangedWrites() throws {
+    @Test func snapshotRoundTripsAndSkipsUnchangedWrites() {
         let url = FileManager.default.temporaryDirectory.appending(path: "widget-\(UUID().uuidString).json")
         defer { try? FileManager.default.removeItem(at: url) }
+        let reloads = Count()
+        let snapshot = WidgetSnapshot.file(at: url, onChange: { reloads.increment() })
         let cards = [card("Climbing", [westway]), card("Library")]
 
-        #expect(WidgetSnapshot.read(from: url).isEmpty)
-        #expect(try WidgetSnapshot.write(cards, to: url))
-        #expect(WidgetSnapshot.read(from: url) == cards)
-        #expect(try !WidgetSnapshot.write(cards, to: url))
-        #expect(try WidgetSnapshot.write(Array(cards.reversed()), to: url))
+        #expect(snapshot.read().isEmpty)
+        snapshot.write(cards)
+        #expect(snapshot.read() == cards)
+        #expect(reloads.value == 1)
+        snapshot.write(cards)
+        #expect(reloads.value == 1)
+        snapshot.write(Array(cards.reversed()))
+        #expect(reloads.value == 2)
+        #expect(snapshot.read() == Array(cards.reversed()))
     }
 
     @Test func snapshotThatCannotBeReadIsEmpty() throws {
         let url = FileManager.default.temporaryDirectory.appending(path: "widget-\(UUID().uuidString).json")
         defer { try? FileManager.default.removeItem(at: url) }
         try Data("not json".utf8).write(to: url)
-        #expect(WidgetSnapshot.read(from: url).isEmpty)
+        #expect(WidgetSnapshot.file(at: url).read().isEmpty)
+    }
+
+    @Test func snapshotWithoutAnAppGroupReadsAndWritesNothing() {
+        let reloads = Count()
+        let snapshot = WidgetSnapshot.file(at: nil, onChange: { reloads.increment() })
+        snapshot.write([card("Library")])
+        #expect(snapshot.read().isEmpty)
+        #expect(reloads.value == 0)
+    }
+}
+
+/// Counts calls from any thread, for clients whose closures are `@Sendable`.
+private final class Count: Sendable {
+    private let calls = Mutex(0)
+
+    var value: Int { calls.withLock { $0 } }
+
+    func increment() {
+        calls.withLock { $0 += 1 }
     }
 }
