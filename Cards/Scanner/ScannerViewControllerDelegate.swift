@@ -34,19 +34,6 @@ final class ScannerViewController: UIViewController, AVCaptureMetadataOutputObje
         view.layer.addSublayer(preview)
         previewLayer = preview
         scanner.attach(preview)
-        view.addGestureRecognizer(UIPinchGestureRecognizer(target: self, action: #selector(handlePinch)))
-    }
-
-    /// Pinch to zoom, starting from wherever the last pinch left off.
-    @objc private func handlePinch(_ pinch: UIPinchGestureRecognizer) {
-        switch pinch.state {
-        case .changed:
-            scanner.pinch(pinch.scale)
-        case .ended, .cancelled, .failed:
-            scanner.endPinch()
-        default:
-            break
-        }
     }
 
     override func viewDidLayoutSubviews() {

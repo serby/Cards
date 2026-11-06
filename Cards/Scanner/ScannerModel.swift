@@ -1,26 +1,41 @@
 import AVFoundation
+import Observation
 
-/// The live scanner: the commands its view sends to the camera. The camera's
-/// work runs on `CameraSession`'s queue, in the order it was asked for, so a
-/// stop can never overtake the start before it.
+/// The live scanner: the state its controls show, and the commands they send
+/// to the camera. The camera's work runs on `CameraSession`'s queue, in the
+/// order it was asked for, so a stop can never overtake the start before it.
 @MainActor
+@Observable
 final class ScannerModel {
+    private(set) var state = ScannerState()
+
     /// Made on first use, so the models SwiftUI makes and throws away as the
     /// form redraws never create a capture session.
-    private(set) lazy var camera = CameraSession()
+    @ObservationIgnored private(set) lazy var camera = CameraSession()
 
     /// True from the camera starting until it stops, which includes after a read.
-    private(set) var isRunning = false
+    @ObservationIgnored private(set) var isRunning = false
     /// Counts stops, so a start that finishes after a later stop is ignored.
-    private var stops = 0
+    @ObservationIgnored private var stops = 0
 
-    private weak var preview: AVCaptureVideoPreviewLayer?
-    private var zoom: CGFloat = 1
-    private var zoomRange: ClosedRange<CGFloat> = 1...1
-    private var pinchStartZoom: CGFloat?
-    private var pending: Task<Void, Never>?
+    @ObservationIgnored private weak var preview: AVCaptureVideoPreviewLayer?
+    @ObservationIgnored private var zoom: CGFloat = 1
+    @ObservationIgnored private var zoomRange: ClosedRange<CGFloat> = 1...1
+    @ObservationIgnored private var pinchStartZoom: CGFloat?
+    @ObservationIgnored private var focusMarks = 0
+    @ObservationIgnored private var focusMarkTimer: Task<Void, Never>?
+    @ObservationIgnored private var pending: Task<Void, Never>?
 
-    /// The layer showing the camera, which converts the view's rects into the camera's.
+    var actions: ScannerActions {
+        ScannerActions(
+            focus: { [weak self] point in self?.focus(at: point) },
+            setTorch: { [weak self] isOn in self?.setTorch(isOn) },
+            pinch: { [weak self] scale in self?.pinch(scale) },
+            endPinch: { [weak self] in self?.endPinch() }
+        )
+    }
+
+    /// The layer showing the camera, which converts the controls' points into the camera's.
     func attach(_ layer: AVCaptureVideoPreviewLayer) {
         preview = layer
     }
@@ -33,14 +48,16 @@ final class ScannerModel {
             self.isRunning = true
             self.zoom = setup.zoom
             self.zoomRange = setup.zoomRange
+            self.state.hasTorch = setup.hasTorch
             self.updateRectOfInterest()
         }
     }
 
-    /// Stops the camera, after a read or when the scanner goes away.
+    /// Stops the camera and turns off the torch, after a read or when the scanner goes away.
     func stop() {
         stops += 1
         isRunning = false
+        state.torchIsOn = false
         enqueue { [camera] in await camera.stop() }
     }
 
@@ -50,8 +67,24 @@ final class ScannerModel {
         updateRectOfInterest()
     }
 
-    /// A pinch, with how far it has spread since it began: 2 is twice as far apart.
-    func pinch(_ scale: CGFloat) {
+    private func focus(at point: CGPoint) {
+        guard isRunning, let preview else { return }
+        let devicePoint = CameraPlan.pointOfInterest(preview.captureDevicePointConverted(fromLayerPoint: point))
+        showFocusMark(at: point)
+        enqueue { [camera] in await camera.focus(at: devicePoint) }
+    }
+
+    private func setTorch(_ isOn: Bool) {
+        guard isRunning else { return }
+        state.torchIsOn = isOn
+        enqueue { [camera] in
+            let torchIsOn = await camera.setTorch(isOn)
+            // A stop asked for meanwhile has turned it off, whatever the camera said.
+            self.state.torchIsOn = torchIsOn && self.isRunning
+        }
+    }
+
+    private func pinch(_ scale: CGFloat) {
         // Until the camera has started, its zoom range isn't known.
         guard isRunning else { return }
         let start = pinchStartZoom ?? zoom
@@ -61,7 +94,7 @@ final class ScannerModel {
         enqueue { [camera] in await camera.setZoom(zoom) }
     }
 
-    func endPinch() {
+    private func endPinch() {
         pinchStartZoom = nil
     }
 
@@ -71,6 +104,18 @@ final class ScannerModel {
               let rect = CameraPlan.rectOfInterest(preview.metadataOutputRectConverted(fromLayerRect: preview.bounds))
         else { return }
         enqueue { [camera] in await camera.setRectOfInterest(rect) }
+    }
+
+    private func showFocusMark(at point: CGPoint) {
+        focusMarks += 1
+        let mark = FocusMark(point: point, id: focusMarks)
+        state.focus = mark
+        focusMarkTimer?.cancel()
+        focusMarkTimer = Task { [weak self] in
+            try? await Task.sleep(for: FocusMark.duration)
+            guard !Task.isCancelled, let self, self.state.focus == mark else { return }
+            self.state.focus = nil
+        }
     }
 
     private func enqueue(_ job: @escaping @MainActor () async -> Void) {

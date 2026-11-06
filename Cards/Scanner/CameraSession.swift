@@ -7,6 +7,7 @@ import OSLog
 actor CameraSession {
     /// What the camera offers once it is running.
     struct Setup: Sendable, Equatable {
+        var hasTorch: Bool
         /// The zoom factor it is at now.
         var zoom: CGFloat
         /// The zoom factors pinching can reach.
@@ -35,6 +36,7 @@ actor CameraSession {
     private var device: AVCaptureDevice?
     private var zoomRange: ClosedRange<CGFloat> = 1...1
     private var hasConfigured = false
+    private var subjectAreaObservation: NotificationObservation?
 
     /// The camera the scanner uses: the first of the preferred back cameras the
     /// device has, or else whichever camera it has, such as a Mac's. Nil in the
@@ -64,13 +66,31 @@ actor CameraSession {
         if !session.isRunning {
             session.startRunning()
         }
-        return Setup(zoom: device.videoZoomFactor, zoomRange: zoomRange)
+        return Setup(hasTorch: device.hasTorch, zoom: device.videoZoomFactor, zoomRange: zoomRange)
     }
 
+    /// Stops the camera, and the torch with it.
     func stop() {
+        setTorchMode(.off)
         if session.isRunning {
             session.stopRunning()
         }
+    }
+
+    /// Focuses and sets the exposure once at a point from (0, 0) to (1, 1),
+    /// then watches for the picture to change so it can go back to continuous
+    /// autofocus.
+    func focus(at devicePoint: CGPoint) {
+        focus(.autoFocus, exposure: .autoExpose, at: devicePoint, monitorsSubjectArea: true)
+    }
+
+    /// Turns the torch on or off, and says whether it is on now. It stays off
+    /// while the camera is stopped, or when it can't come on, such as when the
+    /// phone is too hot.
+    func setTorch(_ isOn: Bool) -> Bool {
+        guard session.isRunning else { return false }
+        setTorchMode(isOn ? .on : .off)
+        return device?.torchMode == .on
     }
 
     func setZoom(_ zoom: CGFloat) {
@@ -96,6 +116,14 @@ actor CameraSession {
         guard addInputAndOutput(for: device) else { return }
         self.device = device
         configureFocusAndZoom(device)
+        let observer = NotificationCenter.default.addObserver(
+            forName: AVCaptureDevice.subjectAreaDidChangeNotification,
+            object: device,
+            queue: nil
+        ) { [weak self] _ in
+            Task { await self?.subjectAreaDidChange() }
+        }
+        subjectAreaObservation = NotificationObservation(observer)
     }
 
     private func addInputAndOutput(for device: AVCaptureDevice) -> Bool {
@@ -156,7 +184,45 @@ actor CameraSession {
             if device.isExposureModeSupported(.continuousAutoExposure) {
                 device.exposureMode = .continuousAutoExposure
             }
+            device.isSubjectAreaChangeMonitoringEnabled = false
             device.videoZoomFactor = zoom
+        }
+    }
+
+    // MARK: Focus and torch
+
+    /// After a tap, the picture changed enough that the tapped point no longer
+    /// means anything: go back to continuous autofocus on the middle.
+    private func subjectAreaDidChange() {
+        focus(.continuousAutoFocus, exposure: .continuousAutoExposure, at: CGPoint(x: 0.5, y: 0.5), monitorsSubjectArea: false)
+    }
+
+    private func focus(
+        _ focusMode: AVCaptureDevice.FocusMode,
+        exposure exposureMode: AVCaptureDevice.ExposureMode,
+        at devicePoint: CGPoint,
+        monitorsSubjectArea: Bool
+    ) {
+        guard let device else { return }
+        withLockedDevice(device) {
+            // A point of interest takes effect when the mode is set, so it comes first.
+            if device.isFocusPointOfInterestSupported, device.isFocusModeSupported(focusMode) {
+                device.focusPointOfInterest = devicePoint
+                device.focusMode = focusMode
+            }
+            if device.isExposurePointOfInterestSupported, device.isExposureModeSupported(exposureMode) {
+                device.exposurePointOfInterest = devicePoint
+                device.exposureMode = exposureMode
+            }
+            device.isSubjectAreaChangeMonitoringEnabled = monitorsSubjectArea
+        }
+    }
+
+    private func setTorchMode(_ mode: AVCaptureDevice.TorchMode) {
+        guard let device, device.hasTorch, device.torchMode != mode, device.isTorchModeSupported(mode) else { return }
+        guard mode == .off || device.isTorchAvailable else { return }
+        withLockedDevice(device) {
+            device.torchMode = mode
         }
     }
 
@@ -169,5 +235,19 @@ actor CameraSession {
             // Another app holds the camera; skip this change.
             Self.log.error("Could not lock the camera: \(error.localizedDescription, privacy: .public)")
         }
+    }
+}
+
+/// A notification observer that stops observing when it goes away, with the
+/// camera session that holds it.
+private final class NotificationObservation {
+    private let observer: any NSObjectProtocol
+
+    init(_ observer: any NSObjectProtocol) {
+        self.observer = observer
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(observer)
     }
 }

@@ -59,10 +59,11 @@ As someone using VoiceOver, I want every control labelled and every image that a
 - The map's pin and ring, the place icons, the field icons in the location sheet and the tick on a swatch are hidden from VoiceOver (1.3).
 - The external link icon in Settings reads "External link" (1.1).
 - When the camera can't be used, its title and text read as one item, such as "No camera, Type the card's code below.", Open Settings is a separate button, and the icon is hidden (CARD-2) (1.3).
+- In preparation for 1.4: the camera view reads "Barcode scanner" with a hint, and double-tapping it focuses on its middle (BAR-6). The torch button reads "Torch", a switch that is on or off, has a 44 point touch area and grows with the text size (BAR-7). The red line and the focus square are hidden from VoiceOver.
 - The widget reads as one item with a hint, and its barcode image is hidden (WID-5).
 
 **Since:** 1.0
-**Where:** `Cards/UI/Components/CardColorPicker.swift`, `Cards/UI/Components/CardLocationRow.swift`, `Cards/UI/Screens/LocationPickerView.swift`, `Cards/UI/Screens/SettingsListView.swift`, `Cards/UI/Components/CameraUnavailableView.swift`, `Cards/UI/Components/CardWidgetView.swift`
+**Where:** `Cards/UI/Components/CardColorPicker.swift`, `Cards/UI/Components/CardLocationRow.swift`, `Cards/UI/Screens/LocationPickerView.swift`, `Cards/UI/Screens/SettingsListView.swift`, `Cards/UI/Components/CameraUnavailableView.swift`, `Cards/UI/Components/ScannerControlsView.swift`, `Cards/UI/Components/CardWidgetView.swift`
 
 ### A11Y-5: Feel that something happened
 

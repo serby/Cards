@@ -1,6 +1,6 @@
 # Barcodes
 
-The barcode types Card Barcodes reads and draws, how a code is drawn, what happens when one can't be, the brightness boost that helps a scanner read it, and how the camera focuses on a card held close to read its barcode.
+The barcode types Card Barcodes reads and draws, how a code is drawn, what happens when one can't be, the brightness boost that helps a scanner read it, and how the camera focuses on and lights up a card to read its barcode.
 
 ### BAR-1: Keep cards with the common barcode types
 
@@ -70,3 +70,31 @@ As a card holder, I want the camera to focus on a card held a few centimetres aw
 **Since:** In preparation for 1.4
 **Where:** `Cards/Scanner/CameraPlan.swift`, `Cards/Scanner/CameraSession.swift`, `Cards/Scanner/ScannerModel.swift`, `CardsTests/CameraPlanTests.swift`
 **Notes:** The zoom comes from the main lens's minimum focus distance, not the combined camera's, which is the ultra-wide's macro distance on a Pro iPhone and would ask for no zoom. The simulator has no camera, so none of this shows there.
+
+### BAR-6: Tap to focus on the barcode
+
+As a card holder, I want to tap the camera view to focus on the barcode, so that the camera sharpens the card rather than what is behind it.
+
+- Tapping the camera view focuses and sets the exposure at that point, once.
+- A yellow square 72 points across shows where you tapped for a second, then fades. It shrinks onto the spot as it appears; with Reduce Motion on, it only fades in and out.
+- When the picture changes a lot after a tap, such as when the card moves away, the camera goes back to continuous autofocus and exposure on the middle (BAR-5).
+- After a read, tapping does nothing until the scanner view appears again (CARD-2).
+- VoiceOver reads the camera view as "Barcode scanner", with the hint "Point the camera at a card's barcode to read it. Double-tap to focus on the middle." Double-tapping focuses on the middle of the view.
+
+**Since:** In preparation for 1.4
+**Where:** `Cards/UI/Components/ScannerControlsView.swift`, `Cards/Scanner/ScannerModel.swift`, `Cards/Scanner/CameraSession.swift`, `CardsTests/CameraPlanTests.swift` (`pointOfInterestStaysInTheUnitSquare`)
+**Notes:** In the Storybook, the ScannerControlsView story shows the square in fixed places and the ScannerPlaceholderView story shows it where you tap.
+
+### BAR-7: Light up a card with the torch
+
+As a card holder, I want to turn on the torch while scanning, so that the camera can read a barcode in a dim shop.
+
+- A torch button sits in the bottom right corner of the camera view when the camera has a torch. A camera without one shows no button.
+- Tapping it turns the torch on, and tapping it again turns it off. Off, it is a white torch on a dark, see-through circle; on, a black torch on a white circle.
+- It is at least 44 points across and grows with the text size.
+- VoiceOver reads it as "Torch", a switch that is "On" or "Off", with the hint "Lights up the card so the camera can read it in the dark".
+- The torch goes off when a code is read, when the scanner leaves the screen and when the form closes.
+- If the torch can't come on, such as when the phone is too hot, the button stays off.
+
+**Since:** In preparation for 1.4
+**Where:** `Cards/UI/Components/ScannerControlsView.swift`, `Cards/Scanner/ScannerModel.swift`, `Cards/Scanner/CameraSession.swift`

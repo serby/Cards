@@ -80,12 +80,8 @@ public struct ScannerOverlayView: View {
             case .ready:
                 CameraScannerView(scannedCode: $scannedCode, barcodeType: $barcodeType, scanner: scanner)
                     .overlay {
-                        Rectangle()
-                            .fill(Color.red.opacity(0.8))
-                            .frame(height: 2)
+                        ScannerControlsView(state: scanner.state, actions: scanner.actions)
                     }
-                    .accessibilityIdentifier("scannerView")
-                    .accessibilityLabel("Barcode scanner")
             case .undecided:
                 Color.black
                     .task {
