@@ -112,7 +112,7 @@ As a card holder, I want to change a card's details, so that I can fix a mistake
 - A card can't be deleted from the form (CARD-6). In preparation for 1.4 it can: Delete Card at the foot of the edit form asks "Delete Joe's Market?", saying it is deleted from all your devices and cannot be undone, then deletes the card and goes back to the list. Adding a card has no Delete Card.
 
 **Since:** 1.0
-**Where:** `Cards/Features/CardEditScreen.swift`, `Cards/UI/Screens/CardEditView.swift`, `Cards/UI/ViewState/CardViewState.swift`, `Cards/Core/Navigation/NavigationManager.swift`, `Cards/UI/Actions/CardActions.swift`, `CardsUITests/CardsUITests.swift` (`testDeleteFromTheEditForm`)
+**Where:** `Cards/Features/CardEditScreen.swift`, `Cards/UI/Screens/CardEditView.swift`, `Cards/UI/ViewState/CardViewState.swift`, `Cards/Core/Navigation/NavigationManager.swift`, `Cards/UI/Actions/CardActions.swift`, `CardsUITests/CardEditFormUITests.swift` (`testDeleteFromTheEditForm`)
 **Notes:** Links, the widget's chosen card and arrival notifications find a card by its code (CARD-8), so changing the code changes which card they point at. A widget set to the old code goes back to showing the nearest card (WID-2).
 
 ### CARD-6: Delete a card
@@ -128,7 +128,7 @@ As a card holder, I want to delete a card I no longer use, so that the list only
 - In preparation for 1.4: the grid has no swipe actions, so Delete moves to the menu a long press on a tile shows (CARD-10). It deletes the card at once, with the same medium haptic, and the remaining cards are renumbered from 0 in their order. VoiceOver offers Delete as an action on the tile (A11Y-1).
 
 **Since:** 1.0
-**Where:** `Cards/UI/Screens/CardListView.swift`, `Cards/UI/Components/CardTileView.swift`, `Cards/Features/CardListScreen.swift`, `CardsUITests/CardsUITests.swift` (`testDeleteFromTheLongPressMenu`), `Cards/Features/CardEditScreen.swift`, `Cards/Core/Models/CardImport.swift` (`renumber`), `CardsUITests/CardsUITests.swift` (`testDeleteFromTheEditForm`)
+**Where:** `Cards/UI/Screens/CardListView.swift`, `Cards/UI/Components/CardTileView.swift`, `Cards/Features/CardListScreen.swift`, `CardsUITests/CardsUITests.swift` (`testDeleteFromTheLongPressMenu`), `Cards/Features/CardEditScreen.swift`, `Cards/Core/Models/CardImport.swift` (`renumber`), `CardsUITests/CardEditFormUITests.swift` (`testDeleteFromTheEditForm`)
 
 ### CARD-7: Put my cards in the order I want
 
@@ -239,5 +239,5 @@ As a card holder, I want each card to carry an icon, so that I can recognise it 
 - The icon is stored with the card, so it syncs (DATA-1), is exported, and is imported with the card (DATA-2, DATA-3).
 
 **Since:** In preparation for 1.4
-**Where:** `Cards/Core/Models/CardIcon.swift`, `Cards/UI/Components/CardIconPicker.swift`, `Cards/UI/Screens/CardEditView.swift`, `Cards/Features/CardEditScreen.swift`, `Cards/UI/Components/CardFaceView.swift`, `Cards/Features/CardDetailScreen.swift`, `Cards/Core/Models/CardItem.swift`, `Cards/UI/Screens/CardListView.swift`, `CardsTests/CardIconTests.swift`, `CardsUITests/CardsUITests.swift` (`testChooseAnIcon`, `testTheIconGridOpensAtTheChosenIcon`), `Cards/UI/Screens/CardDetailView.swift`, `Cards/UI/Components/CardTileView.swift`, `Cards/Features/CardListScreen.swift`
+**Where:** `Cards/Core/Models/CardIcon.swift`, `Cards/UI/Components/CardIconPicker.swift`, `Cards/UI/Screens/CardEditView.swift`, `Cards/Features/CardEditScreen.swift`, `Cards/UI/Components/CardFaceView.swift`, `Cards/Features/CardDetailScreen.swift`, `Cards/Core/Models/CardItem.swift`, `Cards/UI/Screens/CardListView.swift`, `CardsTests/CardIconTests.swift`, `CardsUITests/CardEditFormUITests.swift` (`testChooseAnIcon`, `testTheIconGridOpensAtTheChosenIcon`), `Cards/UI/Screens/CardDetailView.swift`, `Cards/UI/Components/CardTileView.swift`, `Cards/Features/CardListScreen.swift`
 **Notes:** Every icon is in SF Symbols 6, so iOS 18 draws it; `CardIconTests` checks each one on the oldest supported iOS. Stored names never change: an icon can move to another group, but is removed rather than renamed. An icon name the build doesn't list, such as one from a newer version, still shows on the card.
