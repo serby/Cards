@@ -212,15 +212,32 @@ As a card holder, I want to search my cards and choose their order, so that the 
 As a card holder, I want each card to carry an icon, so that I can recognise it at a glance.
 
 - The add and edit forms have an Icon row, below Colour, that shows the card's icon, or "None", and opens a sheet titled "Icon".
-- The sheet is a grid of 35 icons suited to cards, None first, then shopping (a basket, a trolley, a shopping bag, a price tag, a gift, a T-shirt), food and drink (a coffee cup, a mug, a takeaway, a restaurant, a cake, a wine glass), getting about (a fuel pump, a car, an aeroplane, a bus, a hotel, a suitcase), fitness (a dumbbell, running, swimming, climbing, a bicycle), health (first aid, a pharmacy, a heart), books and going out (a book, a library, a ticket, a cinema, a theatre) and pets, home and garden (pets, a garden, DIY, a hairdresser).
+- The sheet is a grid of 76 icons suited to cards. None comes first, then the icons under a heading for each group:
+  - **Shopping:** a basket, a trolley, a shopping bag, a shop, a price tag, a gift and a T-shirt.
+  - **Food and drink:** a coffee cup, a mug, a takeaway, a restaurant, a cake, a wine glass and a carrot.
+  - **Health and beauty:** a heart, wellbeing, beauty and an optician.
+  - **Pharmacy:** a pharmacy, first aid, a plaster and a doctor.
+  - **Sport and fitness:** a dumbbell, running, swimming, climbing, a bicycle, football, tennis and golf.
+  - **Travel:** a car, a fuel pump, parking, a bus, a train, an aeroplane, a hotel and a suitcase.
+  - **Books and libraries:** a book, a library, a newspaper and education.
+  - **Cinema and entertainment:** a cinema, a ticket, a theatre and a museum.
+  - **Music:** music, headphones and a guitar.
+  - **Gaming:** games, dice and a puzzle.
+  - **Pets:** pets, a dog, a cat and a fish.
+  - **Home and garden:** a home, furniture, a garden and flowers.
+  - **DIY and hardware:** DIY, tools, a spanner and a paintbrush.
+  - **Hairdressers and services:** a hairdresser, a comb, laundry and keys.
+  - **Money and payments:** a payment card, a gift card, a pound sign, a discount and a star.
+  - **Kids and toys:** a teddy bear, a balloon and a pushchair.
+- When the card already has an icon, the sheet opens scrolled to it, so a choice far down the grid is in sight.
 - Each icon in the grid is drawn on the card's colour in the colour's ink, as the colour swatches are (COL-4), and the chosen one has a ring round it. Tapping one chooses it and closes the sheet; Done closes it without a change.
 - The choice is saved with the card when the form is saved, like every other field (CARD-5). Going back without saving keeps the old icon.
 - A card has no icon until you choose one. Older cards and older exports have none.
 - The icon shows at the top of the card's tile in the grid (CARD-10), in the colour's ink like the name, so it stays readable (COL-4).
 - It shows on the card screen beside the name in the top panel (CARD-4), drawn in the panel's ink. At the accessibility text sizes it sits above the name instead (A11Y-3).
-- VoiceOver does not read the icon on the card or its tile, because the card's name already says what it is (A11Y-4). In the form, where you choose it, the Icon row reads its value by what the icon shows, such as "Basket", or "None", and so does each icon in the grid.
+- VoiceOver does not read the icon on the card or its tile, because the card's name already says what it is (A11Y-4). In the form, where you choose it, the Icon row reads its value by what the icon shows, such as "Basket", or "None", and so does each icon in the grid. Each group's name is a heading, so the rotor moves from group to group.
 - The icon is stored with the card, so it syncs (DATA-1), is exported, and is imported with the card (DATA-2, DATA-3).
 
 **Since:** In preparation for 1.4
-**Where:** `Cards/Core/Models/CardIcon.swift`, `Cards/UI/Components/CardIconPicker.swift`, `Cards/UI/Screens/CardEditView.swift`, `Cards/Features/CardEditScreen.swift`, `Cards/UI/Components/CardFaceView.swift`, `Cards/Features/CardDetailScreen.swift`, `Cards/Core/Models/CardItem.swift`, `Cards/UI/Screens/CardListView.swift`, `CardsTests/CardIconTests.swift`, `CardsUITests/CardsUITests.swift` (`testChooseAnIcon`), `Cards/UI/Screens/CardDetailView.swift`, `Cards/UI/Components/CardTileView.swift`, `Cards/Features/CardListScreen.swift`
-**Notes:** Every icon is in SF Symbols 6, so iOS 18 draws it; `CardIconTests` checks each one on the oldest supported iOS. An icon name the build doesn't list, such as one from a newer version, still shows on the card.
+**Where:** `Cards/Core/Models/CardIcon.swift`, `Cards/UI/Components/CardIconPicker.swift`, `Cards/UI/Screens/CardEditView.swift`, `Cards/Features/CardEditScreen.swift`, `Cards/UI/Components/CardFaceView.swift`, `Cards/Features/CardDetailScreen.swift`, `Cards/Core/Models/CardItem.swift`, `Cards/UI/Screens/CardListView.swift`, `CardsTests/CardIconTests.swift`, `CardsUITests/CardsUITests.swift` (`testChooseAnIcon`, `testTheIconGridOpensAtTheChosenIcon`), `Cards/UI/Screens/CardDetailView.swift`, `Cards/UI/Components/CardTileView.swift`, `Cards/Features/CardListScreen.swift`
+**Notes:** Every icon is in SF Symbols 6, so iOS 18 draws it; `CardIconTests` checks each one on the oldest supported iOS. Stored names never change: an icon can move to another group, but is removed rather than renamed. An icon name the build doesn't list, such as one from a newer version, still shows on the card.

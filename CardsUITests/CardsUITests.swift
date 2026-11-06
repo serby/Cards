@@ -341,6 +341,42 @@ final class CardsUITests: XCTestCase {
         XCTAssertEqual(iconRow.value as? String, "Basket")
     }
 
+    /// The grid opens at the card's icon, even one in its last group (CARD-12).
+    @MainActor
+    func testTheIconGridOpensAtTheChosenIcon() throws {
+        let app = XCUIApplication()
+        app.launchArguments += ["-uiTesting", "-screenshotSeed"]
+        app.launch()
+        dismissNotificationPrompt()
+
+        let honeycomb = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Honeycomb Rewards")).firstMatch
+        XCTAssertTrue(waitForElement(honeycomb))
+        honeycomb.tap()
+        app.buttons["editCardButton"].tap()
+
+        let iconRow = app.buttons["iconRow"]
+        for _ in 0..<3 where !(iconRow.exists && iconRow.isHittable) {
+            app.descendants(matching: .any)["editCardForm"].firstMatch.swipeUp()
+        }
+        iconRow.tap()
+        // Far below the sheet's first height: drag the sheet open and scroll to it.
+        let pushchair = app.buttons["cardIcon_stroller.fill"]
+        let low = app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.85))
+        let high = app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.25))
+        for _ in 0..<10 where !(pushchair.exists && pushchair.isHittable) {
+            low.press(forDuration: 0.05, thenDragTo: high)
+        }
+        pushchair.tap()
+        XCTAssertTrue(pushchair.waitForNonExistence(timeout: 3), "Choosing an icon closes the grid")
+        XCTAssertEqual(iconRow.value as? String, "Pushchair")
+
+        iconRow.tap()
+        XCTAssertTrue(waitForElement(pushchair))
+        XCTAssertTrue(pushchair.isHittable, "The grid opens at the chosen icon")
+        let basket = app.buttons["cardIcon_basket.fill"]
+        XCTAssertFalse(basket.exists && basket.isHittable, "The grid is not at its top")
+    }
+
     /// Tapping a place in the form opens it in the picker to change, and Save
     /// puts the change in the form (PLACE-8).
     @MainActor

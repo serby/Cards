@@ -1,8 +1,10 @@
 import SwiftUI
 
-/// The card icons as a grid of tappable swatches, None first. Each swatch is
-/// drawn on the card's colour in its ink, as the colour picker's are, so you
-/// choose the icon you will see.
+/// The card icons as a grid of tappable swatches, None first and then each
+/// group under its heading. Each swatch is drawn on the card's colour in its
+/// ink, as the colour picker's are, so you choose the icon you will see. The
+/// swatches are scroll targets with their icon's name as the id, so a scroll
+/// view's `scrollPosition(id:)` can open at the chosen one.
 public struct CardIconPicker: View {
     @Binding private var selection: String?
     private let color: CardColor
@@ -19,23 +21,39 @@ public struct CardIconPicker: View {
 
     public var body: some View {
         LazyVGrid(columns: [GridItem(.adaptive(minimum: swatchSize + 8), spacing: 8)], spacing: 8) {
-            cell(nil, label: "None") {
-                Text("None")
-                    .font(.caption.weight(.semibold))
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.6)
-            }
-            .accessibilityIdentifier("cardIcon_none")
-
-            ForEach(CardIcon.all) { icon in
-                cell(icon.name, label: icon.label) {
-                    Image(systemName: icon.name)
-                        .font(.title3)
-                        .accessibilityHidden(true)
+            Section {
+                cell(nil, label: "None") {
+                    Text("None")
+                        .font(.caption.weight(.semibold))
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.6)
                 }
-                .accessibilityIdentifier("cardIcon_\(icon.name)")
+                .accessibilityIdentifier("cardIcon_none")
+            }
+
+            ForEach(CardIcon.groups) { group in
+                Section {
+                    ForEach(group.icons) { icon in
+                        cell(icon.name, label: icon.label) {
+                            Image(systemName: icon.name)
+                                .font(.title3)
+                                .accessibilityHidden(true)
+                        }
+                        .id(icon.name)
+                        .accessibilityIdentifier("cardIcon_\(icon.name)")
+                    }
+                } header: {
+                    // A heading, so the VoiceOver rotor moves from group to group.
+                    Text(group.title)
+                        .font(.headline)
+                        .foregroundStyle(Color.primaryText)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.top, 12)
+                        .accessibilityAddTraits(.isHeader)
+                }
             }
         }
+        .scrollTargetLayout()
         .sensoryFeedback(.selection, trigger: selection)
         .accessibilityElement(children: .contain)
         .accessibilityLabel("Card icon")
@@ -72,11 +90,26 @@ public struct CardIconPicker: View {
 #if DEBUG
 #Preview("None chosen") {
     @Previewable @State var icon: String?
-    CardIconPicker(selection: $icon, color: .blue)
+    ScrollView {
+        CardIconPicker(selection: $icon, color: .blue)
+            .padding()
+    }
 }
 
 #Preview("Basket chosen") {
     @Previewable @State var icon: String? = "basket.fill"
-    CardIconPicker(selection: $icon, color: .teal)
+    ScrollView {
+        CardIconPicker(selection: $icon, color: .teal)
+            .padding()
+    }
+}
+
+#Preview("Largest text") {
+    @Previewable @State var icon: String? = "pills.fill"
+    ScrollView {
+        CardIconPicker(selection: $icon, color: .indigo)
+            .padding()
+    }
+    .environment(\.dynamicTypeSize, .accessibility5)
 }
 #endif

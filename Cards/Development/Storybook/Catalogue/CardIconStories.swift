@@ -5,44 +5,35 @@ let cardIconPickerStory = Story(
     id: "card-icon-picker",
     title: "CardIconPicker",
     section: "Components",
+    // Each variant is taller than the screen, so a list would not show them side by side.
+    galleryLayout: .oneAtATime,
     knobs: [
         IconKnob.knob("basket.fill"),
         .options("Colour", CardColor.allNames, CardColor.teal.rawValue)
     ],
     gallery: [
-        (
-            name: "On teal",
-            view: AnyView(
-                Stateful(String?("cup.and.saucer.fill")) { icon in
-                    CardIconPicker(selection: icon, color: .teal)
-                }
-                .padding()
-            )
-        ),
-        (
-            name: "None chosen, default colour",
-            view: AnyView(
-                Stateful(String?.none) { icon in
-                    CardIconPicker(selection: icon)
-                }
-                .padding()
-            )
-        ),
-        (
-            name: "On yellow, dark ink",
-            view: AnyView(
-                Stateful(String?("fuelpump.fill")) { icon in
-                    CardIconPicker(selection: icon, color: .yellow)
-                }
-                .padding()
-            )
-        )
+        (name: "On teal", view: iconPicker("cup.and.saucer.fill", color: .teal)),
+        (name: "None chosen, default colour", view: iconPicker(nil, color: .standard)),
+        (name: "On yellow, dark ink", view: iconPicker("fuelpump.fill", color: .yellow))
     ]
 ) { knobs in
     AnyView(
         ScrollView {
             CardIconPicker(selection: knobs.iconBinding, color: .named(knobs.option("Colour")))
                 .padding()
+        }
+    )
+}
+
+/// A gallery variant: the picker, scrolling, with `icon` chosen on `color`.
+@MainActor
+private func iconPicker(_ icon: String?, color: CardColor) -> AnyView {
+    AnyView(
+        ScrollView {
+            Stateful(icon) { selection in
+                CardIconPicker(selection: selection, color: color)
+            }
+            .padding()
         }
     )
 }

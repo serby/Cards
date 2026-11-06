@@ -22,6 +22,8 @@ public struct CardEditView<Scanner: View>: View {
     @FocusState private var focusedField: Field?
     @State private var showsLocationPicker = false
     @State private var showsIconPicker = false
+    /// The icon the grid's scroll view is at: the card's icon as the sheet opens.
+    @State private var iconPickerPosition: String?
     @State private var confirmsDelete = false
     /// Counts deletes, so the delete haptic plays (A11Y-5).
     @State private var deletes = 0
@@ -234,6 +236,7 @@ extension CardEditView {
     /// Shows the card's icon, or None, and opens the grid to choose one.
     private var iconRow: some View {
         Button {
+            iconPickerPosition = nil
             showsIconPicker = true
         } label: {
             HStack {
@@ -263,7 +266,7 @@ extension CardEditView {
         .accessibilityIdentifier("iconRow")
     }
 
-    /// The icon grid in a sheet. Choosing one closes it.
+    /// The icon grid in a sheet, open at the card's icon. Choosing one closes it.
     private var iconPicker: some View {
         NavigationStack {
             ScrollView {
@@ -272,6 +275,10 @@ extension CardEditView {
                 }
                 .padding()
             }
+            // The card's icon can be far down the grid, below the sheet's first height.
+            // Set once the grid is there: a position given before the sheet opens is lost.
+            .scrollPosition(id: $iconPickerPosition, anchor: .center)
+            .onAppear { iconPickerPosition = draft.icon }
             .navigationTitle("Icon")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
