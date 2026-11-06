@@ -76,7 +76,8 @@ capture-screenshots:
 	node scripts/capture-screenshots.ts
 
 # Composes the App Store images in screenshots/store/<locale>/ from the raw
-# captures and each locale's captions.json, then checks them.
+# captures and each locale's captions.json, and the universal creative asset
+# from its creative-asset.json, then checks them.
 store-screenshots:
 	TEST_RUNNER_CARDS_STORE_SCREENSHOTS=1 $(XCODEBUILD) test -destination '$(DESTINATION)' \
 		-only-testing:CardsTests/StoreScreenshotTests

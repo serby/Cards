@@ -3,7 +3,7 @@ import SwiftUI
 public extension Story {
     /// Every story, in sidebar order. Add new entries to one of the lists below.
     static var all: [Self] {
-        componentStories + screenStories
+        componentStories + screenStories + storeStories
     }
 }
 
