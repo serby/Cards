@@ -225,7 +225,7 @@ The target builds in Swift 6 language mode with strict concurrency, `SWIFT_TREAT
 
 ### Rule 11: Features are agreed in the simulator before they ship
 
-A change Paul needs to see is built, tested and run in the simulator, and shown to him with screenshots, before it is pushed. It is pushed, with its screenshots refreshed in the same push, only once he agrees it ships as a new version of the app. Fixes, tooling and documentation that change nothing on screen are exempt. The steps are in [section 2](#shape-features-in-the-simulator-before-they-ship).
+A change Paul needs to see is built, tested and run in the simulator, and shown to him with screenshots, before it is pushed. It is pushed, with its screenshots refreshed in the same push, only once he agrees it ships as a new version of the app. Fixes, tooling and documentation that change nothing on screen are exempt. The steps are in [section 2](#shape-features-in-the-simulator-before-they-ship), and the simulator review skill ([.claude/skills/simulator-review/SKILL.md](../.claude/skills/simulator-review/SKILL.md)) runs them.
 
 ### Rule 12: Mark changes with the release skill
 

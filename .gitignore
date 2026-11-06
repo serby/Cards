@@ -53,9 +53,6 @@ build/
 # Coverage
 coverage-html/
 
-# Kiro task notes (local only)
-.kiro/
-
-# Claude Code: worktrees and personal settings stay local; .claude/skills is shared.
+# Claude Code: worktrees and personal settings stay local; .claude/settings.json and .claude/skills are shared.
 .claude/worktrees/
 .claude/settings.local.json
