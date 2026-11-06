@@ -30,6 +30,11 @@
         },
         {
           "type": "new",
+          "text": "Find a place by searching for a shop, a street, a town or a postcode. Places are named from the map, and you can change the name.",
+          "en-US": "Find a place by searching for a store, a street, a town or a ZIP code. Places are named from the map, and you can change the name."
+        },
+        {
+          "type": "new",
           "text": "Change a place you have added to a card."
         },
         {

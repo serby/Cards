@@ -4,6 +4,7 @@ Give each card an icon, from 76 in 16 groups, shown on its tile and on the card.
 Add a card from a photo, a screenshot or a PDF of its barcode, such as an e-ticket.
 A card with several places lists the five nearest and how far away each is. Tap one to open it in Maps.
 Show the card for where you are in full above your other cards, with a new switch in Settings.
+Find a place by searching for a shop, a street, a town or a postcode. Places are named from the map, and you can change the name.
 Change a place you have added to a card.
 Import cards from a JSON file, as well as by pasting.
 The camera focuses on a card held close. Tap to focus, or turn on the torch in low light.
