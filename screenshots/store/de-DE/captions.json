@@ -1,0 +1,50 @@
+[
+  {
+    "file": "01_Cards",
+    "screen": "01_CardList",
+    "color": "blue",
+    "layout": "screen",
+    "title": "Alle deine Kundenkarten",
+    "subtitle": "So viele du willst, ohne Werbung"
+  },
+  {
+    "file": "02_Scan",
+    "screen": "02_CardDetail",
+    "color": "graphite",
+    "layout": "screen",
+    "title": "Bereit an der Kasse",
+    "subtitle": "Karte öffnen, und der Bildschirm wird hell"
+  },
+  {
+    "file": "03_Widget",
+    "screen": "05_Widget",
+    "color": "teal",
+    "layout": "band",
+    "title": "Die Karte für deinen Ort",
+    "subtitle": "Auf dem Home-Bildschirm und bei Ankunft"
+  },
+  {
+    "file": "04_Places",
+    "screen": "04_LocationPicker",
+    "color": "red",
+    "layout": "screen",
+    "title": "Erinnert dich bei Ankunft",
+    "subtitle": "Füge die Orte für jede Karte hinzu"
+  },
+  {
+    "file": "05_Share",
+    "screen": "06_ShareCard",
+    "color": "green",
+    "layout": "screen",
+    "title": "Teile eine Karte",
+    "subtitle": "Als Link oder als Bild"
+  },
+  {
+    "file": "06_Colours",
+    "screen": "03_EditCard",
+    "color": "purple",
+    "layout": "screen",
+    "title": "In jeder Farbe, die du magst",
+    "subtitle": "Und ein Symbol für jede Karte"
+  }
+]

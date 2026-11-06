@@ -1,0 +1,50 @@
+[
+  {
+    "file": "01_Cards",
+    "screen": "01_CardList",
+    "color": "blue",
+    "layout": "screen",
+    "title": "ポイントカードをまとめて",
+    "subtitle": "何枚でも、広告なし"
+  },
+  {
+    "file": "02_Scan",
+    "screen": "02_CardDetail",
+    "color": "graphite",
+    "layout": "screen",
+    "title": "レジですぐに",
+    "subtitle": "カードを開くと画面が明るくなります"
+  },
+  {
+    "file": "03_Widget",
+    "screen": "05_Widget",
+    "color": "teal",
+    "layout": "band",
+    "title": "今いる場所のカード",
+    "subtitle": "ホーム画面にも、着いたときにも"
+  },
+  {
+    "file": "04_Places",
+    "screen": "04_LocationPicker",
+    "color": "red",
+    "layout": "screen",
+    "title": "着いたらお知らせ",
+    "subtitle": "カードを使う場所を追加"
+  },
+  {
+    "file": "05_Share",
+    "screen": "06_ShareCard",
+    "color": "green",
+    "layout": "screen",
+    "title": "カードを共有",
+    "subtitle": "リンクでも画像でも"
+  },
+  {
+    "file": "06_Colours",
+    "screen": "03_EditCard",
+    "color": "purple",
+    "layout": "screen",
+    "title": "好きなカラーで",
+    "subtitle": "カードごとにアイコンも"
+  }
+]
