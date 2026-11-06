@@ -17,7 +17,7 @@ public struct CardShare: Sendable {
 /// A PNG of a card face. It is drawn only when the share sheet asks for it, so
 /// opening a card draws nothing extra.
 public struct CardImage: Transferable, Sendable {
-    /// The name the share sheet gives the file, such as "Boots Advantage.png".
+    /// The name the share sheet gives the file, such as "Green Leaf Pharmacy.png".
     public let fileName: String
     private let draw: @MainActor @Sendable () -> Data?
 

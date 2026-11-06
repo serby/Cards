@@ -8,8 +8,8 @@ import UserNotifications
 /// nothing is scheduled with iOS and nothing waits on a real delivery.
 @MainActor
 struct ArrivalSchedulerTests {
-    private let westway = CardLocation(name: "Westway", latitude: 51.5203, longitude: -0.2094, radius: 150)
-    private let wembley = CardLocation(name: "IKEA Wembley", latitude: 51.5560, longitude: -0.2796, radius: 400)
+    private let boulderBarn = CardLocation(name: "Boulder Barn", latitude: 51.5203, longitude: -0.2094, radius: 150)
+    private let wembley = CardLocation(name: "Nordic Nest Wembley", latitude: 51.5560, longitude: -0.2796, radius: 400)
     private let library = CardLocation(name: "Library", latitude: 51.5091, longitude: -0.1963)
     private let notifications = NotificationCenterStandIn()
 
@@ -22,15 +22,15 @@ struct ArrivalSchedulerTests {
     }
 
     @Test func addsOneRequestPerPlannedPlace() async {
-        await scheduler().reschedule([card("Climbing", [westway, wembley]), card("Library", [library])], near: nil)
-        #expect(notifications.added.map(\.place) == [westway, wembley, library])
-        #expect(notifications.added.map(\.id) == [westway, wembley, library].map { "arrival.\($0.id.uuidString)" })
+        await scheduler().reschedule([card("Climbing", [boulderBarn, wembley]), card("Library", [library])], near: nil)
+        #expect(notifications.added.map(\.place) == [boulderBarn, wembley, library])
+        #expect(notifications.added.map(\.id) == [boulderBarn, wembley, library].map { "arrival.\($0.id.uuidString)" })
         #expect(notifications.added.map(\.code) == ["climbing", "climbing", "library"])
     }
 
     @Test func doesNothingWhenThePlacesToWatchHaveNotChanged() async {
         let scheduler = scheduler()
-        let cards = [card("Climbing", [westway, wembley])]
+        let cards = [card("Climbing", [boulderBarn, wembley])]
         await scheduler.reschedule(cards, near: nil)
         await scheduler.reschedule(cards, near: nil)
         // Moving reorders the places, but the same ones are still watched.
@@ -42,15 +42,15 @@ struct ArrivalSchedulerTests {
 
     @Test func removesThePendingRequestsWhenThePlacesChange() async {
         let scheduler = scheduler()
-        await scheduler.reschedule([card("Climbing", [westway])], near: nil)
-        await scheduler.reschedule([card("Climbing", [westway, wembley])], near: nil)
+        await scheduler.reschedule([card("Climbing", [boulderBarn])], near: nil)
+        await scheduler.reschedule([card("Climbing", [boulderBarn, wembley])], near: nil)
         #expect(notifications.removals == 2)
-        #expect(notifications.added.map(\.place) == [westway, westway, wembley])
+        #expect(notifications.added.map(\.place) == [boulderBarn, boulderBarn, wembley])
     }
 
     @Test func removesThePendingRequestsWhenNothingIsLeftToWatch() async {
         let scheduler = scheduler()
-        await scheduler.reschedule([card("Climbing", [westway])], near: nil)
+        await scheduler.reschedule([card("Climbing", [boulderBarn])], near: nil)
         await scheduler.reschedule([], near: nil)
         #expect(notifications.removals == 2)
         #expect(notifications.authorizationRequests == 1)
@@ -65,7 +65,7 @@ struct ArrivalSchedulerTests {
 
     @Test func asksForPermissionOnlyWhenThereIsSomethingToSchedule() async {
         let scheduler = scheduler()
-        await scheduler.reschedule([card("Library", []), card("Pool", [westway], notifies: false)], near: nil)
+        await scheduler.reschedule([card("Library", []), card("Pool", [boulderBarn], notifies: false)], near: nil)
         #expect(notifications.authorizationRequests == 0)
         await scheduler.reschedule([card("Library", [library])], near: nil)
         #expect(notifications.authorizationRequests == 1)
@@ -73,7 +73,7 @@ struct ArrivalSchedulerTests {
 
     @Test func addsNothingWithoutPermission() async {
         notifications.allowed = false
-        await scheduler().reschedule([card("Climbing", [westway])], near: nil)
+        await scheduler().reschedule([card("Climbing", [boulderBarn])], near: nil)
         #expect(notifications.authorizationRequests == 1)
         #expect(notifications.added.isEmpty)
     }

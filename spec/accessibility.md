@@ -6,7 +6,7 @@ How the app works with VoiceOver, larger text sizes and touch, and the feedback 
 
 As someone using VoiceOver, I want every card read in plain words, so that I can find and show the right one.
 
-- A list row reads as one button: the card's name, then its distance, as "Tesco Clubcard, You're at Tesco Express" or "Costa Coffee, 350 m from Costa Portobello" (1.3).
+- A list row reads as one button: the card's name, then its distance, as "Joe's Market, You're at Joe's Market Notting Hill" or "Local Roast Coffee, 350 m from Local Roast Portobello" (1.3).
 - In preparation for 1.4: a tile in the grid reads the same way, its symbol is not read, and Delete is in its actions (CARD-10). The card shown in full where you are reads the same way too, with the hint "Opens the card for where you are" (SET-3).
 - The add button reads "Add Card".
 - On the card screen, the name reads "Card name: <name>" and is a heading.

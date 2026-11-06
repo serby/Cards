@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// How far away a card's nearest location is: "Here", or "350 m".
-/// With `showsPlace`, it names the place too: "At Westway", "350 m · Westway".
+/// With `showsPlace`, it names the place too: "At Boulder Barn", "350 m · Boulder Barn".
 /// "Here" stands out in its own capsule unless `highlightsHere` is off, for
 /// callers that already put the label on a capsule of its own.
 public struct ProximityLabel: View {
@@ -62,10 +62,10 @@ public struct ProximityLabel: View {
 #if DEBUG
 #Preview {
     VStack(alignment: .leading, spacing: 12) {
-        ProximityLabel(CardProximity(placeName: "Westway", distance: 0))
-        ProximityLabel(CardProximity(placeName: "Westway", distance: 0), showsPlace: true)
-        ProximityLabel(CardProximity(placeName: "Westway", distance: 350))
-        ProximityLabel(CardProximity(placeName: "Westway", distance: 4_200), showsPlace: true)
+        ProximityLabel(CardProximity(placeName: "Boulder Barn", distance: 0))
+        ProximityLabel(CardProximity(placeName: "Boulder Barn", distance: 0), showsPlace: true)
+        ProximityLabel(CardProximity(placeName: "Boulder Barn", distance: 350))
+        ProximityLabel(CardProximity(placeName: "Boulder Barn", distance: 4_200), showsPlace: true)
     }
 }
 #endif

@@ -244,7 +244,7 @@ public struct ImportCardsView: View {
 }
 
 #Preview("Pasted export") {
-    @Previewable @State var text = #"[{"code": "9988776655443", "name": "Nectar"}]"#
+    @Previewable @State var text = #"[{"code": "9988776655443", "name": "Honeycomb Rewards"}]"#
     ImportCardsView(importText: $text) {}
 }
 

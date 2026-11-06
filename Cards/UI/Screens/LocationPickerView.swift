@@ -199,7 +199,7 @@ public struct LocationPickerView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
 
-            TextField("Name, e.g. Westway", text: $name)
+            TextField("Name, e.g. Boulder Barn", text: $name)
                 .focused($focusedField, equals: .name)
                 .pickerField("tag")
                 .accessibilityIdentifier("locationNameField")

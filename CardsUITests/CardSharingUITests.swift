@@ -11,7 +11,7 @@ final class CardSharingUITests: XCTestCase {
     @MainActor
     func testShareMenuOffersALinkAndAnImage() throws {
         let app = launch()
-        openCard("Nectar", in: app)
+        openCard("Honeycomb Rewards", in: app)
 
         let share = app.buttons["shareCardButton"]
         XCTAssertTrue(share.waitForExistence(timeout: 5))
@@ -34,29 +34,29 @@ final class CardSharingUITests: XCTestCase {
     func testAddACardFromAShareLink() throws {
         let app = launch()
         let link = "cards://cards/add#" + Self.payload(
-            #"{"v":1,"name":"Westway Library","code":"LIB-2026","type":"Code 128","color":"teal","#
+            #"{"v":1,"name":"Ladbroke Library","code":"LIB-2026","type":"Code 128","color":"teal","#
                 + #""symbol":"books.vertical.fill","notifiesOnArrival":true,"#
-                + #""places":[{"name":"Westway","latitude":51.5203,"longitude":-0.2094,"radius":150}]}"#
+                + #""places":[{"name":"Boulder Barn","latitude":51.5203,"longitude":-0.2094,"radius":150}]}"#
         )
         try open(link, in: app)
 
         XCTAssertTrue(app.navigationBars["Add Card?"].waitForExistence(timeout: 10))
-        XCTAssertTrue(app.staticTexts["Card name: Westway Library"].exists)
-        let place = app.descendants(matching: .any).matching(NSPredicate(format: "label BEGINSWITH %@", "Westway,")).firstMatch
+        XCTAssertTrue(app.staticTexts["Card name: Ladbroke Library"].exists)
+        let place = app.descendants(matching: .any).matching(NSPredicate(format: "label BEGINSWITH %@", "Boulder Barn,")).firstMatch
         XCTAssertTrue(place.exists, "The sheet lists the card's place")
         app.buttons["addSharedCardButton"].tap()
 
         // The sheet closes on the new card's screen.
         XCTAssertTrue(app.buttons["editCardButton"].waitForExistence(timeout: 5))
         XCTAssertFalse(app.navigationBars["Add Card?"].exists)
-        XCTAssertTrue(app.staticTexts["Card name: Westway Library"].exists)
+        XCTAssertTrue(app.staticTexts["Card name: Ladbroke Library"].exists)
 
         try open(link, in: app)
         XCTAssertTrue(app.descendants(matching: .any)["sharedCardAlreadyAddedMessage"].waitForExistence(timeout: 10))
         XCTAssertFalse(app.buttons["addSharedCardButton"].exists)
         app.buttons["openSharedCardButton"].tap()
         XCTAssertTrue(app.buttons["editCardButton"].waitForExistence(timeout: 5))
-        XCTAssertTrue(app.staticTexts["Card name: Westway Library"].exists)
+        XCTAssertTrue(app.staticTexts["Card name: Ladbroke Library"].exists)
     }
 
     /// A link whose card cannot be read says so and adds nothing.

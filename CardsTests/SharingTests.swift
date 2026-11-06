@@ -7,14 +7,14 @@ import UIKit
 /// Sharing a card as a link or an image, and reading a shared card back
 /// (SHARE-1, SHARE-2, SHARE-3).
 struct SharingTests {
-    private let tesco = CardItem(
+    private let joesMarket = CardItem(
         timestamp: Date(timeIntervalSince1970: 1_700_000_000),
-        code: "634004024987531",
-        name: "Tesco Clubcard",
+        code: "482019375610284",
+        name: "Joe's Market",
         barcodeType: .code128,
         order: 3,
         color: .blue,
-        locations: [CardLocation(name: "Tesco Express", latitude: 51.5090, longitude: -0.1960, radius: 150)],
+        locations: [CardLocation(name: "Joe's Market Notting Hill", latitude: 51.5090, longitude: -0.1960, radius: 150)],
         notifiesOnArrival: false,
         symbol: "basket.fill",
         lastViewed: Date(timeIntervalSince1970: 1_780_000_000)
@@ -23,15 +23,15 @@ struct SharingTests {
     // MARK: The payload
 
     @Test func aCardRoundTripsThroughItsPayload() throws {
-        let shared = SharedCard(tesco)
+        let shared = SharedCard(joesMarket)
         let read = try #require(SharedCard(payload: shared.payload))
         #expect(read == shared)
-        #expect(read.name == "Tesco Clubcard")
-        #expect(read.code == "634004024987531")
+        #expect(read.name == "Joe's Market")
+        #expect(read.code == "482019375610284")
         #expect(read.barcodeType == .code128)
         #expect(read.color == .blue)
         #expect(read.symbol == "basket.fill")
-        #expect(read.places == [SharedCard.Place(name: "Tesco Express", latitude: 51.5090, longitude: -0.1960, radius: 150)])
+        #expect(read.places == [SharedCard.Place(name: "Joe's Market Notting Hill", latitude: 51.5090, longitude: -0.1960, radius: 150)])
         #expect(read.notifiesOnArrival == false)
     }
 
@@ -55,7 +55,7 @@ struct SharingTests {
 
     /// The link carries the card, not the sharer's history with it.
     @Test func thePayloadLeavesOutWhatIsTheSharers() throws {
-        let json = try #require(Data(base64Encoded: base64(fromURL: SharedCard(tesco).payload)))
+        let json = try #require(Data(base64Encoded: base64(fromURL: SharedCard(joesMarket).payload)))
         let decoded = try JSONSerialization.jsonObject(with: json)
         let object = try #require(decoded as? [String: Any])
         #expect(Set(object.keys) == ["v", "name", "code", "type", "color", "symbol", "places", "notifiesOnArrival"])
@@ -144,18 +144,18 @@ struct SharingTests {
     // MARK: Links
 
     @Test func shareLinksPointAtTheWebsiteWithTheCardAfterTheHash() throws {
-        let link = SharedCardLink(card: SharedCard(tesco))
-        let payload = SharedCard(tesco).payload
+        let link = SharedCardLink(card: SharedCard(joesMarket))
+        let payload = SharedCard(joesMarket).payload
         #expect(try #require(link.url).absoluteString == "https://cards.serby.net/add#\(payload)")
         #expect(try #require(link.appURL).absoluteString == "cards://cards/add#\(payload)")
     }
 
     @Test func bothFormsOfShareLinkAreRead() throws {
-        let link = SharedCardLink(card: SharedCard(tesco))
+        let link = SharedCardLink(card: SharedCard(joesMarket))
         for url in [try #require(link.url), try #require(link.appURL)] {
             let read = try #require(SharedCardLink(url: url))
             #expect(read == link)
-            #expect(read.card == SharedCard(tesco))
+            #expect(read.card == SharedCard(joesMarket))
         }
         let shouting = try #require(URL(string: "HTTPS://Cards.Serby.NET/add#\(link.payload)"))
         #expect(SharedCardLink(url: shouting) == link)
@@ -183,8 +183,8 @@ struct SharingTests {
     // MARK: Adding a shared card
 
     @Test func aSharedCardWhoseCodeIsAlreadyHereIsDetected() {
-        let existing = [CardItem(code: " 634004024987531 ", name: "My Tesco", order: 0)]
-        let result = SharedCard(tesco).importResult(existing: existing, addedAt: .now)
+        let existing = [CardItem(code: " 482019375610284 ", name: "My Joe's Market", order: 0)]
+        let result = SharedCard(joesMarket).importResult(existing: existing, addedAt: .now)
         #expect(result.alreadyHere == 1)
         #expect(result.added.isEmpty)
     }
@@ -192,18 +192,18 @@ struct SharingTests {
     @Test func aNewSharedCardIsAddedAtTheEndWithFreshPlaces() throws {
         let existing = [CardItem(code: "a", name: "A", order: 0), CardItem(code: "b", name: "B", order: 4)]
         let added = Date(timeIntervalSince1970: 1_790_000_000)
-        let result = SharedCard(tesco).importResult(existing: existing, addedAt: added)
+        let result = SharedCard(joesMarket).importResult(existing: existing, addedAt: added)
         let card = try #require(result.added.first)
         #expect(result.added.count == 1)
         #expect(card.order == 5)
         #expect(card.timestamp == added)
         #expect(card.lastViewed == nil)
-        #expect(card.code == tesco.code)
+        #expect(card.code == joesMarket.code)
         #expect(card.symbol == "basket.fill")
         #expect(card.getColor() == .blue)
         #expect(card.notifiesOnArrival == false)
-        #expect(card.locations.map(\.name) == ["Tesco Express"])
-        #expect(card.locations.first?.id != tesco.locations.first?.id)
+        #expect(card.locations.map(\.name) == ["Joe's Market Notting Hill"])
+        #expect(card.locations.first?.id != joesMarket.locations.first?.id)
     }
 
     /// The sheet's Add Card and Open Card buttons put the system background's
@@ -216,7 +216,7 @@ struct SharingTests {
     // MARK: The image
 
     @Test(arguments: [
-        ("Boots Advantage", "Boots Advantage.png"),
+        ("Green Leaf Pharmacy", "Green Leaf Pharmacy.png"),
         ("Gym / Pool: 24h", "Gym - Pool- 24h.png"),
         ("  ", "Card.png"),
         ("...", "Card.png"),

@@ -65,12 +65,12 @@ private let cardTileStory = Story(
     title: "CardTileView",
     section: "Components",
     knobs: [
-        .text("Name", "Tesco Clubcard"),
+        .text("Name", "Joe's Market"),
         .options("Colour", CardColor.allNames, CardColor.blue.rawValue),
         .options("Symbol", CardSummary.storySymbols, "basket"),
         .number("Width", 180, in: 120...400, step: 10),
         .toggle("Drop target", false)
-    ] + ProximityKnobs.knobs(place: "Tesco Express", distance: 0),
+    ] + ProximityKnobs.knobs(place: "Joe's Market Notting Hill", distance: 0),
     gallery: [
         (name: "Here, with a symbol", view: tile(CardSummary.samples[0])),
         (name: "Nearby", view: tile(CardSummary.samples[2])),
@@ -157,15 +157,15 @@ private let proximityLabelStory = Story(
         .toggle("Highlights here", true)
     ],
     gallery: [
-        (name: "Here", view: AnyView(ProximityLabel(CardProximity(placeName: "Westway", distance: 0)))),
+        (name: "Here", view: AnyView(ProximityLabel(CardProximity(placeName: "Boulder Barn", distance: 0)))),
         (
             name: "Here, with place",
-            view: AnyView(ProximityLabel(CardProximity(placeName: "Westway", distance: 0), showsPlace: true))
+            view: AnyView(ProximityLabel(CardProximity(placeName: "Boulder Barn", distance: 0), showsPlace: true))
         ),
-        (name: "Nearby", view: AnyView(ProximityLabel(CardProximity(placeName: "Westway", distance: 350)))),
+        (name: "Nearby", view: AnyView(ProximityLabel(CardProximity(placeName: "Boulder Barn", distance: 350)))),
         (
             name: "Far, with place",
-            view: AnyView(ProximityLabel(CardProximity(placeName: "IKEA Wembley", distance: 6_800), showsPlace: true))
+            view: AnyView(ProximityLabel(CardProximity(placeName: "Nordic Nest Wembley", distance: 6_800), showsPlace: true))
         )
     ]
 ) { knobs in
@@ -229,7 +229,7 @@ private let cardWidgetStory = Story(
         .text("Code", CardWidgetState.sample.code),
         .options("Type", BarcodeType.allNames, BarcodeType.ean13.rawValue),
         .options("Colour", CardColor.allNames, CardColor.blue.rawValue)
-    ] + ProximityKnobs.knobs(place: "Tesco Express", distance: 120),
+    ] + ProximityKnobs.knobs(place: "Joe's Market Notting Hill", distance: 120),
     gallery: [
         (name: "Nearby", view: AnyView(CardWidgetView(card: .sample).widgetPreviewFrame(.blue))),
         (name: "Here", view: AnyView(CardWidgetView(card: .here).widgetPreviewFrame(.red))),
@@ -286,7 +286,7 @@ private let cardFaceStory = Story(
         .options("Colour", CardColor.allNames, CardDetail.sample.color.rawValue),
         SymbolKnob.knob(CardDetail.sample.symbol),
         .toggle("Copy button", true)
-    ] + ProximityKnobs.knobs(place: "Boots Westfield", distance: 320),
+    ] + ProximityKnobs.knobs(place: "Green Leaf Shepherd's Bush", distance: 320),
     gallery: [CardDetail.sample, .qr, .invalidCode].map { card in
         (name: card.name, view: AnyView(CardFaceView(card: card).padding()))
     }

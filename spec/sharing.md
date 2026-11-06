@@ -25,7 +25,7 @@ As a card holder, I want to send a picture of a card, so that someone can scan i
 - Share Image opens the share sheet with a PNG of the card face: its colour, name, symbol, barcode, number in text and the date it was added, as on the card screen (CARD-4), on its own without the toolbar or the rest of the screen.
 - The picture leaves out the copy button and how far away the card's places are, because where you are is not part of the card.
 - It is always drawn in light appearance, 360 points wide at three times screen scale (1,080 pixels), so the barcode stays sharp enough to scan when shown on another screen (BAR-2). A card in the default colour sits on white.
-- The file is called after the card, such as "Boots Advantage.png", with any "/", "\" or ":" in the name turned into "-", or "Card.png" when the name is empty.
+- The file is called after the card, such as "Green Leaf Pharmacy.png", with any "/", "\" or ":" in the name turned into "-", or "Card.png" when the name is empty.
 - The picture is drawn only when the share sheet asks for it, so opening a card does no extra work.
 - The share sheet offers Save Image, which saves the picture to Photos. The first time, iOS asks for permission to add photos, saying "Saves the picture of a card you share to your photos." The app never asks to read Photos.
 

@@ -10,12 +10,12 @@ import XCTest
 /// ScreenshotSeed), so every run shows the same distances.
 final class CardsScreenshotTests: XCTestCase {
     private let seededCards = [
-        "Tesco Clubcard",
-        "Costa Coffee",
-        "Boots Advantage",
-        "Westway Climbing",
-        "Nectar",
-        "IKEA Family"
+        "Joe's Market",
+        "Local Roast Coffee",
+        "Green Leaf Pharmacy",
+        "Boulder Barn Climbing",
+        "Honeycomb Rewards",
+        "Nordic Nest Home"
     ]
 
     override func setUpWithError() throws {
@@ -51,7 +51,7 @@ final class CardsScreenshotTests: XCTestCase {
         }
         attach(app, name: "01_CardList\(suffix)")
 
-        row(app, "Tesco Clubcard").tap()
+        row(app, "Joe's Market").tap()
         XCTAssertTrue(app.descendants(matching: .any)["barcodeView"].firstMatch.waitForExistence(timeout: 5))
         XCTAssertTrue(app.descendants(matching: .any)["cardProximityText"].firstMatch.waitForExistence(timeout: 3))
         attach(app, name: "02_CardDetail\(suffix)")

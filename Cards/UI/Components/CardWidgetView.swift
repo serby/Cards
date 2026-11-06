@@ -161,7 +161,7 @@ private extension View {
             .background(isFullColor ? CardPanel.fill : .clear, in: ContainerRelativeShape())
     }
 
-    /// Reads as one element: "Tesco Clubcard, 120 m · Tesco Express".
+    /// Reads as one element: "Joe's Market, 120 m · Joe's Market Notting Hill".
     func widgetCardStyle() -> some View {
         accessibilityElement(children: .combine)
             .accessibilityHint("Opens the card in Card Barcodes")
@@ -173,17 +173,17 @@ private extension View {
 // Cards/Development, so these previews carry their own data.
 #Preview("Nearby") {
     CardWidgetView(card: CardWidgetState(
-        name: "Tesco Clubcard",
+        name: "Joe's Market",
         code: "5012345678900",
         barcodeType: .ean13,
         color: .blue,
-        proximity: CardProximity(placeName: "Tesco Express", distance: 120)
+        proximity: CardProximity(placeName: "Joe's Market Notting Hill", distance: 120)
     ))
     .previewWidgetFrame(.blue)
 }
 
 #Preview("QR code") {
-    CardWidgetView(card: CardWidgetState(name: "Westway Climbing", code: "https://serby.net", barcodeType: .qrCode, color: .graphite))
+    CardWidgetView(card: CardWidgetState(name: "Boulder Barn Climbing", code: "https://serby.net", barcodeType: .qrCode, color: .graphite))
         .previewWidgetFrame(.graphite)
 }
 

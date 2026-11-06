@@ -77,17 +77,17 @@ struct CardArrangementTests {
     }
 
     @Test(arguments: [
-        ("tesco", "Tesco Clubcard", true),
-        ("CLUB", "Tesco Clubcard", true),
-        ("cafe", "Café Nero", true),
-        ("CAFÉ", "Cafe Nero", true),
-        ("Sainsbury’s", "Sainsbury's Nectar", true),
-        ("sainsbury's", "Sainsbury’s Nectar", true),
-        ("  nectar  ", "Nectar", true),
-        ("", "Boots Advantage", true),
-        (" \n", "Boots Advantage", true),
-        ("boots", "Tesco Clubcard", false),
-        ("Tescos", "Tesco Clubcard", false)
+        ("joe", "Joe's Market", true),
+        ("MARK", "Joe's Market", true),
+        ("cafe", "Local Roast Café", true),
+        ("CAFÉ", "Local Roast Cafe", true),
+        ("Joe’s", "Joe's Market", true),
+        ("joe's", "Joe’s Market", true),
+        ("  honeycomb  ", "Honeycomb Rewards", true),
+        ("", "Green Leaf Pharmacy", true),
+        (" \n", "Green Leaf Pharmacy", true),
+        ("pharmacy", "Joe's Market", false),
+        ("Markets", "Joe's Market", false)
     ])
     func searchMatchesNamesIgnoringCaseAccentsAndCurlyApostrophes(search: String, name: String, matches: Bool) {
         #expect(CardArrangement.name(name, matches: search) == matches)
@@ -95,12 +95,12 @@ struct CardArrangementTests {
 
     @Test func searchFiltersBeforeTheCardsAreOrdered() {
         let cards = [
-            Self.card("Nectar", order: 1, viewed: 10),
-            Self.card("Tesco", order: 0, viewed: 30),
-            Self.card("Sainsbury's Nectar", order: 2, viewed: 20)
+            Self.card("Local Roast Coffee", order: 1, viewed: 10),
+            Self.card("Joe's Market", order: 0, viewed: 30),
+            Self.card("Local Roast Portobello", order: 2, viewed: 20)
         ]
-        #expect(Self.codes(cards, by: .lastViewed, search: "nectar") == ["Sainsbury's Nectar", "Nectar"])
-        #expect(Self.codes(cards, by: .custom, search: "waitrose").isEmpty)
+        #expect(Self.codes(cards, by: .lastViewed, search: "roast") == ["Local Roast Portobello", "Local Roast Coffee"])
+        #expect(Self.codes(cards, by: .custom, search: "corner grocer").isEmpty)
     }
 
     @Test func onlyASearchWithTextFilters() {

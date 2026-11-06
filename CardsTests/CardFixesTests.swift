@@ -86,7 +86,7 @@ struct CardFixesTests {
     }
 
     @Test @MainActor func cardsSwitchedOffAreNotWatched() {
-        let place = CardLocation(name: "Westway", latitude: 51.52, longitude: -0.209)
+        let place = CardLocation(name: "Boulder Barn", latitude: 51.52, longitude: -0.209)
         let on = ArrivalPlan.Card(name: "Gym", code: "1", barcodeType: .code128, locations: [place])
         let off = ArrivalPlan.Card(name: "Pool", code: "2", barcodeType: .code128, locations: [place], notifies: false)
         #expect(ArrivalPlan.arrivals(for: [on, off], near: nil).map(\.card.code) == ["1"])

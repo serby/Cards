@@ -65,7 +65,7 @@ private let cardListStory = Story(
         (name: "Full", view: pushed { CardListView(cards: CardSummary.samples) }),
         (name: "Long name", view: pushed { CardListView(cards: [.longName] + CardSummary.samples) }),
         (name: "Card where you are", view: pushed { CardListView(cards: CardSummary.samples, cardHere: .here) }),
-        (name: "Search, no match", view: pushed { CardListView(cards: [], search: .constant("Waitrose")) })
+        (name: "Search, no match", view: pushed { CardListView(cards: [], search: .constant("Corner Grocer")) })
     ]
 ) { knobs in
     let search = knobs.string("Search")
@@ -104,9 +104,9 @@ private let cardDetailStory = Story(
         SymbolKnob.knob(CardDetail.sample.symbol),
         .number("Created (days ago)", 30, in: 0...3_650, step: 1),
         .toggle("Brightness boost", true),
-        .toggle("Map opens at Westway", true),
+        .toggle("Map opens at Boulder Barn", true),
         .toggle("Share menu", true)
-    ] + ProximityKnobs.knobs(place: "Boots Westfield", distance: 320),
+    ] + ProximityKnobs.knobs(place: "Green Leaf Shepherd's Bush", distance: 320),
     gallery: [CardDetail.sample, .qr, .invalidCode].map { card in
         (
             name: card.name,
@@ -132,7 +132,7 @@ private let cardDetailStory = Story(
         CardDetailView(
             card: card,
             brightnessBoost: knobs.boolBinding("Brightness boost"),
-            mapCentre: knobs.bool("Map opens at Westway") ? CardLocation.sample.coordinate : nil,
+            mapCentre: knobs.bool("Map opens at Boulder Barn") ? CardLocation.sample.coordinate : nil,
             share: knobs.bool("Share menu") ? .sample(for: card) : nil
         )
     }
@@ -156,7 +156,7 @@ private let cardEditStory = Story(
         .toggle("Code already used", false),
         .toggle("Shows scanner", false),
         .toggle("Autofocus name", false),
-        .toggle("Map opens at Westway", true)
+        .toggle("Map opens at Boulder Barn", true)
     ],
     gallery: [
         (
@@ -199,7 +199,7 @@ private let cardEditStory = Story(
         CardEditView(
             draft: draft,
             autofocusesName: knobs.bool("Autofocus name"),
-            mapCentre: knobs.bool("Map opens at Westway") ? CardLocation.sample.coordinate : nil,
+            mapCentre: knobs.bool("Map opens at Boulder Barn") ? CardLocation.sample.coordinate : nil,
             takenCodes: knobs.bool("Code already used") ? [knobs.string("Code")] : [],
             arrivalNotificationsEnabled: knobs.bool("Arrival notifications on"),
             showsScanner: knobs.bool("Shows scanner")
@@ -321,7 +321,7 @@ private let importCardsStory = Story(
 }
 
 private let sampleExportJSON = """
-[{"code":"9780201379624","color":"indigo","name":"Boots Advantage","order":0,"timestamp":"2023-11-14T22:13:20Z","type":"EAN-13"}]
+[{"code":"9780201379624","color":"indigo","name":"Green Leaf Pharmacy","order":0,"timestamp":"2023-11-14T22:13:20Z","type":"EAN-13"}]
 """
 
 @MainActor

@@ -65,7 +65,7 @@ As a card holder, I want the widget laid out for its barcode, so that the code i
 - Panels and the barcode's white use the widget's own corner shape, so their corners nest inside it on every device.
 - A code that can't be drawn shows "This code can't be drawn" in place of the barcode.
 - With no cards, the widget shows "No cards yet" and "Add a card in Card Barcodes and it shows here."
-- VoiceOver reads the widget as one item, such as "Tesco Clubcard, 120 m from Tesco Express", with the hint "Opens the card in Card Barcodes". The barcode image is hidden from VoiceOver.
+- VoiceOver reads the widget as one item, such as "Joe's Market, 120 m from Joe's Market Notting Hill", with the hint "Opens the card in Card Barcodes". The barcode image is hidden from VoiceOver.
 
 **Since:** 1.3
 **Where:** `Cards/UI/Components/CardWidgetView.swift`, `CardsWidget/CardWidget.swift:9-23`

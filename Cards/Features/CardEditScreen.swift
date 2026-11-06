@@ -112,7 +112,7 @@ public struct CardEditScreen: View {
     let sampleCardItem = CardItem(
         timestamp: Date(),
         code: "123ABC",
-        name: "Westway",
+        name: "Boulder Barn",
         barcodeType: BarcodeType.code128
     )
     NavigationStack {

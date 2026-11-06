@@ -5,56 +5,56 @@ import SwiftData
 import Testing
 
 struct CardLocationTests {
-    private let westway = CardLocation(name: "Westway", latitude: 51.5203, longitude: -0.2094, radius: 150)
+    private let boulderBarn = CardLocation(name: "Boulder Barn", latitude: 51.5203, longitude: -0.2094, radius: 150)
 
     @Test func distanceIsZeroInsideTheCircle() {
         let inside = CLLocation(latitude: 51.5205, longitude: -0.2094)  // ~22 m from the centre
-        #expect(westway.distance(from: inside) == 0)
+        #expect(boulderBarn.distance(from: inside) == 0)
     }
 
     @Test func distanceIsMeasuredToTheEdge() {
-        let centre = CLLocation(latitude: westway.latitude, longitude: westway.longitude)
+        let centre = CLLocation(latitude: boulderBarn.latitude, longitude: boulderBarn.longitude)
         let outside = CLLocation(latitude: 51.5303, longitude: -0.2094)  // ~1.1 km north
         let toCentre = outside.distance(from: centre)
-        #expect(abs(westway.distance(from: outside) - (toCentre - 150)) < 0.001)
+        #expect(abs(boulderBarn.distance(from: outside) - (toCentre - 150)) < 0.001)
     }
 
     @Test func proximityPicksTheNearestLocation() throws {
         let far = CardLocation(name: "Wembley", latitude: 51.5560, longitude: -0.2796)
         let here = CLLocation(latitude: 51.5210, longitude: -0.2094)
-        let proximity = try #require([far, westway].proximity(to: here))
-        #expect(proximity.placeName == "Westway")
+        let proximity = try #require([far, boulderBarn].proximity(to: here))
+        #expect(proximity.placeName == "Boulder Barn")
     }
 
     @Test func proximityNeedsALocationAndPlaces() {
-        #expect([westway].proximity(to: nil) == nil)
+        #expect([boulderBarn].proximity(to: nil) == nil)
         #expect([CardLocation]().proximity(to: CLLocation(latitude: 51.5, longitude: 0)) == nil)
     }
 
     @Test func proximityIsHereInsideTheCircle() throws {
-        let proximity = try #require([westway].proximity(to: CLLocation(latitude: 51.5203, longitude: -0.2094)))
+        let proximity = try #require([boulderBarn].proximity(to: CLLocation(latitude: 51.5203, longitude: -0.2094)))
         #expect(proximity.isHere)
     }
 
     @Test @MainActor func locationsPersistThroughSwiftData() throws {
         let configuration = ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none)
         let container = try ModelContainer(for: CardItem.self, configurations: configuration)
-        container.mainContext.insert(CardItem(code: "42", name: "Costa", locations: [westway]))
+        container.mainContext.insert(CardItem(code: "42", name: "Local Roast Coffee", locations: [boulderBarn]))
         try container.mainContext.save()
 
         let fetched = try ModelContext(container).fetch(FetchDescriptor<CardItem>())
-        #expect(fetched.first?.locations == [westway])
+        #expect(fetched.first?.locations == [boulderBarn])
     }
 
     @Test func exportRoundTripKeepsLocations() throws {
-        let original = CardItem(code: "42", name: "Costa", locations: [westway])
+        let original = CardItem(code: "42", name: "Local Roast Coffee", locations: [boulderBarn])
         let data = try JSONEncoder().encode([CardItemDTO(from: original)])
         let imported = try JSONDecoder().decode([CardItemDTO].self, from: data)
-        #expect(imported.first?.toCardItem().locations == [westway])
+        #expect(imported.first?.toCardItem().locations == [boulderBarn])
     }
 
     @Test func exportWithoutLocationsImportsWithNone() throws {
-        let legacy = #"[{"code":"42","name":"Costa","order":0,"timestamp":0,"type":"EAN-13"}]"#
+        let legacy = #"[{"code":"42","name":"Local Roast Coffee","order":0,"timestamp":0,"type":"EAN-13"}]"#
         let imported = try JSONDecoder().decode([CardItemDTO].self, from: Data(legacy.utf8))
         #expect(imported.first?.toCardItem().locations.isEmpty == true)
     }
@@ -63,20 +63,20 @@ struct CardLocationTests {
     /// arrival reminder is replaced rather than joined by a second one.
     @Test func changingAPlaceInTheFormKeepsItsSpotAndId() {
         let pool = CardLocation(name: "Pool", latitude: 51.50, longitude: -0.20)
-        var draft = CardDraft(name: "Gym", code: "1", locations: [westway, pool])
-        var moved = westway
-        moved.name = "Westway Climbing"
+        var draft = CardDraft(name: "Gym", code: "1", locations: [boulderBarn, pool])
+        var moved = boulderBarn
+        moved.name = "Boulder Barn Climbing"
         moved.latitude = 51.5210
         moved.radius = 400
         draft.update(moved)
         #expect(draft.locations == [moved, pool])
-        #expect(draft.locations.map(\.id) == [westway.id, pool.id])
+        #expect(draft.locations.map(\.id) == [boulderBarn.id, pool.id])
     }
 
     @Test func aPlaceRemovedMeanwhileIsNotBroughtBack() {
-        var draft = CardDraft(name: "Gym", code: "1", locations: [westway])
+        var draft = CardDraft(name: "Gym", code: "1", locations: [boulderBarn])
         draft.locations.removeAll()
-        draft.update(westway)
+        draft.update(boulderBarn)
         #expect(draft.locations.isEmpty)
     }
 }
@@ -92,13 +92,13 @@ struct ArrivalPlanTests {
     }
 
     @Test func cardsWithoutLocationsAreNotWatched() {
-        #expect(ArrivalPlan.arrivals(for: [card("Nectar", [])], near: nil).isEmpty)
+        #expect(ArrivalPlan.arrivals(for: [card("Honeycomb Rewards", [])], near: nil).isEmpty)
     }
 
     @Test func everyLocationOfEveryCardIsWatched() {
         let cards = [
-            card("Costa", [place("A", latitude: 51), place("B", latitude: 52)]),
-            card("Boots", [place("C", latitude: 53)])
+            card("Local Roast Coffee", [place("A", latitude: 51), place("B", latitude: 52)]),
+            card("Green Leaf Pharmacy", [place("C", latitude: 53)])
         ]
         let names = ArrivalPlan.arrivals(for: cards, near: nil).map(\.location.name)
         #expect(names == ["A", "B", "C"])
@@ -107,21 +107,21 @@ struct ArrivalPlanTests {
     @Test func nearestLocationsAreKeptWithinTheRegionLimit() {
         let places = (0..<30).map { place("P\($0)", latitude: 50 + Double($0) * 0.01) }
         let here = CLLocation(latitude: 50.295, longitude: 0)  // just north of P29, the furthest place from P0
-        let plan = ArrivalPlan.arrivals(for: [card("Costa", places)], near: here)
+        let plan = ArrivalPlan.arrivals(for: [card("Local Roast Coffee", places)], near: here)
         #expect(plan.count == ArrivalPlan.regionLimit)
         #expect(plan.first?.location.name == "P29")
         #expect(!plan.contains { $0.location.name == "P0" })
     }
 
     @Test func theAlertNamesThePlaceAndCarriesTheBarcode() throws {
-        let westway = place("Westway", latitude: 51.52)
-        let arrival = try #require(ArrivalPlan.arrivals(for: [card("Costa", [westway])], near: nil).first)
+        let boulderBarn = place("Boulder Barn", latitude: 51.52)
+        let arrival = try #require(ArrivalPlan.arrivals(for: [card("Local Roast Coffee", [boulderBarn])], near: nil).first)
         let alert = ArrivalPlan.alert(for: arrival)
-        #expect(alert.id == "arrival.\(westway.id.uuidString)")
-        #expect(alert.title == "Costa")
-        #expect(alert.body == "You're at Westway. Your barcode is ready.")
-        #expect(alert.code == "Costa")
-        #expect(alert.place == westway)
+        #expect(alert.id == "arrival.\(boulderBarn.id.uuidString)")
+        #expect(alert.title == "Local Roast Coffee")
+        #expect(alert.body == "You're at Boulder Barn. Your barcode is ready.")
+        #expect(alert.code == "Local Roast Coffee")
+        #expect(alert.place == boulderBarn)
         #expect(alert.barcodePNG != nil)
     }
 }

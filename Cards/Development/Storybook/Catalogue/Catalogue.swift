@@ -34,7 +34,7 @@ enum ProximityKnobs {
     static let distance = "Distance (m)"
 
     /// With `optional`, a "Has location" toggle decides whether there is one at all.
-    static func knobs(optional: Bool = true, place: String = "Westway", distance: Double = 350) -> [StoryKnob] {
+    static func knobs(optional: Bool = true, place: String = "Boulder Barn", distance: Double = 350) -> [StoryKnob] {
         (optional ? [.toggle(hasLocation, true)] : []) + [
             .text(Self.place, place),
             .number(Self.distance, distance, in: 0...10_000, step: 50)

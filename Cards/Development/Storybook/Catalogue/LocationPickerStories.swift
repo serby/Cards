@@ -9,13 +9,13 @@ let locationPickerStory = Story(
     section: "Screens",
     galleryLayout: .oneAtATime,
     knobs: [
-        .options("Start at", PickerStart.allCases.map(\.rawValue), PickerStart.westway.rawValue),
+        .options("Start at", PickerStart.allCases.map(\.rawValue), PickerStart.boulderBarn.rawValue),
         .toggle("Postcode found", true),
-        .toggle("Editing Westway", false)
+        .toggle("Editing Boulder Barn", false)
     ],
     gallery: [
         (
-            name: "Westway",
+            name: "Boulder Barn",
             view: AnyView(
                 LocationPickerView(
                     initialPosition: .region(CardLocation.previewRegion),
@@ -25,16 +25,16 @@ let locationPickerStory = Story(
             )
         ),
         (
-            name: "Editing IKEA Wembley",
+            name: "Editing Nordic Nest Wembley",
             view: AnyView(
                 LocationPickerView(editing: CardLocation.samples[2], findPlace: { _ in nil }, onSave: { _ in })
             )
         )
     ]
 ) { knobs in
-    let start = PickerStart(rawValue: knobs.option("Start at")) ?? .westway
+    let start = PickerStart(rawValue: knobs.option("Start at")) ?? .boulderBarn
     let found = knobs.bool("Postcode found")
-    let editing = knobs.bool("Editing Westway")
+    let editing = knobs.bool("Editing Boulder Barn")
     let findPlace: (String) async -> PlaceMatch? = { query in
         found ? PlaceMatch(name: query.uppercased(), latitude: 51.5203, longitude: -0.2094) : nil
     }
@@ -53,13 +53,13 @@ let locationPickerStory = Story(
 }
 
 private enum PickerStart: String, CaseIterable {
-    case westway = "Westway"
+    case boulderBarn = "Boulder Barn"
     case centralLondon = "Central London"
     case userLocation = "Your location"
 
     var position: MapCameraPosition {
         switch self {
-        case .westway:
+        case .boulderBarn:
             .region(CardLocation.previewRegion)
         case .centralLondon:
             .region(

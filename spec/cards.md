@@ -60,7 +60,7 @@ As a card holder, I want to open a card and see its barcode and number, so that 
 
 - The card screen shows the card face in the card's colour (COL-3): the name on a white panel at the top, the barcode in its frame (BAR-2), and the number and the date the card was added on a white panel below.
 - In preparation for 1.4: the card's symbol, if it has one, sits beside the name in the top panel (CARD-12).
-- When the card has places and the app knows where you are, the top panel also says how far away the nearest is, as "At Westway" or "350 m · Westway" (PLACE-6) (1.3).
+- When the card has places and the app knows where you are, the top panel also says how far away the nearest is, as "At Boulder Barn" or "350 m · Boulder Barn" (PLACE-6) (1.3).
 - The number is in a monospaced font, and it can be selected and copied (1.3).
 - A copy button beside the number puts it on the clipboard, for typing it into a website or another app. The icon turns into a tick for about a second and a half, and a success haptic plays. The number stays centred on its panel (1.3).
 - The date shows the abbreviated date and the time, such as "4 Nov 2026 at 09:41".
@@ -165,7 +165,7 @@ As a card holder, I want my cards laid out in a grid, so that I can see more of 
 
 As a card holder, I want to search my cards and choose their order, so that the card I need is always easy to reach.
 
-- The Cards tab has a search field, "Search", where iOS puts it: below the title on iPhone, which iOS 26 and later keep out of sight until you pull the grid down, and in the toolbar on iPad from iOS 26. Typing filters the grid to cards whose name contains the text, ignoring case and accents, spaces at either end, and whether apostrophes and quotes are curly, so "sainsbury’s" finds "Sainsbury's Nectar". Clearing or cancelling the search shows every card again.
+- The Cards tab has a search field, "Search", where iOS puts it: below the title on iPhone, which iOS 26 and later keep out of sight until you pull the grid down, and in the toolbar on iPad from iOS 26. Typing filters the grid to cards whose name contains the text, ignoring case and accents, spaces at either end, and whether apostrophes and quotes are curly, so "joe’s" finds "Joe's Market". Clearing or cancelling the search shows every card again.
 - When nothing matches, the grid gives way to "No Cards Match" and "Check the spelling, or try another name."
 - A sort menu, an up and down arrow labelled "Sort" beside the add button, offers three orders, with a tick by the chosen one:
   - **Last Viewed:** the card opened most recently comes first. Cards opened at the same moment, and then the cards never opened, follow in custom order.

@@ -77,10 +77,10 @@ final class CardsUITests: XCTestCase {
     func testAddCurrentLocationFromCard() throws {
         let app = launchWithSeededCards()
 
-        // Nectar has no locations; the seed puts the user at Notting Hill Gate.
-        let nectar = tile(app, "Nectar")
-        XCTAssertTrue(waitForElement(nectar))
-        nectar.tap()
+        // Honeycomb Rewards has no locations; the seed puts the user at Notting Hill Gate.
+        let honeycomb = tile(app, "Honeycomb Rewards")
+        XCTAssertTrue(waitForElement(honeycomb))
+        honeycomb.tap()
 
         let addHere = app.buttons["addCurrentLocationButton"]
         XCTAssertTrue(waitForElement(addHere))
@@ -96,9 +96,9 @@ final class CardsUITests: XCTestCase {
     func testCopyCardCode() throws {
         let app = launchWithSeededCards()
 
-        let nectar = tile(app, "Nectar")
-        XCTAssertTrue(waitForElement(nectar))
-        nectar.tap()
+        let honeycomb = tile(app, "Honeycomb Rewards")
+        XCTAssertTrue(waitForElement(honeycomb))
+        honeycomb.tap()
 
         // The clipboard itself is not read: that asks for permission to paste.
         let copy = app.buttons["copyCodeButton"]
@@ -150,9 +150,9 @@ final class CardsUITests: XCTestCase {
         let search = app.searchFields.firstMatch
         XCTAssertTrue(waitForElement(search))
         search.tap()
-        search.typeText("nec")
-        XCTAssertTrue(waitForElement(tile(app, "Nectar")))
-        XCTAssertTrue(tile(app, "Tesco Clubcard").waitForNonExistence(timeout: 3))
+        search.typeText("hon")
+        XCTAssertTrue(waitForElement(tile(app, "Honeycomb Rewards")))
+        XCTAssertTrue(tile(app, "Joe's Market").waitForNonExistence(timeout: 3))
 
         search.typeText("zzz")
         XCTAssertTrue(waitForElement(app.staticTexts["No Cards Match"]))
@@ -162,34 +162,34 @@ final class CardsUITests: XCTestCase {
     @MainActor
     func testDeleteFromTheLongPressMenu() throws {
         let app = launchWithSeededCards()
-        let nectar = tile(app, "Nectar")
-        XCTAssertTrue(waitForElement(nectar))
-        nectar.press(forDuration: 1)
+        let honeycomb = tile(app, "Honeycomb Rewards")
+        XCTAssertTrue(waitForElement(honeycomb))
+        honeycomb.press(forDuration: 1)
 
         let delete = app.buttons["Delete"]
         XCTAssertTrue(waitForElement(delete))
         delete.tap()
-        XCTAssertTrue(nectar.waitForNonExistence(timeout: 3))
-        XCTAssertTrue(tile(app, "IKEA Family").exists)
+        XCTAssertTrue(honeycomb.waitForNonExistence(timeout: 3))
+        XCTAssertTrue(tile(app, "Nordic Nest Home").exists)
     }
 
     /// In custom order, a tile dropped on another takes its place (CARD-7, CARD-10).
     @MainActor
     func testDragATileToReorder() throws {
         let app = launchWithSeededCards()
-        let nectar = tile(app, "Nectar")
-        let tesco = tile(app, "Tesco Clubcard")
-        XCTAssertTrue(waitForElement(nectar))
-        nectar.press(forDuration: 1, thenDragTo: tesco)
+        let honeycomb = tile(app, "Honeycomb Rewards")
+        let joesMarket = tile(app, "Joe's Market")
+        XCTAssertTrue(waitForElement(honeycomb))
+        honeycomb.press(forDuration: 1, thenDragTo: joesMarket)
 
-        // Nectar is now first, at the top left, and Tesco moved along beside it.
+        // Honeycomb Rewards is now first, at the top left, and Joe's Market moved along beside it.
         let moved = NSPredicate { _, _ in
-            nectar.frame.minX < tesco.frame.minX && abs(nectar.frame.minY - tesco.frame.minY) < 1
+            honeycomb.frame.minX < joesMarket.frame.minX && abs(honeycomb.frame.minY - joesMarket.frame.minY) < 1
         }
         XCTAssertEqual(XCTWaiter.wait(for: [expectation(for: moved, evaluatedWith: nil)], timeout: 5), .completed)
     }
 
-    /// Location order puts the cards with places first and Nectar, which has
+    /// Location order puts the cards with places first and Honeycomb Rewards, which has
     /// none, last; custom order puts it back (CARD-11). The choice is kept, so
     /// the test ends on custom order.
     @MainActor
@@ -199,17 +199,19 @@ final class CardsUITests: XCTestCase {
         app.launchArguments += ["-uiTesting", "-screenshotSeed", "-showsCardWhereYouAre", "NO"]
         app.launch()
         dismissNotificationPrompt()
-        let nectar = tile(app, "Nectar")
-        let ikea = tile(app, "IKEA Family")
-        XCTAssertTrue(waitForElement(nectar))
+        let honeycomb = tile(app, "Honeycomb Rewards")
+        let nordicNest = tile(app, "Nordic Nest Home")
+        XCTAssertTrue(waitForElement(honeycomb))
 
         choose(app, sortOrder: "Location")
-        let nectarLast = NSPredicate { _, _ in nectar.frame.minY > ikea.frame.minY || nectar.frame.minX > ikea.frame.minX }
-        XCTAssertEqual(XCTWaiter.wait(for: [expectation(for: nectarLast, evaluatedWith: nil)], timeout: 5), .completed)
+        let honeycombLast = NSPredicate { _, _ in honeycomb.frame.minY > nordicNest.frame.minY || honeycomb.frame.minX > nordicNest.frame.minX }
+        XCTAssertEqual(XCTWaiter.wait(for: [expectation(for: honeycombLast, evaluatedWith: nil)], timeout: 5), .completed)
 
         choose(app, sortOrder: "Custom Order")
-        let nectarFirst = NSPredicate { _, _ in abs(nectar.frame.minY - ikea.frame.minY) < 1 && nectar.frame.minX < ikea.frame.minX }
-        XCTAssertEqual(XCTWaiter.wait(for: [expectation(for: nectarFirst, evaluatedWith: nil)], timeout: 5), .completed)
+        let honeycombFirst = NSPredicate { _, _ in
+            abs(honeycomb.frame.minY - nordicNest.frame.minY) < 1 && honeycomb.frame.minX < nordicNest.frame.minX
+        }
+        XCTAssertEqual(XCTWaiter.wait(for: [expectation(for: honeycombFirst, evaluatedWith: nil)], timeout: 5), .completed)
     }
 
     /// With Show Card Where I Am on, the card for where you are is shown in
@@ -221,13 +223,13 @@ final class CardsUITests: XCTestCase {
         app.launch()
         dismissNotificationPrompt()
 
-        // The seed puts the user inside Tesco Express.
+        // The seed puts the user inside Joe's Market Notting Hill.
         let cardHere = app.buttons["cardWhereYouAre"]
         XCTAssertTrue(waitForElement(cardHere))
-        XCTAssertEqual(cardHere.label, "Tesco Clubcard, You're at Tesco Express")
-        XCTAssertTrue(tile(app, "Costa Coffee").exists)
+        XCTAssertEqual(cardHere.label, "Joe's Market, You're at Joe's Market Notting Hill")
+        XCTAssertTrue(tile(app, "Local Roast Coffee").exists)
         cardHere.tap()
-        XCTAssertTrue(waitForElement(app.staticTexts["Card name: Tesco Clubcard"]))
+        XCTAssertTrue(waitForElement(app.staticTexts["Card name: Joe's Market"]))
     }
 
     /// Launches with the six screenshot cards, in custom order and without the
@@ -265,9 +267,9 @@ final class CardsUITests: XCTestCase {
         app.launch()
         dismissNotificationPrompt()
 
-        let nectar = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Nectar")).firstMatch
-        XCTAssertTrue(waitForElement(nectar))
-        nectar.tap()
+        let honeycomb = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Honeycomb Rewards")).firstMatch
+        XCTAssertTrue(waitForElement(honeycomb))
+        honeycomb.tap()
         app.buttons["editCardButton"].tap()
 
         let symbolRow = app.buttons["symbolRow"]
@@ -300,29 +302,30 @@ final class CardsUITests: XCTestCase {
         app.launch()
         dismissNotificationPrompt()
 
-        let tesco = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Tesco Clubcard")).firstMatch
-        XCTAssertTrue(waitForElement(tesco))
-        tesco.tap()
+        let joesMarket = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Joe's Market")).firstMatch
+        XCTAssertTrue(waitForElement(joesMarket))
+        joesMarket.tap()
         app.buttons["editCardButton"].tap()
 
         let form = app.descendants(matching: .any)["editCardForm"].firstMatch
-        let express = app.buttons["locationRow_Tesco Express"]
-        for _ in 0..<4 where !(express.exists && express.isHittable) {
+        let nottingHill = app.buttons["locationRow_Joe's Market Notting Hill"]
+        for _ in 0..<4 where !(nottingHill.exists && nottingHill.isHittable) {
             form.swipeUp()
         }
-        express.tap()
+        nottingHill.tap()
 
         XCTAssertTrue(waitForElement(app.navigationBars["Edit Location"]))
         let nameField = app.textFields["locationNameField"]
-        XCTAssertEqual(nameField.value as? String, "Tesco Express")
-        // Put the cursor at the end, then replace the name.
+        XCTAssertEqual(nameField.value as? String, "Joe's Market Notting Hill")
+        // Put the cursor at the end, then replace the area. Typing an apostrophe
+        // could come out curly, so the shop's name is left as it is.
         nameField.coordinate(withNormalizedOffset: CGVector(dx: 0.95, dy: 0.5)).tap()
-        nameField.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: 20) + "Tesco Metro")
+        nameField.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: "Notting Hill".count) + "Holland Park")
         app.buttons["saveLocationButton"].tap()
 
-        XCTAssertTrue(waitForElement(app.buttons["locationRow_Tesco Metro"]))
-        XCTAssertFalse(app.buttons["locationRow_Tesco Express"].exists)
-        XCTAssertTrue(app.buttons["locationRow_Tesco Kensington"].exists, "The other place is left as it was")
+        XCTAssertTrue(waitForElement(app.buttons["locationRow_Joe's Market Holland Park"]))
+        XCTAssertFalse(app.buttons["locationRow_Joe's Market Notting Hill"].exists)
+        XCTAssertTrue(app.buttons["locationRow_Joe's Market Kensington"].exists, "The other place is left as it was")
     }
 
     /// Cards with locations ask for notifications once; answer so the alert

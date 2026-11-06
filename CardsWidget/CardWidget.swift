@@ -46,7 +46,7 @@ struct CardTimelineProvider: AppIntentTimelineProvider {
     func placeholder(in context: Context) -> CardEntry {
         CardEntry(
             date: .now,
-            card: CardWidgetState(name: "Clubcard", code: "5012345678900", barcodeType: .ean13, color: .blue),
+            card: CardWidgetState(name: "Joe's Market", code: "5012345678900", barcodeType: .ean13, color: .blue),
             followsLocation: false
         )
     }

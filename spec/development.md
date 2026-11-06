@@ -18,7 +18,7 @@ As someone building the app, I want the development tools in one place, so that 
 
 As someone building the app, I want to send an arrival notification for any card on demand, so that I can check how it looks and that tapping it opens the card, without travelling to a place.
 
-- Development > Test Notification lists every card in the list's order, each with the place its notification names ("At Westway"). Tapping a card schedules its arrival notification (ARR-1) to arrive in five seconds, with the card's name as the title, its first place's name, or "Test" for a card with no places, as the place, and its barcode attached.
+- Development > Test Notification lists every card in the list's order, each with the place its notification names ("At Boulder Barn"). Tapping a card schedules its arrival notification (ARR-1) to arrive in five seconds, with the card's name as the title, its first place's name, or "Test" for a card with no places, as the place, and its barcode attached.
 - After a tap the list's footer says "The notification for <card> arrives in 5 seconds.", and VoiceOver announces it. Each tap sends another.
 - The notification is the same as a real one, and tapping it opens the card (ARR-2). It shows even while the app is open, because the app shows notifications in the foreground.
 - It has an identifier of its own, so it never replaces the arrival watched at the card's place. It is sent whatever the Settings switch and the card's own switch say (ARR-5, ARR-6).
