@@ -133,7 +133,27 @@
       }
     },
     "Black" : {
-      "comment" : "Card colour name read by VoiceOver in the colour picker."
+      "comment" : "Card colour name read by VoiceOver in the colour picker.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schwarz"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Negro"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ブラック"
+          }
+        }
+      }
     },
     "Blue" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker.",
@@ -320,10 +340,50 @@
       }
     },
     "Coral" : {
-      "comment" : "Card colour name read by VoiceOver in the colour picker: a warm pinkish orange."
+      "comment" : "Card colour name read by VoiceOver in the colour picker: a warm pinkish orange.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Koralle"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coral"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "コーラル"
+          }
+        }
+      }
     },
     "Custom" : {
-      "comment" : "Card colour name read by VoiceOver in the colour picker: a colour the user chose themselves rather than one from the palette."
+      "comment" : "Card colour name read by VoiceOver in the colour picker: a colour the user chose themselves rather than one from the palette.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eigene Farbe"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Personalizado"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カスタム"
+          }
+        }
+      }
     },
     "Default" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker: the plain grey card that follows light and dark mode.",
@@ -533,19 +593,119 @@
       }
     },
     "Lavender" : {
-      "comment" : "Card colour name read by VoiceOver in the colour picker: a pale purple, the colour of the flower."
+      "comment" : "Card colour name read by VoiceOver in the colour picker: a pale purple, the colour of the flower.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lavendel"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lavanda"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ラベンダー"
+          }
+        }
+      }
     },
     "Lime" : {
-      "comment" : "Card colour name read by VoiceOver in the colour picker: a light yellow-green, the colour of the fruit."
+      "comment" : "Card colour name read by VoiceOver in the colour picker: a light yellow-green, the colour of the fruit.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Limette"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lima"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ライム"
+          }
+        }
+      }
     },
     "Maroon" : {
-      "comment" : "Card colour name read by VoiceOver in the colour picker: a dark brownish red."
+      "comment" : "Card colour name read by VoiceOver in the colour picker: a dark brownish red.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kastanienbraun"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Granate"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "マルーン"
+          }
+        }
+      }
     },
     "Mint" : {
-      "comment" : "Card colour name read by VoiceOver in the colour picker: a soft pale green-blue."
+      "comment" : "Card colour name read by VoiceOver in the colour picker: a soft pale green-blue.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minze"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menta"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ミント"
+          }
+        }
+      }
     },
     "Navy" : {
-      "comment" : "Card colour name read by VoiceOver in the colour picker: a very dark blue."
+      "comment" : "Card colour name read by VoiceOver in the colour picker: a very dark blue.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Marineblau"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Azul marino"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ネイビー"
+          }
+        }
+      }
     },
     "Nearest card" : {
       "comment" : "In the Home Screen widget's settings: the choice that shows whichever card has the place nearest to you. The default.",
@@ -594,7 +754,27 @@
       }
     },
     "Olive" : {
-      "comment" : "Card colour name read by VoiceOver in the colour picker: a dull dark green, the colour of green olives."
+      "comment" : "Card colour name read by VoiceOver in the colour picker: a dull dark green, the colour of green olives.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oliv"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oliva"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "オリーブ"
+          }
+        }
+      }
     },
     "Opens the card in Card Barcodes" : {
       "comment" : "VoiceOver hint for the card in the Home Screen widget. Card Barcodes is the app's name.",
@@ -781,10 +961,50 @@
       }
     },
     "Rose" : {
-      "comment" : "Card colour name read by VoiceOver in the colour picker: a light pink, the colour of a pink rose."
+      "comment" : "Card colour name read by VoiceOver in the colour picker: a light pink, the colour of a pink rose.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rosé"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rosa palo"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ローズ"
+          }
+        }
+      }
     },
     "Sand" : {
-      "comment" : "Card colour name read by VoiceOver in the colour picker: a pale yellowish beige, the colour of sand."
+      "comment" : "Card colour name read by VoiceOver in the colour picker: a pale yellowish beige, the colour of sand.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sand"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arena"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サンド"
+          }
+        }
+      }
     },
     "Shows the barcode of the card nearest to you, or one you choose." : {
       "comment" : "Description of the Home Screen widget in the widget gallery.",
@@ -810,7 +1030,27 @@
       }
     },
     "Sky" : {
-      "comment" : "Card colour name read by VoiceOver in the colour picker: a light blue, the colour of a clear sky."
+      "comment" : "Card colour name read by VoiceOver in the colour picker: a light blue, the colour of a clear sky.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Himmelblau"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Azul cielo"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "スカイ"
+          }
+        }
+      }
     },
     "Teal" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker: a dark blue-green.",

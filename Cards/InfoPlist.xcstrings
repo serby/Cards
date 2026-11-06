@@ -92,13 +92,13 @@
       }
     },
     "NSLocationWhenInUseUsageDescription" : {
-      "comment" : "Shown by iOS when the app first asks for the user's location. Explains the two uses: showing the distance to the shops where each card is used, and putting that card's barcode on the Lock Screen on arrival.",
+      "comment" : "Shown by iOS when the app first asks for the user's location. Explains the two uses: showing how far away the places are where each card is used, and a notification that reminds the user of the right card on arriving at one. It no longer promises a barcode on the Lock Screen.",
       "extractionState" : "extracted_with_value",
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Dein Standort wird verwendet, um die Entfernung zu den Orten anzuzeigen, an denen du deine Karten nutzt, und bei deiner Ankunft den passenden Barcode auf dem Sperrbildschirm einzublenden."
+            "state" : "translated",
+            "value" : "Dein Standort wird verwendet, um anzuzeigen, wie weit du von den Orten entfernt bist, an denen du deine Karten nutzt, und um dich bei deiner Ankunft an die passende Karte zu erinnern."
           }
         },
         "en" : {
@@ -109,26 +109,44 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Tu ubicación se usa para mostrar a qué distancia estás de los lugares donde usas tus tarjetas y para que el código de barras adecuado aparezca en la pantalla bloqueada cuando llegues."
+            "state" : "translated",
+            "value" : "Tu ubicación se usa para mostrar a qué distancia estás de los lugares donde usas tus tarjetas y para recordarte la tarjeta adecuada cuando llegues."
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "カードを使う場所までの距離を表示したり、到着時にそのカードのバーコードをロック画面に表示したりするために、位置情報を使用します。"
+            "state" : "translated",
+            "value" : "カードを使う場所までの距離を表示したり、到着したときにその場所のカードをお知らせしたりするために、位置情報を使用します。"
           }
         }
       }
     },
     "NSPhotoLibraryAddUsageDescription" : {
-      "comment" : "Privacy - Photo Library Additions Usage Description",
+      "comment" : "Shown by iOS the first time the user saves the picture of a card they share to their photos (Save Image in the share sheet). The app only adds that picture and never reads the photo library. A full sentence ending with a full stop, as Apple writes these prompts.",
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das Bild einer Karte, die du teilst, wird in deinen Fotos gesichert."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Saves the picture of a card you share to your photos."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La imagen de la tarjeta que compartes se guarda en tus fotos."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "共有するカードの画像を写真に保存するために使用します。"
           }
         }
       }

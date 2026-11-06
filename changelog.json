@@ -17,7 +17,7 @@
           "text": "Search your cards, and sort them by last viewed, your own order or the nearest place.",
           "es": "Busca tus tarjetas y ordénalas por última visualización, en tu propio orden o por el lugar más cercano.",
           "de": "Durchsuche deine Karten und sortiere sie nach zuletzt angesehen, nach deiner eigenen Reihenfolge oder nach dem nächsten Ort.",
-          "ja": "カードを検索して、最後に見た順、自分で決めた順、近い場所の順に並べ替えられます。"
+          "ja": "カードを検索して、最近表示した順、自分で決めた順、近い順に並べ替えられます。"
         },
         {
           "type": "new",
