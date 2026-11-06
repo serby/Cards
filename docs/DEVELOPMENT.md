@@ -83,11 +83,11 @@ Cards/
   App/           Entry point, and DevelopmentHooks: the only door into Development
   Core/          Models, navigation and services. No SwiftUI views
     Models/        CardItem (SwiftData), CardItemDTO, BarcodeType, CardColor, CardLocation, WidgetCard, ArrivalAlert
-    Navigation/    NavigationRoute, NavigationManager, deep links
+    Navigation/    NavigationRoute, NavigationManager, SharedCardLink, deep links
     Services/      CardStore, LocationService, PerformanceTracker, and the clients (rule 15):
                    NotificationClient, PostcodeLookup, Clipboard, WidgetSnapshot, FileReader
   UI/            Every view, as a pure function of view state and actions
-    Screens/       CardListView, CardDetailView, CardEditView, LocationPickerView, SettingsListView
+    Screens/       CardListView, CardDetailView, CardEditView, LocationPickerView, SharedCardView, SettingsListView
     Components/    BarcodeView, BarcodeImage, CardColorPicker, CardLocationRow, CardWidgetView, ProximityLabel, …
     ViewState/     CardSummary, CardDetail, CardDraft, CardWidgetState, SettingsState
     Actions/       Closure bundles each screen raises
@@ -153,7 +153,7 @@ If a view needs a new capability, add an action or an injected effect; never rea
 
 ### Rule 3: Impure work lives in connectors and services
 
-`Cards/Features` holds one connector per screen (`CardListScreen`, `CardDetailScreen`, `CardEditScreen`, `SettingsScreen`). A connector reads `@Query`, `modelContext`, `NavigationManager`, `LocationService` and the clients it needs from the environment ([rule 15](#rule-15-small-parts-injected-dependencies-no-global-state)), maps models to view state, and wires actions back to effects. Long-lived device services (`LocationService`) and clients live in `Core/Services`; the services are injected with `.environment` from `CardsApp`. Integration glue that also needs UI code (`ArrivalPlan` and `ArrivalScheduler`, which render barcodes) lives in `Features`.
+`Cards/Features` holds one connector per screen (`CardListScreen`, `CardDetailScreen`, `CardEditScreen`, `SettingsScreen`, and `SharedCardScreen` for the "Add Card?" sheet, which `CardsApp` presents). A connector reads `@Query`, `modelContext`, `NavigationManager`, `LocationService` and the clients it needs from the environment ([rule 15](#rule-15-small-parts-injected-dependencies-no-global-state)), maps models to view state, and wires actions back to effects. Long-lived device services (`LocationService`) and clients live in `Core/Services`; the services are injected with `.environment` from `CardsApp`. Integration glue that also needs UI code (`ArrivalPlan` and `ArrivalScheduler`, which render barcodes, and `CardShareImage`, which draws the shared picture) lives in `Features`.
 
 Keep the logic of a service testable without the device: `ArrivalPlan` is pure, and `ArrivalScheduler` is tested through a stand-in `NotificationClient` rather than `UNUserNotificationCenter`.
 
@@ -329,7 +329,7 @@ Everything on the App Store product page lives in the repository, so it can be c
 Xcode 27 has no Simulator.app; `make sim` opens Device Hub to show the screen, and every `simctl` command works headless.
 
 - **Launch arguments:** `-uiTesting` gives an in-memory store and hides the Development tab; `-screenshotSeed` adds the six screenshot cards; `-initializeCloudKitSchema` creates the CloudKit schema in the Development environment ([section 8](#8-releasing)). The environment variables `CARDS_UI_TESTING=1` and `CARDS_SCREENSHOT_SEED=1` do the same as the first two. All of them are ignored in release builds.
-- **Deep links:** `cards://cards/card/<code>`, `cards://cards/card/<code>/edit` and `cards://cards/new`, with the code percent-encoded (`NavigationRoute.url` builds them). `xcrun simctl openurl` shows a confirmation prompt first.
+- **Deep links:** `cards://cards/card/<code>`, `cards://cards/card/<code>/edit` and `cards://cards/new`, with the code percent-encoded (`NavigationRoute.url` builds them), and `cards://cards/add#<payload>` for a shared card, the app-scheme twin of the `https://cards.serby.net/add#<payload>` share link (`SharedCardLink.appURL` builds it). `xcrun simctl openurl` shows a confirmation prompt first.
 - **The widget:** open the app once so it writes the snapshot, then long-press the Home Screen, tap **Edit > Add Widget**, find Card Barcodes and add the medium size. Long-press the widget and choose **Edit Widget** to pick a card instead of the nearest one. Its views are also in the Storybook (`CardWidgetView`), which is quicker for layout work.
 - **Location:** `xcrun simctl privacy <udid> grant location net.serby.Cards`, then `xcrun simctl location <udid> set 51.5203,-0.2094`.
 - **Arrival notifications:** Settings > Arrival Notifications (the `arrivalNotifications` user default, on unless turned off) decides whether any are scheduled; turning it off cancels them all. To try one, give a card a location, send the app to the background, set the simulated location away and then back inside the circle; SpringBoard logs `Location trigger fired` when it delivers. To see a card's notification without moving, use **Development > Test Notification** in a debug build launched without `-uiTesting`: tapping a card sends its arrival notification five seconds later.
