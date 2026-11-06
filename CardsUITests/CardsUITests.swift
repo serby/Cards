@@ -178,11 +178,11 @@ final class CardsUITests: XCTestCase {
 
         choose(app, distanceUnits: "Miles")
         app.tabBars.buttons["Cards"].tap()
-        XCTAssertTrue(waitForLabel(localRoast, containing: " yd from Local Roast Portobello"), localRoast.label)
+        XCTAssertTrue(waitForLabel(localRoast, containing: " yards from Local Roast Portobello"), localRoast.label)
 
         choose(app, distanceUnits: "Kilometres")
         app.tabBars.buttons["Cards"].tap()
-        XCTAssertTrue(waitForLabel(localRoast, containing: " m from Local Roast Portobello"), localRoast.label)
+        XCTAssertTrue(waitForLabel(localRoast, containing: " metres from Local Roast Portobello"), localRoast.label)
 
         choose(app, distanceUnits: "Automatic", startingWith: true)
     }

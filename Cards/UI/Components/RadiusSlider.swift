@@ -30,7 +30,7 @@ public struct RadiusSlider: View {
                 step: scale.step
             )
             .accessibilityLabel("Radius")
-            .accessibilityValue(distanceFormat.radius(radius))
+            .accessibilityValue(distanceFormat.radius(radius, width: .wide))
         }
     }
 }

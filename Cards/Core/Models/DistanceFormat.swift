@@ -5,6 +5,8 @@ import Foundation
 /// (SET-4), with numbers written for `locale`, which also says what Automatic
 /// means. Pure, so every rule here is tested directly.
 public struct DistanceFormat: Hashable, Sendable {
+    public typealias Width = Measurement<UnitLength>.FormatStyle.UnitWidth
+
     public var units: DistanceUnits
     public var locale: Locale
 
@@ -15,17 +17,18 @@ public struct DistanceFormat: Hashable, Sendable {
 
     /// A distance to somewhere, rounded as road distances are (PLACE-6): "350 m"
     /// and "1.2 km", or "400 yd" and "0.75 mi". With Automatic in the US, short
-    /// distances are in feet, "1,150 ft", as the system writes them.
-    public func distance(_ metres: CLLocationDistance) -> String {
-        formatted(road.measurement(of: metres))
+    /// distances are in feet, "1,150 ft", as the system writes them. A `.wide`
+    /// width spells the units out, for VoiceOver: "350 metres".
+    public func distance(_ metres: CLLocationDistance, width: Width = .abbreviated) -> String {
+        formatted(road.measurement(of: metres), width: width)
     }
 
     /// A place's radius, to the nearest 5 metres or 5 yards (PLACE-3): "200 m",
     /// or "220 yd" for the same radius in yards.
-    public func radius(_ metres: CLLocationDistance) -> String {
+    public func radius(_ metres: CLLocationDistance, width: Width = .abbreviated) -> String {
         let scale = radiusScale
         let value = (scale.value(ofMetres: metres) / 5).rounded() * 5
-        return formatted(Measurement(value: value, unit: scale.unit))
+        return formatted(Measurement(value: value, unit: scale.unit), width: width)
     }
 
     /// The radius slider's scale, in the unit the radius is shown in (PLACE-3).
@@ -52,9 +55,9 @@ public struct DistanceFormat: Hashable, Sendable {
         }
     }
 
-    private func formatted(_ measurement: Measurement<UnitLength>) -> String {
+    private func formatted(_ measurement: Measurement<UnitLength>, width: Width) -> String {
         measurement.formatted(
-            .measurement(width: .abbreviated, usage: .asProvided, numberFormatStyle: .number.precision(.fractionLength(0...2)))
+            .measurement(width: width, usage: .asProvided, numberFormatStyle: .number.precision(.fractionLength(0...2)))
                 .locale(locale)
         )
     }

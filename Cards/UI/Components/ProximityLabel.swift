@@ -56,13 +56,13 @@ public extension CardProximity {
         }
     }
 
-    /// What VoiceOver says for the distance: "You're at Joe's Market Notting
-    /// Hill", or "350 m from Boulder Barn". Anything that shows a distance reads
-    /// it this way.
+    /// What VoiceOver says for the distance, with the units in full: "You're at
+    /// Joe's Market Notting Hill", or "350 metres from Boulder Barn". Anything
+    /// that shows a distance reads it this way.
     func spokenDescription(in format: DistanceFormat) -> String {
         isHere
             ? String(localized: "You're at \(placeName)")
-            : String(localized: "\(format.distance(distance)) from \(placeName)")
+            : String(localized: "\(format.distance(distance, width: .wide)) from \(placeName)")
     }
 }
 

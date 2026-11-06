@@ -86,7 +86,7 @@ As a card holder, I want to see how far I am from the places I use each card, so
 - The list shows "Here", in semibold with a filled location arrow, or the distance, such as "350 m", on a white pill at the end of the row.
 - The card screen and the widget name the place too: "At Boulder Barn", or "350 m · Boulder Barn".
 - In preparation for 1.4: inside more than one of a card's places, the one whose middle you are nearer is named, where before it was the first in the card's order. A card with more than one place also lists its nearest five on the card screen (PLACE-9).
-- VoiceOver reads "You're at Boulder Barn" or "350 m from Boulder Barn" (A11Y-1).
+- VoiceOver reads "You're at Boulder Barn" or "350 m from Boulder Barn" (A11Y-1). In preparation for 1.4 it says the units in full: "350 metres from Boulder Barn".
 - Distances are in the units of the device's region, in the style used for road distances, such as "350 m" or "0.4 mi". In preparation for 1.4 they are in the units chosen in Settings > Distances, which follows the device's measurement system unless you choose Kilometres or Miles (SET-4).
 - No distance shows for a card without places, or while the app doesn't know where you are.
 - Distances follow your location while the app is open, from fixes about 100 metres accurate, updated after you move 25 metres or more.
@@ -138,7 +138,7 @@ As a card holder, I want to see which of a card's places are nearest and how far
 - A long name wraps onto as many lines as it needs, and the distance stays on one line beside it. At the accessibility text sizes the distance moves below the name (A11Y-3).
 - Each place is at least 44 points high, with a hairline between places.
 - The card screen scrolls when the list makes it taller than the screen.
-- VoiceOver reads the heading as a heading, and each place as a button that reads as the distance does, "You're at Joe's Market Notting Hill" or "350 m from Joe's Market Kensington", or just the name while the app doesn't know where you are, with the hint "Opens this place in Maps" (A11Y-1).
+- VoiceOver reads the heading as a heading, and each place as a button that reads as the distance does, "You're at Joe's Market Notting Hill" or "350 metres from Joe's Market Kensington" (SET-4), or just the name while the app doesn't know where you are, with the hint "Opens this place in Maps" (A11Y-1).
 
 **Since:** In preparation for 1.4
 **Where:** `Cards/Core/Models/CardPlaces.swift`, `Cards/Core/Models/CardLocation.swift` (`nearest(_:to:)`, `mapsURL`), `Cards/UI/Screens/CardDetailView.swift` (`PlacesPanel`), `Cards/UI/Components/CardFaceView.swift` (`footer`), `Cards/Features/CardDetail+CardItem.swift`, `CardsTests/CardPlacesTests.swift`

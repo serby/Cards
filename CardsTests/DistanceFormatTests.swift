@@ -82,6 +82,14 @@ struct DistanceFormatTests {
         #expect(DistanceUnits.miles.title(for: Self.metric) == "Miles")
     }
 
+    @Test func wideWidthSpellsTheUnitsOut() {
+        #expect(format(.kilometres).distance(350, width: .wide) == "350 metres")
+        #expect(format(.kilometres).distance(4_200, width: .wide) == "4.2 kilometres")
+        #expect(format(.miles).distance(350, width: .wide) == "400 yards")
+        #expect(format(.miles).distance(4_200, width: .wide) == "2.6 miles")
+        #expect(format(.automatic, Self.us).distance(350, width: .wide) == "1,150 feet")
+    }
+
     @Test func hereAndThePlace() {
         let here = CardProximity(placeName: "Boulder Barn", distance: 0)
         let near = CardProximity(placeName: "Boulder Barn", distance: 350)
@@ -97,9 +105,9 @@ struct DistanceFormatTests {
 
     @Test func voiceOverSaysTheDistanceInTheChosenUnits() {
         let near = CardProximity(placeName: "Local Roast Portobello", distance: 350)
-        #expect(near.spokenDescription(in: format(.kilometres)) == "350 m from Local Roast Portobello")
-        #expect(near.spokenDescription(in: format(.miles)) == "400 yd from Local Roast Portobello")
-        #expect(near.spokenDescription(in: format(.automatic, Self.us)) == "1,150 ft from Local Roast Portobello")
+        #expect(near.spokenDescription(in: format(.kilometres)) == "350 metres from Local Roast Portobello")
+        #expect(near.spokenDescription(in: format(.miles)) == "400 yards from Local Roast Portobello")
+        #expect(near.spokenDescription(in: format(.automatic, Self.us)) == "1,150 feet from Local Roast Portobello")
     }
 
     @Test func radiusIsInMetresOrYards() {
@@ -110,6 +118,8 @@ struct DistanceFormatTests {
         #expect(format(.automatic, Self.metric).radius(200) == "200 m")
         #expect(format(.automatic, Self.uk).radius(200) == "220 yd")
         #expect(format(.automatic, Self.us).radius(200) == "220 yd")
+        #expect(format(.kilometres).radius(200, width: .wide) == "200 metres")
+        #expect(format(.miles).radius(200, width: .wide) == "220 yards")
     }
 
     /// A radius set in yards and shown in metres is rounded to the nearest 5.
