@@ -1,16 +1,16 @@
 import SwiftUI
 
-/// The card symbols as a grid of tappable swatches, None first. Each swatch is
+/// The card icons as a grid of tappable swatches, None first. Each swatch is
 /// drawn on the card's colour in its ink, as the colour picker's are, so you
-/// choose the symbol you will see.
-public struct CardSymbolPicker: View {
+/// choose the icon you will see.
+public struct CardIconPicker: View {
     @Binding private var selection: String?
     private let color: CardColor
     private let onPick: () -> Void
 
     @ScaledMetric(relativeTo: .title3) private var swatchSize: CGFloat = 44
 
-    /// `onPick` runs after each tap, so a sheet can close once a symbol is chosen.
+    /// `onPick` runs after each tap, so a sheet can close once an icon is chosen.
     public init(selection: Binding<String?>, color: CardColor = .standard, onPick: @escaping () -> Void = {}) {
         _selection = selection
         self.color = color
@@ -25,20 +25,20 @@ public struct CardSymbolPicker: View {
                     .lineLimit(1)
                     .minimumScaleFactor(0.6)
             }
-            .accessibilityIdentifier("cardSymbol_none")
+            .accessibilityIdentifier("cardIcon_none")
 
-            ForEach(CardSymbol.all) { symbol in
-                cell(symbol.name, label: symbol.label) {
-                    Image(systemName: symbol.name)
+            ForEach(CardIcon.all) { icon in
+                cell(icon.name, label: icon.label) {
+                    Image(systemName: icon.name)
                         .font(.title3)
                         .accessibilityHidden(true)
                 }
-                .accessibilityIdentifier("cardSymbol_\(symbol.name)")
+                .accessibilityIdentifier("cardIcon_\(icon.name)")
             }
         }
         .sensoryFeedback(.selection, trigger: selection)
         .accessibilityElement(children: .contain)
-        .accessibilityLabel("Card symbol")
+        .accessibilityLabel("Card icon")
     }
 
     private func cell<Content: View>(_ name: String?, label: String, @ViewBuilder content: () -> Content) -> some View {
@@ -71,12 +71,12 @@ public struct CardSymbolPicker: View {
 
 #if DEBUG
 #Preview("None chosen") {
-    @Previewable @State var symbol: String?
-    CardSymbolPicker(selection: $symbol, color: .blue)
+    @Previewable @State var icon: String?
+    CardIconPicker(selection: $icon, color: .blue)
 }
 
 #Preview("Basket chosen") {
-    @Previewable @State var symbol: String? = "basket.fill"
-    CardSymbolPicker(selection: $symbol, color: .teal)
+    @Previewable @State var icon: String? = "basket.fill"
+    CardIconPicker(selection: $icon, color: .teal)
 }
 #endif

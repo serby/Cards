@@ -14,7 +14,7 @@ let componentStories: [Story] = [
     scannerControlsStory,
     scannerPlaceholderStory,
     cardFaceStory,
-    cardSymbolPickerStory
+    cardIconPickerStory
 ]
 
 @MainActor
@@ -70,21 +70,21 @@ private let cardTileStory = Story(
     knobs: [
         .text("Name", "Joe's Market"),
         .options("Colour", CardColor.allNames, CardColor.blue.rawValue),
-        .options("Symbol", CardSummary.storySymbols, "basket"),
+        .options("Icon", CardSummary.storyIcons, "basket"),
         .number("Width", 180, in: 120...400, step: 10),
         .toggle("Drop target", false)
     ] + ProximityKnobs.knobs(place: "Joe's Market Notting Hill", distance: 0),
     gallery: [
-        (name: "Here, with a symbol", view: tile(CardSummary.samples[0])),
+        (name: "Here, with an icon", view: tile(CardSummary.samples[0])),
         (name: "Nearby", view: tile(CardSummary.samples[2])),
-        (name: "No place or symbol", view: tile(CardSummary.samples[3])),
+        (name: "No place or icon", view: tile(CardSummary.samples[3])),
         (name: "Long name", view: tile(.longName)),
         (name: "Drop target", view: tile(CardSummary.samples[1], isDropTarget: true))
     ] + CardColor.allCases.map { color in
         (name: color.displayName, view: tile(CardSummary(id: color.rawValue, name: color.displayName, color: color)))
     }
 ) { knobs in
-    let symbol = knobs.option("Symbol")
+    let icon = knobs.option("Icon")
     return AnyView(
         CardTileView(
             card: CardSummary(
@@ -92,7 +92,7 @@ private let cardTileStory = Story(
                 name: knobs.string("Name"),
                 color: .named(knobs.option("Colour")),
                 proximity: knobs.proximity(),
-                symbol: symbol == CardSummary.noSymbol ? nil : symbol
+                icon: icon == CardSummary.noIcon ? nil : icon
             ),
             isDropTarget: knobs.bool("Drop target"),
             onTap: {}
@@ -357,7 +357,7 @@ private let cardFaceStory = Story(
         .text("Code", CardDetail.sample.code),
         .options("Type", BarcodeType.allNames, BarcodeType.ean13.rawValue),
         .options("Colour", CardColor.allNames, CardDetail.sample.color.rawValue),
-        SymbolKnob.knob(CardDetail.sample.symbol),
+        IconKnob.knob(CardDetail.sample.icon),
         .toggle("Copy button", true)
     ] + ProximityKnobs.knobs(place: "Green Leaf Shepherd's Bush", distance: 320) + [
         .toggle("Panel below", false)
@@ -374,7 +374,7 @@ private let cardFaceStory = Story(
         timestamp: Date.now,
         color: .named(knobs.option("Colour")),
         proximity: knobs.proximity(),
-        symbol: knobs.symbol
+        icon: knobs.icon
     )
     return AnyView(
         CardFaceView(card: card, accessoryWidth: knobs.bool("Copy button") ? 44 : 0) {

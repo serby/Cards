@@ -33,7 +33,7 @@ public struct SharedCardScreen: View {
             barcodeType: card.barcodeType,
             timestamp: openedAt,
             color: card.color,
-            symbol: card.symbol
+            icon: card.icon
         )
         return existingCode == nil ? .new(face, places: places) : .alreadyAdded(face, places: places)
     }
@@ -67,7 +67,7 @@ public struct SharedCardScreen: View {
 #if DEBUG
 #Preview {
     SharedCardScreen(
-        link: SharedCardLink(card: SharedCard(name: "Library", code: "29876543210", color: .teal, symbol: "books.vertical.fill")),
+        link: SharedCardLink(card: SharedCard(name: "Library", code: "29876543210", color: .teal, icon: "books.vertical.fill")),
         navigationManager: NavigationManager()
     )
     .modelContainer(for: CardItem.self, inMemory: true)

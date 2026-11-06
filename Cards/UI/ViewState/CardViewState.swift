@@ -8,15 +8,15 @@ public struct CardSummary: Identifiable, Hashable, Sendable {
     /// Distance to the nearest location, when the card has any and the user's
     /// location is known.
     public let proximity: CardProximity?
-    /// The card's SF Symbol, or nil for none.
-    public let symbol: String?
+    /// The card's icon, an SF Symbol name, or nil for none (CARD-12).
+    public let icon: String?
 
-    public init(id: String, name: String, color: CardColor = .standard, proximity: CardProximity? = nil, symbol: String? = nil) {
+    public init(id: String, name: String, color: CardColor = .standard, proximity: CardProximity? = nil, icon: String? = nil) {
         self.id = id
         self.name = name
         self.color = color
         self.proximity = proximity
-        self.symbol = symbol
+        self.icon = icon
     }
 }
 
@@ -31,8 +31,8 @@ public struct CardDetail: Identifiable, Hashable, Sendable {
     /// The places the card screen lists below the face, when it has more than one (PLACE-9).
     public let places: CardPlaces
     public let proximity: CardProximity?
-    /// The card's SF Symbol, or nil for none.
-    public let symbol: String?
+    /// The card's icon, an SF Symbol name, or nil for none (CARD-12).
+    public let icon: String?
 
     public init(
         id: String,
@@ -43,7 +43,7 @@ public struct CardDetail: Identifiable, Hashable, Sendable {
         color: CardColor = .standard,
         places: CardPlaces = .none,
         proximity: CardProximity? = nil,
-        symbol: String? = nil
+        icon: String? = nil
     ) {
         self.id = id
         self.name = name
@@ -53,7 +53,7 @@ public struct CardDetail: Identifiable, Hashable, Sendable {
         self.color = color
         self.places = places
         self.proximity = proximity
-        self.symbol = symbol
+        self.icon = icon
     }
 }
 
@@ -65,8 +65,8 @@ public struct CardDraft: Hashable, Sendable {
     public var color: CardColor
     public var locations: [CardLocation]
     public var notifiesOnArrival: Bool
-    /// The card's SF Symbol, or nil for none.
-    public var symbol: String?
+    /// The card's icon, an SF Symbol name, or nil for none (CARD-12).
+    public var icon: String?
 
     public init(
         name: String = "",
@@ -75,7 +75,7 @@ public struct CardDraft: Hashable, Sendable {
         color: CardColor = .standard,
         locations: [CardLocation] = [],
         notifiesOnArrival: Bool = true,
-        symbol: String? = nil
+        icon: String? = nil
     ) {
         self.name = name
         self.code = code
@@ -83,7 +83,7 @@ public struct CardDraft: Hashable, Sendable {
         self.color = color
         self.locations = locations
         self.notifiesOnArrival = notifiesOnArrival
-        self.symbol = symbol
+        self.icon = icon
     }
 }
 

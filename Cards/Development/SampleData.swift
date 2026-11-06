@@ -43,15 +43,15 @@ public extension CardSummary {
             name: "Joe's Market",
             color: .blue,
             proximity: CardProximity(placeName: "Joe's Market Notting Hill", distance: 0),
-            symbol: "basket"
+            icon: "basket"
         ),
-        CardSummary(id: "9780201379624", name: "Green Leaf Pharmacy", color: .indigo, symbol: "cross.case"),
+        CardSummary(id: "9780201379624", name: "Green Leaf Pharmacy", color: .indigo, icon: "cross.case"),
         CardSummary(
             id: "1234567890128",
             name: "Local Roast Coffee",
             color: .red,
             proximity: CardProximity(placeName: "Local Roast Notting Hill", distance: 450),
-            symbol: "cup.and.saucer"
+            icon: "cup.and.saucer"
         ),
         CardSummary(id: "9988776655443", name: "Honeycomb Rewards", color: .purple),
         CardSummary(id: "5012345678900", name: "Ladbroke Library", color: .orange),
@@ -70,10 +70,10 @@ public extension CardSummary {
         proximity: CardProximity(placeName: "Long Way", distance: 1_800)
     )
 
-    /// The Symbol knob's choice for a card without one.
-    static let noSymbol = "None"
-    /// Symbols for the Symbol knob, with None first.
-    static let storySymbols = [noSymbol, "basket", "cup.and.saucer", "dumbbell", "book", "fuelpump", "bag", "cross.case"]
+    /// The Icon knob's choice for a card without one.
+    static let noIcon = "None"
+    /// Icons for the Icon knob, with None first.
+    static let storyIcons = [noIcon, "basket", "cup.and.saucer", "dumbbell", "book", "fuelpump", "bag", "cross.case"]
 }
 
 public extension CardDetail {
@@ -85,7 +85,7 @@ public extension CardDetail {
         timestamp: Date(timeIntervalSince1970: 1_700_000_000),
         color: .indigo,
         proximity: CardProximity(placeName: "Green Leaf Shepherd's Bush", distance: 320),
-        symbol: "cross.case.fill"
+        icon: "cross.case.fill"
     )
 
     static let qr = CardDetail(
@@ -114,7 +114,7 @@ public extension CardDetail {
         timestamp: Date(timeIntervalSince1970: 1_700_000_000),
         color: .blue,
         proximity: CardProximity(placeName: "Joe's Market Notting Hill", distance: 0),
-        symbol: "basket"
+        icon: "basket"
     )
 }
 
@@ -147,7 +147,7 @@ public extension CardShare {
     /// The share menu's link and picture for `card`, made as the card screen makes them.
     @MainActor
     static func sample(for card: CardDetail) -> CardShare {
-        let shared = SharedCard(name: card.name, code: card.code, barcodeType: card.barcodeType, color: card.color, symbol: card.symbol)
+        let shared = SharedCard(name: card.name, code: card.code, barcodeType: card.barcodeType, color: card.color, icon: card.icon)
         return CardShare(
             link: SharedCardLink(card: shared).url ?? URL(fileURLWithPath: "/"),
             image: CardImage(cardName: card.name) { CardShareImage.png(of: card) }
@@ -162,7 +162,7 @@ public extension CardDraft {
         barcodeType: .code128,
         color: .teal,
         locations: [.sample],
-        symbol: "figure.climbing"
+        icon: "figure.climbing"
     )
     static let empty = CardDraft()
 }

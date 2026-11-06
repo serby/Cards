@@ -1,11 +1,11 @@
 import Foundation
 
-/// An SF Symbol a card can carry (CARD-12), with the words VoiceOver says for it
-/// in the picker. A card stores only `name`, in `CardItem.symbol`.
-public struct CardSymbol: Hashable, Identifiable, Sendable {
+/// An icon a card can carry (CARD-12), drawn from SF Symbols, with the words
+/// VoiceOver says for it in the picker. A card stores only `name`, in `CardItem.icon`.
+public struct CardIcon: Hashable, Identifiable, Sendable {
     /// The SF Symbol's name, as stored with the card.
     public let name: String
-    /// What the symbol shows, for the picker's VoiceOver label.
+    /// What the icon shows, for the picker's VoiceOver label.
     public let label: String
 
     public var id: String { name }
@@ -16,10 +16,10 @@ public struct CardSymbol: Hashable, Identifiable, Sendable {
     }
 }
 
-public extension CardSymbol {
-    /// The symbols the picker offers, chosen for loyalty and membership cards and
+public extension CardIcon {
+    /// The icons the picker offers, chosen for loyalty and membership cards and
     /// grouped by what they stand for. Every one is in SF Symbols 6, so iOS 18
-    /// draws it; a test checks. Stored names never change, so remove a symbol
+    /// draws it; a test checks. Stored names never change, so remove an icon
     /// from this list rather than renaming it.
     static let all: [Self] = [
         // Shopping
@@ -66,8 +66,8 @@ public extension CardSymbol {
         Self("scissors", label: "Hairdresser")
     ]
 
-    /// The picker's label for a stored symbol name: nil for none, and the name
-    /// itself for a symbol this build doesn't list (from a newer build).
+    /// The picker's label for a stored icon name: nil for none, and the name
+    /// itself for an icon this build doesn't list (from a newer build).
     static func label(for name: String?) -> String? {
         guard let name else { return nil }
         return all.first { $0.name == name }?.label ?? name

@@ -16,7 +16,7 @@ struct SharingTests {
         color: .blue,
         locations: [CardLocation(name: "Joe's Market Notting Hill", latitude: 51.5090, longitude: -0.1960, radius: 150)],
         notifiesOnArrival: false,
-        symbol: "basket.fill",
+        icon: "basket.fill",
         lastViewed: Date(timeIntervalSince1970: 1_780_000_000)
     )
 
@@ -30,14 +30,14 @@ struct SharingTests {
         #expect(read.code == "482019375610284")
         #expect(read.barcodeType == .code128)
         #expect(read.color == .blue)
-        #expect(read.symbol == "basket.fill")
+        #expect(read.icon == "basket.fill")
         #expect(read.places == [SharedCard.Place(name: "Joe's Market Notting Hill", latitude: 51.5090, longitude: -0.1960, radius: 150)])
         #expect(read.notifiesOnArrival == false)
     }
 
     @Test(arguments: [
         SharedCard(name: "Website", code: "https://serby.net/a?b=c#d&e=%20", barcodeType: .qrCode, color: .custom(0x3399CC)),
-        SharedCard(name: "Café ☕️", code: "Ünïcødé 123", barcodeType: .aztec, color: .standard, symbol: "cup.and.saucer.fill"),
+        SharedCard(name: "Café ☕️", code: "Ünïcødé 123", barcodeType: .aztec, color: .standard, icon: "cup.and.saucer.fill"),
         SharedCard(name: "No places", code: "1", notifiesOnArrival: true)
     ])
     func anyCardRoundTrips(_ card: SharedCard) {
@@ -58,7 +58,7 @@ struct SharingTests {
         let json = try #require(Data(base64Encoded: base64(fromURL: SharedCard(joesMarket).payload)))
         let decoded = try JSONSerialization.jsonObject(with: json)
         let object = try #require(decoded as? [String: Any])
-        #expect(Set(object.keys) == ["v", "name", "code", "type", "color", "symbol", "places", "notifiesOnArrival"])
+        #expect(Set(object.keys) == ["v", "name", "code", "type", "color", "icon", "places", "notifiesOnArrival"])
         let place = try #require((object["places"] as? [[String: Any]])?.first)
         #expect(Set(place.keys) == ["name", "latitude", "longitude", "radius"])
         #expect(object["v"] as? Int == 1)
@@ -118,12 +118,12 @@ struct SharingTests {
         #expect(card.code == "123")
     }
 
-    @Test func unknownTypesColoursAndEmptySymbolsFallBack() throws {
-        let payload = encode(#"{"v": 1, "name": "Gym", "code": "1", "type": "Hologram", "color": "ultraviolet", "symbol": ""}"#)
+    @Test func unknownTypesColoursAndEmptyIconsFallBack() throws {
+        let payload = encode(#"{"v": 1, "name": "Gym", "code": "1", "type": "Hologram", "color": "ultraviolet", "icon": ""}"#)
         let card = try #require(SharedCard(payload: payload))
         #expect(card.barcodeType == .code128)
         #expect(card.color == .standard)
-        #expect(card.symbol == nil)
+        #expect(card.icon == nil)
         #expect(card.notifiesOnArrival)
     }
 
@@ -199,7 +199,7 @@ struct SharingTests {
         #expect(card.timestamp == added)
         #expect(card.lastViewed == nil)
         #expect(card.code == joesMarket.code)
-        #expect(card.symbol == "basket.fill")
+        #expect(card.icon == "basket.fill")
         #expect(card.getColor() == .blue)
         #expect(card.notifiesOnArrival == false)
         #expect(card.locations.map(\.name) == ["Joe's Market Notting Hill"])

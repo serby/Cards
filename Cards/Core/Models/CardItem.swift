@@ -14,8 +14,8 @@ public final class CardItem: Identifiable {
     /// Whether arriving at one of `locations` sends a reminder. Settings can turn
     /// them off for every card at once.
     public var notifiesOnArrival: Bool = true
-    /// The SF Symbol that stands for the card, or nil for none.
-    public var symbol: String?
+    /// The icon that stands for the card, an SF Symbol name, or nil for none.
+    public var icon: String?
     /// When the card was last opened, for sorting by last viewed; nil until it is.
     public var lastViewed: Date?
 
@@ -28,7 +28,7 @@ public final class CardItem: Identifiable {
         color: CardColor = .standard,
         locations: [CardLocation] = [],
         notifiesOnArrival: Bool = true,
-        symbol: String? = nil,
+        icon: String? = nil,
         lastViewed: Date? = nil
     ) {
         self.timestamp = timestamp
@@ -39,7 +39,7 @@ public final class CardItem: Identifiable {
         self.color = color.rawValue
         self.locations = locations
         self.notifiesOnArrival = notifiesOnArrival
-        self.symbol = symbol
+        self.icon = icon
         self.lastViewed = lastViewed
     }
 
@@ -79,7 +79,7 @@ public struct CardItemDTO: Codable {
     public let locations: [CardLocation]?  // nil in exports made before locations existed
     // swiftlint:disable:next discouraged_optional_boolean
     public let notifiesOnArrival: Bool?  // nil in exports made before the per-card setting
-    public let symbol: String?
+    public let icon: String?
     public let lastViewed: Date?
 
     public init(from card: CardItem) {
@@ -91,7 +91,7 @@ public struct CardItemDTO: Codable {
         color = card.color
         locations = card.locations
         notifiesOnArrival = card.notifiesOnArrival
-        symbol = card.symbol
+        icon = card.icon
         lastViewed = card.lastViewed
     }
 
@@ -105,7 +105,7 @@ public struct CardItemDTO: Codable {
             color: CardColor.stored(color),
             locations: locations ?? [],
             notifiesOnArrival: notifiesOnArrival ?? true,
-            symbol: symbol,
+            icon: icon,
             lastViewed: lastViewed
         )
     }

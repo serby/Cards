@@ -58,7 +58,7 @@ public struct CardListScreen: View {
             name: item.name,
             color: item.getColor(),
             proximity: item.locations.proximity(to: locationService.current),
-            symbol: item.symbol
+            icon: item.icon
         )
     }
 

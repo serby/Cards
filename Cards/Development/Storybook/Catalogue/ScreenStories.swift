@@ -60,7 +60,7 @@ private let cardListStory = Story(
         .number("Cards", 6, in: 0...Double(CardSummary.samples.count), step: 1),
         .toggle("Colours", true),
         .toggle("Distances", true),
-        .toggle("Symbols", true),
+        .toggle("Icons", true),
         .toggle("Card where you are", false),
         .text("Search", ""),
         .options("Sort", CardSortOrder.allCases.map(\.rawValue), CardSortOrder.custom.rawValue)
@@ -86,7 +86,7 @@ private let cardListStory = Story(
                         name: card.name,
                         color: knobs.bool("Colours") ? card.color : .standard,
                         proximity: knobs.bool("Distances") ? card.proximity : nil,
-                        symbol: knobs.bool("Symbols") ? card.symbol : nil
+                        icon: knobs.bool("Icons") ? card.icon : nil
                     )
                 },
             cardHere: knobs.bool("Card where you are") ? .here : nil,
@@ -107,7 +107,7 @@ private let cardDetailStory = Story(
         .text("Code", CardDetail.sample.code),
         .options("Type", BarcodeType.allNames, BarcodeType.ean13.rawValue),
         .options("Colour", CardColor.allNames, CardDetail.sample.color.rawValue),
-        SymbolKnob.knob(CardDetail.sample.symbol),
+        IconKnob.knob(CardDetail.sample.icon),
         .number("Created (days ago)", 30, in: 0...3_650, step: 1),
         .toggle("Brightness boost", true),
         .toggle("Map opens at Boulder Barn", true),
@@ -135,7 +135,7 @@ private let cardDetailStory = Story(
         color: .named(knobs.option("Colour")),
         places: places,
         proximity: knobs.proximity(),
-        symbol: knobs.symbol
+        icon: knobs.icon
     )
     return pushed {
         CardDetailView(
@@ -168,7 +168,7 @@ private let cardEditStory = Story(
         .text("Code", CardDraft.sample.code),
         .options("Type", BarcodeType.allNames, BarcodeType.code128.rawValue),
         .options("Colour", CardColor.allNames, CardDraft.sample.color.rawValue),
-        SymbolKnob.knob(CardDraft.sample.symbol),
+        IconKnob.knob(CardDraft.sample.icon),
         .number("Locations", 1, in: 0...Double(CardLocation.samples.count), step: 1),
         .toggle("Notify on arrival", true),
         .toggle("Arrival notifications on", true),
@@ -203,7 +203,7 @@ private let cardEditStory = Story(
                 color: .named(knobs.option("Colour")),
                 locations: Array(CardLocation.samples.prefix(knobs.integer("Locations"))),
                 notifiesOnArrival: knobs.bool("Notify on arrival"),
-                symbol: knobs.symbol
+                icon: knobs.icon
             )
         },
         set: { (updated: CardDraft) in
@@ -211,7 +211,7 @@ private let cardEditStory = Story(
             knobs.set(updated.code, for: "Code")
             knobs.select(updated.barcodeType.rawValue, for: "Type")
             knobs.select(updated.color.rawValue, for: "Colour")
-            knobs.symbolBinding.wrappedValue = updated.symbol
+            knobs.iconBinding.wrappedValue = updated.icon
             knobs.set(Double(updated.locations.count), for: "Locations")
             knobs.set(updated.notifiesOnArrival, for: "Notify on arrival")
         }

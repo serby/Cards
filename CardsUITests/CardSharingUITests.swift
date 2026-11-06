@@ -35,7 +35,7 @@ final class CardSharingUITests: XCTestCase {
         let app = launch()
         let link = "cards://cards/add#" + Self.payload(
             #"{"v":1,"name":"Ladbroke Library","code":"LIB-2026","type":"Code 128","color":"teal","#
-                + #""symbol":"books.vertical.fill","notifiesOnArrival":true,"#
+                + #""icon":"books.vertical.fill","notifiesOnArrival":true,"#
                 + #""places":[{"name":"Boulder Barn","latitude":51.5203,"longitude":-0.2094,"radius":150}]}"#
         )
         try open(link, in: app)

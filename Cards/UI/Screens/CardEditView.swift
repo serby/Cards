@@ -21,7 +21,7 @@ public struct CardEditView<Scanner: View>: View {
 
     @FocusState private var focusedField: Field?
     @State private var showsLocationPicker = false
-    @State private var showsSymbolPicker = false
+    @State private var showsIconPicker = false
     @State private var confirmsDelete = false
     /// Counts deletes, so the delete haptic plays (A11Y-5).
     @State private var deletes = 0
@@ -132,7 +132,7 @@ public struct CardEditView<Scanner: View>: View {
             }
 
             Section {
-                symbolRow
+                iconRow
             }
 
             Section {
@@ -204,8 +204,8 @@ public struct CardEditView<Scanner: View>: View {
                 onSave: { draft.update($0) }
             )
         }
-        .sheet(isPresented: $showsSymbolPicker) {
-            symbolPicker
+        .sheet(isPresented: $showsIconPicker) {
+            iconPicker
         }
         .scrollDismissesKeyboard(.immediately)
         .navigationBarTitleDisplayMode(.inline)
@@ -231,17 +231,17 @@ public struct CardEditView<Scanner: View>: View {
 }
 
 extension CardEditView {
-    /// Shows the card's symbol, or None, and opens the grid to choose one.
-    private var symbolRow: some View {
+    /// Shows the card's icon, or None, and opens the grid to choose one.
+    private var iconRow: some View {
         Button {
-            showsSymbolPicker = true
+            showsIconPicker = true
         } label: {
             HStack {
-                Text("Symbol")
+                Text("Icon")
                     .foregroundStyle(Color.primaryText)
                 Spacer()
-                if let symbol = draft.symbol {
-                    Image(systemName: symbol)
+                if let icon = draft.icon {
+                    Image(systemName: icon)
                         .foregroundStyle(Color.secondaryText)
                         .accessibilityHidden(true)
                 } else {
@@ -256,27 +256,27 @@ extension CardEditView {
             .contentShape(.rect)
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Symbol")
-        .accessibilityValue(CardSymbol.label(for: draft.symbol) ?? "None")
-        .accessibilityHint("Opens a grid of symbols to choose from")
+        .accessibilityLabel("Icon")
+        .accessibilityValue(CardIcon.label(for: draft.icon) ?? "None")
+        .accessibilityHint("Opens a grid of icons to choose from")
         .accessibilityAddTraits(.isButton)
-        .accessibilityIdentifier("symbolRow")
+        .accessibilityIdentifier("iconRow")
     }
 
-    /// The symbol grid in a sheet. Choosing one closes it.
-    private var symbolPicker: some View {
+    /// The icon grid in a sheet. Choosing one closes it.
+    private var iconPicker: some View {
         NavigationStack {
             ScrollView {
-                CardSymbolPicker(selection: $draft.symbol, color: draft.color) {
-                    showsSymbolPicker = false
+                CardIconPicker(selection: $draft.icon, color: draft.color) {
+                    showsIconPicker = false
                 }
                 .padding()
             }
-            .navigationTitle("Symbol")
+            .navigationTitle("Icon")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Done") { showsSymbolPicker = false }
+                    Button("Done") { showsIconPicker = false }
                 }
             }
         }

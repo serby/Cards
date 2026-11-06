@@ -72,16 +72,16 @@ struct CardFixesTests {
         #expect(try JSONDecoder().decode(CardItemDTO.self, from: older).toCardItem().notifiesOnArrival)
     }
 
-    @Test func symbolAndLastViewedAreKeptAndOlderExportsHaveNone() throws {
+    @Test func iconAndLastViewedAreKeptAndOlderExportsHaveNone() throws {
         let viewed = Date(timeIntervalSince1970: 1_780_000_000)
-        let card = CardItem(code: "1", name: "Gym", symbol: "dumbbell", lastViewed: viewed)
+        let card = CardItem(code: "1", name: "Gym", icon: "dumbbell", lastViewed: viewed)
         let data = try JSONEncoder().encode(CardItemDTO(from: card))
         let imported = try JSONDecoder().decode(CardItemDTO.self, from: data).toCardItem()
-        #expect(imported.symbol == "dumbbell")
+        #expect(imported.icon == "dumbbell")
         #expect(imported.lastViewed == viewed)
         let older = Data(#"{"code": "1", "name": "Gym"}"#.utf8)
         let legacy = try JSONDecoder().decode(CardItemDTO.self, from: older).toCardItem()
-        #expect(legacy.symbol == nil)
+        #expect(legacy.icon == nil)
         #expect(legacy.lastViewed == nil)
     }
 

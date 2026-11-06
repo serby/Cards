@@ -85,7 +85,7 @@ As a card holder, I want to add a card from a screenshot, a photo or a PDF of it
 As a card holder, I want to open a card and see its barcode and number, so that it can be scanned or typed in at the till.
 
 - The card screen shows the card face in the card's colour (COL-3): the name on a white panel at the top, the barcode in its frame (BAR-2), and the number and the date the card was added on a white panel below.
-- In preparation for 1.4: the card's symbol, if it has one, sits beside the name in the top panel (CARD-12).
+- In preparation for 1.4: the card's icon, if it has one, sits beside the name in the top panel (CARD-12).
 - When the card has places and the app knows where you are, the top panel also says how far away the nearest is, as "At Boulder Barn" or "350 m · Boulder Barn" (PLACE-6) (1.3).
 - In preparation for 1.4: when the card has more than one place, a panel at the foot of the card face lists the nearest five with their distances, and a place opens in Maps (PLACE-9). The screen scrolls when the card is taller than it.
 - The number is in a monospaced font, and it can be selected and copied (1.3).
@@ -103,7 +103,7 @@ As a card holder, I want to open a card and see its barcode and number, so that 
 
 As a card holder, I want to change a card's details, so that I can fix a mistake or keep it up to date.
 
-- Edit on the card screen opens a form titled "Edit Card" with the card's name, code, barcode type, colour and places, and its Notify When I Arrive switch when it has places (ARR-6). There is no camera. In preparation for 1.4 the form also has the card's symbol (CARD-12).
+- Edit on the card screen opens a form titled "Edit Card" with the card's name, code, barcode type, colour and places, and its Notify When I Arrive switch when it has places (ARR-6). There is no camera. In preparation for 1.4 the form also has the card's icon (CARD-12).
 - The Name field takes the keyboard focus on its own after about 0.6 seconds, once. Coming back to the form from another tab leaves the keyboard down (1.3).
 - Scrolling the form puts the keyboard away (1.3).
 - Save follows the same rules as adding: it is disabled without a name and a code, or while another card uses the code, and it trims both (CARD-3, CARD-9) (1.3).
@@ -176,7 +176,7 @@ As a card holder, I want my cards laid out in a grid, so that I can see more of 
 
 - The Cards tab shows the cards as tiles in a grid: two columns on iPhone, and four where the screen is wide (an iPad, unless the app has a narrow part of the screen beside another app, when it has two). The order runs left to right, then on to the next row.
 - At the accessibility text sizes the grid has half as many columns, one on iPhone and two on iPad, so names have room (A11Y-3).
-- Each tile is filled with the card's colour at full strength, in its gradient (COL-4), with the card face's rounded corners. Along the top are its symbol on the left, if it has one (CARD-12), and on the right how far away its nearest place is, on a white panel whose corners nest inside the tile's (PLACE-6). Its name, in the colour's ink, is at the bottom.
+- Each tile is filled with the card's colour at full strength, in its gradient (COL-4), with the card face's rounded corners. Along the top are its icon on the left, if it has one (CARD-12), and on the right how far away its nearest place is, on a white panel whose corners nest inside the tile's (PLACE-6). Its name, in the colour's ink, is at the bottom.
 - A tile is at least 112 points high, growing with the text size up to 200 points, and names wrap rather than being cut short. The tiles in a row are as tall as the tallest.
 - Tapping a tile opens the card (CARD-4). Opening a card plays no haptic (A11Y-5).
 - A long press on a tile lifts it and shows a menu with Delete, and the system plays its haptic as the menu appears. Delete removes the card at once, with the medium haptic swiping had in the list (CARD-6).
@@ -207,20 +207,20 @@ As a card holder, I want to search my cards and choose their order, so that the 
 **Since:** In preparation for 1.4
 **Where:** `Cards/UI/Screens/CardListView.swift`, `Cards/Features/CardListScreen.swift`, `Cards/Core/Models/CardArrangement.swift`, `Cards/Core/Models/CardSortOrder.swift`, `Cards/Core/Models/DeviceSettings.swift`, `Cards/Core/Models/CardItem.swift`, `CardsTests/CardArrangementTests.swift`, `CardsUITests/CardsUITests.swift` (`testSearchFiltersCards`, `testSortMenuChangesTheOrder`), `Cards/Features/CardDetailScreen.swift`
 
-### CARD-12: Give a card a symbol
+### CARD-12: Give a card an icon
 
-As a card holder, I want each card to carry a symbol, so that I can recognise it at a glance.
+As a card holder, I want each card to carry an icon, so that I can recognise it at a glance.
 
-- The add and edit forms have a Symbol row, below Colour, that shows the card's symbol, or "None", and opens a sheet titled "Symbol".
-- The sheet is a grid of 35 symbols suited to cards, None first, then shopping (a basket, a trolley, a shopping bag, a price tag, a gift, a T-shirt), food and drink (a coffee cup, a mug, a takeaway, a restaurant, a cake, a wine glass), getting about (a fuel pump, a car, an aeroplane, a bus, a hotel, a suitcase), fitness (a dumbbell, running, swimming, climbing, a bicycle), health (first aid, a pharmacy, a heart), books and going out (a book, a library, a ticket, a cinema, a theatre) and pets, home and garden (pets, a garden, DIY, a hairdresser).
-- Each symbol in the grid is drawn on the card's colour in the colour's ink, as the colour swatches are (COL-4), and the chosen one has a ring round it. Tapping one chooses it and closes the sheet; Done closes it without a change.
-- The choice is saved with the card when the form is saved, like every other field (CARD-5). Going back without saving keeps the old symbol.
-- A card has no symbol until you choose one. Older cards and older exports have none.
-- The symbol shows at the top of the card's tile in the grid (CARD-10), in the colour's ink like the name, so it stays readable (COL-4).
+- The add and edit forms have an Icon row, below Colour, that shows the card's icon, or "None", and opens a sheet titled "Icon".
+- The sheet is a grid of 35 icons suited to cards, None first, then shopping (a basket, a trolley, a shopping bag, a price tag, a gift, a T-shirt), food and drink (a coffee cup, a mug, a takeaway, a restaurant, a cake, a wine glass), getting about (a fuel pump, a car, an aeroplane, a bus, a hotel, a suitcase), fitness (a dumbbell, running, swimming, climbing, a bicycle), health (first aid, a pharmacy, a heart), books and going out (a book, a library, a ticket, a cinema, a theatre) and pets, home and garden (pets, a garden, DIY, a hairdresser).
+- Each icon in the grid is drawn on the card's colour in the colour's ink, as the colour swatches are (COL-4), and the chosen one has a ring round it. Tapping one chooses it and closes the sheet; Done closes it without a change.
+- The choice is saved with the card when the form is saved, like every other field (CARD-5). Going back without saving keeps the old icon.
+- A card has no icon until you choose one. Older cards and older exports have none.
+- The icon shows at the top of the card's tile in the grid (CARD-10), in the colour's ink like the name, so it stays readable (COL-4).
 - It shows on the card screen beside the name in the top panel (CARD-4), drawn in the panel's ink. At the accessibility text sizes it sits above the name instead (A11Y-3).
-- VoiceOver does not read the symbol on the card or its tile, because the card's name already says what it is (A11Y-4). In the form, where you choose it, the Symbol row reads its value by what the symbol shows, such as "Basket", or "None", and so does each symbol in the grid.
-- The symbol is stored with the card, so it syncs (DATA-1), is exported, and is imported with the card (DATA-2, DATA-3).
+- VoiceOver does not read the icon on the card or its tile, because the card's name already says what it is (A11Y-4). In the form, where you choose it, the Icon row reads its value by what the icon shows, such as "Basket", or "None", and so does each icon in the grid.
+- The icon is stored with the card, so it syncs (DATA-1), is exported, and is imported with the card (DATA-2, DATA-3).
 
 **Since:** In preparation for 1.4
-**Where:** `Cards/Core/Models/CardSymbol.swift`, `Cards/UI/Components/CardSymbolPicker.swift`, `Cards/UI/Screens/CardEditView.swift`, `Cards/Features/CardEditScreen.swift`, `Cards/UI/Components/CardFaceView.swift`, `Cards/Features/CardDetailScreen.swift`, `Cards/Core/Models/CardItem.swift`, `Cards/UI/Screens/CardListView.swift`, `CardsTests/CardSymbolTests.swift`, `CardsUITests/CardsUITests.swift` (`testChooseASymbol`), `Cards/UI/Screens/CardDetailView.swift`, `Cards/UI/Components/CardTileView.swift`, `Cards/Features/CardListScreen.swift`
-**Notes:** Every symbol is in SF Symbols 6, so iOS 18 draws it; `CardSymbolTests` checks each one on the oldest supported iOS. A symbol name the build doesn't list, such as one from a newer version, still shows on the card.
+**Where:** `Cards/Core/Models/CardIcon.swift`, `Cards/UI/Components/CardIconPicker.swift`, `Cards/UI/Screens/CardEditView.swift`, `Cards/Features/CardEditScreen.swift`, `Cards/UI/Components/CardFaceView.swift`, `Cards/Features/CardDetailScreen.swift`, `Cards/Core/Models/CardItem.swift`, `Cards/UI/Screens/CardListView.swift`, `CardsTests/CardIconTests.swift`, `CardsUITests/CardsUITests.swift` (`testChooseAnIcon`), `Cards/UI/Screens/CardDetailView.swift`, `Cards/UI/Components/CardTileView.swift`, `Cards/Features/CardListScreen.swift`
+**Notes:** Every icon is in SF Symbols 6, so iOS 18 draws it; `CardIconTests` checks each one on the oldest supported iOS. An icon name the build doesn't list, such as one from a newer version, still shows on the card.

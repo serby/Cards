@@ -37,7 +37,7 @@ enum CardShareImage {
             barcodeType: card.barcodeType,
             timestamp: card.timestamp,
             color: card.color,
-            symbol: card.symbol
+            icon: card.icon
         )
     }
 }

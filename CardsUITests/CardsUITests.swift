@@ -306,10 +306,10 @@ final class CardsUITests: XCTestCase {
         XCTAssertTrue(tile(app, "Nordic Nest Home").exists)
     }
 
-    /// A symbol chosen in the grid is saved with the card and is there when the
+    /// An icon chosen in the grid is saved with the card and is there when the
     /// form opens again (CARD-12).
     @MainActor
-    func testChooseASymbol() throws {
+    func testChooseAnIcon() throws {
         let app = XCUIApplication()
         app.launchArguments += ["-uiTesting", "-screenshotSeed"]
         app.launch()
@@ -320,25 +320,25 @@ final class CardsUITests: XCTestCase {
         honeycomb.tap()
         app.buttons["editCardButton"].tap()
 
-        let symbolRow = app.buttons["symbolRow"]
-        for _ in 0..<3 where !(symbolRow.exists && symbolRow.isHittable) {
+        let iconRow = app.buttons["iconRow"]
+        for _ in 0..<3 where !(iconRow.exists && iconRow.isHittable) {
             app.descendants(matching: .any)["editCardForm"].firstMatch.swipeUp()
         }
-        XCTAssertEqual(symbolRow.value as? String, "None")
-        symbolRow.tap()
-        let basket = app.buttons["cardSymbol_basket.fill"]
+        XCTAssertEqual(iconRow.value as? String, "None")
+        iconRow.tap()
+        let basket = app.buttons["cardIcon_basket.fill"]
         XCTAssertTrue(waitForElement(basket))
         basket.tap()
-        XCTAssertTrue(basket.waitForNonExistence(timeout: 3), "Choosing a symbol closes the grid")
-        XCTAssertEqual(symbolRow.value as? String, "Basket")
+        XCTAssertTrue(basket.waitForNonExistence(timeout: 3), "Choosing an icon closes the grid")
+        XCTAssertEqual(iconRow.value as? String, "Basket")
 
         app.buttons["saveCardButton"].tap()
         XCTAssertTrue(waitForElement(app.buttons["editCardButton"]))
         app.buttons["editCardButton"].tap()
-        for _ in 0..<3 where !(symbolRow.exists && symbolRow.isHittable) {
+        for _ in 0..<3 where !(iconRow.exists && iconRow.isHittable) {
             app.descendants(matching: .any)["editCardForm"].firstMatch.swipeUp()
         }
-        XCTAssertEqual(symbolRow.value as? String, "Basket")
+        XCTAssertEqual(iconRow.value as? String, "Basket")
     }
 
     /// Tapping a place in the form opens it in the picker to change, and Save

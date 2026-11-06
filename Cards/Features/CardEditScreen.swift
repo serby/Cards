@@ -36,7 +36,7 @@ public struct CardEditScreen: View {
                 color: cardItem.getColor(),
                 locations: cardItem.locations,
                 notifiesOnArrival: cardItem.notifiesOnArrival,
-                symbol: cardItem.symbol
+                icon: cardItem.icon
             )
         )
     }
@@ -103,7 +103,7 @@ public struct CardEditScreen: View {
         cardItem.color = draft.color.rawValue
         cardItem.locations = draft.locations
         cardItem.notifiesOnArrival = draft.notifiesOnArrival
-        cardItem.symbol = draft.symbol
+        cardItem.icon = draft.icon
 
         if let onSave {
             onSave(cardItem)

@@ -30,7 +30,7 @@ public struct CardFaceView<NumberAccessory: View, Footer: View>: View {
     public var body: some View {
         VStack(spacing: CardGeometry.inset) {
             VStack(spacing: 6) {
-                nameAndSymbol
+                nameAndIcon
 
                 if let proximity = card.proximity {
                     ProximityLabel(proximity, showsPlace: true)
@@ -77,16 +77,16 @@ public struct CardFaceView<NumberAccessory: View, Footer: View>: View {
         .background(card.color.cardFill, in: .rect(cornerRadius: CardGeometry.cornerRadius))
     }
 
-    /// The name, with the card's symbol beside it, or above it at the
+    /// The name, with the card's icon beside it, or above it at the
     /// accessibility text sizes. VoiceOver reads only the name, which already
     /// says what the card is.
-    private var nameAndSymbol: some View {
+    private var nameAndIcon: some View {
         let layout = dynamicTypeSize.isAccessibilitySize
             ? AnyLayout(VStackLayout(spacing: 4))
             : AnyLayout(HStackLayout(alignment: .firstTextBaseline, spacing: 8))
         return layout {
-            if let symbol = card.symbol {
-                Image(systemName: symbol)
+            if let icon = card.icon {
+                Image(systemName: icon)
                     .accessibilityHidden(true)
             }
             Text(card.name)

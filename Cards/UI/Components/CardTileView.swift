@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// A card in the grid on the Cards tab: its full colour, its symbol, its name
+/// A card in the grid on the Cards tab: its full colour, its icon, its name
 /// and how far away its nearest place is. VoiceOver reads it as one button,
 /// the name and then the distance. A long press shows a menu with Delete.
 public struct CardTileView: View {
@@ -30,9 +30,9 @@ public struct CardTileView: View {
         Button(action: onTap) {
             VStack(alignment: .leading, spacing: 8) {
                 HStack {
-                    if let symbol = card.symbol {
+                    if let icon = card.icon {
                         // The name already says what the card is (CARD-12).
-                        Image(systemName: symbol)
+                        Image(systemName: icon)
                             .font(.title2)
                             .foregroundStyle(card.color.ink)
                             .accessibilityHidden(true)

@@ -37,8 +37,8 @@ public struct SharedCard: Hashable, Sendable {
     public var code: String
     public var barcodeType: BarcodeType
     public var color: CardColor
-    /// The card's SF Symbol, or nil for none.
-    public var symbol: String?
+    /// The card's icon, an SF Symbol name, or nil for none (CARD-12).
+    public var icon: String?
     public var places: [Place]
     public var notifiesOnArrival: Bool
 
@@ -47,7 +47,7 @@ public struct SharedCard: Hashable, Sendable {
         code: String,
         barcodeType: BarcodeType = .code128,
         color: CardColor = .standard,
-        symbol: String? = nil,
+        icon: String? = nil,
         places: [Place] = [],
         notifiesOnArrival: Bool = true
     ) {
@@ -55,7 +55,7 @@ public struct SharedCard: Hashable, Sendable {
         self.code = code
         self.barcodeType = barcodeType
         self.color = color
-        self.symbol = symbol
+        self.icon = icon
         self.places = places
         self.notifiesOnArrival = notifiesOnArrival
     }
@@ -69,7 +69,7 @@ public extension SharedCard {
             code: card.code,
             barcodeType: card.getBarcodeType(),
             color: card.getColor(),
-            symbol: card.symbol,
+            icon: card.icon,
             places: card.locations.map { Place(name: $0.name, latitude: $0.latitude, longitude: $0.longitude, radius: $0.radius) },
             notifiesOnArrival: card.notifiesOnArrival
         )
@@ -121,7 +121,7 @@ public extension SharedCard {
             color: color,
             locations: locations,
             notifiesOnArrival: notifiesOnArrival,
-            symbol: symbol
+            icon: icon
         )
     }
 
@@ -134,7 +134,7 @@ public extension SharedCard {
 extension SharedCard: Codable {
     private enum CodingKeys: String, CodingKey {
         case version = "v"
-        case name, code, type, color, symbol, places, notifiesOnArrival
+        case name, code, type, color, icon, places, notifiesOnArrival
     }
 
     private struct NotACard: Error {}
@@ -148,7 +148,7 @@ extension SharedCard: Codable {
         // Read tolerantly, as an export is: an unknown type or colour from a newer build falls back.
         barcodeType = try container.decodeIfPresent(String.self, forKey: .type).flatMap(BarcodeType.init(rawValue:)) ?? .code128
         color = CardColor.stored(try container.decodeIfPresent(String.self, forKey: .color))
-        symbol = try container.decodeIfPresent(String.self, forKey: .symbol).flatMap { $0.isEmpty ? nil : $0 }
+        icon = try container.decodeIfPresent(String.self, forKey: .icon).flatMap { $0.isEmpty ? nil : $0 }
         places = try (container.decodeIfPresent([Place].self, forKey: .places) ?? []).compactMap(\.valid)
         notifiesOnArrival = try container.decodeIfPresent(Bool.self, forKey: .notifiesOnArrival) ?? true
     }
@@ -160,7 +160,7 @@ extension SharedCard: Codable {
         try container.encode(code, forKey: .code)
         try container.encode(barcodeType.rawValue, forKey: .type)
         try container.encode(color.rawValue, forKey: .color)
-        try container.encodeIfPresent(symbol, forKey: .symbol)
+        try container.encodeIfPresent(icon, forKey: .icon)
         if !places.isEmpty {
             try container.encode(places, forKey: .places)
         }
