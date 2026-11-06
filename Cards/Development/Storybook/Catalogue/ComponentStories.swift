@@ -9,6 +9,8 @@ let componentStories: [Story] = [
     cardLocationRowStory,
     cardWidgetStory,
     cameraUnavailableStory,
+    barcodeImportStory,
+    barcodeChoiceStory,
     scannerPlaceholderStory,
     cardFaceStory,
     cardSymbolPickerStory

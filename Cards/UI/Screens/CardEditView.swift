@@ -15,6 +15,9 @@ public struct CardEditView<Scanner: View>: View {
     private let arrivalNotificationsEnabled: Bool
     private let showsScanner: Bool
     private let scanner: () -> Scanner
+    /// Choose Photo and Choose File under the scanner (CARD-13). Nil offers
+    /// neither, as when editing a card.
+    private let barcodeImport: BarcodeImportActions?
 
     @FocusState private var focusedField: Field?
     @State private var showsLocationPicker = false
@@ -44,6 +47,7 @@ public struct CardEditView<Scanner: View>: View {
         takenCodes: Set<String> = [],
         arrivalNotificationsEnabled: Bool = true,
         showsScanner: Bool = true,
+        barcodeImport: BarcodeImportActions? = nil,
         @ViewBuilder scanner: @escaping () -> Scanner
     ) {
         _draft = draft
@@ -53,6 +57,7 @@ public struct CardEditView<Scanner: View>: View {
         self.takenCodes = takenCodes
         self.arrivalNotificationsEnabled = arrivalNotificationsEnabled
         self.showsScanner = showsScanner
+        self.barcodeImport = barcodeImport
         self.scanner = scanner
     }
 
@@ -63,6 +68,14 @@ public struct CardEditView<Scanner: View>: View {
                     scanner()
                         .frame(height: 250)
                         .listRowInsets(EdgeInsets())
+                }
+            }
+
+            if let barcodeImport {
+                // Fills the code and type as the camera does.
+                BarcodeImportSection(actions: barcodeImport) { found in
+                    draft.code = found.code
+                    draft.barcodeType = found.type
                 }
             }
 
@@ -318,8 +331,9 @@ public extension CardEditView where Scanner == EmptyView {
 #Preview("Add") {
     @Previewable @State var draft = CardDraft.empty
     NavigationStack {
-        CardEditView(draft: $draft) { ScannerPlaceholderView() }
+        CardEditView(draft: $draft, barcodeImport: BarcodeImportActions()) { ScannerPlaceholderView() }
             .navigationTitle("Add Card")
     }
+    .environment(\.accessibilityAnnouncer, .silent)
 }
 #endif

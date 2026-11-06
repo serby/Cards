@@ -9,6 +9,7 @@ As a card holder, I want the app to handle the barcodes loyalty and membership c
 - There are nine types, offered in this order in the Barcode Type menu: Code 128, Code 39, QR Code, EAN-8, EAN-13, Code 93, UPC-E, Aztec, PDF 417.
 - The camera reads the same nine types (CARD-2). It reads no others, so a scan of ITF-14 or Data Matrix fills in nothing.
 - A scanned code sets the barcode type to the type the camera read.
+- In preparation for 1.4: a photo or a file is read for the same nine types, and sets the type the same way (CARD-13). Other kinds it finds, such as Data Matrix, ITF-14 or Codabar, fill in nothing, and the form names them as kinds the app cannot show. The checksum and full ASCII forms of Code 39 and Code 93 read as Code 39 and Code 93.
 - A card's type is stored by its name. A name the app doesn't know, from a newer build or a hand-edited export, reads as Code 128.
 - QR Code and Aztec are drawn square. The other seven, PDF 417 among them, are drawn as a wide strip.
 

@@ -1,4 +1,6 @@
 import Foundation
+import PhotosUI
+import SwiftUI
 
 /// Callbacks a card list raises. Defaults are no-ops so stories and previews
 /// can supply only the ones they care about.
@@ -112,5 +114,24 @@ public struct SettingsActions {
         self.deleteAllCards = deleteAllCards
         self.readClipboard = readClipboard
         self.openNotificationSettings = openNotificationSettings
+    }
+}
+
+/// What Choose Photo and Choose File raise on the add form: read the chosen
+/// photo or file for barcodes (CARD-13). Each takes what its picker gave back.
+@MainActor
+public struct BarcodeImportActions {
+    /// Reads the barcodes in a photo chosen in the photo picker.
+    public var readPhoto: (PhotosPickerItem) async -> BarcodeReading
+    /// Reads the barcodes in an image or PDF chosen in the Files picker, or
+    /// reports that none could be chosen.
+    public var readFile: (Result<URL, any Error>) async -> BarcodeReading
+
+    public init(
+        readPhoto: @escaping (PhotosPickerItem) async -> BarcodeReading = { _ in .nothing },
+        readFile: @escaping (Result<URL, any Error>) async -> BarcodeReading = { _ in .nothing }
+    ) {
+        self.readPhoto = readPhoto
+        self.readFile = readFile
     }
 }

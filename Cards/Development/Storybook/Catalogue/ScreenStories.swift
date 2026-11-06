@@ -25,10 +25,16 @@ private struct EditCardStory: View {
     }
 
     var body: some View {
-        CardEditView(draft: $draft, showsScanner: showsScanner) {
+        // Adding a card offers a photo or a file under the camera, as the app does.
+        CardEditView(
+            draft: $draft,
+            showsScanner: showsScanner,
+            barcodeImport: showsScanner ? .always(.found([FoundBarcode.samples[1]])) : nil
+        ) {
             ScannerPlaceholderView()
         }
         .navigationTitle(title)
+        .environment(\.accessibilityAnnouncer, .silent)
     }
 }
 
@@ -168,6 +174,7 @@ private let cardEditStory = Story(
         .toggle("Arrival notifications on", true),
         .toggle("Code already used", false),
         .toggle("Shows scanner", false),
+        .toggle("Photo and file", false),
         .toggle("Autofocus name", false),
         .toggle("Map opens at Boulder Barn", true),
         .toggle("Can delete", true)
@@ -217,11 +224,13 @@ private let cardEditStory = Story(
             mapCentre: knobs.bool("Map opens at Boulder Barn") ? CardLocation.sample.coordinate : nil,
             takenCodes: knobs.bool("Code already used") ? [knobs.string("Code")] : [],
             arrivalNotificationsEnabled: knobs.bool("Arrival notifications on"),
-            showsScanner: knobs.bool("Shows scanner")
+            showsScanner: knobs.bool("Shows scanner"),
+            barcodeImport: knobs.bool("Photo and file") ? .always(.found([FoundBarcode.samples[1]])) : nil
         ) {
             ScannerPlaceholderView()
         }
         .navigationTitle("Card")
+        .environment(\.accessibilityAnnouncer, .silent)
     }
 }
 

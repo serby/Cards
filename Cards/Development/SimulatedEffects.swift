@@ -39,3 +39,15 @@ public extension NotificationClient {
         authorizationStatus: { .notDetermined }
     )
 }
+
+public extension BarcodeImportActions {
+    /// Reads every photo and file as `reading`, after a moment so the story
+    /// shows "Reading the barcode…" first. Nothing is opened or sent to Vision.
+    static func always(_ reading: BarcodeReading) -> Self {
+        let simulated: () async -> BarcodeReading = {
+            try? await Task.sleep(for: .seconds(0.8))
+            return reading
+        }
+        return Self(readPhoto: { _ in await simulated() }, readFile: { _ in await simulated() })
+    }
+}

@@ -1,3 +1,4 @@
+import PhotosUI
 import SwiftData
 import SwiftUI
 
@@ -10,6 +11,8 @@ public struct CardEditScreen: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.postcodeLookup) private var postcodeLookup
     @AppStorage(ArrivalPlan.enabledKey) private var arrivalNotifications = true
+    @Environment(\.fileReader) private var fileReader
+    @Environment(\.barcodeImageReader) private var barcodeImageReader
 
     @State private var draft: CardDraft
     @State private var scannedCode: String?
@@ -61,6 +64,7 @@ public struct CardEditScreen: View {
                 mapCentre: locationService.current?.coordinate,
                 takenCodes: takenCodes,
                 arrivalNotificationsEnabled: arrivalNotifications,
+                barcodeImport: barcodeImport,
                 scanner: {
                     ScannerOverlayView(scannedCode: $scannedCode, barcodeType: $scannedBarcodeType)
                 }
@@ -106,6 +110,41 @@ public struct CardEditScreen: View {
         } else {
             navigationManager?.navigate(to: .card(cardItem.code))
         }
+    }
+
+    /// Choose Photo and Choose File on the add form (CARD-13).
+    private var barcodeImport: BarcodeImportActions {
+        let files = fileReader
+        let barcodes = barcodeImageReader
+        return BarcodeImportActions(
+            readPhoto: { item in await Self.readPhoto(item, barcodes: barcodes) },
+            readFile: { choice in await Self.readFile(choice, files: files, barcodes: barcodes) }
+        )
+    }
+
+    /// The barcodes in a photo from the photo picker. iOS hands over only the
+    /// photo chosen, so the app needs no access to the photo library.
+    static func readPhoto(_ item: PhotosPickerItem, barcodes: BarcodeImageReader) async -> BarcodeReading {
+        let data = try? await item.loadTransferable(type: Data.self)
+        return await read(data, barcodes: barcodes)
+    }
+
+    /// The barcodes in an image or a PDF from the Files picker, which
+    /// `FileReader` opens inside its security-scoped access.
+    static func readFile(
+        _ choice: Result<URL, any Error>,
+        files: FileReader,
+        barcodes: BarcodeImageReader
+    ) async -> BarcodeReading {
+        let data = try? files.read(choice.get())
+        return await read(data, barcodes: barcodes)
+    }
+
+    /// What the barcodes in `data` come to. No data, data that is neither a
+    /// picture nor a PDF, or a picture Vision cannot look at, is unreadable.
+    static func read(_ data: Data?, barcodes: BarcodeImageReader) async -> BarcodeReading {
+        guard let data, let detected = try? await barcodes.read(data) else { return .unreadable }
+        return BarcodeReading(detected)
     }
 
     /// Deletes the card and goes back to the list, past its card screen, which

@@ -1,6 +1,6 @@
 # Cards
 
-Keeping cards: the list, adding them by scanning or typing, opening one, editing, deleting, reordering and naming them.
+Keeping cards: the list, adding them by scanning, typing or from a photo or a file, opening one, editing, deleting, reordering and naming them.
 
 ### CARD-1: See all my cards in one list
 
@@ -53,6 +53,31 @@ As a card holder, I want to type a card's number in, so that I can keep a card t
 **Since:** 1.0
 **Where:** `Cards/UI/Screens/CardEditView.swift`, `Cards/Features/CardEditScreen.swift`, `Cards/UI/ViewState/CardViewState.swift`, `Cards/Features/CardListScreen.swift`, `Cards/Core/Models/CardImport.swift`, `CardsUITests/CardsUITests.swift` (`testAdd`), `CardsTests/CardFixesTests.swift` (`aCardNeedsANameAndACodeOfItsOwn`, `newCardsGoAtTheEnd`)
 **Notes:** Before 1.3 Save was always enabled, and a new card was saved with `order` 0 and so landed among the cards at the top of the list.
+
+### CARD-13: Add a card from a photo or a file of its barcode
+
+As a card holder, I want to add a card from a screenshot, a photo or a PDF of its barcode, so that I can keep a card I only have as a picture or an e-ticket.
+
+- The add form has Choose Photo and Choose File under the camera (CARD-2), with the caption "Read the barcode in a screenshot, a photo or a PDF, such as an e-ticket." Editing a card offers neither.
+- Choose Photo opens the system photo picker, showing pictures only. The app sees only the photo chosen and never asks for access to the photo library.
+- Choose File opens the Files picker for images and PDFs. A file from outside the app is read inside its security-scoped access.
+- While a photo or file is read, both buttons are disabled and "Reading the barcode…" shows under them with a spinner.
+- The app reads the nine supported types (BAR-1), top to bottom in a picture, and page by page in a PDF. A photo is read the right way up and at most 4,096 pixels on its longer side. A PDF's pages are drawn on white at 288 dots per inch, at most 4,096 pixels on the longer side, so a barcode 5 cm wide on an A4 page reads; only the first 20 pages are read.
+- One barcode fills in the form's code and barcode type, as a scan does. The name stays as it was. The phone plays a success haptic, and VoiceOver announces "Barcode found: QR Code. Its code is filled in." with the type found.
+- Several barcodes, such as a ticket with a QR code and a strip barcode, open a sheet titled "Choose a Barcode". It lists each barcode once, in the order found, with its type above its code, and says "2 barcodes found. Choose the one for this card." Tapping one fills it in as above and closes the sheet; Cancel closes it and fills in nothing. A code that appears twice, such as on two pages, is listed once.
+- A barcode the app can show is always offered over one it cannot, so a ticket with a QR code and a Data Matrix code fills in the QR code.
+- When nothing can be filled in, a message under the buttons says why, and VoiceOver announces it:
+  - no barcode: "No barcode found. Try a picture where the whole barcode is sharp.";
+  - only kinds the app cannot show, such as Data Matrix or ITF-14: "Card Barcodes cannot show Data Matrix codes.", naming each kind found, or "Card Barcodes cannot show this kind of barcode." for a kind it has no name for;
+  - a photo or file that cannot be opened, is neither a picture nor a PDF, or that Vision cannot look at: "That photo or file could not be read."
+- The message stays until the next photo or file is read. Choosing the same photo again reads it again.
+- In the sheet, each barcode reads as its type, then its code character by character, with the hint "Fills in this code and type".
+- The photo or file is read on the device by Apple's Vision framework, and is not kept or sent anywhere.
+- This is separate from Import Cards in Settings, which adds cards from an exported JSON file (DATA-3).
+
+**Since:** In preparation for 1.4
+**Where:** `Cards/UI/Components/BarcodeImportSection.swift`, `Cards/UI/Components/BarcodeChoiceList.swift`, `Cards/UI/ViewState/BarcodeImportStatus.swift`, `Cards/Core/Models/BarcodeReading.swift`, `Cards/Core/Services/BarcodeImageReader.swift`, `Cards/Core/Services/FileReader.swift`, `Cards/UI/Screens/CardEditView.swift`, `Cards/Features/CardEditScreen.swift`, `CardsTests/BarcodeImageReaderTests.swift`, `CardsUITests/CardsUITests.swift` (`testAddFormOffersAPhotoOrAFile`)
+**Notes:** Vision cannot make its barcode detector in the simulator ("Failed to create barcode detector." on iOS 18.1 and 27.0), so there every photo or file says it could not be read. The tests that read through Vision run only on a device; the simulator, and CI, test how pictures and pages are prepared and what is done with what Vision finds.
 
 ### CARD-4: Open a card to show it
 

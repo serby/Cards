@@ -71,6 +71,29 @@ final class CardsUITests: XCTestCase {
         XCTAssertTrue(waitForElement(app.staticTexts["Card code: \(testCode)"]), "Card code '\(testCode)' not displayed in CardItemView")
     }
 
+    /// Adding a card offers a photo or a file of its barcode under the camera;
+    /// editing one offers neither (CARD-13). The pickers are the system's, so
+    /// the test stops at the buttons.
+    @MainActor
+    func testAddFormOffersAPhotoOrAFile() throws {
+        let app = launchWithSeededCards()
+        XCTAssertTrue(waitForElement(app.buttons["addCardButton"]))
+        app.buttons["addCardButton"].tap()
+
+        XCTAssertTrue(waitForElement(app.buttons["choosePhotoButton"]), "Choose Photo did not appear")
+        XCTAssertTrue(app.buttons["chooseBarcodeFileButton"].exists, "Choose File did not appear")
+        XCTAssertTrue(app.staticTexts["Read the barcode in a screenshot, a photo or a PDF, such as an e-ticket."].exists)
+
+        app.navigationBars.buttons.element(boundBy: 0).tap()
+        let honeycomb = tile(app, "Honeycomb Rewards")
+        XCTAssertTrue(waitForElement(honeycomb))
+        honeycomb.tap()
+        app.buttons["editCardButton"].tap()
+        XCTAssertTrue(waitForElement(app.descendants(matching: .any)["editCardForm"].firstMatch))
+        XCTAssertFalse(app.buttons["choosePhotoButton"].exists, "Editing a card should not offer Choose Photo")
+        XCTAssertFalse(app.buttons["chooseBarcodeFileButton"].exists, "Editing a card should not offer Choose File")
+    }
+
     /// Adding where you are from the card screen saves it to the card, which then
     /// reads as "here" and stops offering to add it again.
     @MainActor

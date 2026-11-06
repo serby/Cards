@@ -167,6 +167,21 @@ public extension CardDraft {
     static let empty = CardDraft()
 }
 
+public extension FoundBarcode {
+    /// What a membership PDF might hold: a QR code, a strip barcode and a
+    /// till barcode, each a different type.
+    static let samples: [FoundBarcode] = [
+        FoundBarcode(code: "BOULDERBARN-10442", type: .qrCode),
+        FoundBarcode(code: "LRC-0042-7781", type: .code128),
+        FoundBarcode(code: "2900417730126", type: .ean13)
+    ]
+    /// A QR code holding a web address, longer than a row can show in full.
+    static let longCode = FoundBarcode(
+        code: "https://boulderbarn.example/visit/10442?pass=2026-11-14-ANNUAL-PEAK-AND-OFFPEAK",
+        type: .qrCode
+    )
+}
+
 public extension SettingsState {
     static let sample = SettingsState(
         appVersion: "1.1",
