@@ -18,6 +18,7 @@ public struct CardTileView: View {
     /// alone makes the tile tall enough.
     @ScaledMetric(relativeTo: .headline) private var minimumHeight: CGFloat = 112
     private static let tallestMinimumHeight: CGFloat = 200
+    @Environment(\.distanceFormat) private var distanceFormat
 
     public init(card: CardSummary, isDropTarget: Bool = false, onTap: @escaping () -> Void, onDelete: @escaping () -> Void = {}) {
         self.card = card
@@ -80,7 +81,7 @@ public struct CardTileView: View {
         // VoiceOver offers Delete in the actions rotor, as it did for the list's swipe.
         // The name first, wherever the distance sits on the tile: "Joe's Market,
         // You're at Joe's Market Notting Hill" (A11Y-1).
-        .accessibilityLabel(card.proximity.map { "\(card.name), \($0.spokenDescription)" } ?? card.name)
+        .accessibilityLabel(card.proximity.map { "\(card.name), \($0.spokenDescription(in: distanceFormat))" } ?? card.name)
         .accessibilityAction(named: Text("Delete"), onDelete)
     }
 }

@@ -82,16 +82,17 @@ One app target and one widget extension. The app is a single Swift module whose 
 Cards/
   App/           Entry point, and DevelopmentHooks: the only door into Development
   Core/          Models, navigation and services. No SwiftUI views
-    Models/        CardItem (SwiftData), CardItemDTO, BarcodeType, CardColor, CardLocation, WidgetCard, ArrivalAlert
+    Models/        CardItem (SwiftData), CardItemDTO, BarcodeType, CardColor, CardLocation, WidgetCard, ArrivalAlert,
+                   DistanceUnits and DistanceFormat (how distances and radii are written)
     Navigation/    NavigationRoute, NavigationManager, SharedCardLink, deep links
     Services/      CardStore, LocationService, PerformanceTracker, and the clients (rule 15):
-                   NotificationClient, PlaceSearch, Clipboard, WidgetSnapshot, FileReader
+                   NotificationClient, PlaceSearch, Clipboard, WidgetSnapshot, WidgetSettings, FileReader
   UI/            Every view, as a pure function of view state and actions
     Screens/       CardListView, CardDetailView, CardEditView, LocationPickerView, SharedCardView, SettingsListView
     Components/    BarcodeView, BarcodeImage, CardColorPicker, CardLocationRow, CardWidgetView, ProximityLabel, …
     ViewState/     CardSummary, CardDetail, CardDraft, CardWidgetState, SettingsState
     Actions/       Closure bundles each screen raises
-    Environment/   Injected effects: ScreenBrightness, AccessibilityAnnouncer
+    Environment/   Injected effects: ScreenBrightness, AccessibilityAnnouncer; and the distance units
     Theme/         Colours, the card palette
   Scanner/       Camera scanning (AVFoundation), pinch to zoom
   Features/      Connectors: SwiftData, navigation, location and clients in, view state out;
@@ -103,7 +104,7 @@ CardsTests/      Unit tests (Swift Testing)
 CardsUITests/    UI and screenshot tests (XCTest)
 ```
 
-The widget cannot open the SwiftData store, so the list screen writes every card to a JSON file in the App Group container (`WidgetSnapshot`) and the widget reads that. The widget compiles a short list of files from `Cards/` (models, `BarcodeImage`, `CardWidgetView`, the palette); the list is the "Exceptions for \"Cards\" folder in \"CardsWidget\" target" set in the project, which is what Xcode's Target Membership box edits. A shared file may only use what is on that list, so keep it to Foundation, SwiftUI and other shared files.
+The widget cannot open the SwiftData store, so the list screen writes every card to a JSON file in the App Group container (`WidgetSnapshot`) and the widget reads that. Settings the widget follows, such as the distance units, are copied the same way by `CardsApp` (`WidgetSettings`). The widget compiles a short list of files from `Cards/` (models, `BarcodeImage`, `CardWidgetView`, the palette); the list is the "Exceptions for \"Cards\" folder in \"CardsWidget\" target" set in the project, which is what Xcode's Target Membership box edits. A shared file may only use what is on that list, so keep it to Foundation, SwiftUI and other shared files.
 
 Dependencies point one way:
 
@@ -162,7 +163,7 @@ Keep the logic of a service testable without the device: `ArrivalPlan` is pure, 
 Every view in `Cards/UI` has a story in `Cards/Development/Storybook/Catalogue`, and every parameter of that view has a knob. Use the knob kinds in `Story.swift` (toggle, text, number, options) and give the story a gallery of the fixed variants worth eyeballing.
 
 - Screens set `galleryLayout: .oneAtATime`. SwiftUI puts every visible screen's toolbar items in the Storybook's one navigation bar, so a list of screens would show one Edit button per variant.
-- Reuse the shared knobs rather than inventing new names: `ProximityKnobs` for anything that shows a distance.
+- Reuse the shared knobs rather than inventing new names: `ProximityKnobs` for anything that shows a distance, and `DistanceKnobs`, applied with `.distances(knobs)`, for anything that writes a distance or a radius. `ProximityKnobs` includes `DistanceKnobs`.
 - Bindings to local state go through `Stateful`; bindings to knobs through `KnobValues.*Binding`.
 - A value read once at creation (a map's starting camera) needs `.id(knobValue)` so the story rebuilds when the knob changes.
 
@@ -254,7 +255,7 @@ The app's Swift follows a few long-standing design principles, applied where the
 - **No global mutable state.** No `static var` that stores state, no singletons of our own and no mutable top-level variables. State belongs to an instance someone owns: an `@Observable` model created once at the composition root and passed down (`LocationService`, `NavigationManager`, `ArrivalScheduler`), a view's `@State`, or SwiftData. Immutable `static let` constants and loggers are fine. `DevelopmentHooks` is the one deliberate exception, because rule 1 needs it to be static.
 - **Inject every dependency with a side effect.** Anything that reaches the system or the outside world, such as notifications, location, geocoding, the clipboard, opening URLs, the widget's App Group file, screen brightness or VoiceOver, is a dependency:
   - **Model it** as a small `Sendable` struct of closures, a client, with a `.live` value. The `.live` value, or the factory it is built from (such as `WidgetSnapshot.file(at:)`, which tests point at a temporary file), is the only place the system API is called.
-  - **Provide it** through SwiftUI's environment, with `.live` as the default, and read it with `@Environment` in connectors and effects. `ScreenBrightness` and `AccessibilityAnnouncer` in `UI/Environment` are the pattern, and `PlaceSearch`, `Clipboard` and `WidgetSnapshot` in `Core/Services` follow it.
+  - **Provide it** through SwiftUI's environment, with `.live` as the default, and read it with `@Environment` in connectors and effects. `ScreenBrightness` and `AccessibilityAnnouncer` in `UI/Environment` are the pattern, and `PlaceSearch`, `Clipboard`, `WidgetSnapshot` and `WidgetSettings` in `Core/Services` follow it.
   - **Prefer SwiftUI's own environment actions** where they exist, such as `openURL`.
   - **Outside views,** such as the widget's timeline provider (`WidgetSnapshot`, `WidgetLocation`) and `ArrivalScheduler` (`NotificationClient`), take clients in `init`, defaulting to `.live`.
   - **Keep clients small.** A client exposes only the operations its callers use (interface segregation).

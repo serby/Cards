@@ -8,18 +8,22 @@ public struct SettingsListView: View {
     @Binding private var brightnessBoost: Bool
     @Binding private var arrivalNotifications: Bool
     @Binding private var showsCardWhereYouAre: Bool
+    @Binding private var distanceUnits: DistanceUnits
     @Binding private var message: String?
     private let actions: SettingsActions
 
     @State private var showDeleteConfirmation = false
     @State private var showImportSheet = false
     @State private var importText = ""
+    /// Says what Automatic means, as "Automatic (Kilometres)".
+    @Environment(\.locale) private var locale
 
     public init(
         state: SettingsState,
         brightnessBoost: Binding<Bool>,
         arrivalNotifications: Binding<Bool> = .constant(true),
         showsCardWhereYouAre: Binding<Bool> = .constant(false),
+        distanceUnits: Binding<DistanceUnits> = .constant(.automatic),
         message: Binding<String?> = .constant(nil),
         actions: SettingsActions = SettingsActions()
     ) {
@@ -27,6 +31,7 @@ public struct SettingsListView: View {
         _brightnessBoost = brightnessBoost
         _arrivalNotifications = arrivalNotifications
         _showsCardWhereYouAre = showsCardWhereYouAre
+        _distanceUnits = distanceUnits
         _message = message
         self.actions = actions
     }
@@ -79,6 +84,17 @@ public struct SettingsListView: View {
                     .tint(.accent)
                     .accessibilityIdentifier("showsCardWhereYouAreToggle")
                 Text("Shows the card for where you are at the top of your cards.")
+                    .font(.caption)
+                    .foregroundColor(.tertiaryText)
+                Picker("Distances", selection: $distanceUnits) {
+                    ForEach(DistanceUnits.allCases) { units in
+                        Text(units.title(for: locale))
+                            .tag(units)
+                    }
+                }
+                .tint(.accent)
+                .accessibilityIdentifier("distanceUnitsPicker")
+                Text("Automatic follows the measurement system in Language & Region in the Settings app.")
                     .font(.caption)
                     .foregroundColor(.tertiaryText)
             } header: {
@@ -164,6 +180,21 @@ extension SettingsListView {
     /// "your card" or "all 6 cards", for the delete confirmation.
     private var deletedCards: String {
         state.cardCount == 1 ? "your card" : "all \(cardCount(state.cardCount))"
+    }
+}
+
+extension DistanceUnits {
+    /// The choice as Settings lists it. Automatic says what it means where
+    /// `locale` applies: "Automatic (Kilometres)" or "Automatic (Miles)".
+    func title(for locale: Locale) -> String {
+        switch self {
+        case .automatic:
+            String(localized: "Automatic (\(resolved(for: locale).title(for: locale)))")
+        case .kilometres:
+            String(localized: "Kilometres")
+        case .miles:
+            String(localized: "Miles")
+        }
     }
 }
 
@@ -266,6 +297,13 @@ public struct ImportCardsView: View {
     @Previewable @State var boost = false
     NavigationStack {
         SettingsListView(state: .noCards, brightnessBoost: $boost)
+    }
+}
+
+#Preview("Distances in miles") {
+    @Previewable @State var units = DistanceUnits.miles
+    NavigationStack {
+        SettingsListView(state: .sample, brightnessBoost: .constant(true), distanceUnits: $units)
     }
 }
 #endif

@@ -7,7 +7,7 @@ A medium Home Screen widget that shows one card's barcode, big enough to scan: t
 As a card holder, I want my Home Screen to show the card for where I am, so that I can scan it without opening the app.
 
 - The widget comes in the medium size only. In the widget gallery it is called "Card", described as "Shows the barcode of the card nearest to you, or one you choose."
-- By default it shows the card whose nearest place is closest to you, measured to the edge of each place's circle (PLACE-6), with its distance and place name.
+- By default it shows the card whose nearest place is closest to you, measured to the edge of each place's circle (PLACE-6), with its distance and place name. In preparation for 1.4 the distance is in the units chosen in the app's Settings (SET-4).
 - When no card has a place, or the widget has no location, it shows the card at the top of the list (CARD-7).
 - It only asks for a location when some card has a place, and only when iOS lets the widget use location (`isAuthorizedForWidgetUpdates`). iOS describes it as "Your location lets the widget show the card for the place you are at."
 - It uses a fix up to 2 minutes old when there is one (1.3). Otherwise it waits up to 10 seconds for a new one, and then uses the last fix the device has, however old.
@@ -88,7 +88,8 @@ As a card holder, I want the widget to reflect the cards I have, so that it neve
 - The copy is a JSON file, `widget-cards.json`, in the App Group `group.net.serby.Cards`.
 - The Cards list writes the copy whenever its cards change, and only reloads the widget when the file's contents change.
 - Until the app has written the copy, or if it can't be read, the widget shows its empty state (WID-5).
+- In preparation for 1.4: the app also copies the Distances choice (SET-4) to `widget-settings.json` in the same App Group, as `{"distanceUnits":"miles"}`, when it starts and whenever the choice changes, and reloads the widget only when that changes the file. Without a copy, or with one it can't read, the widget writes distances as Automatic does.
 
 **Since:** 1.3
-**Where:** `Cards/Core/Services/WidgetSnapshot.swift`, `Cards/Features/CardListScreen.swift`, `Cards/Features/CardListScreen.swift`, `CardsTests/WidgetTests.swift` (`snapshotRoundTripsAndSkipsUnchangedWrites`, `snapshotThatCannotBeReadIsEmpty`, `snapshotWithoutAnAppGroupReadsAndWritesNothing`)
+**Where:** `Cards/Core/Services/WidgetSnapshot.swift`, `Cards/Features/CardListScreen.swift`, `Cards/Features/CardListScreen.swift`, `Cards/Core/Services/WidgetSettings.swift`, `Cards/App/CardsApp.swift`, `CardsTests/WidgetTests.swift` (`snapshotRoundTripsAndSkipsUnchangedWrites`, `snapshotThatCannotBeReadIsEmpty`, `snapshotWithoutAnAppGroupReadsAndWritesNothing`, `settingsRoundTripAndSkipUnchangedWrites`, `settingsThatCannotBeReadAreAutomatic`, `settingsWithoutAnAppGroupReadAutomaticAndWriteNothing`)
 **Notes:** Only the app writes the copy, so cards that arrive through iCloud reach the widget once the app is opened on that device. A new widget added before the app has ever been opened shows "No cards yet".

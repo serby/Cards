@@ -11,4 +11,7 @@ public enum DeviceSettings {
     /// The order the Cards tab shows the cards in, a `CardSortOrder` (CARD-11).
     /// Custom order until another is chosen.
     public static let cardSortOrderKey = "cardSortOrder"
+    /// The units distances are shown in, a `DistanceUnits` (SET-4). Automatic
+    /// until another is chosen. The widget reads a copy (`WidgetSettings`).
+    public static let distanceUnitsKey = "distanceUnits"
 }

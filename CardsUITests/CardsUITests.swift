@@ -164,6 +164,53 @@ final class CardsUITests: XCTestCase {
         XCTAssertEqual(toggle.value as? String, before)
     }
 
+    /// The Distances choice in Settings decides the units the tiles read their
+    /// distances in (SET-4). The choice is kept, so the test ends on Automatic.
+    @MainActor
+    func testDistancesFollowTheSetting() throws {
+        let app = XCUIApplication()
+        // Not pinned, as launchWithSeededCards does, so the picker can change it.
+        app.launchArguments += ["-uiTesting", "-screenshotSeed", "-cardSortOrder", "custom", "-showsCardWhereYouAre", "NO"]
+        app.launch()
+        dismissNotificationPrompt()
+        let localRoast = tile(app, "Local Roast Coffee")
+        XCTAssertTrue(waitForElement(localRoast))
+
+        choose(app, distanceUnits: "Miles")
+        app.tabBars.buttons["Cards"].tap()
+        XCTAssertTrue(waitForLabel(localRoast, containing: " yd from Local Roast Portobello"), localRoast.label)
+
+        choose(app, distanceUnits: "Kilometres")
+        app.tabBars.buttons["Cards"].tap()
+        XCTAssertTrue(waitForLabel(localRoast, containing: " m from Local Roast Portobello"), localRoast.label)
+
+        choose(app, distanceUnits: "Automatic", startingWith: true)
+    }
+
+    /// Picks `distanceUnits` in Settings > Distances. Automatic is listed with
+    /// what it means, as "Automatic (Miles)", so it is found by how it starts.
+    @MainActor
+    private func choose(_ app: XCUIApplication, distanceUnits: String, startingWith: Bool = false) {
+        app.tabBars.buttons["Settings"].tap()
+        let picker = app.buttons["distanceUnitsPicker"]
+        XCTAssertTrue(waitForElement(picker))
+        picker.tap()
+        let option = startingWith
+            ? app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", distanceUnits)).firstMatch
+            : app.buttons[distanceUnits]
+        XCTAssertTrue(waitForElement(option))
+        option.tap()
+        // The row shows the choice as its value, or in its label.
+        let chosen = NSPredicate(format: "label CONTAINS %@ OR value BEGINSWITH %@", distanceUnits, distanceUnits)
+        XCTAssertEqual(XCTWaiter.wait(for: [expectation(for: chosen, evaluatedWith: picker)], timeout: 5), .completed)
+    }
+
+    @MainActor
+    private func waitForLabel(_ element: XCUIElement, containing text: String, timeout: TimeInterval = 5) -> Bool {
+        let predicate = NSPredicate(format: "label CONTAINS %@", text)
+        return XCTWaiter.wait(for: [expectation(for: predicate, evaluatedWith: element)], timeout: timeout) == .completed
+    }
+
     /// Typing in the search field narrows the grid to the names that match (CARD-11).
     @MainActor
     func testSearchFiltersCards() throws {

@@ -58,20 +58,6 @@ public struct CardLocation: Codable, Hashable, Identifiable, Sendable {
     }
 }
 
-public extension CLLocationDistance {
-    /// A distance to somewhere, in the user's units: "350 m", "0.4 mi".
-    var distanceText: String {
-        Measurement(value: self, unit: UnitLength.meters)
-            .formatted(.measurement(width: .abbreviated, usage: .road))
-    }
-
-    /// A radius as set on the slider, in metres: "200 m".
-    var radiusText: String {
-        Measurement(value: self, unit: UnitLength.meters)
-            .formatted(.measurement(width: .abbreviated, usage: .asProvided))
-    }
-}
-
 /// How far the user is from the nearest of a card's locations.
 public struct CardProximity: Hashable, Sendable {
     public let placeName: String
