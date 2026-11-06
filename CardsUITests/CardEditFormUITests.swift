@@ -1,9 +1,32 @@
 import XCTest
 
-/// The edit form: deleting a card from it and choosing its icon (CARD-5, CARD-6, CARD-12).
+/// The edit form: opening it from a tile, deleting a card from it and choosing
+/// its icon (CARD-5, CARD-6, CARD-10, CARD-12).
 final class CardEditFormUITests: XCTestCase {
     override func setUpWithError() throws {
         continueAfterFailure = false
+    }
+
+    /// Edit in a tile's long-press menu opens the card's form, with the keyboard
+    /// down, and Back goes to the card's screen (CARD-5, CARD-10).
+    @MainActor
+    func testEditFromTheLongPressMenu() throws {
+        let app = launchWithSeededCards()
+        let honeycomb = tile(app, "Honeycomb Rewards")
+        XCTAssertTrue(waitForElement(honeycomb))
+        honeycomb.press(forDuration: 1)
+
+        let edit = app.buttons["Edit"]
+        XCTAssertTrue(waitForElement(edit))
+        edit.tap()
+
+        let nameField = app.textFields["Card name"]
+        XCTAssertTrue(waitForElement(nameField))
+        XCTAssertEqual(nameField.value as? String, "Honeycomb Rewards")
+        XCTAssertFalse(app.keyboards.firstMatch.waitForExistence(timeout: 2), "The form should open with the keyboard down")
+
+        app.navigationBars.buttons.element(boundBy: 0).tap()
+        XCTAssertTrue(waitForElement(app.buttons["editCardButton"]), "Back should go to the card's screen")
     }
 
     /// Delete Card at the foot of the edit form asks first, deletes the card and

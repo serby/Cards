@@ -38,6 +38,7 @@ public struct CardListScreen: View {
             sortOrder: $sortOrder,
             actions: CardListActions(
                 selectCard: { code in navigationManager.navigate(to: .card(code)) },
+                editCard: { code in navigationManager.navigate(to: .editCard(code)) },
                 addCard: { navigationManager.navigate(to: .newCard) },
                 deleteCard: deleteCard,
                 moveCard: moveCard

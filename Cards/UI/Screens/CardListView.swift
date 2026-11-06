@@ -83,6 +83,7 @@ public struct CardListView: View {
                     card: card,
                     isDropTarget: dropTarget == card.id,
                     onTap: { actions.selectCard(card.id) },
+                    onEdit: { actions.editCard(card.id) },
                     onDelete: {
                         deleteTrigger.toggle()
                         actions.deleteCard(card.id)

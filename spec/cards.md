@@ -103,7 +103,7 @@ As a card holder, I want to open a card and see its barcode and number, so that 
 
 As a card holder, I want to change a card's details, so that I can fix a mistake or keep it up to date.
 
-- Edit on the card screen opens a form titled "Edit Card" with the card's name, code, barcode type, colour and places, and its Notify When I Arrive switch when it has places (ARR-6). There is no camera. In preparation for 1.4 the form also has the card's icon (CARD-12).
+- Edit on the card screen, or in preparation for 1.4 Edit in a tile's long-press menu (CARD-10), opens a form titled "Edit Card" with the card's name, code, barcode type, colour and places, and its Notify When I Arrive switch when it has places (ARR-6). There is no camera. In preparation for 1.4 the form also has the card's icon (CARD-12).
 - The Name field takes the keyboard focus on its own after about 0.6 seconds, once. Coming back to the form from another tab leaves the keyboard down (1.3). In preparation for 1.4 no field takes the focus on its own: the form opens with the keyboard down, and tapping a field brings it up.
 - Scrolling the form puts the keyboard away (1.3).
 - Save follows the same rules as adding: it is disabled without a name and a code, or while another card uses the code, and it trims both (CARD-3, CARD-9) (1.3).
@@ -179,14 +179,14 @@ As a card holder, I want my cards laid out in a grid, so that I can see more of 
 - Each tile is filled with the card's colour at full strength, in its gradient (COL-4), with the card face's rounded corners. Along the top are its icon on the left, if it has one (CARD-12), and on the right how far away its nearest place is, on a white panel whose corners nest inside the tile's (PLACE-6). Its name, in the colour's ink, is at the bottom.
 - A tile is at least 112 points high, growing with the text size up to 200 points, and names wrap rather than being cut short. The tiles in a row are as tall as the tallest.
 - Tapping a tile opens the card (CARD-4). Opening a card plays no haptic (A11Y-5).
-- A long press on a tile lifts it and shows a menu with Delete, and the system plays its haptic as the menu appears. Delete removes the card at once, with the medium haptic swiping had in the list (CARD-6).
+- A long press on a tile lifts it and shows a menu with Edit and Delete, and the system plays its haptic as the menu appears. Edit opens the card's edit form with the card's screen behind it, so Back goes to the card and Save shows it (CARD-5). Delete removes the card at once, with the medium haptic swiping had in the list (CARD-6).
 - In custom order (CARD-11), you press and hold a tile and drag it onto another to reorder the cards (CARD-7). The tile under the dragged one is outlined in the accent colour. The new order is saved and syncs (DATA-1).
 - When the cards change order, from a drag, a new sort order, a search or as you move, the tiles slide to their new places.
-- VoiceOver reads each tile as one button, the name and then the distance, as the rows did (A11Y-1), and offers Delete as an action.
+- VoiceOver reads each tile as one button, the name and then the distance, as the rows did (A11Y-1), and offers Edit and Delete as actions.
 - The add button and the empty state stay as they are on the list.
 
 **Since:** In preparation for 1.4
-**Where:** `Cards/UI/Screens/CardListView.swift`, `Cards/UI/Components/CardTileView.swift`, `Cards/Features/CardListScreen.swift`, `Cards/Core/Models/CardArrangement.swift`, `CardsUITests/CardsUITests.swift` (`testDeleteFromTheLongPressMenu`, `testDragATileToReorder`), `CardsUITests/CardsScreenshotTests.swift`
+**Where:** `Cards/UI/Screens/CardListView.swift`, `Cards/UI/Components/CardTileView.swift`, `Cards/Features/CardListScreen.swift`, `Cards/Core/Models/CardArrangement.swift`, `CardsUITests/CardsUITests.swift` (`testDeleteFromTheLongPressMenu`, `testDragATileToReorder`), `CardsUITests/CardEditFormUITests.swift` (`testEditFromTheLongPressMenu`), `CardsUITests/CardsScreenshotTests.swift`
 **Notes:** It replaces the single-column list. A grid has no swipe actions, which is why Delete moved to the long-press menu. Dragging uses SwiftUI's drag and drop, which works from iOS 18, so the other tiles don't part to make a gap while you drag; they move when you let go.
 
 ### CARD-11: Find a card by searching and sorting
