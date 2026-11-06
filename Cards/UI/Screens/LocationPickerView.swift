@@ -207,6 +207,7 @@ public struct LocationPickerView: View {
                 TextField("Name, e.g. Boulder Barn", text: Binding(get: { name.text }, set: { name.type($0) }))
                     .focused($focusedField, equals: .name)
                     .pickerField("tag")
+                    .accessibilityLabel("Place name")
                     .accessibilityIdentifier("locationNameField")
 
                 RadiusSlider(radius: $radius)
@@ -225,6 +226,7 @@ public struct LocationPickerView: View {
                 .submitLabel(.search)
                 .focused($focusedField, equals: .search)
                 .onSubmit(findBestMatch)
+                .accessibilityLabel("Search for a place")
                 .accessibilityHint("Finds shops, addresses, streets, towns and postcodes")
                 .accessibilityIdentifier("placeSearchField")
             if isFinding || (showsSuggestions && isSuggesting) {
@@ -389,12 +391,7 @@ private extension String {
 }
 
 #Preview("Offline") {
-    LocationPickerView(
-        initialPosition: .region(CardLocation.previewRegion),
-        search: .failing(.offline),
-        query: "Local Roast",
-        onAdd: { _ in }
-    )
-    .environment(\.accessibilityAnnouncer, .silent)
+    LocationPickerView(initialPosition: .region(CardLocation.previewRegion), search: .failing(.offline), query: "Local Roast", onAdd: { _ in })
+        .environment(\.accessibilityAnnouncer, .silent)
 }
 #endif

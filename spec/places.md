@@ -152,6 +152,7 @@ As a card holder, I want a place to be named for what is there, so that I don't 
 - The pin is named about a second after the map comes to rest, and only once the map is 5 km across or less. Wider than that, as while the map waits for your location, the pin marks a region rather than a place.
 - Nudging the pin less than 25 metres from where Apple Maps last named it keeps that name, so a search result's name stays while you line the pin up with its door.
 - You can edit the name at any time. Once you type a name of your own it stays, whatever you do next: moving the map, searching, going to your location or changing the radius never replace it. A search still moves the map. Changing the radius never changes the name in any case.
+- VoiceOver reads the name field as "Place name", followed by the name in it, so a filled-in field still says what it is for.
 - Clearing the name field hands the name back to Apple Maps, which names the place the next time it moves, never while you are typing in the field.
 - When Apple Maps has no name for a spot the pin moves to, or cannot be reached, a name it gave an earlier spot is cleared rather than left on the wrong place. A place saved with no name is "Pinned location" (PLACE-1).
 - When changing a place (PLACE-8), its name counts as your own and stays when you move it, unless it is "Pinned location", which Apple Maps may replace.
