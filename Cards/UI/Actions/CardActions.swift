@@ -70,6 +70,8 @@ public struct CardEditActions {
 public struct SettingsActions {
     public var exportCards: () -> Void
     public var importCards: (String) -> Void
+    /// Imports the file chosen in the Files picker, or reports that none could be.
+    public var importFile: (Result<URL, any Error>) -> Void
     public var deleteAllCards: () -> Void
     public var readClipboard: () -> String?
     /// Opens the app's page in the Settings app, where notifications are allowed.
@@ -78,12 +80,14 @@ public struct SettingsActions {
     public init(
         exportCards: @escaping () -> Void = {},
         importCards: @escaping (String) -> Void = { _ in },
+        importFile: @escaping (Result<URL, any Error>) -> Void = { _ in },
         deleteAllCards: @escaping () -> Void = {},
         readClipboard: @escaping () -> String? = { nil },
         openNotificationSettings: @escaping () -> Void = {}
     ) {
         self.exportCards = exportCards
         self.importCards = importCards
+        self.importFile = importFile
         self.deleteAllCards = deleteAllCards
         self.readClipboard = readClipboard
         self.openNotificationSettings = openNotificationSettings

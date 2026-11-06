@@ -1,7 +1,8 @@
 import SwiftUI
+import UniformTypeIdentifiers
 
 /// The settings screen. Export, import, delete and clipboard reads are all
-/// actions, so nothing here reaches for a store or the pasteboard directly.
+/// actions, so nothing here reaches for a store, the pasteboard or a file directly.
 public struct SettingsListView: View {
     private let state: SettingsState
     @Binding private var brightnessBoost: Bool
@@ -137,6 +138,11 @@ public struct SettingsListView: View {
                     actions.importCards(importText)
                     showImportSheet = false
                     importText = ""
+                },
+                onChooseFile: { choice in
+                    actions.importFile(choice)
+                    showImportSheet = false
+                    importText = ""
                 }
             )
         }
@@ -161,20 +167,27 @@ extension SettingsListView {
     }
 }
 
+/// The Import JSON sheet: paste an export, or choose one in the Files picker.
+/// The chosen file is handed on to be read, not read here.
 public struct ImportCardsView: View {
     @Binding private var importText: String
     private let readClipboard: () -> String?
     private let onImport: () -> Void
+    private let onChooseFile: (Result<URL, any Error>) -> Void
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @State private var choosingFile = false
 
     public init(
         importText: Binding<String>,
         readClipboard: @escaping () -> String? = { nil },
-        onImport: @escaping () -> Void
+        onImport: @escaping () -> Void,
+        onChooseFile: @escaping (Result<URL, any Error>) -> Void = { _ in }
     ) {
         _importText = importText
         self.readClipboard = readClipboard
         self.onImport = onImport
+        self.onChooseFile = onChooseFile
     }
 
     public var body: some View {
@@ -186,14 +199,24 @@ public struct ImportCardsView: View {
                     .textInputAutocapitalization(.never)
                     .padding()
 
-                Button("Paste from Clipboard") {
-                    if let clipboard = readClipboard() {
-                        importText = clipboard
+                sourceButtonsLayout {
+                    Button("Paste from Clipboard") {
+                        if let clipboard = readClipboard() {
+                            importText = clipboard
+                        }
                     }
+                    .accessibilityIdentifier("pasteFromClipboardButton")
+
+                    Button("Choose File") {
+                        choosingFile = true
+                    }
+                    .accessibilityIdentifier("chooseFileButton")
+                    .accessibilityHint("Imports the cards in a JSON file")
                 }
                 .buttonStyle(.bordered)
                 .padding()
             }
+            .fileImporter(isPresented: $choosingFile, allowedContentTypes: [.json], onCompletion: onChooseFile)
             .navigationTitle("Import JSON")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -206,5 +229,10 @@ public struct ImportCardsView: View {
                 }
             }
         }
+    }
+
+    /// Side by side, or stacked at the accessibility text sizes.
+    private var sourceButtonsLayout: AnyLayout {
+        dynamicTypeSize.isAccessibilitySize ? AnyLayout(VStackLayout(spacing: 12)) : AnyLayout(HStackLayout(spacing: 12))
     }
 }

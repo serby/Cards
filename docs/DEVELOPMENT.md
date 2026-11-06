@@ -85,7 +85,7 @@ Cards/
     Models/        CardItem (SwiftData), CardItemDTO, BarcodeType, CardColor, CardLocation, WidgetCard, ArrivalAlert
     Navigation/    NavigationRoute, NavigationManager, deep links
     Services/      CardStore, LocationService, PerformanceTracker, and the clients (rule 15):
-                   NotificationClient, PostcodeLookup, Clipboard, WidgetSnapshot
+                   NotificationClient, PostcodeLookup, Clipboard, WidgetSnapshot, FileReader
   UI/            Every view, as a pure function of view state and actions
     Screens/       CardListView, CardDetailView, CardEditView, LocationPickerView, SettingsListView
     Components/    BarcodeView, BarcodeImage, CardColorPicker, CardLocationRow, CardWidgetView, ProximityLabel, …

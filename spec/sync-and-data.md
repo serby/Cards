@@ -92,9 +92,10 @@ As a card holder, I want my cards to survive every update, so that I never lose 
 
 As a card holder, I want to import an export saved as a file, so that I don't have to copy and paste its text.
 
-- The Import JSON sheet (DATA-3) has a "Choose File" button that opens the Files picker, limited to JSON files.
-- Choosing a file imports its cards with the same rules and messages as pasted text (DATA-3, DATA-4): duplicates are skipped and the rest are added at the end.
+- The Import JSON sheet (DATA-3) has a "Choose File" button beside "Paste from Clipboard", or below it at the accessibility text sizes. It opens the Files picker, limited to JSON files.
+- Choosing a file closes the sheet and imports its cards with the same rules and messages as pasted text (DATA-3, DATA-4): duplicates are skipped and the rest are added at the end. Any text in the box is left out and cleared.
+- Cancelling the Files picker goes back to the sheet, and imports nothing.
 - A file that cannot be read, or is not a card export, shows "Invalid JSON format", and nothing is imported.
 
 **Since:** In preparation for 1.4
-**Where:** `Cards/UI/Screens/SettingsListView.swift`, `Cards/Features/SettingsScreen.swift`, `Cards/Core/Models/CardImport.swift`
+**Where:** `Cards/UI/Screens/SettingsListView.swift`, `Cards/Features/SettingsScreen.swift`, `Cards/Core/Services/FileReader.swift`, `Cards/Core/Models/CardImport.swift`, `CardsTests/ImportFileTests.swift`

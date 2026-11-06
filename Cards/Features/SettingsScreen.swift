@@ -10,6 +10,7 @@ public struct SettingsScreen: View {
     @AppStorage("showsCardWhereYouAre") private var showsCardWhereYouAre = false
     @Environment(ArrivalScheduler.self) private var arrivalScheduler
     @Environment(\.clipboard) private var clipboard
+    @Environment(\.fileReader) private var fileReader
     @Environment(\.openURL) private var openURL
     @Environment(\.scenePhase) private var scenePhase
     @State private var notificationsBlocked = false
@@ -38,7 +39,12 @@ public struct SettingsScreen: View {
             message: $message,
             actions: SettingsActions(
                 exportCards: { showExportSheet = true },
-                importCards: importJSON,
+                importCards: { text in
+                    message = Self.importText(text, existing: cards, into: modelContext)
+                },
+                importFile: { choice in
+                    message = Self.importFile(choice, reader: fileReader, existing: cards, into: modelContext)
+                },
                 deleteAllCards: deleteAllCards,
                 readClipboard: { clipboard.read() },
                 openNotificationSettings: openNotificationSettings
@@ -71,26 +77,49 @@ public struct SettingsScreen: View {
         return json
     }
 
-    private func importJSON(_ text: String) {
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .iso8601
-
-        guard let data = text.data(using: .utf8),
-              let dtos = try? decoder.decode([CardItemDTO].self, from: data) else {
-            message = "Invalid JSON format"
-            return
-        }
-
-        let result = CardImport.cards(from: dtos, existing: cards)
-        result.added.forEach(modelContext.insert)
-        try? modelContext.save()
-        message = CardImport.summary(result)
-    }
-
     private func deleteAllCards() {
         for card in cards {
             modelContext.delete(card)
         }
         try? modelContext.save()
+    }
+}
+
+/// Importing an export, pasted or chosen as a file. Both end in `importJSON`,
+/// so a file imports exactly as its text would.
+extension SettingsScreen {
+    /// What the import alert says when there is nothing it can import.
+    static let invalidJSON = "Invalid JSON format"
+
+    /// Imports pasted text, and says what happened.
+    static func importText(_ text: String, existing: [CardItem], into context: ModelContext) -> String {
+        importJSON(Data(text.utf8), existing: existing, into: context)
+    }
+
+    /// Imports the file chosen in the Files picker, read with `reader`, and says
+    /// what happened. A file that could not be chosen or read is invalid, as
+    /// text that is not an export is.
+    static func importFile(
+        _ choice: Result<URL, any Error>,
+        reader: FileReader,
+        existing: [CardItem],
+        into context: ModelContext
+    ) -> String {
+        guard let data = try? reader.read(choice.get()) else { return invalidJSON }
+        return importJSON(data, existing: existing, into: context)
+    }
+
+    /// Adds the cards in an export to `context`, after `existing`, and says what
+    /// happened (`CardImport`). Nothing is added unless it is a JSON array of cards.
+    static func importJSON(_ data: Data, existing: [CardItem], into context: ModelContext) -> String {
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        guard let dtos = try? decoder.decode([CardItemDTO].self, from: data) else {
+            return invalidJSON
+        }
+        let result = CardImport.cards(from: dtos, existing: existing)
+        result.added.forEach(context.insert)
+        try? context.save()
+        return CardImport.summary(result)
     }
 }
