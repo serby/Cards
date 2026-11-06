@@ -45,7 +45,7 @@ Only write what the code does. If a criterion is wrong, fix the criterion or the
 | File | Prefix | What it covers |
 |------|--------|----------------|
 | [cards.md](cards.md) | CARD | The list and grid, search and order, adding by scanning, typing or from a photo or a file, opening, editing, deleting, reordering, naming and symbols, and keeping each card's code its own |
-| [barcodes.md](barcodes.md) | BAR | Supported barcode types, how codes are drawn, codes that can't be drawn, and the brightness boost |
+| [barcodes.md](barcodes.md) | BAR | Supported barcode types, how codes are drawn, codes that can't be drawn, the brightness boost, and how the camera focuses on a card held close |
 | [colours-and-design.md](colours-and-design.md) | COL | The palette, custom colours, the card face, full-colour list rows, gradients, readable text, appearance and the app icon |
 | [places.md](places.md) | PLACE | Adding places on the map or by postcode, the radius, Add current location, removing places, distances, a card's nearest places and location permission |
 | [arrival-notifications.md](arrival-notifications.md) | ARR | A reminder on arrival, opening the card from it, the 20-region limit and watching the nearest places as you move, permission, the Settings switch and each card's own switch |

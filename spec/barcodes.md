@@ -1,6 +1,6 @@
 # Barcodes
 
-The barcode types Card Barcodes reads and draws, how a code is drawn, what happens when one can't be, and the brightness boost that helps a scanner read it.
+The barcode types Card Barcodes reads and draws, how a code is drawn, what happens when one can't be, the brightness boost that helps a scanner read it, and how the camera focuses on a card held close to read its barcode.
 
 ### BAR-1: Keep cards with the common barcode types
 
@@ -14,7 +14,7 @@ As a card holder, I want the app to handle the barcodes loyalty and membership c
 - QR Code and Aztec are drawn square. The other seven, PDF 417 among them, are drawn as a wide strip.
 
 **Since:** 1.0
-**Where:** `Cards/Core/Models/BarcodeType.swift`, `Cards/Scanner/ScannerViewControllerDelegate.swift:52-54`, `CardsTests/BarcodeTypeTests.swift`, `CardsTests/CardItemTests.swift`
+**Where:** `Cards/Core/Models/BarcodeType.swift`, `Cards/Scanner/CameraSession.swift` (`codeTypes`), `CardsTests/BarcodeTypeTests.swift`, `CardsTests/CardItemTests.swift`
 
 ### BAR-2: See a sharp barcode that scans
 
@@ -56,3 +56,17 @@ As a card holder, I want the screen at full brightness while I show a card, so t
 **Since:** 1.0
 **Where:** `Cards/UI/Screens/CardDetailView.swift`, `Cards/UI/Environment/ScreenBrightness.swift`, `Cards/Features/CardDetailScreen.swift`, `Cards/UI/Screens/SettingsListView.swift`
 **Notes:** The brightness is put back when the card screen goes away, which includes opening Edit from it. The app doesn't put it back itself when it goes to the background with a card open.
+
+### BAR-5: Scan a card held close to the camera
+
+As a card holder, I want the camera to focus on a card held a few centimetres away, so that it reads the barcode without me hunting for the right distance.
+
+- The scanner uses the first of these back cameras the device has: the Triple Camera, the Dual Wide Camera, the Dual Camera, then the Wide Camera. Without any of them it uses the device's default camera.
+- A combined camera with an ultra-wide lens switches to it by itself when a card is closer than the main lens can focus, on iPhones that can focus that close (macro).
+- The camera starts on the main lens, zoomed in just enough that a barcode 37 mm wide, the width of an EAN-13, fills the width of the camera view while the phone is still as far away as the main lens's minimum focus distance. This is Apple's rule from its AVCamBarcode sample. A lens that can focus that close gets no zoom, and the zoom never starts past 8x the main lens (CARD-2).
+- Autofocus is continuous and kept to near subjects, and exposure is continuous, where the camera supports them.
+- Only codes inside the camera view are read, not ones cropped off the top or bottom of the picture.
+
+**Since:** In preparation for 1.4
+**Where:** `Cards/Scanner/CameraPlan.swift`, `Cards/Scanner/CameraSession.swift`, `Cards/Scanner/ScannerModel.swift`, `CardsTests/CameraPlanTests.swift`
+**Notes:** The zoom comes from the main lens's minimum focus distance, not the combined camera's, which is the ultra-wide's macro distance on a Pro iPhone and would ask for no zoom. The simulator has no camera, so none of this shows there.

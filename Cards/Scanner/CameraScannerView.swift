@@ -1,42 +1,40 @@
 import AVFoundation
 import SwiftUI
 
-public struct CameraScannerView: UIViewControllerRepresentable {
-    @Binding public var scannedCode: String?
-    @Binding public var barcodeType: BarcodeType?
+/// The camera's live picture, from `ScannerViewController`. What it reads
+/// fills in the bindings.
+struct CameraScannerView: UIViewControllerRepresentable {
+    @Binding var scannedCode: String?
+    @Binding var barcodeType: BarcodeType?
+    let scanner: ScannerModel
 
-    public init(scannedCode: Binding<String?>, barcodeType: Binding<BarcodeType?>) {
-        _scannedCode = scannedCode
-        _barcodeType = barcodeType
-    }
-
-    public func makeUIViewController(context: Context) -> ScannerViewController {
-        let scannerVC = ScannerViewController()
+    func makeUIViewController(context: Context) -> ScannerViewController {
+        let scannerVC = ScannerViewController(scanner: scanner)
         scannerVC.delegate = context.coordinator
         return scannerVC
     }
 
-    public func updateUIViewController(_ uiViewController: ScannerViewController, context: Context) {}
-
-    public static func dismantleUIViewController(_ uiViewController: ScannerViewController, coordinator: Coordinator) {
-        uiViewController.captureSession?.stopRunning()
-        uiViewController.captureSession = nil
-        uiViewController.previewLayer?.removeFromSuperlayer()
-        uiViewController.previewLayer = nil
+    func updateUIViewController(_ uiViewController: ScannerViewController, context: Context) {
+        context.coordinator.parent = self
     }
 
-    public func makeCoordinator() -> Coordinator {
+    static func dismantleUIViewController(_ uiViewController: ScannerViewController, coordinator: Coordinator) {
+        uiViewController.shutDown()
+    }
+
+    func makeCoordinator() -> Coordinator {
         Coordinator(self)
     }
 
-    public class Coordinator: NSObject, @preconcurrency ScannerViewControllerDelegate {
+    @MainActor
+    final class Coordinator: NSObject, ScannerViewControllerDelegate {
         var parent: CameraScannerView
 
-        public init(_ parent: CameraScannerView) {
+        init(_ parent: CameraScannerView) {
             self.parent = parent
         }
 
-        @MainActor public func didFindScannedCode(code: String, type: AVMetadataObject.ObjectType) {
+        func didFindScannedCode(code: String, type: AVMetadataObject.ObjectType) {
             parent.scannedCode = code
             parent.barcodeType = BarcodeMapper.mapMetadataObjectTypeToBarcodeType(type)
         }
@@ -47,6 +45,7 @@ public struct ScannerOverlayView: View {
     @Binding var scannedCode: String?
     @Binding var barcodeType: BarcodeType?
     @State private var camera = CameraState.current
+    @State private var scanner = ScannerModel()
     @Environment(\.openURL) private var openURL
 
     /// Whether the camera can be used, asked before the scanner starts so a
@@ -79,7 +78,7 @@ public struct ScannerOverlayView: View {
         Group {
             switch camera {
             case .ready:
-                CameraScannerView(scannedCode: $scannedCode, barcodeType: $barcodeType)
+                CameraScannerView(scannedCode: $scannedCode, barcodeType: $barcodeType, scanner: scanner)
                     .overlay {
                         Rectangle()
                             .fill(Color.red.opacity(0.8))

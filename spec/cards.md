@@ -23,9 +23,10 @@ As a card holder, I want to point the camera at a card's barcode, so that I don'
 
 - The barcode viewfinder button at the top right of the list, labelled "Add Card" for VoiceOver, opens a form titled "Add Card" with the camera above the fields.
 - The camera view is 250 points high, with rounded corners and a red line across the middle.
+- In preparation for 1.4: the camera focuses on a card held close (BAR-5).
 - The camera reads the nine supported types (BAR-1). On the first read it stops, the phone vibrates, and the form's code and barcode type fill in. The name stays as it was.
 - After a read the camera stays stopped until the scanner view appears again.
-- Pinching the camera view zooms from wherever the last pinch left off, within the camera's range and never past 8x (1.3).
+- Pinching the camera view zooms from wherever the last pinch left off, within the camera's range and never past 8x (1.3). In preparation for 1.4: the range runs from the main lens's own view, never out to the ultra-wide, to 8x the main lens, and the zoom starts where BAR-5 puts it.
 - The first time, the form asks for the camera before it starts it, and iOS shows "Camera is used to scan barcodes on your loyalty and membership cards". The camera area is black until you answer.
 - When camera access is refused or restricted, the camera area says "Camera access is off" and "Turn it on in Settings to scan a card, or type the code below.", with an Open Settings button that opens the app's page in the Settings app (1.3).
 - On a device with no camera, such as the simulator, it says "No camera" and "Type the card's code below." (1.3).
@@ -34,7 +35,7 @@ As a card holder, I want to point the camera at a card's barcode, so that I don'
 - Saving adds the card and opens it (CARD-3).
 
 **Since:** 1.0
-**Where:** `Cards/Scanner/CameraScannerView.swift`, `Cards/Scanner/ScannerViewControllerDelegate.swift`, `Cards/UI/Components/CameraUnavailableView.swift`, `Cards/UI/Screens/CardEditView.swift`, `Cards/Features/CardEditScreen.swift`, `Info.plist`
+**Where:** `Cards/Scanner/CameraScannerView.swift`, `Cards/Scanner/ScannerViewControllerDelegate.swift`, `Cards/Scanner/ScannerModel.swift`, `Cards/Scanner/CameraSession.swift`, `Cards/UI/Components/CameraUnavailableView.swift`, `Cards/UI/Screens/CardEditView.swift`, `Cards/Features/CardEditScreen.swift`, `Info.plist`
 **Notes:** Only the add form has the camera. Editing a card has no scanner, so a card's code can only be changed by typing. In 1.0 scanning was a separate screen; since 1.1 the camera sits in the add form behind a single add button.
 
 ### CARD-3: Add a card by typing its number
