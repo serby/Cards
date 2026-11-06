@@ -62,6 +62,7 @@ struct CardsApp: App {
         .tint(.accent)
         .environment(locationService)
         .environment(arrivalScheduler)
+        .environment(\.mapShowsPointsOfInterest, DevelopmentHooks.mapShowsPointsOfInterest)
         .background(Color.primaryBackground)
         .onAppear {
             performanceTracker.recordAppLaunch()

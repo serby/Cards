@@ -55,6 +55,16 @@ enum DevelopmentHooks {
         #endif
     }
 
+    /// Whether maps show Apple Maps' points of interest: always, except in the
+    /// App Store screenshots, where their real business names don't belong.
+    static var mapShowsPointsOfInterest: Bool {
+        #if DEBUG
+        !screenshotSeedRequested
+        #else
+        true
+        #endif
+    }
+
     #if DEBUG
     private static var screenshotSeedRequested: Bool {
         CommandLine.arguments.contains("-screenshotSeed")

@@ -12,6 +12,7 @@ public struct LocationPickerView: View {
     private let onConfirm: (CardLocation) -> Void
 
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.mapShowsPointsOfInterest) private var showsPointsOfInterest
     @State private var position: MapCameraPosition
     /// The point under the pin. Kept as plain values so an unchanged camera
     /// never invalidates the view (MapKit reports camera changes generously).
@@ -133,6 +134,7 @@ public struct LocationPickerView: View {
         Map(position: $position, scope: mapScope) {
             UserAnnotation()
         }
+        .mapStyle(.standard(pointsOfInterest: showsPointsOfInterest ? .all : .excludingAll))
         .mapControls {}
         .onMapCameraChange(frequency: .continuous) { context in
             let centre = context.region.center
