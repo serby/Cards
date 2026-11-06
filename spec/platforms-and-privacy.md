@@ -1,6 +1,6 @@
 # Platforms and privacy
 
-The devices and systems Card Barcodes runs on, the language it speaks, and what it does and doesn't do with your data.
+The devices and systems Card Barcodes runs on, the language it speaks, what it does and doesn't do with your data, and when it asks for a rating.
 
 ### PLAT-1: Use the app on my iPhone
 
@@ -84,3 +84,20 @@ As a card holder, I want the app's words in clear English, so that I understand 
 
 **Since:** 1.0
 **Where:** `Cards/UI`, `metadata/en-GB`, `metadata/en-US`
+
+### PLAT-8: Be asked for a rating only once the app has helped
+
+As a card holder, I want the app to ask what I think only after it has worked for me, and never while I am showing a card, so that a prompt never gets between me and the till.
+
+- The app asks for a rating with Apple's own prompt (`requestReview`), which offers stars and an optional review. The app never shows a prompt of its own and never sends you to the App Store.
+- It counts the calendar days on which a card's screen opened (CARD-4), in the device's calendar and time zone. Opening several cards, or one card many times, on one day counts as one day. A card opened at 23:50 and another at 00:10 count as two days. A time earlier than the last one counted, after the clock is set back, counts nothing.
+- Once cards have been opened on three different days in the current version, it asks the next time you come back from a card to the list, a second after the list shows. Three days means the app has worked at a till on separate trips, not just on the day it was tried, so it can never ask on the day it was installed or first opened.
+- It asks only with the list showing in the Cards tab and the app in front. Not while a card or its edit form shows, or while the "Add Card?" sheet (SHARE-3) is up or the search field (CARD-11) has text in it; a return that does not fit leaves it due for the next one. Leaving the edit form, by deleting a card from it or cancelling Add Card, is not a return from a card and does not ask.
+- It asks at most once per version, as Apple advises. The first card opened in a new version starts the count again, so each version needs its own three days.
+- Apple decides whether its prompt appears: at most three times in 365 days, never in TestFlight builds, and not at all once the person has turned off In-App Ratings & Reviews in the App Store settings. Debug builds show it on every request.
+- The counts are kept on the device under `reviewPrompt` and don't sync, so each device counts its own days (DATA-1). They never leave the device (PLAT-4).
+- It never asks in UI tests (`-uiTesting` or `CARDS_UI_TESTING=1`) or the screenshot runs (`-screenshotSeed`), which do not count days either. The Storybook and previews show the pure views, which never ask.
+
+**Since:** In preparation for 1.4
+**Where:** `Cards/Core/Models/ReviewPrompt.swift`, `Cards/Core/Models/DeviceSettings.swift`, `Cards/Features/CardListScreen.swift`, `Cards/App/DevelopmentHooks.swift` (`asksForReviews`), `CardsTests/ReviewPromptTests.swift`
+**Notes:** The card shown in full above the grid where you are (SET-3) is not counted, because it never opens a card's screen.

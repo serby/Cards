@@ -1,3 +1,4 @@
+import StoreKit
 import SwiftData
 import SwiftUI
 
@@ -8,10 +9,23 @@ public struct CardListScreen: View {
     @Environment(LocationService.self) private var locationService
     @Environment(ArrivalScheduler.self) private var arrivalScheduler
     @Environment(\.widgetSnapshot) private var widgetSnapshot
+    @Environment(\.requestReview) private var requestReview
+    @Environment(\.calendar) private var calendar
+    @Environment(\.scenePhase) private var scenePhase
     @AppStorage(ArrivalPlan.enabledKey) private var arrivalNotifications = true
     @AppStorage(DeviceSettings.cardSortOrderKey) private var sortOrder = CardSortOrder.custom
     @AppStorage(DeviceSettings.showsCardWhereYouAreKey) private var showsCardWhereYouAre = false
+    @AppStorage(DeviceSettings.reviewPromptKey) private var reviewPrompt = ReviewPrompt()
     @State private var search = ""
+    /// Whether the screen on top of the list is a card rather than the edit
+    /// form, so that coming back to the list from it is a moment to ask for a
+    /// rating (PLAT-8). Deleting a card from its edit form is not.
+    @State private var cardOnTop = false
+    /// The pause before asking for a rating after coming back from a card, so
+    /// it can be called off if the list goes away first.
+    @State private var reviewRequest: Task<Void, Never>?
+    /// Read once: the version cannot change while the app runs.
+    private static let appVersion = Bundle.main.marketingVersion ?? ""
 
     public init() {}
 
@@ -42,6 +56,56 @@ public struct CardListScreen: View {
         .task(id: widgetCards) {
             widgetSnapshot.write(widgetCards)
         }
+        .onChange(of: navigationManager.navigationPath.isEmpty) { _, isEmpty in
+            guard isEmpty else { return }
+            if cardOnTop {
+                askForReviewAfterPause()
+            }
+            cardOnTop = false
+        }
+        // Opening another card or switching tabs during the pause calls it off.
+        .onDisappear {
+            reviewRequest?.cancel()
+        }
+    }
+
+    /// Waits a moment after coming back from a card, then asks for a rating if
+    /// it is due. A one-off task rather than `.task(id:)`, which would run again
+    /// each time the list reappears, as on switching back to the Cards tab.
+    private func askForReviewAfterPause() {
+        reviewRequest?.cancel()
+        reviewRequest = Task {
+            do {
+                try await Task.sleep(for: ReviewPrompt.pause)
+            } catch {
+                return
+            }
+            askForReviewIfDue()
+        }
+    }
+
+    /// A card's screen has appeared, so a card is on top and today counts
+    /// towards asking for a rating (PLAT-8).
+    private func cardShown() {
+        cardOnTop = true
+        guard DevelopmentHooks.asksForReviews else { return }
+        reviewPrompt.recordCardShown(at: .now, version: Self.appVersion, calendar: calendar)
+    }
+
+    /// Asks for an App Store rating once it is due (PLAT-8), and only while the
+    /// list is all that shows: no card, sheet or search over it, and the app in
+    /// front. Apple decides whether its prompt actually appears.
+    private func askForReviewIfDue() {
+        guard DevelopmentHooks.asksForReviews,
+              reviewPrompt.isDue(in: Self.appVersion),
+              navigationManager.tab == .cards,
+              navigationManager.navigationPath.isEmpty,
+              navigationManager.sharedCard == nil,
+              !CardArrangement.isFiltering(search),
+              scenePhase == .active
+        else { return }
+        reviewPrompt.recordAsked(in: Self.appVersion)
+        requestReview()
     }
 
     /// The card to show in full above the grid, when the Settings switch is on
@@ -97,6 +161,7 @@ public struct CardListScreen: View {
         case .card(let code):
             if let card = findCard(by: code) {
                 CardDetailScreen(item: card, navigationManager: navigationManager)
+                    .onAppear(perform: cardShown)
             } else {
                 Text("Card not found")
             }
@@ -104,6 +169,7 @@ public struct CardListScreen: View {
             if let card = findCard(by: code) {
                 CardEditScreen(cardItem: card, navigationManager: navigationManager)
                     .navigationTitle("Edit Card")
+                    .onAppear { cardOnTop = false }
             } else {
                 Text("Card not found")
             }
@@ -124,6 +190,7 @@ public struct CardListScreen: View {
                 }
             )
             .navigationTitle("Add Card")
+            .onAppear { cardOnTop = false }
         }
     }
 
