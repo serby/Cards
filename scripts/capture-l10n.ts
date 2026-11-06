@@ -10,8 +10,10 @@
 // the translations on screen".
 //
 // Usage: node scripts/capture-l10n.ts [options]
-//   --lang <code>…    Languages (default: en and every language in knownRegions)
-//   --size <name>…    Text sizes: xs s m large xl xxl xxxl AX1…AX5 (default: large AX5)
+//   --lang <code>…    Languages (default: en and every language in knownRegions);
+//                     one value may hold several, separated by spaces ("de ja")
+//   --size <name>…    Text sizes: xs s m large xl xxl xxxl AX1…AX5 (default: large AX5),
+//                     several to a value as for --lang
 //   --device <type>   Simulator device type (default: iPhone 16 Pro); the script keeps its own
 //   --os <version>    Its iOS version (default: 18.1)
 //   --out <dir>       Where the PNGs go (default: /tmp/cards-l10n-qa)
@@ -22,10 +24,10 @@ import { cpSync, existsSync, mkdirSync, openSync, readdirSync, readFileSync, rmS
 import { basename, dirname, join } from "node:path";
 import { parseArgs } from "node:util";
 import { projectAt, projectLanguages } from "./l10n.ts";
+import { root, xcodeEnv } from "./lib/xcode.ts";
 
-const root = join(import.meta.dirname, "..");
-const xcodeApp = process.env.XCODE_APP ?? "/Applications/Xcode27.1.app";
-const env = { ...process.env, DEVELOPER_DIR: `${xcodeApp}/Contents/Developer` };
+/// The Xcode in .xcode-version, as every script uses it.
+const env = xcodeEnv();
 const bundleID = "net.serby.Cards";
 const testClass = "CardsUITests/CardsLocalisationScreenshotTests";
 
@@ -243,6 +245,13 @@ function capture(options: {
     return { saved, passed };
 }
 
+/// The values of a repeatable option, each of which may hold several separated
+/// by spaces or commas, as the Makefile passes LANGS and SIZES. An empty value
+/// adds nothing.
+export function list(values: string[] | undefined): string[] {
+    return (values ?? []).flatMap((value) => value.split(/[\s,]+/)).filter(Boolean);
+}
+
 export function main(argv: string[]): number {
     const { values } = parseArgs({
         args: argv,
@@ -256,8 +265,8 @@ export function main(argv: string[]): number {
         },
     });
     const pbxproj = readFileSync(projectAt(root).pbxproj, "utf8");
-    const languages = values.lang?.length ? values.lang : ["en", ...projectLanguages(pbxproj)];
-    const chosenSizes = values.size?.length ? values.size : ["large", "AX5"];
+    const languages = list(values.lang).length ? list(values.lang) : ["en", ...projectLanguages(pbxproj)];
+    const chosenSizes = list(values.size).length ? list(values.size) : ["large", "AX5"];
     const unknown = chosenSizes.filter((size) => !(size in sizes));
     if (unknown.length) {
         console.error(`Unknown text size ${unknown.join(", ")}; use one of ${Object.keys(sizes).join(" ")}`);
