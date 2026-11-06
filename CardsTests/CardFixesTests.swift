@@ -72,6 +72,19 @@ struct CardFixesTests {
         #expect(try JSONDecoder().decode(CardItemDTO.self, from: older).toCardItem().notifiesOnArrival)
     }
 
+    @Test func symbolAndLastViewedAreKeptAndOlderExportsHaveNone() throws {
+        let viewed = Date(timeIntervalSince1970: 1_780_000_000)
+        let card = CardItem(code: "1", name: "Gym", symbol: "dumbbell", lastViewed: viewed)
+        let data = try JSONEncoder().encode(CardItemDTO(from: card))
+        let imported = try JSONDecoder().decode(CardItemDTO.self, from: data).toCardItem()
+        #expect(imported.symbol == "dumbbell")
+        #expect(imported.lastViewed == viewed)
+        let older = Data(#"{"code": "1", "name": "Gym"}"#.utf8)
+        let legacy = try JSONDecoder().decode(CardItemDTO.self, from: older).toCardItem()
+        #expect(legacy.symbol == nil)
+        #expect(legacy.lastViewed == nil)
+    }
+
     @Test @MainActor func cardsSwitchedOffAreNotWatched() {
         let place = CardLocation(name: "Westway", latitude: 51.52, longitude: -0.209)
         let on = ArrivalPlan.Card(name: "Gym", code: "1", barcodeType: .code128, locations: [place])

@@ -8,12 +8,15 @@ public struct CardSummary: Identifiable, Hashable, Sendable {
     /// Distance to the nearest location, when the card has any and the user's
     /// location is known.
     public let proximity: CardProximity?
+    /// The card's SF Symbol, or nil for none.
+    public let symbol: String?
 
-    public init(id: String, name: String, color: CardColor = .standard, proximity: CardProximity? = nil) {
+    public init(id: String, name: String, color: CardColor = .standard, proximity: CardProximity? = nil, symbol: String? = nil) {
         self.id = id
         self.name = name
         self.color = color
         self.proximity = proximity
+        self.symbol = symbol
     }
 }
 
@@ -26,6 +29,8 @@ public struct CardDetail: Identifiable, Hashable, Sendable {
     public let timestamp: Date
     public let color: CardColor
     public let proximity: CardProximity?
+    /// The card's SF Symbol, or nil for none.
+    public let symbol: String?
 
     public init(
         id: String,
@@ -34,7 +39,8 @@ public struct CardDetail: Identifiable, Hashable, Sendable {
         barcodeType: BarcodeType,
         timestamp: Date,
         color: CardColor = .standard,
-        proximity: CardProximity? = nil
+        proximity: CardProximity? = nil,
+        symbol: String? = nil
     ) {
         self.id = id
         self.name = name
@@ -43,6 +49,7 @@ public struct CardDetail: Identifiable, Hashable, Sendable {
         self.timestamp = timestamp
         self.color = color
         self.proximity = proximity
+        self.symbol = symbol
     }
 }
 
@@ -54,6 +61,8 @@ public struct CardDraft: Hashable, Sendable {
     public var color: CardColor
     public var locations: [CardLocation]
     public var notifiesOnArrival: Bool
+    /// The card's SF Symbol, or nil for none.
+    public var symbol: String?
 
     public init(
         name: String = "",
@@ -61,7 +70,8 @@ public struct CardDraft: Hashable, Sendable {
         barcodeType: BarcodeType = .code128,
         color: CardColor = .standard,
         locations: [CardLocation] = [],
-        notifiesOnArrival: Bool = true
+        notifiesOnArrival: Bool = true,
+        symbol: String? = nil
     ) {
         self.name = name
         self.code = code
@@ -69,6 +79,7 @@ public struct CardDraft: Hashable, Sendable {
         self.color = color
         self.locations = locations
         self.notifiesOnArrival = notifiesOnArrival
+        self.symbol = symbol
     }
 }
 
