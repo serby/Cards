@@ -9,13 +9,14 @@ As someone using VoiceOver, I want every card read in plain words, so that I can
 - A list row reads as one button: the card's name, then its distance, as "Joe's Market, You're at Joe's Market Notting Hill" or "Local Roast Coffee, 350 m from Local Roast Portobello" (1.3).
 - In preparation for 1.4: a tile in the grid reads the same way, name first although the distance sits above the name, its icon is not read, and Delete is in its actions (CARD-10). The card shown in full where you are reads the same way too, with the hint "Opens the card for where you are" (SET-3).
 - The add button reads "Add Card".
-- On the card screen, the name reads "Card name: <name>" and is a heading.
-- The barcode reads "Barcode for <name>", with the hint "This is a <type> barcode with code <code>".
+- On the card screen, the name reads as it is written and is a heading, and VoiceOver moves to it when the screen opens. In preparation for 1.4 the label no longer adds "Card name:", which translated badly.
+- The barcode reads "Barcode" with its type as the value, such as "EAN-13"; a code that cannot be drawn reads "Failed to generate barcode" instead (in preparation for 1.4).
 - The number reads "Card code: " and then the code character by character (1.3).
 - The copy button reads "Copy card code". After a copy it reads "Copied", and VoiceOver announces "Card code copied" (1.3).
 - The date reads "Created on <date>", with the full month, such as "Created on 4 November 2026 at 09:41".
-- Edit reads "Edit card", with the hint "Tap to edit this card's details".
-- The brightness button reads "Brightness Boost", with the hint "Toggles screen brightness to maximum for easier barcode scanning".
+- Edit has the hint "Opens the card for editing" (in preparation for 1.4).
+- The brightness button reads "Brightness Boost", with the hint "Turns full brightness on or off, so the barcode scans easily" (in preparation for 1.4).
+- In preparation for 1.4: Share reads "Share card", with the hint "Shares this card as a link to add it, or as an image".
 - "Add current location" has the hint "Opens a map to save where you are as one of this card's places" (1.3).
 - In preparation for 1.4: on a card with more than one place, "Nearest places", or "Places", reads as a heading, and each place reads as a button the way its distance does, such as "350 m from Joe's Market Kensington", with the hint "Opens this place in Maps" (PLACE-9).
 - In the edit form the fields read "Card name" and "Card code", the type menu "Barcode type", and Save "Save card".
@@ -58,7 +59,7 @@ As someone using VoiceOver, I want every control labelled and every image that a
 - In preparation for 1.4: icon swatches read what they show, such as "Basket", and "Selected" for the chosen one, each group's name is a heading, and the grid reads as "Card icon" (CARD-12).
 - A place in the edit form reads as one item: its name and radius (1.3).
 - The radius slider reads "Radius" with its value, such as "200 m" (1.3).
-- The map's pin and ring, the place icons, the field icons in the location sheet and the tick on a swatch are hidden from VoiceOver (1.3).
+- The map's ring, the place icons, the field icons in the location sheet and the tick on a swatch are hidden from VoiceOver (1.3). In preparation for 1.4 the pin reads "Map pin", with the place's name and radius, and its Move North, South, East and West actions move the map, so VoiceOver users can place it.
 - The external link icon in Settings reads "External link" (1.1).
 - When the camera can't be used, its title and text read as one item, such as "No camera, Type the card's code below.", Open Settings is a separate button, and the icon is hidden (CARD-2) (1.3).
 - In preparation for 1.4: the camera view reads "Barcode scanner" with a hint, and double-tapping it focuses on its middle (BAR-6). The torch button reads "Torch", a switch that is on or off, has a 44 point touch area and grows with the text size (BAR-7). The red line and the focus square are hidden from VoiceOver.

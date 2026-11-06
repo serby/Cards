@@ -74,13 +74,30 @@ As a card holder, I want the camera used only when I am scanning a card, so that
 **Since:** 1.0
 **Where:** `Cards/Scanner/ScannerViewControllerDelegate.swift`, `Cards/Scanner/CameraScannerView.swift:21-26`, `Cards/Scanner/CameraScannerView.swift:46-106`
 
-### PLAT-7: Read the app in English
+### PLAT-7: Read the app in my language
 
-As a card holder, I want the app's words in clear English, so that I understand every screen.
+As a card holder, I want the app in my own language, so that I understand every screen.
 
-- The app's text is in British English, such as "Colour" and "Postcode", whatever the device's language.
-- The App Store listing has British English (en-GB) and American English (en-US) versions that say the same thing.
-- What's New shows American English text on devices in the US where the changelog has it (SET-2).
+- The app speaks British English, and, in preparation for 1.4, Spanish (Spain), German and Japanese. It follows the language chosen for it in iOS Settings, or the device's language, and falls back to British English for any other.
+- Every word on screen and every word VoiceOver speaks is translated, including the app's name under its icon, the permission prompts, the arrival notification, the Home Screen widget and its gallery entry, and What's New for 1.4 (SET-2). The user's own words, card names, codes and place names, are shown as typed.
+- Dates, distances and radii follow the device's region: "1,5 km" in Germany, "400 yd" in the UK, "0.93 mi" in the US. Distances are spoken in full by VoiceOver ("350 metres", "350 Meter").
+- Counts use each language's plural forms: "1 card", "2 cards"; Japanese has one form for every number.
+- Card codes, version numbers and JSON read left to right in every language, and barcodes are never mirrored.
+- An English device always shows English, never a translation, because `Info.plist` keeps `CFBundleDevelopmentRegion`.
 
-**Since:** 1.0
-**Where:** `Cards/UI`, `metadata/en-GB`, `metadata/en-US`
+**Since:** 1.0 (English), in preparation for 1.4 (Spanish, German and Japanese)
+**Where:** `Cards/Localizable.xcstrings`, `Cards/InfoPlist.xcstrings`, `CardsWidget/Localizable.xcstrings`, `CardsWidget/InfoPlist.xcstrings`, `Cards.xcodeproj/project.pbxproj` (`knownRegions`), `CardsTests/LocalisationBundleTests.swift`, `CardsUITests/CardsLocalisationScreenshotTests.swift`
+**Notes:** French, Italian, Arabic, Traditional Chinese, Brazilian Portuguese, Korean and Simplified Chinese were translated on the localisation branch and are held back for later waves; `l10n/context.md` says how to bring each back. The right-to-left layout that Arabic needs is built and tested with right to left forced (`CardsRightToLeftUITests`).
+
+### PLAT-8: Find the app in the App Store in my language
+
+As someone looking for a card wallet, I want the App Store listing in my language, so that I can tell what the app does before I download it.
+
+- The listing has British English (en-GB), American English (en-US), Spanish for Spain (es-ES), Spanish for Mexico (es-MX), German (de-DE) and Japanese (ja) versions, in preparation for 1.4. Each one says the same thing in its own words, with the wording people search for there: "Fidelización" in Spain, "Cartera" in Mexico, "Kundenkarten" in Germany, "ポイントカード管理" in Japan.
+- Every listing keeps the name "Card Barcodes" and localises the part after the colon, within 30 characters. Names, subtitles and screenshot captions never mention the price; the description and promotional text may say the app is free.
+- Each listing has its own keywords, within 100 bytes, with no word already in its name or subtitle and no competitor's name.
+- Each listing's What's New is that version's changelog in its language (SET-2), and its screenshots show the app in its language, with captions in it.
+- App Review's notes are written once, in British English.
+
+**Since:** In preparation for 1.4
+**Where:** `metadata/<locale>/`, `screenshots/store/<locale>/captions.json`, `scripts/check-metadata.ts`, `scripts/check-store-images.ts`, `scripts/upload-metadata.ts`, `scripts/upload-screenshots.ts`
