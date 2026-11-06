@@ -10,7 +10,8 @@ let componentStories: [Story] = [
     cardLocationRowStory,
     cardWidgetStory,
     cameraUnavailableStory,
-    scannerPlaceholderStory
+    scannerPlaceholderStory,
+    cardFaceStory
 ]
 
 @MainActor
@@ -283,5 +284,46 @@ private let cameraUnavailableStory = Story(
         CameraUnavailableView(reason: knobs.option("Reason") == "denied" ? .denied : .unavailable)
             .frame(height: 250)
             .padding()
+    )
+}
+
+@MainActor
+private let cardFaceStory = Story(
+    id: "card-face",
+    title: "CardFaceView",
+    section: "Components",
+    knobs: [
+        .text("Name", CardDetail.sample.name),
+        .text("Code", CardDetail.sample.code),
+        .options("Type", BarcodeType.allNames, BarcodeType.ean13.rawValue),
+        .options("Colour", CardColor.allNames, CardDetail.sample.color.rawValue),
+        .toggle("Copy button", true)
+    ] + ProximityKnobs.knobs(place: "Boots Westfield", distance: 320),
+    gallery: [CardDetail.sample, .qr, .invalidCode].map { card in
+        (name: card.name, view: AnyView(CardFaceView(card: card).padding()))
+    }
+) { knobs in
+    let card = CardDetail(
+        id: "story",
+        name: knobs.string("Name"),
+        code: knobs.string("Code"),
+        barcodeType: .named(knobs.option("Type")),
+        timestamp: Date.now,
+        color: .named(knobs.option("Colour")),
+        proximity: knobs.proximity()
+    )
+    return AnyView(
+        Group {
+            if knobs.bool("Copy button") {
+                CardFaceView(card: card, accessoryWidth: 44) {
+                    Image(systemName: "doc.on.doc")
+                        .foregroundStyle(CardPanel.secondaryInk)
+                        .frame(width: 44, height: 44)
+                }
+            } else {
+                CardFaceView(card: card)
+            }
+        }
+        .padding()
     )
 }

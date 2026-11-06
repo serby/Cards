@@ -32,58 +32,9 @@ public struct CardDetailView: View {
 
     public var body: some View {
         VStack {
-            VStack(spacing: CardGeometry.inset) {
-                VStack(spacing: 6) {
-                    Text(card.name)
-                        .font(.title2.bold())
-                        .multilineTextAlignment(.center)
-                        .foregroundStyle(CardPanel.ink)
-                        .accessibilityIdentifier("cardNameText")
-                        .accessibilityLabel("Card name: \(card.name)")
-                        .accessibilityAddTraits(.isHeader)
-
-                    if let proximity = card.proximity {
-                        ProximityLabel(proximity, showsPlace: true)
-                            .font(.subheadline.weight(.medium))
-                            .foregroundStyle(CardPanel.secondaryInk)
-                            .accessibilityIdentifier("cardProximityText")
-                    }
-                }
-                .cardPanel()
-
-                BarcodeView(barcodeString: card.code, barcodeType: card.barcodeType)
-                    .accessibilityLabel("Barcode for \(card.name)")
-
-                VStack(spacing: 4) {
-                    HStack(spacing: 0) {
-                        // As wide as the copy button, so the number stays centred on the panel.
-                        Color.clear
-                            .frame(width: Self.copyButtonSize, height: 1)
-                            .accessibilityHidden(true)
-                        Text(card.code)
-                            .font(.title3.monospaced().weight(.semibold))
-                            .foregroundStyle(CardPanel.ink)
-                            .multilineTextAlignment(.center)
-                            .frame(maxWidth: .infinity)
-                            .textSelection(.enabled)
-                            .accessibilityIdentifier("cardCodeText")
-                            .accessibilityLabel(Text("Card code: ") + Text(card.code).speechSpellsOutCharacters())
-                            .accessibilityAddTraits(.isStaticText)
-                        copyCodeButton
-                    }
-
-                    Text("\(card.timestamp, format: Date.FormatStyle(date: .abbreviated, time: .shortened))")
-                        .font(.caption)
-                        .foregroundStyle(CardPanel.secondaryInk)
-                        .accessibilityIdentifier("cardTimestampText")
-                        .accessibilityLabel("Created on \(card.timestamp, format: Date.FormatStyle(date: .long, time: .shortened))")
-                        .accessibilityAddTraits(.isStaticText)
-                }
-                .cardPanel()
+            CardFaceView(card: card, accessoryWidth: Self.copyButtonSize) {
+                copyCodeButton
             }
-            .padding(CardGeometry.inset)
-            .frame(maxWidth: .infinity)
-            .background(card.color.cardFill, in: .rect(cornerRadius: CardGeometry.cornerRadius))
             .shadow(color: .black.opacity(0.12), radius: 16, y: 8)
 
             // Pointless where the card already is, so it goes once you are inside one of its places.
@@ -196,15 +147,5 @@ public struct CardDetailView: View {
             await screenBrightness.fade(to: originalBrightness ?? 0.5, duration: 0.2)
             announcer.announce("Brightness boost off")
         }
-    }
-}
-
-private extension View {
-    /// A white panel for text on the card face, its corners nested inside the card's.
-    func cardPanel() -> some View {
-        padding(.vertical, 12)
-            .padding(.horizontal, 16)
-            .frame(maxWidth: .infinity)
-            .background(CardPanel.fill, in: .rect(cornerRadius: CardGeometry.panelCornerRadius))
     }
 }
