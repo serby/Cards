@@ -180,6 +180,7 @@ public struct SettingsListView: View {
                     }
                     // "Version, 1.1 (42)" as one element, not two.
                     .accessibilityElement(children: .combine)
+                    .accessibilityIdentifier("versionRow")
                 }
 
                 if let url = state.authorURL {
@@ -203,6 +204,7 @@ public struct SettingsListView: View {
                     .accessibilityHint(
                         Text("Opens in your web browser", comment: "VoiceOver hint for the Settings row that opens the author's website.")
                     )
+                    .accessibilityIdentifier("authorLink")
                 }
             }
         }

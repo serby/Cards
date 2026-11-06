@@ -134,8 +134,19 @@ class CardsAccessibilityAuditTests: XCTestCase {
     /// Import JSON is 93 pt tall and Delete All Cards 161 pt, against 44 pt at
     /// the default size, and the heading and footer wrap at full size. Checked
     /// on the audit's screenshots; the check reports these rows of a List only.
+    /// Since 1.4 made Settings and the form longer it also reports, in English
+    /// at the default size, Version, its number and Created by at the foot of
+    /// Settings, and Notify When I Arrive below a card's places; the
+    /// right-to-left audit at the largest size shows all four grown and
+    /// wrapped. On the add form only, below the camera and the photo and file
+    /// rows, it reports the Code label, its prompt and the Colour heading:
+    /// the same views pass on the edit form, where they sit higher, and the
+    /// edit form's largest-size screenshot shows Code grown and wrapped. The
+    /// check names the text in a row by its label, with no identifier, so text
+    /// inside one of these counts too (`isInside`).
     private static let growsInFull: Set<String> = [
-        "importJSONButton", "deleteAllCardsButton", "dataSectionHeader", "locationsFooter"
+        "importJSONButton", "deleteAllCardsButton", "dataSectionHeader", "locationsFooter",
+        "versionRow", "authorLink", "notifyOnArrivalToggle", "codeLabel", "wrappingPrompt", "colourSectionHeader"
     ]
 
     /// A place's row in the card form. The check reports its name and radius
@@ -145,10 +156,15 @@ class CardsAccessibilityAuditTests: XCTestCase {
     /// at the largest size. The Arabic audit's screenshot shows both grown to
     /// that size and wrapped, the radius whole on its two lines, the same as
     /// the rows in `growsInFull`.
+    private static let locationRow = "locationRow"
+
+    /// Whether `frame` lies inside an element with one of `identifiers`.
     @MainActor
-    private static func isInLocationRow(_ frame: CGRect, in app: XCUIApplication) -> Bool {
-        app.descendants(matching: .any).matching(identifier: "locationRow").allElementsBoundByIndex.contains { row in
-            row.frame.insetBy(dx: -1, dy: -1).contains(frame)
+    private static func isInside(_ frame: CGRect, anyOf identifiers: Set<String>, in app: XCUIApplication) -> Bool {
+        identifiers.contains { identifier in
+            app.descendants(matching: .any).matching(identifier: identifier).allElementsBoundByIndex.contains { row in
+                row.frame.insetBy(dx: -1, dy: -1).contains(frame)
+            }
         }
     }
 
@@ -164,6 +180,22 @@ class CardsAccessibilityAuditTests: XCTestCase {
     private static let shortHeadings: Set<String> = [
         "colourSectionHeader", "locationsSectionHeader", "displaySectionHeader", "dataSectionHeader"
     ]
+
+    /// The distance on a card's tile, CardPanel.ink on its white pill
+    /// (16:1, `panelTextIsReadable`), which the right-to-left audit at the
+    /// largest size reported below AA on Green Leaf Pharmacy's "0.96 mi". The
+    /// audit's own screenshot of the element measures #1F1F21 on #FFFFFF.
+    /// Its recording shows why: the check changes the text size as it runs,
+    /// the grid switches between one column and two with it and the search
+    /// field collapses, so the list is still moving as the contrast is
+    /// measured. A tile's name is not this: the tile's label starts with it.
+    @MainActor
+    private static func isTileDistance(_ element: XCUIElement, in app: XCUIApplication) -> Bool {
+        let tiles = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH %@", "cardRow_")).allElementsBoundByIndex
+        return tiles.contains { tile in
+            tile.frame.insetBy(dx: -1, dy: -1).contains(element.frame) && !tile.label.hasPrefix(element.label)
+        }
+    }
 
     /// Issues the audit raises that are not the app's to fix. Each case says
     /// why it was confirmed as a false positive, from the audit's screenshots
@@ -188,12 +220,13 @@ class CardsAccessibilityAuditTests: XCTestCase {
             // app; the large-text run shows the bar unchanged while the rest grows.
             return bars.contains { $0.frame.contains(frame) }
                 || growsInFull.contains(element.identifier)
-                || isInLocationRow(frame, in: app)
+                || isInside(frame, anyOf: growsInFull.union([locationRow]), in: app)
         case .contrast:
             // A disabled control, such as Import with nothing pasted: WCAG 1.4.3
             // exempts inactive controls.
             if !element.isEnabled { return true }
             if shortHeadings.contains(element.identifier) { return true }
+            if isTileDistance(element, in: app) { return true }
             // Text in or partly under a translucent bar is measured against the
             // bar's blur of whatever is scrolled beneath it: the camera view under
             // Add Card's bar, cards and headings under the tab bar. Pixels taken
@@ -207,7 +240,15 @@ class CardsAccessibilityAuditTests: XCTestCase {
             // It wraps in a stack that grows with it, and the AX5 captures
             // show it whole in every language.
             if element.identifier == "wrappingPrompt" { return true }
-            if isInLocationRow(frame, in: app) { return true }
+            if isInside(frame, anyOf: [locationRow], in: app) { return true }
+            // The Cards tab's search field is UIKit's own, in the navigation
+            // bar, which iOS sizes and collapses as the list scrolls. The
+            // audit's screenshots of the report catch it part collapsed, 31 pt
+            // tall rather than 36 at the default size and 10 pt at the largest,
+            // and its recording shows the list moving under it as the check
+            // changes the text size; the screenshot taken just before shows it
+            // whole at both sizes, "Search" grown to the largest.
+            if app.searchFields.allElementsBoundByIndex.contains(where: { $0.frame.intersects(frame) }) { return true }
             let tabBar = app.tabBars.firstMatch
             // The Locations footer clear of the tab bar. With a place above it,
             // German's two lines end at y 701 on the iPhone 16 Pro, 90 pt above

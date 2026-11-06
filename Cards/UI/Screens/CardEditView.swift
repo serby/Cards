@@ -163,6 +163,8 @@ public struct CardEditView<Scanner: View>: View {
                 rowLayout {
                     codeLabel
                         .accessibilityHidden(true)
+                        // Hidden from VoiceOver, but the accessibility audit still names it.
+                        .accessibilityIdentifier("codeLabel")
                     TextField(
                         "Enter code",
                         text: $draft.code.singleLine { focusedField = nil },
@@ -281,6 +283,7 @@ public struct CardEditView<Scanner: View>: View {
                     }
                     .tint(.accent)
                     .disabled(!arrivalNotificationsEnabled)
+                    .accessibilityIdentifier("notifyOnArrivalToggle")
                 }
 
                 Button {
