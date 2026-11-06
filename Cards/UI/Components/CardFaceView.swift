@@ -17,16 +17,12 @@ public struct CardFaceView<NumberAccessory: View>: View {
         self.numberAccessory = numberAccessory()
     }
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     public var body: some View {
         VStack(spacing: CardGeometry.inset) {
             VStack(spacing: 6) {
-                Text(card.name)
-                    .font(.title2.bold())
-                    .multilineTextAlignment(.center)
-                    .foregroundStyle(CardPanel.ink)
-                    .accessibilityIdentifier("cardNameText")
-                    .accessibilityLabel("Card name: \(card.name)")
-                    .accessibilityAddTraits(.isHeader)
+                nameAndSymbol
 
                 if let proximity = card.proximity {
                     ProximityLabel(proximity, showsPlace: true)
@@ -69,6 +65,28 @@ public struct CardFaceView<NumberAccessory: View>: View {
         .padding(CardGeometry.inset)
         .frame(maxWidth: .infinity)
         .background(card.color.cardFill, in: .rect(cornerRadius: CardGeometry.cornerRadius))
+    }
+
+    /// The name, with the card's symbol beside it, or above it at the
+    /// accessibility text sizes. VoiceOver reads only the name, which already
+    /// says what the card is.
+    private var nameAndSymbol: some View {
+        let layout = dynamicTypeSize.isAccessibilitySize
+            ? AnyLayout(VStackLayout(spacing: 4))
+            : AnyLayout(HStackLayout(alignment: .firstTextBaseline, spacing: 8))
+        return layout {
+            if let symbol = card.symbol {
+                Image(systemName: symbol)
+                    .accessibilityHidden(true)
+            }
+            Text(card.name)
+                .multilineTextAlignment(.center)
+                .accessibilityIdentifier("cardNameText")
+                .accessibilityLabel("Card name: \(card.name)")
+                .accessibilityAddTraits(.isHeader)
+        }
+        .font(.title2.bold())
+        .foregroundStyle(CardPanel.ink)
     }
 }
 

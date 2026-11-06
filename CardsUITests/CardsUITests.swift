@@ -256,6 +256,41 @@ final class CardsUITests: XCTestCase {
         option.tap()
     }
 
+    /// A symbol chosen in the grid is saved with the card and is there when the
+    /// form opens again (CARD-12).
+    @MainActor
+    func testChooseASymbol() throws {
+        let app = XCUIApplication()
+        app.launchArguments += ["-uiTesting", "-screenshotSeed"]
+        app.launch()
+        dismissNotificationPrompt()
+
+        let nectar = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Nectar")).firstMatch
+        XCTAssertTrue(waitForElement(nectar))
+        nectar.tap()
+        app.buttons["editCardButton"].tap()
+
+        let symbolRow = app.buttons["symbolRow"]
+        for _ in 0..<3 where !(symbolRow.exists && symbolRow.isHittable) {
+            app.descendants(matching: .any)["editCardForm"].firstMatch.swipeUp()
+        }
+        XCTAssertEqual(symbolRow.value as? String, "None")
+        symbolRow.tap()
+        let basket = app.buttons["cardSymbol_basket.fill"]
+        XCTAssertTrue(waitForElement(basket))
+        basket.tap()
+        XCTAssertTrue(basket.waitForNonExistence(timeout: 3), "Choosing a symbol closes the grid")
+        XCTAssertEqual(symbolRow.value as? String, "Basket")
+
+        app.buttons["saveCardButton"].tap()
+        XCTAssertTrue(waitForElement(app.buttons["editCardButton"]))
+        app.buttons["editCardButton"].tap()
+        for _ in 0..<3 where !(symbolRow.exists && symbolRow.isHittable) {
+            app.descendants(matching: .any)["editCardForm"].firstMatch.swipeUp()
+        }
+        XCTAssertEqual(symbolRow.value as? String, "Basket")
+    }
+
     /// Cards with locations ask for notifications once; answer so the alert
     /// does not cover the app.
     @MainActor

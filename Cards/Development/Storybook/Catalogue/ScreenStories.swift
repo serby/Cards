@@ -100,6 +100,7 @@ private let cardDetailStory = Story(
         .text("Code", CardDetail.sample.code),
         .options("Type", BarcodeType.allNames, BarcodeType.ean13.rawValue),
         .options("Colour", CardColor.allNames, CardDetail.sample.color.rawValue),
+        SymbolKnob.knob(CardDetail.sample.symbol),
         .number("Created (days ago)", 30, in: 0...3_650, step: 1),
         .toggle("Brightness boost", true),
         .toggle("Map opens at Westway", true)
@@ -122,7 +123,8 @@ private let cardDetailStory = Story(
         barcodeType: .named(knobs.option("Type")),
         timestamp: Date.now.addingTimeInterval(-knobs.number("Created (days ago)") * 86_400),
         color: .named(knobs.option("Colour")),
-        proximity: knobs.proximity()
+        proximity: knobs.proximity(),
+        symbol: knobs.symbol
     )
     return pushed {
         CardDetailView(
@@ -144,6 +146,7 @@ private let cardEditStory = Story(
         .text("Code", CardDraft.sample.code),
         .options("Type", BarcodeType.allNames, BarcodeType.code128.rawValue),
         .options("Colour", CardColor.allNames, CardDraft.sample.color.rawValue),
+        SymbolKnob.knob(CardDraft.sample.symbol),
         .number("Locations", 1, in: 0...Double(CardLocation.samples.count), step: 1),
         .toggle("Notify on arrival", true),
         .toggle("Arrival notifications on", true),
@@ -175,7 +178,8 @@ private let cardEditStory = Story(
                 barcodeType: .named(knobs.option("Type")),
                 color: .named(knobs.option("Colour")),
                 locations: Array(CardLocation.samples.prefix(knobs.integer("Locations"))),
-                notifiesOnArrival: knobs.bool("Notify on arrival")
+                notifiesOnArrival: knobs.bool("Notify on arrival"),
+                symbol: knobs.symbol
             )
         },
         set: { (updated: CardDraft) in
@@ -183,6 +187,7 @@ private let cardEditStory = Story(
             knobs.set(updated.code, for: "Code")
             knobs.select(updated.barcodeType.rawValue, for: "Type")
             knobs.select(updated.color.rawValue, for: "Colour")
+            knobs.symbolBinding.wrappedValue = updated.symbol
             knobs.set(Double(updated.locations.count), for: "Locations")
             knobs.set(updated.notifiesOnArrival, for: "Notify on arrival")
         }

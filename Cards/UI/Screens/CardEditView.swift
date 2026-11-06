@@ -18,6 +18,7 @@ public struct CardEditView<Scanner: View>: View {
 
     @FocusState private var focusedField: Field?
     @State private var showsLocationPicker = false
+    @State private var showsSymbolPicker = false
     /// The name takes focus once, not each time the form is seen again after switching tabs.
     @State private var hasAutofocused = false
 
@@ -108,6 +109,10 @@ public struct CardEditView<Scanner: View>: View {
             }
 
             Section {
+                symbolRow
+            }
+
+            Section {
                 ForEach(draft.locations) { location in
                     CardLocationRow(location)
                 }
@@ -140,6 +145,9 @@ public struct CardEditView<Scanner: View>: View {
                 onAdd: { draft.locations.append($0) }
             )
         }
+        .sheet(isPresented: $showsSymbolPicker) {
+            symbolPicker
+        }
         .scrollDismissesKeyboard(.immediately)
         .navigationBarTitleDisplayMode(.inline)
         .accessibilityIdentifier("editCardForm")
@@ -164,6 +172,58 @@ public struct CardEditView<Scanner: View>: View {
 }
 
 extension CardEditView {
+    /// Shows the card's symbol, or None, and opens the grid to choose one.
+    private var symbolRow: some View {
+        Button {
+            showsSymbolPicker = true
+        } label: {
+            HStack {
+                Text("Symbol")
+                    .foregroundStyle(Color.primaryText)
+                Spacer()
+                if let symbol = draft.symbol {
+                    Image(systemName: symbol)
+                        .foregroundStyle(Color.secondaryText)
+                        .accessibilityHidden(true)
+                } else {
+                    Text("None")
+                        .foregroundStyle(Color.secondaryText)
+                }
+                Image(systemName: "chevron.right")
+                    .font(.footnote.weight(.semibold))
+                    .foregroundStyle(Color.tertiaryText)
+                    .accessibilityHidden(true)
+            }
+            .contentShape(.rect)
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Symbol")
+        .accessibilityValue(CardSymbol.label(for: draft.symbol) ?? "None")
+        .accessibilityHint("Opens a grid of symbols to choose from")
+        .accessibilityAddTraits(.isButton)
+        .accessibilityIdentifier("symbolRow")
+    }
+
+    /// The symbol grid in a sheet. Choosing one closes it.
+    private var symbolPicker: some View {
+        NavigationStack {
+            ScrollView {
+                CardSymbolPicker(selection: $draft.symbol, color: draft.color) {
+                    showsSymbolPicker = false
+                }
+                .padding()
+            }
+            .navigationTitle("Symbol")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Done") { showsSymbolPicker = false }
+                }
+            }
+        }
+        .presentationDetents([.medium, .large])
+    }
+
     private var locationsFooter: String {
         if draft.locations.isEmpty {
             "Add a place to be reminded when you arrive there."

@@ -11,7 +11,8 @@ let componentStories: [Story] = [
     cardWidgetStory,
     cameraUnavailableStory,
     scannerPlaceholderStory,
-    cardFaceStory
+    cardFaceStory,
+    cardSymbolPickerStory
 ]
 
 @MainActor
@@ -304,6 +305,7 @@ private let cardFaceStory = Story(
         .text("Code", CardDetail.sample.code),
         .options("Type", BarcodeType.allNames, BarcodeType.ean13.rawValue),
         .options("Colour", CardColor.allNames, CardDetail.sample.color.rawValue),
+        SymbolKnob.knob(CardDetail.sample.symbol),
         .toggle("Copy button", true)
     ] + ProximityKnobs.knobs(place: "Boots Westfield", distance: 320),
     gallery: [CardDetail.sample, .qr, .invalidCode].map { card in
@@ -317,7 +319,8 @@ private let cardFaceStory = Story(
         barcodeType: .named(knobs.option("Type")),
         timestamp: Date.now,
         color: .named(knobs.option("Colour")),
-        proximity: knobs.proximity()
+        proximity: knobs.proximity(),
+        symbol: knobs.symbol
     )
     return AnyView(
         Group {

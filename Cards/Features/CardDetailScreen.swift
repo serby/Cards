@@ -24,7 +24,8 @@ public struct CardDetailScreen: View {
                 barcodeType: item.getBarcodeType(),
                 timestamp: item.timestamp,
                 color: item.getColor(),
-                proximity: item.locations.proximity(to: locationService.current)
+                proximity: item.locations.proximity(to: locationService.current),
+                symbol: item.symbol
             ),
             brightnessBoost: $brightnessBoost,
             mapCentre: locationService.current?.coordinate,

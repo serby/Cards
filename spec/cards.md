@@ -59,6 +59,7 @@ As a card holder, I want to type a card's number in, so that I can keep a card t
 As a card holder, I want to open a card and see its barcode and number, so that it can be scanned or typed in at the till.
 
 - The card screen shows the card face in the card's colour (COL-3): the name on a white panel at the top, the barcode in its frame (BAR-2), and the number and the date the card was added on a white panel below.
+- In preparation for 1.4: the card's symbol, if it has one, sits beside the name in the top panel (CARD-12).
 - When the card has places and the app knows where you are, the top panel also says how far away the nearest is, as "At Westway" or "350 m · Westway" (PLACE-6) (1.3).
 - The number is in a monospaced font, and it can be selected and copied (1.3).
 - A copy button beside the number puts it on the clipboard, for typing it into a website or another app. The icon turns into a tick for about a second and a half, and a success haptic plays. The number stays centred on its panel (1.3).
@@ -75,7 +76,7 @@ As a card holder, I want to open a card and see its barcode and number, so that 
 
 As a card holder, I want to change a card's details, so that I can fix a mistake or keep it up to date.
 
-- Edit on the card screen opens a form titled "Edit Card" with the card's name, code, barcode type, colour and places, and its Notify When I Arrive switch when it has places (ARR-6). There is no camera.
+- Edit on the card screen opens a form titled "Edit Card" with the card's name, code, barcode type, colour and places, and its Notify When I Arrive switch when it has places (ARR-6). There is no camera. In preparation for 1.4 the form also has the card's symbol (CARD-12).
 - The Name field takes the keyboard focus on its own after about 0.6 seconds, once. Coming back to the form from another tab leaves the keyboard down (1.3).
 - Scrolling the form puts the keyboard away (1.3).
 - Save follows the same rules as adding: it is disabled without a name and a code, or while another card uses the code, and it trims both (CARD-3, CARD-9) (1.3).
@@ -182,12 +183,16 @@ As a card holder, I want to search my cards and choose their order, so that the 
 
 As a card holder, I want each card to carry a symbol, so that I can recognise it at a glance.
 
-- The edit form has a Symbol row that opens a grid of symbols suited to cards, such as a basket, a coffee cup, a dumbbell, a book, a fuel pump and a shopping bag, plus None.
+- The add and edit forms have a Symbol row, below Colour, that shows the card's symbol, or "None", and opens a sheet titled "Symbol".
+- The sheet is a grid of 35 symbols suited to cards, None first, then shopping (a basket, a trolley, a shopping bag, a price tag, a gift, a T-shirt), food and drink (a coffee cup, a mug, a takeaway, a restaurant, a cake, a wine glass), getting about (a fuel pump, a car, an aeroplane, a bus, a hotel, a suitcase), fitness (a dumbbell, running, swimming, climbing, a bicycle), health (first aid, a pharmacy, a heart), books and going out (a book, a library, a ticket, a cinema, a theatre) and pets, home and garden (pets, a garden, DIY, a hairdresser).
+- Each symbol in the grid is drawn on the card's colour in the colour's ink, as the colour swatches are (COL-4), and the chosen one has a ring round it. Tapping one chooses it and closes the sheet; Done closes it without a change.
+- The choice is saved with the card when the form is saved, like every other field (CARD-5). Going back without saving keeps the old symbol.
 - A card has no symbol until you choose one. Older cards and older exports have none.
 - The symbol shows at the top of the card's tile in the grid (CARD-10), in the colour's ink like the name, so it stays readable (COL-4).
-- It shows on the card screen beside the name in the top panel (CARD-4), drawn in the panel's ink.
-- VoiceOver does not read the symbol, because the card's name already says what it is (A11Y-4).
+- It shows on the card screen beside the name in the top panel (CARD-4), drawn in the panel's ink. At the accessibility text sizes it sits above the name instead (A11Y-3).
+- VoiceOver does not read the symbol on the card or its tile, because the card's name already says what it is (A11Y-4). In the form, where you choose it, the Symbol row reads its value by what the symbol shows, such as "Basket", or "None", and so does each symbol in the grid.
 - The symbol is stored with the card, so it syncs (DATA-1), is exported, and is imported with the card (DATA-2, DATA-3).
 
 **Since:** In preparation for 1.4
-**Where:** `Cards/UI/Screens/CardEditView.swift`, `Cards/Core/Models/CardItem.swift`, `Cards/UI/Screens/CardDetailView.swift`, `Cards/UI/Components/CardTileView.swift`, `Cards/Features/CardListScreen.swift`
+**Where:** `Cards/Core/Models/CardSymbol.swift`, `Cards/UI/Components/CardSymbolPicker.swift`, `Cards/UI/Screens/CardEditView.swift`, `Cards/Features/CardEditScreen.swift`, `Cards/UI/Components/CardFaceView.swift`, `Cards/Features/CardDetailScreen.swift`, `Cards/Core/Models/CardItem.swift`, `Cards/UI/Screens/CardListView.swift`, `CardsTests/CardSymbolTests.swift`, `CardsUITests/CardsUITests.swift` (`testChooseASymbol`), `Cards/UI/Screens/CardDetailView.swift`, `Cards/UI/Components/CardTileView.swift`, `Cards/Features/CardListScreen.swift`
+**Notes:** Every symbol is in SF Symbols 6, so iOS 18 draws it; `CardSymbolTests` checks each one on the oldest supported iOS. A symbol name the build doesn't list, such as one from a newer version, still shows on the card.

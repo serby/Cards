@@ -31,7 +31,8 @@ public struct CardEditScreen: View {
                 barcodeType: cardItem.getBarcodeType(),
                 color: cardItem.getColor(),
                 locations: cardItem.locations,
-                notifiesOnArrival: cardItem.notifiesOnArrival
+                notifiesOnArrival: cardItem.notifiesOnArrival,
+                symbol: cardItem.symbol
             )
         )
     }
@@ -96,6 +97,7 @@ public struct CardEditScreen: View {
         cardItem.color = draft.color.rawValue
         cardItem.locations = draft.locations
         cardItem.notifiesOnArrival = draft.notifiesOnArrival
+        cardItem.symbol = draft.symbol
 
         if let onSave {
             onSave(cardItem)

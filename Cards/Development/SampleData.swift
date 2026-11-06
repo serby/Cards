@@ -64,7 +64,8 @@ public extension CardDetail {
         barcodeType: .ean13,
         timestamp: Date(timeIntervalSince1970: 1_700_000_000),
         color: .indigo,
-        proximity: CardProximity(placeName: "Boots Westfield", distance: 320)
+        proximity: CardProximity(placeName: "Boots Westfield", distance: 320),
+        symbol: "cross.case.fill"
     )
 
     static let qr = CardDetail(
@@ -103,7 +104,8 @@ public extension CardDraft {
         code: "123ABC",
         barcodeType: .code128,
         color: .teal,
-        locations: [.sample]
+        locations: [.sample],
+        symbol: "figure.climbing"
     )
     static let empty = CardDraft()
 }
