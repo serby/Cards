@@ -7,8 +7,8 @@ What debug builds add for building and testing the app. None of it is in release
 As someone building the app, I want the development tools in one place, so that I can reach them without disturbing the app's own screens.
 
 - Debug builds have a third tab, "Development", with a hammer icon, after Cards and Settings. Release builds have no such tab.
-- The tab opens on a list titled "Development" with its tools under "Tools", each with a line saying what it does: Storybook, the story browser that used to be its own tab, and Test Notification (DEV-2).
-- Storybook opens full screen over the tabs, with Done to close it, because its story list and stage are a split view that can't be pushed onto the tab's stack. Test Notification is pushed, with Back to return.
+- The tab opens on a list titled "Development" with its tools under "Tools", each with a line saying what it does: Storybook, the story browser that used to be its own tab, Test Notification (DEV-2) and Review Prompt (DEV-3).
+- Storybook opens full screen over the tabs, with Done to close it, because its story list and stage are a split view that can't be pushed onto the tab's stack. Test Notification and Review Prompt are pushed, with Back to return.
 - The tab is hidden during UI tests (`-uiTesting` or `CARDS_UI_TESTING=1`), as the Storybook tab was.
 
 **Since:** In preparation for 1.4
@@ -28,3 +28,16 @@ As someone building the app, I want to send an arrival notification for any card
 **Since:** In preparation for 1.4
 **Where:** `Cards/Development/Tools/TestNotificationScreen.swift`, `Cards/Development/Tools/TestArrival.swift`, `Cards/Features/ArrivalPlan.swift`, `Cards/Core/Services/NotificationClient.swift`, `CardsTests/TestArrivalTests.swift`, `CardsTests/NotificationClientTests.swift`
 **Notes:** Planning the arrivals again cancels every pending notification, so if the places to watch change in those five seconds, as they do when a card is added or edited, the test notification is cancelled too.
+
+### DEV-3: Check the review prompt
+
+As someone building the app, I want to see what the review prompt has counted and to ask for a rating on demand, so that I can check Apple's prompt and the rule without waiting three days.
+
+- Development > Review Prompt shows what PLAT-8 has counted on this device: the version counted ("None" before any card is opened), "Days With a Card Shown" as "2 of 3", when a card was last shown ("Never" before), whether the app has asked in that version, and whether it is due.
+- "Ask for a Rating Now" asks straight away and leaves the counts as they are. A debug build shows Apple's prompt on every request, including on the simulator.
+- "Make It Due" counts three days in the current version, so the next time you come back from a card to the list the app asks, as it would on the third day.
+- "Start Again" clears the counts, as on a new install.
+- After each button the section's footer says what it did, and VoiceOver announces it.
+
+**Since:** In preparation for 1.4
+**Where:** `Cards/Development/Tools/ReviewPromptScreen.swift`, `Cards/Development/Tools/DevelopmentView.swift`, `Cards/Core/Models/ReviewPrompt.swift`
