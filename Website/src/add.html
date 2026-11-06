@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A card for Card Barcodes</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="apple-touch-icon" href="icon.png">
+  <meta name="description" content="Someone shared a loyalty card with you. Open the link on an iPhone with Card Barcodes to add it.">
+  <meta name="robots" content="noindex">
+</head>
+<body>
+  <header>
+    <nav>
+      <a href="index.html" class="logo">Card Barcodes</a>
+      <ul>
+        <li><a href="index.html#features">Features</a></li>
+        <li><a href="index.html#download">Download</a></li>
+        <li><a href="privacy.html">Privacy</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <h1>Someone shared a card with you</h1>
+      <p id="card" hidden>&ldquo;<span id="card-name"></span>&rdquo;</p>
+      <p>Open this link on an iPhone or iPad with Card Barcodes to add the card. The card stays in the link: it is never sent to this website.</p>
+      <a href="https://apps.apple.com/app/id6755939443" class="cta">Get Card Barcodes on the App Store</a>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 Paul Serby. All rights reserved.</p>
+    <nav>
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="mailto:support@serby.net">Contact</a>
+    </nav>
+  </footer>
+
+  <script>
+    // The card is base64url JSON after the "#", which the browser never sends
+    // here. Show its name, as text, if it has one; otherwise show nothing.
+    try {
+      var payload = location.hash.slice(1).replace(/-/g, "+").replace(/_/g, "/");
+      payload += "===".slice(0, (4 - payload.length % 4) % 4);
+      var bytes = Uint8Array.from(atob(payload), function (c) { return c.charCodeAt(0); });
+      var card = JSON.parse(new TextDecoder().decode(bytes));
+      var name = card && typeof card.name === "string" ? card.name.trim() : "";
+      if (name) {
+        document.getElementById("card-name").textContent = name;
+        document.getElementById("card").hidden = false;
+      }
+    } catch (error) {
+      // Not a card: the page still explains what the link is for.
+    }
+  </script>
+</body>
+</html>

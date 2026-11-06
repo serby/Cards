@@ -12,10 +12,10 @@ As a card holder, I want to send a card to someone, so that they can add it to t
 - The link carries nothing else: not when the card was added, where it sits in the list, or when it was last opened (CARD-11).
 - The card travels in the part after `#`, which browsers never send to a server, so the card's code does not reach cards.serby.net.
 - The same card always makes the same link.
-- On a phone with Card Barcodes, opening the link opens the app (SHARE-3). Without it, the link opens a page on cards.serby.net that explains what was shared and links to the App Store.
+- On a phone with Card Barcodes, opening the link opens the app (SHARE-3). Without it, the link opens a page on cards.serby.net titled "Someone shared a card with you" that shows the card's name, read from the part after `#` in the browser, says to open the link on an iPhone or iPad with Card Barcodes, and links to the App Store. A link without a readable card shows the page without a name.
 
 **Since:** In preparation for 1.4
-**Where:** `Cards/UI/Screens/CardDetailView.swift`, `Cards/Features/CardDetailScreen.swift`, `Cards/UI/ViewState/CardShare.swift`, `Cards/Core/Models/SharedCard.swift`, `Cards/Core/Navigation/SharedCardLink.swift`, `CardsTests/SharingTests.swift`, `CardsUITests/CardSharingUITests.swift` (`testShareMenuOffersALinkAndAnImage`)
+**Where:** `Cards/UI/Screens/CardDetailView.swift`, `Cards/Features/CardDetailScreen.swift`, `Cards/UI/ViewState/CardShare.swift`, `Cards/Core/Models/SharedCard.swift`, `Cards/Core/Navigation/SharedCardLink.swift`, `Website/src/add.html`, `Website/src/.well-known/apple-app-site-association`, `Website/src/_headers`, `Cards/Cards.entitlements`, `Cards/Cards.Debug.entitlements`, `CardsTests/SharingTests.swift`, `CardsUITests/CardSharingUITests.swift` (`testShareMenuOffersALinkAndAnImage`)
 **Notes:** The part after `#` is a `SharedCard`, a small format of its own rather than the export's `CardItemDTO`, which carries the sharer's dates and order. It is JSON in base64url without padding, with the keys `v` (the format version, 1), `name`, `code`, `type`, `color`, `symbol` (left out when there is none), `places` (each `name`, `latitude`, `longitude` and `radius`, left out when there are none) and `notifiesOnArrival`.
 
 ### SHARE-2: Share a card as an image

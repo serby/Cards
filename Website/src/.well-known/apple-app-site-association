@@ -1,0 +1,15 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["ZMBFPG86J4.net.serby.Cards"],
+        "components": [
+          {
+            "/": "/add",
+            "comment": "A card someone shared, in the part after the #"
+          }
+        ]
+      }
+    ]
+  }
+}
