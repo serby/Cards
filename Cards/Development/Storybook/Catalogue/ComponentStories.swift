@@ -4,7 +4,7 @@ import SwiftUI
 let componentStories: [Story] = [
     barcodeStory,
     spinnerStory,
-    cardRowStory,
+    cardTileStory,
     cardColorPickerStory,
     proximityLabelStory,
     cardLocationRowStory,
@@ -70,45 +70,52 @@ private let spinnerStory = Story(
     )
 }
 
+/// A tile at the width it has in the grid on an iPhone.
 @MainActor
-private let cardRowStory = Story(
-    id: "card-row",
-    title: "CardRowView",
+private func tile(_ card: CardSummary, isDropTarget: Bool = false) -> AnyView {
+    AnyView(
+        CardTileView(card: card, isDropTarget: isDropTarget, onTap: {})
+            .frame(width: 180)
+    )
+}
+
+@MainActor
+private let cardTileStory = Story(
+    id: "card-tile",
+    title: "CardTileView",
     section: "Components",
     knobs: [
         .text("Name", "Tesco Clubcard"),
-        .options("Colour", CardColor.allNames, CardColor.blue.rawValue)
-    ] + ProximityKnobs.knobs(place: "Tesco Express"),
+        .options("Colour", CardColor.allNames, CardColor.blue.rawValue),
+        .options("Symbol", CardSummary.storySymbols, "basket"),
+        .number("Width", 180, in: 120...400, step: 10),
+        .toggle("Drop target", false)
+    ] + ProximityKnobs.knobs(place: "Tesco Express", distance: 0),
     gallery: [
-        (
-            name: "Short name, here",
-            view: AnyView(CardRowView(card: CardSummary.samples[0]) {})
-        ),
-        (
-            name: "Nearby",
-            view: AnyView(CardRowView(card: CardSummary.samples[2]) {})
-        ),
-        (
-            name: "Long name",
-            view: AnyView(CardRowView(card: .longName) {})
-        )
+        (name: "Here, with a symbol", view: tile(CardSummary.samples[0])),
+        (name: "Nearby", view: tile(CardSummary.samples[2])),
+        (name: "No place or symbol", view: tile(CardSummary.samples[3])),
+        (name: "Long name", view: tile(.longName)),
+        (name: "Drop target", view: tile(CardSummary.samples[1], isDropTarget: true))
     ] + CardColor.allCases.map { color in
-        (
-            name: color.displayName,
-            view: AnyView(CardRowView(card: CardSummary(id: color.rawValue, name: color.displayName, color: color)) {})
-        )
+        (name: color.displayName, view: tile(CardSummary(id: color.rawValue, name: color.displayName, color: color)))
     }
 ) { knobs in
-    AnyView(
-        CardRowView(
+    let symbol = knobs.option("Symbol")
+    return AnyView(
+        CardTileView(
             card: CardSummary(
                 id: "story",
                 name: knobs.string("Name"),
                 color: .named(knobs.option("Colour")),
-                proximity: knobs.proximity()
-            )
-        ) {}
-            .padding()
+                proximity: knobs.proximity(),
+                symbol: symbol == CardSummary.noSymbol ? nil : symbol
+            ),
+            isDropTarget: knobs.bool("Drop target"),
+            onTap: {}
+        )
+        .frame(width: knobs.number("Width"))
+        .padding()
     )
 }
 

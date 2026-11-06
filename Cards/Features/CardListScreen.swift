@@ -14,19 +14,12 @@ public struct CardListScreen: View {
 
     public var body: some View {
         CardListView(
-            cards: cardItems.map { item in
-                CardSummary(
-                    id: item.code,
-                    name: item.name,
-                    color: item.getColor(),
-                    proximity: item.locations.proximity(to: locationService.current)
-                )
-            },
+            cards: cardItems.map(summary),
             actions: CardListActions(
                 selectCard: { code in navigationManager.navigate(to: .card(code)) },
                 addCard: { navigationManager.navigate(to: .newCard) },
-                deleteCards: deleteItems,
-                moveCards: moveItems
+                deleteCard: deleteCard,
+                moveCard: moveCard
             )
         )
         .navigationDestination(for: NavigationRoute.self) { route in
@@ -42,6 +35,16 @@ public struct CardListScreen: View {
         .task(id: widgetCards) {
             widgetSnapshot.write(widgetCards)
         }
+    }
+
+    private func summary(_ item: CardItem) -> CardSummary {
+        CardSummary(
+            id: item.code,
+            name: item.name,
+            color: item.getColor(),
+            proximity: item.locations.proximity(to: locationService.current),
+            symbol: item.symbol
+        )
     }
 
     /// The cards that remind you on arrival: none when the Settings switch is
@@ -109,28 +112,27 @@ public struct CardListScreen: View {
         cardItems.first { $0.code == code }
     }
 
-    private func deleteItems(offsets: IndexSet) {
+    private func deleteCard(code: String) {
+        guard let card = findCard(by: code) else { return }
         withAnimation {
-            for index in offsets {
-                modelContext.delete(cardItems[index])
-            }
-
-            cardItems.enumerated().forEach { index, item in
+            modelContext.delete(card)
+            // The rest keep their order, renumbered from 0.
+            cardItems.filter { $0 !== card }.enumerated().forEach { index, item in
                 item.order = index
             }
             try? modelContext.save()
         }
     }
 
-    private func moveItems(from source: IndexSet, to destination: Int) {
+    /// Puts the card with `code` where the card with `target` is, in custom order.
+    private func moveCard(code: String, onto target: String) {
+        guard let source = cardItems.firstIndex(where: { $0.code == code }),
+              let destination = cardItems.firstIndex(where: { $0.code == target })
+        else { return }
         withAnimation {
-            var mutableItems = Array(cardItems)
-            mutableItems.move(fromOffsets: source, toOffset: destination)
-
-            mutableItems.enumerated().forEach { index, item in
+            CardArrangement.moving(cardItems, from: source, to: destination).enumerated().forEach { index, item in
                 item.order = index
             }
-
             try? modelContext.save()
         }
     }

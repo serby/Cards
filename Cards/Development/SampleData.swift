@@ -24,14 +24,16 @@ public extension CardSummary {
             id: "634004024987531",
             name: "Tesco Clubcard",
             color: .blue,
-            proximity: CardProximity(placeName: "Tesco Express", distance: 0)
+            proximity: CardProximity(placeName: "Tesco Express", distance: 0),
+            symbol: "basket"
         ),
-        CardSummary(id: "9780201379624", name: "Boots Advantage", color: .indigo),
+        CardSummary(id: "9780201379624", name: "Boots Advantage", color: .indigo, symbol: "cross.case"),
         CardSummary(
             id: "1234567890128",
             name: "Costa Coffee",
             color: .red,
-            proximity: CardProximity(placeName: "Costa Notting Hill", distance: 450)
+            proximity: CardProximity(placeName: "Costa Notting Hill", distance: 450),
+            symbol: "cup.and.saucer"
         ),
         CardSummary(id: "9988776655443", name: "Nectar", color: .purple),
         CardSummary(id: "5012345678900", name: "Sainsbury's Nectar", color: .orange),
@@ -47,6 +49,11 @@ public extension CardSummary {
         id: "0000000000001",
         name: "A loyalty card with an extremely long name that will certainly wrap"
     )
+
+    /// The Symbol knob's choice for a card without one.
+    static let noSymbol = "None"
+    /// Symbols for the Symbol knob, with None first.
+    static let storySymbols = [noSymbol, "basket", "cup.and.saucer", "dumbbell", "book", "fuelpump", "bag", "cross.case"]
 }
 
 public extension CardDetail {

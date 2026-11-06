@@ -82,7 +82,7 @@ final class CardsScreenshotTests: XCTestCase {
         attach(app, name: "04_LocationPicker\(suffix)")
     }
 
-    /// A list row. Its label starts with the card name and goes on to say how
+    /// A card's tile. Its label starts with the card name and goes on to say how
     /// far away the card is.
     @MainActor
     private func row(_ app: XCUIApplication, _ name: String) -> XCUIElement {

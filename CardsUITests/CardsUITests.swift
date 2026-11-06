@@ -75,13 +75,10 @@ final class CardsUITests: XCTestCase {
     /// reads as "here" and stops offering to add it again.
     @MainActor
     func testAddCurrentLocationFromCard() throws {
-        let app = XCUIApplication()
-        app.launchArguments += ["-uiTesting", "-screenshotSeed"]
-        app.launch()
-        dismissNotificationPrompt()
+        let app = launchWithSeededCards()
 
         // Nectar has no locations; the seed puts the user at Notting Hill Gate.
-        let nectar = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Nectar")).firstMatch
+        let nectar = tile(app, "Nectar")
         XCTAssertTrue(waitForElement(nectar))
         nectar.tap()
 
@@ -97,12 +94,9 @@ final class CardsUITests: XCTestCase {
 
     @MainActor
     func testCopyCardCode() throws {
-        let app = XCUIApplication()
-        app.launchArguments += ["-uiTesting", "-screenshotSeed"]
-        app.launch()
-        dismissNotificationPrompt()
+        let app = launchWithSeededCards()
 
-        let nectar = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Nectar")).firstMatch
+        let nectar = tile(app, "Nectar")
         XCTAssertTrue(waitForElement(nectar))
         nectar.tap()
 
@@ -147,6 +141,54 @@ final class CardsUITests: XCTestCase {
         // The setting outlives the app, so put it back for the next test.
         toggle.switches.firstMatch.tap()
         XCTAssertEqual(toggle.value as? String, before)
+    }
+
+    /// A long press on a tile offers Delete, which removes the card at once (CARD-6, CARD-10).
+    @MainActor
+    func testDeleteFromTheLongPressMenu() throws {
+        let app = launchWithSeededCards()
+        let nectar = tile(app, "Nectar")
+        XCTAssertTrue(waitForElement(nectar))
+        nectar.press(forDuration: 1)
+
+        let delete = app.buttons["Delete"]
+        XCTAssertTrue(waitForElement(delete))
+        delete.tap()
+        XCTAssertTrue(nectar.waitForNonExistence(timeout: 3))
+        XCTAssertTrue(tile(app, "IKEA Family").exists)
+    }
+
+    /// In custom order, a tile dropped on another takes its place (CARD-7, CARD-10).
+    @MainActor
+    func testDragATileToReorder() throws {
+        let app = launchWithSeededCards()
+        let nectar = tile(app, "Nectar")
+        let tesco = tile(app, "Tesco Clubcard")
+        XCTAssertTrue(waitForElement(nectar))
+        nectar.press(forDuration: 1, thenDragTo: tesco)
+
+        // Nectar is now first, at the top left, and Tesco moved along beside it.
+        let moved = NSPredicate { _, _ in
+            nectar.frame.minX < tesco.frame.minX && abs(nectar.frame.minY - tesco.frame.minY) < 1
+        }
+        XCTAssertEqual(XCTWaiter.wait(for: [expectation(for: moved, evaluatedWith: nil)], timeout: 5), .completed)
+    }
+
+    /// Launches with the six screenshot cards.
+    @MainActor
+    private func launchWithSeededCards() -> XCUIApplication {
+        let app = XCUIApplication()
+        app.launchArguments += ["-uiTesting", "-screenshotSeed"]
+        app.launch()
+        dismissNotificationPrompt()
+        return app
+    }
+
+    /// A card's tile. Its label starts with the card name and goes on to say how
+    /// far away the card is.
+    @MainActor
+    private func tile(_ app: XCUIApplication, _ name: String) -> XCUIElement {
+        app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", name)).firstMatch
     }
 
     /// Cards with locations ask for notifications once; answer so the alert

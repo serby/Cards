@@ -52,7 +52,8 @@ private let cardListStory = Story(
     knobs: [
         .number("Cards", 6, in: 0...Double(CardSummary.samples.count), step: 1),
         .toggle("Colours", true),
-        .toggle("Distances", true)
+        .toggle("Distances", true),
+        .toggle("Symbols", true)
     ],
     gallery: [
         (name: "Empty", view: pushed { CardListView(cards: []) }),
@@ -68,7 +69,8 @@ private let cardListStory = Story(
                     id: card.id,
                     name: card.name,
                     color: knobs.bool("Colours") ? card.color : .standard,
-                    proximity: knobs.bool("Distances") ? card.proximity : nil
+                    proximity: knobs.bool("Distances") ? card.proximity : nil,
+                    symbol: knobs.bool("Symbols") ? card.symbol : nil
                 )
             }
         )

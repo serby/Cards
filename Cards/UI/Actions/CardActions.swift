@@ -6,19 +6,21 @@ import Foundation
 public struct CardListActions {
     public var selectCard: (CardSummary.ID) -> Void
     public var addCard: () -> Void
-    public var deleteCards: (IndexSet) -> Void
-    public var moveCards: (IndexSet, Int) -> Void
+    /// Deletes the card at once.
+    public var deleteCard: (CardSummary.ID) -> Void
+    /// Moves the first card, in custom order, to where the second one is.
+    public var moveCard: (_ card: CardSummary.ID, _ target: CardSummary.ID) -> Void
 
     public init(
         selectCard: @escaping (CardSummary.ID) -> Void = { _ in },
         addCard: @escaping () -> Void = {},
-        deleteCards: @escaping (IndexSet) -> Void = { _ in },
-        moveCards: @escaping (IndexSet, Int) -> Void = { _, _ in }
+        deleteCard: @escaping (CardSummary.ID) -> Void = { _ in },
+        moveCard: @escaping (_ card: CardSummary.ID, _ target: CardSummary.ID) -> Void = { _, _ in }
     ) {
         self.selectCard = selectCard
         self.addCard = addCard
-        self.deleteCards = deleteCards
-        self.moveCards = moveCards
+        self.deleteCard = deleteCard
+        self.moveCard = moveCard
     }
 }
 

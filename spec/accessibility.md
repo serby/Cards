@@ -7,6 +7,7 @@ How the app works with VoiceOver, larger text sizes and touch, and the feedback 
 As someone using VoiceOver, I want every card read in plain words, so that I can find and show the right one.
 
 - A list row reads as one button: the card's name, then its distance, as "Tesco Clubcard, You're at Tesco Express" or "Costa Coffee, 350 m from Costa Portobello" (1.3).
+- In preparation for 1.4: a tile in the grid reads the same way, its symbol is not read, and Delete is in its actions (CARD-10).
 - The add button reads "Add Card".
 - On the card screen, the name reads "Card name: <name>" and is a heading.
 - The barcode reads "Barcode for <name>", with the hint "This is a <type> barcode with code <code>".
@@ -38,7 +39,7 @@ As someone using VoiceOver, I want to be told when the app changes the screen br
 As a card holder who uses large text, I want the app to grow with my text size, so that I can read it.
 
 - Text uses the system's text styles, so it follows Dynamic Type throughout.
-- At the accessibility text sizes, a list row stacks the name above the distance (1.3).
+- At the accessibility text sizes, a list row stacks the name above the distance (1.3). In preparation for 1.4: a tile always has the name above the distance, and at those sizes the grid has half as many columns, one on iPhone and two on iPad (CARD-10).
 - The location sheet's fields are at least 44 points high and grow with the text (1.3).
 - Distances never wrap: they stay on one line (PLACE-6).
 
@@ -66,10 +67,10 @@ As someone using VoiceOver, I want every control labelled and every image that a
 As a card holder, I want a tap I can feel when I do something, so that I know it worked without looking closely.
 
 - Tapping a card in the list plays a heavy haptic tap. In preparation for 1.4 it plays none: the tap only played the first time a card was opened, and opening a card needs no haptic.
-- In preparation for 1.4: a long press on a card's tile plays a haptic as its menu appears (CARD-10).
-- Deleting a card plays a medium haptic tap.
+- In preparation for 1.4: a long press on a card's tile plays a haptic as its menu appears (CARD-10). It is the system's own context menu haptic; the app adds none.
+- Deleting a card plays a medium haptic tap. In preparation for 1.4: from the tile's menu (CARD-6).
 - A successful scan vibrates the phone (CARD-2).
 - Choosing a colour plays a selection haptic (1.3).
 
 **Since:** 1.0
-**Where:** `Cards/UI/Screens/CardListView.swift:42`, `Cards/UI/Screens/CardListView.swift:95`, `Cards/Scanner/ScannerViewControllerDelegate.swift:114`, `Cards/UI/Components/CardColorPicker.swift:34`
+**Where:** `Cards/UI/Components/CardTileView.swift`, `Cards/UI/Screens/CardListView.swift`, `Cards/Scanner/ScannerViewControllerDelegate.swift:114`, `Cards/UI/Components/CardColorPicker.swift:34`

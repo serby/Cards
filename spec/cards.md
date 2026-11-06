@@ -9,13 +9,13 @@ As a card holder, I want all my cards in one list, so that I can find the one I 
 - The Cards tab opens on a list titled "Cards", with one row per card in the order the cards are saved in (each card's `order`).
 - Each row shows the card's name, filled with the card's colour (COL-4), and the distance to the nearest of its places when the card has places and the app knows where you are (PLACE-6).
 - Tapping a row opens the card (CARD-4) with a heavy haptic tap.
-- In preparation for 1.4: the list becomes a grid (CARD-10), with search and a choice of order (CARD-11), and opening a card plays no haptic (A11Y-5).
-- The navigation bar, with its add button, hides when the list scrolls down from the top, and comes back when the list is at the top again.
+- In preparation for 1.4: the list becomes a grid of tiles (CARD-10), with search and a choice of order (CARD-11), and opening a card plays no haptic (A11Y-5).
+- The navigation bar, with its add button, hides when the list scrolls down from the top, and comes back when the list is at the top again. In preparation for 1.4: the grid does the same, and the bar stays while you search (CARD-11).
 - With no cards, the list shows "No Cards Yet", "Scan the barcode on a loyalty card to add it." and an "Add Card" button that opens the add form (1.3).
-- At the accessibility text sizes, a row stacks the name above the distance (A11Y-3).
+- At the accessibility text sizes, a row stacks the name above the distance (A11Y-3). In preparation for 1.4: the grid has half as many columns instead (CARD-10).
 
 **Since:** 1.0
-**Where:** `Cards/UI/Screens/CardListView.swift`, `Cards/Features/CardListScreen.swift`, `CardsUITests/CardsScreenshotTests.swift`
+**Where:** `Cards/UI/Screens/CardListView.swift`, `Cards/UI/Components/CardTileView.swift`, `Cards/Features/CardListScreen.swift`, `CardsUITests/CardsScreenshotTests.swift`
 
 ### CARD-2: Add a card by scanning its barcode
 
@@ -95,10 +95,10 @@ As a card holder, I want to delete a card I no longer use, so that the list only
 - With iCloud, the card is deleted on every device (DATA-1).
 - The card's arrival notifications are cancelled (ARR-1) and the widget stops offering it (WID-7).
 - Every card can be deleted at once from Settings (DATA-5).
-- In preparation for 1.4: the grid has no swipe actions, so Delete moves to the menu a long press on a tile shows (CARD-10).
+- In preparation for 1.4: the grid has no swipe actions, so Delete moves to the menu a long press on a tile shows (CARD-10). It deletes the card at once, with the same medium haptic, and the remaining cards are renumbered from 0 in their order. VoiceOver offers Delete as an action on the tile (A11Y-1).
 
 **Since:** 1.0
-**Where:** `Cards/UI/Screens/CardListView.swift`, `Cards/Features/CardListScreen.swift:112-123`
+**Where:** `Cards/UI/Screens/CardListView.swift`, `Cards/UI/Components/CardTileView.swift`, `Cards/Features/CardListScreen.swift`, `CardsUITests/CardsUITests.swift` (`testDeleteFromTheLongPressMenu`)
 
 ### CARD-7: Put my cards in the order I want
 
@@ -108,10 +108,11 @@ As a card holder, I want to move cards up and down the list, so that the ones I 
 - After a move every card is renumbered from 0 in its new order and saved, so the order syncs with the cards (DATA-1).
 - The top card is the one the widget shows when it can't pick a nearest card (WID-1).
 - New cards, added in the form or imported, go at the end of the list (CARD-3, DATA-3) (1.3).
-- In preparation for 1.4: tiles are dragged to a new place in the grid, and only while the grid is in custom order (CARD-10, CARD-11).
+- In preparation for 1.4: you press and hold a tile, then drag it onto another. It takes that tile's place, and the tiles between shift along by one. Every card is then renumbered and saved, as after a move in the list (CARD-10).
+- In preparation for 1.4: tiles can only be dragged in custom order with nothing in the search field (CARD-11).
 
 **Since:** 1.0
-**Where:** `Cards/UI/Screens/CardListView.swift`, `Cards/Features/CardListScreen.swift:125-136`, `Cards/Core/Models/CardImport.swift`, `CardsTests/CardFixesTests.swift` (`newCardsGoAtTheEnd`)
+**Where:** `Cards/UI/Screens/CardListView.swift`, `Cards/Features/CardListScreen.swift`, `Cards/Core/Models/CardArrangement.swift`, `Cards/Core/Models/CardImport.swift`, `CardsTests/CardFixesTests.swift` (`newCardsGoAtTheEnd`), `CardsTests/CardArrangementTests.swift` (`aMovedCardTakesThePlaceOfTheOneItIsDroppedOn`), `CardsUITests/CardsUITests.swift` (`testDragATileToReorder`)
 
 ### CARD-8: Tell my cards apart by name
 
@@ -143,16 +144,20 @@ As a card holder, I want no two cards to share a code, so that links, the widget
 
 As a card holder, I want my cards laid out in a grid, so that I can see more of them at once and pick one quickly.
 
-- The Cards tab shows the cards as tiles in a grid: two columns on iPhone and four on iPad. The order runs left to right, then on to the next row.
-- Each tile shows the card in its full colour, with its name, its symbol if it has one (CARD-12), and how far away its nearest place is (PLACE-6).
+- The Cards tab shows the cards as tiles in a grid: two columns on iPhone, and four where the screen is wide (an iPad, unless the app has a narrow part of the screen beside another app, when it has two). The order runs left to right, then on to the next row.
+- At the accessibility text sizes the grid has half as many columns, one on iPhone and two on iPad, so names have room (A11Y-3).
+- Each tile is filled with the card's colour at full strength, in its gradient (COL-4), with the card face's rounded corners. Its symbol, if it has one, is at the top (CARD-12). At the bottom are its name, in the colour's ink, and how far away its nearest place is, on a white panel whose corners nest inside the tile's (PLACE-6).
+- A tile is at least 112 points high, growing with the text size up to 200 points, and names wrap rather than being cut short. The tiles in a row are as tall as the tallest.
 - Tapping a tile opens the card (CARD-4). Opening a card plays no haptic (A11Y-5).
-- A long press on a tile plays a haptic and shows a menu over the tile with Delete. Delete removes the card at once, as swiping did in the list (CARD-6).
-- In custom order (CARD-11), you drag a tile to a new place in the grid to reorder the cards. The new order is saved and syncs (DATA-1).
+- A long press on a tile lifts it and shows a menu with Delete, and the system plays its haptic as the menu appears. Delete removes the card at once, with the medium haptic swiping had in the list (CARD-6).
+- In custom order (CARD-11), you press and hold a tile and drag it onto another to reorder the cards (CARD-7). The tile under the dragged one is outlined in the accent colour. The new order is saved and syncs (DATA-1).
+- When the cards change order, from a drag, a new sort order, a search or as you move, the tiles slide to their new places.
+- VoiceOver reads each tile as one button, the name and then the distance, as the rows did (A11Y-1), and offers Delete as an action.
 - The add button and the empty state stay as they are on the list.
 
 **Since:** In preparation for 1.4
-**Where:** `Cards/UI/Screens/CardListView.swift`, `Cards/Features/CardListScreen.swift`
-**Notes:** It replaces the single-column list. A grid has no swipe actions, which is why Delete moved to the long-press menu.
+**Where:** `Cards/UI/Screens/CardListView.swift`, `Cards/UI/Components/CardTileView.swift`, `Cards/Features/CardListScreen.swift`, `Cards/Core/Models/CardArrangement.swift`, `CardsUITests/CardsUITests.swift` (`testDeleteFromTheLongPressMenu`, `testDragATileToReorder`), `CardsUITests/CardsScreenshotTests.swift`
+**Notes:** It replaces the single-column list. A grid has no swipe actions, which is why Delete moved to the long-press menu. Dragging uses SwiftUI's drag and drop, which works from iOS 18, so the other tiles don't part to make a gap while you drag; they move when you let go.
 
 ### CARD-11: Find a card by searching and sorting
 
@@ -177,9 +182,10 @@ As a card holder, I want each card to carry a symbol, so that I can recognise it
 
 - The edit form has a Symbol row that opens a grid of symbols suited to cards, such as a basket, a coffee cup, a dumbbell, a book, a fuel pump and a shopping bag, plus None.
 - A card has no symbol until you choose one. Older cards and older exports have none.
-- The symbol shows on the card's tile in the grid (CARD-10), and on the card screen beside the name in the top panel (CARD-4). It is drawn in the panel's ink, so it stays readable (COL-4).
+- The symbol shows at the top of the card's tile in the grid (CARD-10), in the colour's ink like the name, so it stays readable (COL-4).
+- It shows on the card screen beside the name in the top panel (CARD-4), drawn in the panel's ink.
 - VoiceOver does not read the symbol, because the card's name already says what it is (A11Y-4).
 - The symbol is stored with the card, so it syncs (DATA-1), is exported, and is imported with the card (DATA-2, DATA-3).
 
 **Since:** In preparation for 1.4
-**Where:** `Cards/UI/Screens/CardEditView.swift`, `Cards/Core/Models/CardItem.swift`, `Cards/UI/Screens/CardDetailView.swift`, `Cards/UI/Screens/CardListView.swift`
+**Where:** `Cards/UI/Screens/CardEditView.swift`, `Cards/Core/Models/CardItem.swift`, `Cards/UI/Screens/CardDetailView.swift`, `Cards/UI/Components/CardTileView.swift`, `Cards/Features/CardListScreen.swift`

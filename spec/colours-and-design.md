@@ -52,9 +52,10 @@ As a card holder, I want the list to show each card's colour at full strength, s
 - The distance sits on a white pill in dark ink.
 - A Default row uses the secondary system background, with the name in the system's text colour.
 - The colour is never faded or tinted down in the list.
+- In preparation for 1.4: the grid's tiles take the same fill, the name the same ink and the distance a white panel, with the card face's 28 point corners and a panel whose 16 point corners nest inside them (CARD-10).
 
 **Since:** 1.3
-**Where:** `Cards/UI/Screens/CardListView.swift:14-43`, `Cards/UI/Theme/CardPalette.swift:196-206`, `CardsTests/CardColorTests.swift` (`textOnTheColourIsReadable`)
+**Where:** `Cards/UI/Screens/CardListView.swift`, `Cards/UI/Components/CardTileView.swift:30-70`, `Cards/UI/Theme/CardPalette.swift:196-206`, `CardsTests/CardColorTests.swift` (`textOnTheColourIsReadable`)
 **Notes:** Before 1.3 the list rows were plain text with no colour.
 
 ### COL-5: Read text on any card colour
