@@ -179,7 +179,6 @@ private let cardEditStory = Story(
         .toggle("Code already used", false),
         .toggle("Shows scanner", false),
         .toggle("Photo and file", false),
-        .toggle("Autofocus name", false),
         .toggle("Map opens at Boulder Barn", true),
         .toggle("Can delete", true)
     ] + DistanceKnobs.knobs,
@@ -224,7 +223,6 @@ private let cardEditStory = Story(
         CardEditView(
             draft: draft,
             actions: CardEditActions(placeSearch: .sample, delete: knobs.bool("Can delete") ? {} : nil),
-            autofocusesName: knobs.bool("Autofocus name"),
             mapCentre: knobs.bool("Map opens at Boulder Barn") ? CardLocation.sample.coordinate : nil,
             takenCodes: knobs.bool("Code already used") ? [knobs.string("Code")] : [],
             arrivalNotificationsEnabled: knobs.bool("Arrival notifications on"),

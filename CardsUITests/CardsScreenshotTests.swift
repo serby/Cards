@@ -42,16 +42,7 @@ final class CardsScreenshotTests: XCTestCase {
         app.buttons["editCardButton"].tap()
         let nameField = app.textFields["Card name"]
         XCTAssertTrue(nameField.waitForExistence(timeout: 5))
-        // The name field takes focus on its own after a moment, bringing up the
-        // keyboard when the simulator shows one. Return puts it away. Scrolling
-        // would too, but a scroll up shrinks the tab bar to a single button.
-        if app.keyboards.firstMatch.waitForExistence(timeout: 4) {
-            app.typeText("\n")
-            // In case Return does not do it on some display; a swipe is the fallback.
-            if !waitForKeyboardToGo(app, timeout: 1.5) {
-                app.descendants(matching: .any)["editCardForm"].firstMatch.swipeDown()
-            }
-        }
+        // The form opens with the keyboard down (CARD-5).
         XCTAssertTrue(waitForKeyboardToGo(app, timeout: 3))
         attach(app, name: "03_EditCard\(suffix)")
 

@@ -6,7 +6,6 @@ import SwiftUI
 public struct CardEditView<Scanner: View>: View {
     @Binding private var draft: CardDraft
     private let actions: CardEditActions
-    private let autofocusesName: Bool
     /// Where the location picker opens: the user's last known location, if any.
     private let mapCentre: CLLocationCoordinate2D?
     /// Codes other cards already use, which this card cannot take.
@@ -34,8 +33,6 @@ public struct CardEditView<Scanner: View>: View {
     }
     /// The place whose row was tapped, open in the picker to change it.
     @State private var editingLocation: CardLocation?
-    /// The name takes focus once, not each time the form is seen again after switching tabs.
-    @State private var hasAutofocused = false
 
     private enum Field {
         case name, code
@@ -44,7 +41,6 @@ public struct CardEditView<Scanner: View>: View {
     public init(
         draft: Binding<CardDraft>,
         actions: CardEditActions = CardEditActions(),
-        autofocusesName: Bool = false,
         mapCentre: CLLocationCoordinate2D? = nil,
         takenCodes: Set<String> = [],
         arrivalNotificationsEnabled: Bool = true,
@@ -54,7 +50,6 @@ public struct CardEditView<Scanner: View>: View {
     ) {
         _draft = draft
         self.actions = actions
-        self.autofocusesName = autofocusesName
         self.mapCentre = mapCentre
         self.takenCodes = takenCodes
         self.arrivalNotificationsEnabled = arrivalNotificationsEnabled
@@ -212,12 +207,6 @@ public struct CardEditView<Scanner: View>: View {
         .scrollDismissesKeyboard(.immediately)
         .navigationBarTitleDisplayMode(.inline)
         .accessibilityIdentifier("editCardForm")
-        .task {
-            guard autofocusesName, !hasAutofocused else { return }
-            hasAutofocused = true
-            try? await Task.sleep(for: .seconds(0.6))
-            focusedField = .name
-        }
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button("Save", action: actions.save)
@@ -308,7 +297,6 @@ public extension CardEditView where Scanner == EmptyView {
     init(
         draft: Binding<CardDraft>,
         actions: CardEditActions = CardEditActions(),
-        autofocusesName: Bool = false,
         mapCentre: CLLocationCoordinate2D? = nil,
         takenCodes: Set<String> = [],
         arrivalNotificationsEnabled: Bool = true
@@ -316,7 +304,6 @@ public extension CardEditView where Scanner == EmptyView {
         self.init(
             draft: draft,
             actions: actions,
-            autofocusesName: autofocusesName,
             mapCentre: mapCentre,
             takenCodes: takenCodes,
             arrivalNotificationsEnabled: arrivalNotificationsEnabled,

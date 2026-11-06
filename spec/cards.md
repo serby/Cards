@@ -104,7 +104,7 @@ As a card holder, I want to open a card and see its barcode and number, so that 
 As a card holder, I want to change a card's details, so that I can fix a mistake or keep it up to date.
 
 - Edit on the card screen opens a form titled "Edit Card" with the card's name, code, barcode type, colour and places, and its Notify When I Arrive switch when it has places (ARR-6). There is no camera. In preparation for 1.4 the form also has the card's icon (CARD-12).
-- The Name field takes the keyboard focus on its own after about 0.6 seconds, once. Coming back to the form from another tab leaves the keyboard down (1.3).
+- The Name field takes the keyboard focus on its own after about 0.6 seconds, once. Coming back to the form from another tab leaves the keyboard down (1.3). In preparation for 1.4 no field takes the focus on its own: the form opens with the keyboard down, and tapping a field brings it up.
 - Scrolling the form puts the keyboard away (1.3).
 - Save follows the same rules as adding: it is disabled without a name and a code, or while another card uses the code, and it trims both (CARD-3, CARD-9) (1.3).
 - Save writes every field to the card and shows the card screen; going back from there returns to the list.
