@@ -196,7 +196,7 @@ final class CardsUITests: XCTestCase {
     func testSortMenuChangesTheOrder() throws {
         let app = XCUIApplication()
         // Not pinned, as launchWithSeededCards does, so the menu can change it.
-        app.launchArguments += ["-uiTesting", "-screenshotSeed"]
+        app.launchArguments += ["-uiTesting", "-screenshotSeed", "-showsCardWhereYouAre", "NO"]
         app.launch()
         dismissNotificationPrompt()
         let nectar = tile(app, "Nectar")
@@ -212,12 +212,30 @@ final class CardsUITests: XCTestCase {
         XCTAssertEqual(XCTWaiter.wait(for: [expectation(for: nectarFirst, evaluatedWith: nil)], timeout: 5), .completed)
     }
 
-    /// Launches with the six screenshot cards, in custom order whatever an
-    /// earlier run left in that setting.
+    /// With Show Card Where I Am on, the card for where you are is shown in
+    /// full above the grid, and opens when tapped (SET-3).
+    @MainActor
+    func testCardWhereYouAre() throws {
+        let app = XCUIApplication()
+        app.launchArguments += ["-uiTesting", "-screenshotSeed", "-cardSortOrder", "custom", "-showsCardWhereYouAre", "YES"]
+        app.launch()
+        dismissNotificationPrompt()
+
+        // The seed puts the user inside Tesco Express.
+        let cardHere = app.buttons["cardWhereYouAre"]
+        XCTAssertTrue(waitForElement(cardHere))
+        XCTAssertEqual(cardHere.label, "Tesco Clubcard, You're at Tesco Express")
+        XCTAssertTrue(tile(app, "Costa Coffee").exists)
+        cardHere.tap()
+        XCTAssertTrue(waitForElement(app.staticTexts["Card name: Tesco Clubcard"]))
+    }
+
+    /// Launches with the six screenshot cards, in custom order and without the
+    /// card for where you are, whatever an earlier run left in those settings.
     @MainActor
     private func launchWithSeededCards() -> XCUIApplication {
         let app = XCUIApplication()
-        app.launchArguments += ["-uiTesting", "-screenshotSeed", "-cardSortOrder", "custom"]
+        app.launchArguments += ["-uiTesting", "-screenshotSeed", "-cardSortOrder", "custom", "-showsCardWhereYouAre", "NO"]
         app.launch()
         dismissNotificationPrompt()
         return app

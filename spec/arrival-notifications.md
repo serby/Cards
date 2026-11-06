@@ -18,7 +18,7 @@ As a card holder, I want a reminder when I reach the shop, so that I open the ri
 - Deleting a card, or removing a place, cancels its arrivals when the list next schedules.
 
 **Since:** 1.3
-**Where:** `Cards/Features/ArrivalScheduler.swift`, `Cards/Features/ArrivalPlan.swift`, `Cards/Core/Services/NotificationClient.swift`, `Cards/Features/CardListScreen.swift:35-68`, `CardsTests/CardLocationTests.swift` (`ArrivalPlanTests`), `CardsTests/ArrivalSchedulerTests.swift`
+**Where:** `Cards/Features/ArrivalScheduler.swift`, `Cards/Features/ArrivalPlan.swift`, `Cards/Core/Services/NotificationClient.swift`, `Cards/Features/CardListScreen.swift:35-41`, `Cards/Features/CardListScreen.swift:78-99`, `CardsTests/CardLocationTests.swift` (`ArrivalPlanTests`), `CardsTests/ArrivalSchedulerTests.swift`
 **Notes:** Changes that reach a device through iCloud are only scheduled once the app is opened on it.
 
 ### ARR-2: Open the card from the notification
@@ -72,7 +72,7 @@ As a card holder, I want a switch for arrival notifications, so that I can stop 
 - That check runs again each time the app comes back to the foreground.
 
 **Since:** 1.3
-**Where:** `Cards/UI/Screens/SettingsListView.swift`, `Cards/Features/SettingsScreen.swift`, `Cards/Features/CardListScreen.swift:47-52`, `Cards/Features/ArrivalScheduler.swift:42-46`, `CardsUITests/CardsUITests.swift` (`testArrivalNotificationsSwitch`), `CardsTests/ArrivalSchedulerTests.swift` (`blockedInSettingsFollowsTheAuthorisationStatus`)
+**Where:** `Cards/UI/Screens/SettingsListView.swift`, `Cards/Features/SettingsScreen.swift`, `Cards/Features/CardListScreen.swift:78-83`, `Cards/Features/ArrivalScheduler.swift:42-46`, `CardsUITests/CardsUITests.swift` (`testArrivalNotificationsSwitch`), `CardsTests/ArrivalSchedulerTests.swift` (`blockedInSettingsFollowsTheAuthorisationStatus`)
 **Notes:** The message only shows once notifications have been refused. Before the app has asked, there is nothing to show.
 
 ### ARR-6: Stop one card reminding me
@@ -92,5 +92,5 @@ As a card holder, I want to turn arrival notifications off for one card, so that
 - The switch only affects arrival notifications. Distances (PLACE-6) and the widget (WID-1) still use the card's places.
 
 **Since:** 1.3
-**Where:** `Cards/UI/Screens/CardEditView.swift:112-136`, `Cards/UI/Screens/CardEditView.swift:168-180`, `Cards/Features/CardEditScreen.swift`, `Cards/UI/ViewState/CardViewState.swift`, `Cards/Core/Models/CardItem.swift`, `Cards/Features/ArrivalPlan.swift:48-60`, `Cards/Features/CardListScreen.swift:58-68`, `CardsTests/CardFixesTests.swift` (`cardsSwitchedOffAreNotWatched`, `notifyingIsKeptAndOlderExportsNotify`)
+**Where:** `Cards/UI/Screens/CardEditView.swift:112-136`, `Cards/UI/Screens/CardEditView.swift:168-180`, `Cards/Features/CardEditScreen.swift`, `Cards/UI/ViewState/CardViewState.swift`, `Cards/Core/Models/CardItem.swift`, `Cards/Features/ArrivalPlan.swift:48-60`, `Cards/Features/CardListScreen.swift:89-99`, `CardsTests/CardFixesTests.swift` (`cardsSwitchedOffAreNotWatched`, `notifyingIsKeptAndOlderExportsNotify`)
 **Notes:** Removing a card's last place in the form hides the switch, but the card keeps its choice, so the switch comes back as it was when a place is added again.

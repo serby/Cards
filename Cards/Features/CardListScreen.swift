@@ -10,6 +10,7 @@ public struct CardListScreen: View {
     @Environment(\.widgetSnapshot) private var widgetSnapshot
     @AppStorage(ArrivalPlan.enabledKey) private var arrivalNotifications = true
     @AppStorage(DeviceSettings.cardSortOrderKey) private var sortOrder = CardSortOrder.custom
+    @AppStorage(DeviceSettings.showsCardWhereYouAreKey) private var showsCardWhereYouAre = false
     @State private var search = ""
 
     public init() {}
@@ -18,6 +19,7 @@ public struct CardListScreen: View {
         CardListView(
             cards: CardArrangement.arranged(cardItems, by: sortOrder, search: search, near: locationService.current)
                 .map(summary),
+            cardHere: cardHere.map(detail),
             search: $search,
             sortOrder: $sortOrder,
             actions: CardListActions(
@@ -42,10 +44,31 @@ public struct CardListScreen: View {
         }
     }
 
+    /// The card to show in full above the grid, when the Settings switch is on
+    /// and you are inside one of its places (SET-3). Not while searching, when
+    /// you are looking for another card.
+    private var cardHere: CardItem? {
+        guard showsCardWhereYouAre, !CardArrangement.isFiltering(search) else { return nil }
+        return CardArrangement.cardHere(in: cardItems, at: locationService.current)
+    }
+
     private func summary(_ item: CardItem) -> CardSummary {
         CardSummary(
             id: item.code,
             name: item.name,
+            color: item.getColor(),
+            proximity: item.locations.proximity(to: locationService.current),
+            symbol: item.symbol
+        )
+    }
+
+    private func detail(_ item: CardItem) -> CardDetail {
+        CardDetail(
+            id: item.code,
+            name: item.name,
+            code: item.code,
+            barcodeType: item.getBarcodeType(),
+            timestamp: item.timestamp,
             color: item.getColor(),
             proximity: item.locations.proximity(to: locationService.current),
             symbol: item.symbol

@@ -51,7 +51,7 @@ As a card holder, I want to type a card's number in, so that I can keep a card t
 - Scrolling the form puts the keyboard away (1.3).
 
 **Since:** 1.0
-**Where:** `Cards/UI/Screens/CardEditView.swift`, `Cards/Features/CardEditScreen.swift`, `Cards/UI/ViewState/CardViewState.swift`, `Cards/Features/CardListScreen.swift:88-103`, `Cards/Core/Models/CardImport.swift`, `CardsUITests/CardsUITests.swift` (`testAdd`), `CardsTests/CardFixesTests.swift` (`aCardNeedsANameAndACodeOfItsOwn`, `newCardsGoAtTheEnd`)
+**Where:** `Cards/UI/Screens/CardEditView.swift`, `Cards/Features/CardEditScreen.swift`, `Cards/UI/ViewState/CardViewState.swift`, `Cards/Features/CardListScreen.swift:119-134`, `Cards/Core/Models/CardImport.swift`, `CardsUITests/CardsUITests.swift` (`testAdd`), `CardsTests/CardFixesTests.swift` (`aCardNeedsANameAndACodeOfItsOwn`, `newCardsGoAtTheEnd`)
 **Notes:** Before 1.3 Save was always enabled, and a new card was saved with `order` 0 and so landed among the cards at the top of the list.
 
 ### CARD-4: Open a card to show it
@@ -124,7 +124,7 @@ As a card holder, I want each card to carry a name I choose, so that I know whic
 - Inside the app a card is identified by its code: the list rows, links (NAV-2), the widget's choice of card (WID-2) and arrival notifications all use it. That is why codes are unique (CARD-9).
 
 **Since:** 1.0
-**Where:** `Cards/Core/Models/CardItem.swift`, `Cards/UI/ViewState/CardViewState.swift`, `Cards/Features/CardListScreen.swift:108-110`
+**Where:** `Cards/Core/Models/CardItem.swift`, `Cards/UI/ViewState/CardViewState.swift`, `Cards/Features/CardListScreen.swift:139-141`
 
 ### CARD-9: Keep each card's code its own
 
@@ -138,7 +138,7 @@ As a card holder, I want no two cards to share a code, so that links, the widget
 
 **Since:** 1.3
 **Where:** `Cards/UI/ViewState/CardViewState.swift`, `Cards/UI/Screens/CardEditView.swift:84-90`, `Cards/Features/CardEditScreen.swift:86-92`, `Cards/Core/Models/CardImport.swift`, `CardsTests/CardFixesTests.swift` (`aCardNeedsANameAndACodeOfItsOwn`, `importSkipsCardsAlreadyThereAndAppendsInExportedOrder`)
-**Notes:** Cards that shared a code before 1.3, or that were given the same code on two devices before they synced (DATA-1), still share it. Opening or linking to either then finds the first in the list, the list's rows share an identity, and the edit form won't save the card until its code is changed (`Cards/Features/CardListScreen.swift:108-110`, `Cards/UI/Screens/CardListView.swift:67`).
+**Notes:** Cards that shared a code before 1.3, or that were given the same code on two devices before they synced (DATA-1), still share it. Opening or linking to either then finds the first in the list, the list's rows share an identity, and the edit form won't save the card until its code is changed (`Cards/Features/CardListScreen.swift:139-141`, `Cards/UI/Screens/CardListView.swift:81`).
 
 ### CARD-10: See my cards in a grid
 

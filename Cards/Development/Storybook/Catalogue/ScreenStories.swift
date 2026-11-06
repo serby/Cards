@@ -54,6 +54,7 @@ private let cardListStory = Story(
         .toggle("Colours", true),
         .toggle("Distances", true),
         .toggle("Symbols", true),
+        .toggle("Card where you are", false),
         .text("Search", ""),
         .options("Sort", CardSortOrder.allCases.map(\.rawValue), CardSortOrder.custom.rawValue)
     ],
@@ -62,6 +63,7 @@ private let cardListStory = Story(
         (name: "Single", view: pushed { CardListView(cards: Array(CardSummary.samples.prefix(1))) }),
         (name: "Full", view: pushed { CardListView(cards: CardSummary.samples) }),
         (name: "Long name", view: pushed { CardListView(cards: [.longName] + CardSummary.samples) }),
+        (name: "Card where you are", view: pushed { CardListView(cards: CardSummary.samples, cardHere: .here) }),
         (name: "Search, no match", view: pushed { CardListView(cards: [], search: .constant("Waitrose")) })
     ]
 ) { knobs in
@@ -80,6 +82,7 @@ private let cardListStory = Story(
                         symbol: knobs.bool("Symbols") ? card.symbol : nil
                     )
                 },
+            cardHere: knobs.bool("Card where you are") ? .here : nil,
             search: knobs.stringBinding("Search"),
             sortOrder: sortOrder
         )

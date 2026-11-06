@@ -1,9 +1,11 @@
 import SwiftUI
 
-/// The Cards tab: every card as a tile in a grid, with search and a choice of
-/// order. Driven entirely by its inputs and `actions`.
+/// The Cards tab: the card for where you are, then every card as a tile in a
+/// grid, with search and a choice of order. Driven entirely by its inputs and
+/// `actions`.
 public struct CardListView: View {
     private let cards: [CardSummary]
+    private let cardHere: CardDetail?
     @Binding private var search: String
     @Binding private var sortOrder: CardSortOrder
     private let actions: CardListActions
@@ -14,14 +16,18 @@ public struct CardListView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
-    /// - Parameter cards: The cards to show, already searched and in order.
+    /// - Parameters:
+    ///   - cards: The cards to show, already searched and in order.
+    ///   - cardHere: The card for where you are, shown in full above the grid (SET-3).
     public init(
         cards: [CardSummary],
+        cardHere: CardDetail? = nil,
         search: Binding<String> = .constant(""),
         sortOrder: Binding<CardSortOrder> = .constant(.custom),
         actions: CardListActions = CardListActions()
     ) {
         self.cards = cards
+        self.cardHere = cardHere
         _search = search
         _sortOrder = sortOrder
         self.actions = actions
@@ -29,9 +35,14 @@ public struct CardListView: View {
 
     public var body: some View {
         ScrollView {
-            grid
-                .padding(.horizontal, 16)
-                .padding(.vertical, 8)
+            VStack(spacing: 16) {
+                if let cardHere {
+                    cardWhereYouAre(cardHere)
+                }
+                grid
+            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 8)
         }
         .overlay { emptyState }
         .background(Color.primaryBackground)
@@ -101,6 +112,29 @@ public struct CardListView: View {
                     dropTarget = nil
                 }
             }
+    }
+
+    private func cardWhereYouAre(_ card: CardDetail) -> some View {
+        Button {
+            actions.selectCard(card.id)
+        } label: {
+            CardFaceView(card: card)
+                // Read as the tile is, the name and then the distance, rather than every part of the face.
+                .accessibilityRepresentation {
+                    HStack {
+                        Text(card.name)
+                        if let proximity = card.proximity {
+                            ProximityLabel(proximity)
+                        }
+                    }
+                    .accessibilityElement(children: .combine)
+                }
+        }
+        .buttonStyle(.plain)
+        // A card face as wide as an iPad would leave no room for the grid.
+        .frame(maxWidth: 560)
+        .accessibilityHint("Opens the card for where you are")
+        .accessibilityIdentifier("cardWhereYouAre")
     }
 
     @ViewBuilder

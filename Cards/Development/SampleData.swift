@@ -83,6 +83,18 @@ public extension CardDetail {
         barcodeType: .ean13,
         timestamp: Date(timeIntervalSince1970: 1_700_000_000)
     )
+
+    /// The first sample card, as the list shows it in full where you are (SET-3).
+    static let here = CardDetail(
+        id: "634004024987531",
+        name: "Tesco Clubcard",
+        code: "634004024987531",
+        barcodeType: .code128,
+        timestamp: Date(timeIntervalSince1970: 1_700_000_000),
+        color: .blue,
+        proximity: CardProximity(placeName: "Tesco Express", distance: 0),
+        symbol: "basket"
+    )
 }
 
 public extension CardDraft {
