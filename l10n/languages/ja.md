@@ -19,6 +19,7 @@
 - location (titles), place (sentences): 場所. "Here" in the list: 現在地. "At %@": %@にいます.
 - Brightness Boost: 明るさブースト, everywhere.
 - postcode: 郵便番号; radius: 半径 (半径%@, number after).
+- icon: アイコン (never シンボル); share: 共有; search: 検索; sort: 並べ替え; torch: ライト; What's New: 新機能.
 - colour: カラー; colour names in katakana as Apple's accent colours: ブルー, グラファイト, ティール.
 
 ## Typography
@@ -34,5 +35,5 @@
 - Japanese has only the `other` plural, which must also read for 1: never すべて or 全 next to %lld.
 - Reorder positional placeholders when Japanese needs it: %2$@から%1$@.
 - Never write units; distances arrive in the placeholder.
-- Keep Card Barcodes, JSON, Westway, barcode format names and Apple product names in Latin script.
+- Keep Card Barcodes, JSON, Boulder Barn, barcode format names and Apple product names in Latin script.
 - Use 作成日時 when the value includes a time.

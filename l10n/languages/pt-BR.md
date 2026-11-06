@@ -29,7 +29,7 @@ Ajustes (Settings), Tela Bloqueada (Lock Screen), Serviços de Localização, No
 
 ## Pitfalls
 
-- Distances need "a": "A 350 m de Westway", never "350 m de Westway".
+- Distances need "a": "A 350 m de Boulder Barn", never "350 m de Boulder Barn".
 - Arguments that can be a list of names need number-neutral wording: "Você apagou %@".
 - Put long codes last in announcements: "EAN-13 escaneado: %2$@".
 - Plurals: "one" covers 0 and 1 (Brazilian norm: singular below 2); "many" is exact millions and takes "de": "%lld de cartões".

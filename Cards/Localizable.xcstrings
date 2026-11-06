@@ -4,12 +4,6 @@
     "%@ · %@" : {
       "comment" : "On a card's screen: the distance to the card's nearest location, then the place's name, as in “350 m · Boulder Barn”.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@ · %2$@"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -28,43 +22,7 @@
             "value" : "%1$@ · %2$@"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@ · %2$@"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@ · %2$@"
-          }
-        },
         "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@ · %2$@"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@ · %2$@"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@ · %2$@"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@ · %2$@"
-          }
-        },
-        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$@ · %2$@"
@@ -75,12 +33,6 @@
     "%@ (%@)" : {
       "comment" : "The app's version and then its build number, as in “1.1 (42)”.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@ (%2$@)"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -99,43 +51,7 @@
             "value" : "%1$@ (%2$@)"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@ (%2$@)"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@ (%2$@)"
-          }
-        },
         "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@ (%2$@)"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@ (%2$@)"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@ (%2$@)"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@ (%2$@)"
-          }
-        },
-        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$@ (%2$@)"
@@ -157,12 +73,6 @@
     "%@ from %@" : {
       "comment" : "VoiceOver label: how far the user is from a card's nearest location, in full, as in “350 metres from Boulder Barn”.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "على بُعد %1$@ من %2$@"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -181,46 +91,10 @@
             "value" : "A %1$@ de %2$@"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "À %1$@ de %2$@"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "A %1$@ da %2$@"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%2$@から%1$@"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%2$@에서 %1$@"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "A %1$@ de %2$@"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "距 %2$@ %1$@"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "距離 %2$@ %1$@"
           }
         }
       }
@@ -228,12 +102,6 @@
     "%@ radius" : {
       "comment" : "Under a location's name in the card form: the size of the circle around the place, as in “200 m radius”.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "نصف قطر %@"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -246,46 +114,10 @@
             "value" : "Radio de %@"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rayon de %@"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Raggio di %@"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "半径%@"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "반경 %@"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Raio de %@"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "半径 %@"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "半徑 %@"
           }
         }
       }
@@ -304,12 +136,6 @@
     "%@, %@ radius" : {
       "comment" : "VoiceOver label for a place: its name, then the size of the circle around it, as in “Boulder Barn, 200 metres radius”. Read for a place in the card form and for the pin on the Add Location map.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@، نصف قطر %2$@"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -328,46 +154,10 @@
             "value" : "%1$@, radio de %2$@"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@, rayon de %2$@"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@, raggio di %2$@"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$@、半径%2$@"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@, 반경 %2$@"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@, raio de %2$@"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@，半径 %2$@"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@，半徑 %2$@"
           }
         }
       }
@@ -490,12 +280,6 @@
     "Add" : {
       "comment" : "Toolbar button that adds the place under the map pin to the card. A verb.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "إضافة"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -508,46 +292,10 @@
             "value" : "Añadir"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ajouter"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aggiungi"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "追加"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "추가"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Adicionar"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "添加"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "加入"
           }
         }
       }
@@ -555,12 +303,6 @@
     "Add a card in Card Barcodes and it shows here." : {
       "comment" : "Under “No cards yet” in the Home Screen widget. Card Barcodes is the app's name.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "أضف بطاقة في Card Barcodes وستظهر هنا."
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -573,46 +315,10 @@
             "value" : "Añade una tarjeta en Card Barcodes y aparecerá aquí."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ajoutez une carte dans Card Barcodes et elle apparaîtra ici."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aggiungi una carta in Card Barcodes e apparirà qui."
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Card Barcodesで追加できます。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Card Barcodes에서 카드를 추가하면 여기에 표시됩니다."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Adicione um cartão no Card Barcodes e ele aparecerá aqui."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在 Card Barcodes 中添加卡片后将显示在这里。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在 Card Barcodes 中加入卡片後會顯示在這裡。"
           }
         }
       }
@@ -623,12 +329,6 @@
     "Add Card" : {
       "comment" : "Button at the bottom of the sheet for a card someone shared, which adds the card to the list.\nButton on the empty card list that opens the form for a new card.\nTitle of the form for adding a new card.\nVoiceOver label for the toolbar button, a barcode scanner icon, that adds a new card.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "إضافة بطاقة"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -641,46 +341,10 @@
             "value" : "Añadir tarjeta"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ajouter une carte"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aggiungi carta"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "カードを追加"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "카드 추가"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Adicionar Cartão"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "添加卡片"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "加入卡片"
           }
         }
       }
@@ -694,12 +358,6 @@
     "Add Location" : {
       "comment" : "Button in the card form that opens a map for adding a place where the card is used.\nTitle of the map sheet for adding a place where a card is used.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "إضافة موقع"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -712,46 +370,10 @@
             "value" : "Añadir ubicación"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ajouter un lieu"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aggiungi posizione"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "場所を追加"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "위치 추가"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Adicionar Local"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "添加位置"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "加入位置"
           }
         }
       }
@@ -759,12 +381,6 @@
     "Added %@" : {
       "comment" : "VoiceOver announcement after a place is added to the card in the card form. The argument is the place's name.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تمت إضافة %@"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -777,46 +393,10 @@
             "value" : "Se ha añadido %@"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ajouté : %@"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hai aggiunto %@"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@を追加しました"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ 추가됨"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Você adicionou %@"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已添加 %@"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已加入 %@"
           }
         }
       }
@@ -827,12 +407,6 @@
     "All cards deleted" : {
       "comment" : "VoiceOver announcement after Delete All in Settings deletes every card.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تم حذف جميع البطاقات"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -845,46 +419,10 @@
             "value" : "Se han eliminado todas las tarjetas"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Toutes les cartes ont été supprimées"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tutte le carte sono state eliminate"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "すべてのカードを削除しました"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "모든 카드 삭제됨"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Todos os cartões foram apagados"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已删除所有卡片"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已刪除所有卡片"
           }
         }
       }
@@ -904,12 +442,6 @@
     "At %@" : {
       "comment" : "On a card's screen when the user is inside one of the card's locations. The argument is the place's name, such as Boulder Barn.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "في %@"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -922,46 +454,10 @@
             "value" : "En %@"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "À %@"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Presso %@"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@にいます"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@에 있음"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Em %@"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "你在 %@"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "你在 %@"
           }
         }
       }
@@ -969,12 +465,6 @@
     "Aztec" : {
       "comment" : "Barcode format in the barcode type picker: the square 2D Aztec Code. Keep it unless your language writes it differently.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aztec"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -987,43 +477,7 @@
             "value" : "Aztec"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aztec"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aztec"
-          }
-        },
         "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aztec"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aztec"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aztec"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aztec"
-          }
-        },
-        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aztec"
@@ -1037,12 +491,6 @@
     "Barcode" : {
       "comment" : "VoiceOver label for the barcode on a card's screen. Its format, such as EAN-13, is read after it.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "الرمز الشريطي"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1055,46 +503,10 @@
             "value" : "Código de barras"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Code-barres"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Codice a barre"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "バーコード"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "바코드"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Código de barras"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "条形码"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "條碼"
           }
         }
       }
@@ -1105,12 +517,6 @@
     "Barcode scanner" : {
       "comment" : "VoiceOver label for the live camera view at the top of the new card form.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ماسح الرموز الشريطية"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1123,46 +529,10 @@
             "value" : "Escáner de códigos de barras"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Scanner de codes-barres"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Scanner di codici a barre"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "バーコードスキャナー"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "바코드 스캐너"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Leitor de código de barras"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "条形码扫描器"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "條碼掃描器"
           }
         }
       }
@@ -1170,12 +540,6 @@
     "Barcode Type" : {
       "comment" : "Label of the menu for choosing the card's barcode format, such as EAN-13 or QR Code.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "نوع الرمز الشريطي"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1188,46 +552,10 @@
             "value" : "Tipo de código de barras"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Type de code-barres"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tipo di codice a barre"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "バーコードの種類"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "바코드 유형"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tipo de Código de Barras"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "条形码类型"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "條碼類型"
           }
         }
       }
@@ -1247,12 +575,6 @@
     "Blue" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "أزرق"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1265,46 +587,10 @@
             "value" : "Azul"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bleu"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Blu"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "ブルー"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "파란색"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Azul"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "蓝色"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "藍色"
           }
         }
       }
@@ -1318,12 +604,6 @@
     "Brightness" : {
       "comment" : "A name Voice Control users can say for the Brightness Boost button on a card's screen.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "السطوع"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1336,46 +616,10 @@
             "value" : "Brillo"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Luminosité"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Luminosità"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "明るさ"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "밝기"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Brilho"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "亮度"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "亮度"
           }
         }
       }
@@ -1383,12 +627,6 @@
     "Brightness Boost" : {
       "comment" : "Settings switch for the feature that turns the screen up while a card is shown, so scanners can read its barcode.\nVoiceOver label for the sun button on a card's screen, which turns the screen up so scanners can read the barcode.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تعزيز السطوع"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1401,46 +639,10 @@
             "value" : "Aumento de brillo"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Luminosité renforcée"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Luminosità extra"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "明るさブ⁠ー⁠ス⁠ト"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "최대 밝기"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Brilho Máximo"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "亮度增强"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "亮度增強"
           }
         }
       }
@@ -1448,12 +650,6 @@
     "Brightness Boost off" : {
       "comment" : "VoiceOver announcement after the sun button turns Brightness Boost off.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تم إيقاف تعزيز السطوع"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1466,46 +662,10 @@
             "value" : "Aumento de brillo desactivado"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Luminosité renforcée désactivée"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Luminosità extra disattivata"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "明るさブーストをオフにしました"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "최대 밝기 꺼짐"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Brilho Máximo desativado"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "亮度增强已关闭"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "亮度增強已關閉"
           }
         }
       }
@@ -1513,12 +673,6 @@
     "Brightness Boost on" : {
       "comment" : "VoiceOver announcement after the sun button turns Brightness Boost on.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تم تشغيل تعزيز السطوع"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1531,46 +685,10 @@
             "value" : "Aumento de brillo activado"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Luminosité renforcée activée"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Luminosità extra attivata"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "明るさブーストをオンにしました"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "최대 밝기 켜짐"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Brilho Máximo ativado"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "亮度增强已打开"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "亮度增強已開啟"
           }
         }
       }
@@ -1578,12 +696,6 @@
     "Brown" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "بني"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1596,46 +708,10 @@
             "value" : "Marrón"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Marron"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Marrone"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "ブラウン"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "갈색"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Marrom"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "棕色"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "棕色"
           }
         }
       }
@@ -1652,12 +728,6 @@
     "Cancel" : {
       "comment" : "Button in the delete-all dialog that keeps the cards.\nButton in the delete-card dialog that keeps the card.\nCloses the Add Location sheet without adding a place.\nCloses the import sheet without importing.\nCloses the list of barcodes found in a photo or a file without filling in the card form.\nCloses the sheet for a card someone shared without adding the card.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "إلغاء"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1670,46 +740,10 @@
             "value" : "Cancelar"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Annuler"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Annulla"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "キャンセル"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "취소"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cancelar"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "取消"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "取消"
           }
         }
       }
@@ -1732,12 +766,6 @@
     "Card code: %@" : {
       "comment" : "VoiceOver label for a card's code, shown with its barcode on the card's screen and in the Home Screen widget. VoiceOver spells the code out character by character.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "رمز البطاقة: %@"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1750,46 +778,10 @@
             "value" : "Código de la tarjeta: %@"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Code de la carte : %@"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Codice della carta: %@"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "カードのコード：%@"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "카드 코드: %@"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Código do cartão: %@"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "卡号：%@"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "卡片代碼：%@"
           }
         }
       }
@@ -1797,12 +789,6 @@
     "Card colour" : {
       "comment" : "VoiceOver label for the grid of colour swatches in the card form.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "لون البطاقة"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1815,46 +801,10 @@
             "value" : "Color de la tarjeta"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Couleur de la carte"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Colore della carta"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "カードのカラー"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "카드 색상"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cor do cartão"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "卡片颜色"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "卡片顏色"
           }
         }
       }
@@ -1865,12 +815,6 @@
     "Card not found" : {
       "comment" : "Shown when a link or notification opens a card that has since been deleted.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "لم يتم العثور على البطاقة"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1883,46 +827,10 @@
             "value" : "No se ha encontrado la tarjeta"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Carte introuvable"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Carta non trovata"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "カードが見つかりません"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "카드를 찾을 수 없음"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cartão não encontrado"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "未找到卡片"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "找不到卡片"
           }
         }
       }
@@ -1930,12 +838,6 @@
     "Cards" : {
       "comment" : "Tab bar item for the list of the user's loyalty cards.\nTitle of the screen that lists the user's loyalty cards.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "البطاقات"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1948,46 +850,10 @@
             "value" : "Tarjetas"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cartes"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Carte"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "カード"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "카드"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cartões"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "卡片"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "卡片"
           }
         }
       }
@@ -2025,12 +891,6 @@
     "Code" : {
       "comment" : "Label beside the field for the number or text that the barcode encodes. A noun.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "الرمز"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2041,18 +901,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Código"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Code"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Codice"
           }
         },
         "ja" : {
@@ -2060,42 +908,12 @@
             "state" : "translated",
             "value" : "コード"
           }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "코드"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Código"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "卡号"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "代碼"
-          }
         }
       }
     },
     "Code 39" : {
       "comment" : "Barcode format in the barcode type picker. A standard name: keep it unless your language writes it differently.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Code 39"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2108,43 +926,7 @@
             "value" : "Code 39"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Code 39"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Code 39"
-          }
-        },
         "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Code 39"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Code 39"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Code 39"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Code 39"
-          }
-        },
-        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Code 39"
@@ -2155,12 +937,6 @@
     "Code 93" : {
       "comment" : "Barcode format in the barcode type picker. A standard name: keep it unless your language writes it differently.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Code 93"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2173,43 +949,7 @@
             "value" : "Code 93"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Code 93"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Code 93"
-          }
-        },
         "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Code 93"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Code 93"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Code 93"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Code 93"
-          }
-        },
-        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Code 93"
@@ -2220,12 +960,6 @@
     "Code 128" : {
       "comment" : "Barcode format in the barcode type picker. A standard name: keep it unless your language writes it differently.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Code 128"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2238,43 +972,7 @@
             "value" : "Code 128"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Code 128"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Code 128"
-          }
-        },
         "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Code 128"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Code 128"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Code 128"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Code 128"
-          }
-        },
-        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Code 128"
@@ -2288,12 +986,6 @@
     "Colour" : {
       "comment" : "Section heading above the colour swatches in the card form. A noun.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "اللون"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2306,46 +998,10 @@
             "value" : "Color"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Couleur"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Colore"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "カラー"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "색상"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cor"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "颜色"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "顏色"
           }
         }
       }
@@ -2365,12 +1021,6 @@
     "Created by %@" : {
       "comment" : "Settings row that opens the author's website. The argument is the author's name.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "من إنشاء %@"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2383,46 +1033,10 @@
             "value" : "Creado por %@"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Créé par %@"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Creato da %@"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "作成者：%@"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ 제작"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Criado por %@"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "开发者：%@"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "製作者：%@"
           }
         }
       }
@@ -2430,12 +1044,6 @@
     "Created on %@" : {
       "comment" : "VoiceOver label for when the card was added. The argument is a date and time: 14 November 2023 at 22:13.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تم الإنشاء في %@"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2448,46 +1056,10 @@
             "value" : "Creada el %@"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Créée le %@"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Creata il %@"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "作成日時：%@"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@에 생성됨"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Criado em %@"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "创建于 %@"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "建立於 %@"
           }
         }
       }
@@ -2504,12 +1076,6 @@
     "Data" : {
       "comment" : "Settings section heading for exporting, importing and deleting cards.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "البيانات"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2522,46 +1088,10 @@
             "value" : "Datos"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Données"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dati"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "データ"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "데이터"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dados"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "数据"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "資料"
           }
         }
       }
@@ -2569,12 +1099,6 @@
     "Default" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker: the plain grey card that follows light and dark mode.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "افتراضي"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2587,46 +1111,10 @@
             "value" : "Por omisión"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Par défaut"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Predefinito"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "デフォルト"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "기본"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Padrão"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "默认"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "預設"
           }
         }
       }
@@ -2634,12 +1122,6 @@
     "Delete" : {
       "comment" : "Menu item that deletes a card in the list, or a place in the card form. A verb.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "حذف"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2652,46 +1134,10 @@
             "value" : "Eliminar"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Supprimer"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Elimina"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "削除"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "삭제"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apagar"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "删除"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "刪除"
           }
         }
       }
@@ -2702,12 +1148,6 @@
     "Delete All" : {
       "comment" : "Destructive button in the delete-all dialog that deletes every card.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "حذف الكل"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2720,46 +1160,10 @@
             "value" : "Eliminar todas"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tout supprimer"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Elimina tutte"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "すべて削除"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "모두 삭제"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apagar Todos"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "全部删除"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "全部刪除"
           }
         }
       }
@@ -2767,12 +1171,6 @@
     "Delete All Cards" : {
       "comment" : "Settings button that deletes every card after asking for confirmation.\nTitle of the dialog that asks the user to confirm deleting every card.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "حذف جميع البطاقات"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2785,46 +1183,10 @@
             "value" : "Eliminar todas las tarjetas"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Supprimer toutes les cartes"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Elimina tutte le carte"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "すべてのカードを削除"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "모든 카드 삭제"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apagar Todos os Cartões"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "删除所有卡片"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "刪除所有卡片"
           }
         }
       }
@@ -2838,48 +1200,6 @@
     "Deleted %lld cards" : {
       "comment" : "VoiceOver announcement after several cards are deleted from the list at once. The argument is how many, always two or more.",
       "localizations" : {
-        "ar" : {
-          "variations" : {
-            "plural" : {
-              "few" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "تم حذف %lld بطاقات"
-                }
-              },
-              "many" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "تم حذف %lld بطاقة"
-                }
-              },
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "تم حذف بطاقة واحدة"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "تم حذف %lld بطاقة"
-                }
-              },
-              "two" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "تم حذف بطاقتين"
-                }
-              },
-              "zero" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "تم حذف %lld بطاقة"
-                }
-              }
-            }
-          }
-        },
         "de" : {
           "variations" : {
             "plural" : {
@@ -2940,54 +1260,6 @@
             }
           }
         },
-        "fr" : {
-          "variations" : {
-            "plural" : {
-              "many" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld de cartes supprimées"
-                }
-              },
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld carte supprimée"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld cartes supprimées"
-                }
-              }
-            }
-          }
-        },
-        "it" : {
-          "variations" : {
-            "plural" : {
-              "many" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld di carte eliminate"
-                }
-              },
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld carta eliminata"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld carte eliminate"
-                }
-              }
-            }
-          }
-        },
         "ja" : {
           "variations" : {
             "plural" : {
@@ -2999,114 +1271,12 @@
               }
             }
           }
-        },
-        "ko" : {
-          "variations" : {
-            "plural" : {
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "카드 %lld장 삭제됨"
-                }
-              }
-            }
-          }
-        },
-        "pt-BR" : {
-          "variations" : {
-            "plural" : {
-              "many" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld de cartões apagados"
-                }
-              },
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld cartão apagado"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld cartões apagados"
-                }
-              }
-            }
-          }
-        },
-        "zh-Hans" : {
-          "variations" : {
-            "plural" : {
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "已删除 %lld 张卡片"
-                }
-              }
-            }
-          }
-        },
-        "zh-Hant" : {
-          "variations" : {
-            "plural" : {
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "已刪除 %lld 張卡片"
-                }
-              }
-            }
-          }
         }
       }
     },
     "Deleted %lld places" : {
       "comment" : "VoiceOver announcement after several places are deleted from a card at once. The argument is how many, always two or more.",
       "localizations" : {
-        "ar" : {
-          "variations" : {
-            "plural" : {
-              "few" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "تم حذف %lld أماكن"
-                }
-              },
-              "many" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "تم حذف %lld مكانًا"
-                }
-              },
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "تم حذف مكان واحد"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "تم حذف %lld مكان"
-                }
-              },
-              "two" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "تم حذف مكانين"
-                }
-              },
-              "zero" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "تم حذف %lld مكان"
-                }
-              }
-            }
-          }
-        },
         "de" : {
           "variations" : {
             "plural" : {
@@ -3167,54 +1337,6 @@
             }
           }
         },
-        "fr" : {
-          "variations" : {
-            "plural" : {
-              "many" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld de lieux supprimés"
-                }
-              },
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld lieu supprimé"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld lieux supprimés"
-                }
-              }
-            }
-          }
-        },
-        "it" : {
-          "variations" : {
-            "plural" : {
-              "many" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld di luoghi eliminati"
-                }
-              },
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld luogo eliminato"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld luoghi eliminati"
-                }
-              }
-            }
-          }
-        },
         "ja" : {
           "variations" : {
             "plural" : {
@@ -3226,78 +1348,12 @@
               }
             }
           }
-        },
-        "ko" : {
-          "variations" : {
-            "plural" : {
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "장소 %lld개 삭제됨"
-                }
-              }
-            }
-          }
-        },
-        "pt-BR" : {
-          "variations" : {
-            "plural" : {
-              "many" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld de lugares apagados"
-                }
-              },
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld lugar apagado"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld lugares apagados"
-                }
-              }
-            }
-          }
-        },
-        "zh-Hans" : {
-          "variations" : {
-            "plural" : {
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "已删除 %lld 个地点"
-                }
-              }
-            }
-          }
-        },
-        "zh-Hant" : {
-          "variations" : {
-            "plural" : {
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "已刪除 %lld 個地點"
-                }
-              }
-            }
-          }
         }
       }
     },
     "Deleted card %@" : {
       "comment" : "VoiceOver announcement after one card is deleted from the list. The argument is the card's name, such as Joe's Market.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تم حذف البطاقة %@"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3310,46 +1366,10 @@
             "value" : "Se ha eliminado la tarjeta %@"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Carte supprimée : %@"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Carta eliminata: %@"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "カード「%@」を削除しました"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ 카드 삭제됨"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cartão %@ apagado"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已删除卡片 %@"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已刪除卡片 %@"
           }
         }
       }
@@ -3357,12 +1377,6 @@
     "Deleted place %@" : {
       "comment" : "VoiceOver announcement after one place is deleted from the card form. The argument is the place's name, such as Boulder Barn.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تم حذف المكان %@"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3375,46 +1389,10 @@
             "value" : "Se ha eliminado el lugar %@"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lieu supprimé : %@"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Luogo eliminato: %@"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "場所「%@」を削除しました"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ 장소 삭제됨"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lugar %@ apagado"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已删除地点 %@"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已刪除地點 %@"
           }
         }
       }
@@ -3428,12 +1406,6 @@
     "Display" : {
       "comment" : "Settings section heading for how cards are displayed.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "العرض"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3446,46 +1418,10 @@
             "value" : "Pantalla"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Affichage"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Schermo"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "画面表示"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "디스플레이"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Exibição"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "显示"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "顯示方式"
           }
         }
       }
@@ -3511,12 +1447,6 @@
     "EAN-8" : {
       "comment" : "Barcode format in the barcode type picker. A standard name: keep it as it is.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "EAN-8"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3529,43 +1459,7 @@
             "value" : "EAN-8"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "EAN-8"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "EAN-8"
-          }
-        },
         "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "EAN-8"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "EAN-8"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "EAN-8"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "EAN-8"
-          }
-        },
-        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "EAN-8"
@@ -3576,12 +1470,6 @@
     "EAN-13" : {
       "comment" : "Barcode format in the barcode type picker. A standard name: keep it as it is.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "EAN-13"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3594,43 +1482,7 @@
             "value" : "EAN-13"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "EAN-13"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "EAN-13"
-          }
-        },
         "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "EAN-13"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "EAN-13"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "EAN-13"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "EAN-13"
-          }
-        },
-        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "EAN-13"
@@ -3641,12 +1493,6 @@
     "Edit" : {
       "comment" : "Toolbar button on a card's screen that opens the card for editing. A verb.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تحرير"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3659,46 +1505,10 @@
             "value" : "Editar"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Modifier"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Modifica"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "編集"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "편집"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Editar"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "编辑"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "編輯"
           }
         }
       }
@@ -3706,12 +1516,6 @@
     "Edit Card" : {
       "comment" : "Title of the form for changing an existing card.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تحرير البطاقة"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3724,46 +1528,10 @@
             "value" : "Editar tarjeta"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Modifier la carte"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Modifica carta"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "カードを編集"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "카드 편집"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Editar Cartão"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "编辑卡片"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "編輯卡片"
           }
         }
       }
@@ -3777,12 +1545,6 @@
     "Enter code" : {
       "comment" : "Placeholder in the empty field for the number or text that the barcode encodes.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "أدخل الرمز"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3795,46 +1557,10 @@
             "value" : "Introducir código"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Saisir le code"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Inserisci il codice"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "コードを入力"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "코드 입력"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Digite o código"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "输入卡号"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "輸入代碼"
           }
         }
       }
@@ -3842,12 +1568,6 @@
     "Enter name" : {
       "comment" : "Placeholder in the empty card name field, such as Joe's Market.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "أدخل الاسم"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3860,46 +1580,10 @@
             "value" : "Introducir nombre"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Saisir le nom"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Inserisci il nome"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "名前を入力"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "이름 입력"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Digite o nome"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "输入名称"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "輸入名稱"
           }
         }
       }
@@ -3907,12 +1591,6 @@
     "Export as JSON" : {
       "comment" : "Settings button that shares all cards as a JSON file. JSON is a file format; keep the name.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تصدير بتنسيق JSON"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3925,46 +1603,10 @@
             "value" : "Exportar como JSON"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Exporter au format JSON"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Esporta come JSON"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "JSONとして書き出す"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "JSON으로 내보내기"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Exportar como JSON"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "导出为 JSON"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "輸出為 JSON"
           }
         }
       }
@@ -3972,12 +1614,6 @@
     "Failed to generate barcode" : {
       "comment" : "Shown instead of the barcode when the card's code can't be drawn in the chosen barcode format.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تعذر إنشاء الرمز الشريطي"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3990,46 +1626,10 @@
             "value" : "No se ha podido generar el código de barras"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Impossible de générer le code-barres"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Impossibile generare il codice a barre"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "バーコードを生成できませんでした"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "바코드를 생성할 수 없음"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Não foi possível gerar o código de barras"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "无法生成条形码"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "無法產生條碼"
           }
         }
       }
@@ -4085,12 +1685,6 @@
     "Graphite" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker: a dark blue-grey.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "جرافيت"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4103,46 +1697,10 @@
             "value" : "Grafito"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Graphite"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Grafite"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "グラファイト"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "그래파이트"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Grafite"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "石墨色"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "石墨色"
           }
         }
       }
@@ -4150,12 +1708,6 @@
     "Green" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "أخضر"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4168,46 +1720,10 @@
             "value" : "Verde"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vert"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Verde"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "グリーン"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "초록색"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Verde"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "绿色"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "綠色"
           }
         }
       }
@@ -4233,12 +1749,6 @@
     "Here" : {
       "comment" : "Shown on a card in the list instead of a distance when the user is inside one of the card's locations. Keep it very short.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "هنا"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4251,46 +1761,10 @@
             "value" : "Aquí"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ici"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Qui"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "現在地"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "여기"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aqui"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已到达"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在此"
           }
         }
       }
@@ -4310,12 +1784,6 @@
     "Import" : {
       "comment" : "Toolbar button in the import sheet that adds the pasted cards. A verb.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "استيراد"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4328,46 +1796,10 @@
             "value" : "Importar"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Importer"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Importa"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "読み込む"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "가져오기"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Importar"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "导入"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "輸入"
           }
         }
       }
@@ -4375,12 +1807,6 @@
     "Import JSON" : {
       "comment" : "Settings button that opens a sheet for pasting cards exported as JSON.\nTitle of the sheet for pasting cards exported as JSON.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "استيراد JSON"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4393,46 +1819,10 @@
             "value" : "Importar JSON"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Importer du JSON"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Importa JSON"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "JSONを読み込む"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "JSON 가져오기"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Importar JSON"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "导入 JSON"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "輸入 JSON"
           }
         }
       }
@@ -4440,12 +1830,6 @@
     "Import Result" : {
       "comment" : "Title of the alert shown after importing cards from JSON, whether it worked or not.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "نتيجة الاستيراد"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4458,46 +1842,10 @@
             "value" : "Resultado de la importación"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Résultat de l’importation"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Risultato importazione"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "読み込み結果"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "가져오기 결과"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Resultado da Importação"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "导入结果"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "輸入結果"
           }
         }
       }
@@ -4534,12 +1882,6 @@
     "Indigo" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker: a deep violet-blue.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "نيلي"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4552,46 +1894,10 @@
             "value" : "Índigo"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Indigo"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Indaco"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "インディゴ"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "남색"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Índigo"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "靛蓝色"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "靛藍色"
           }
         }
       }
@@ -4599,12 +1905,6 @@
     "Invalid JSON format" : {
       "comment" : "Import result alert when the pasted text is not a card export. JSON is a file format; keep the name.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تنسيق JSON غير صالح"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4617,46 +1917,10 @@
             "value" : "Formato JSON no válido"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Format JSON non valide"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Formato JSON non valido"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "JSON形式が正しくありません"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "유효하지 않은 JSON 형식"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Formato JSON inválido"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "JSON 格式无效"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "JSON 格式無效"
           }
         }
       }
@@ -4667,12 +1931,6 @@
     "JSON to import" : {
       "comment" : "VoiceOver label for the text box in the import sheet. JSON is a file format; keep the name.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "JSON المراد استيراده"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4685,46 +1943,10 @@
             "value" : "JSON para importar"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "JSON à importer"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "JSON da importare"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "読み込むJSON"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "가져올 JSON"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "JSON para importar"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "要导入的 JSON"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "要輸入的 JSON"
           }
         }
       }
@@ -4759,12 +1981,6 @@
     "Locations" : {
       "comment" : "Section heading in the card form for the places where the card is used.\nSection heading in the sheet for a card someone shared, over the places that come with the card.\nSettings section heading for the switches about arrival notifications and the card for where you are.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "المواقع"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4777,46 +1993,10 @@
             "value" : "Ubicaciones"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lieux"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Posizioni"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "場所"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "위치"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Locais"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "位置"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "位置"
           }
         }
       }
@@ -4824,12 +2004,6 @@
     "Map pin" : {
       "comment" : "VoiceOver label for the pin in the middle of the Add Location map, which marks the place to add.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "دبوس الخريطة"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4842,46 +2016,10 @@
             "value" : "Marcador del mapa"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Épingle sur le plan"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Segnaposto"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "マップのピン"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "지도 핀"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Alfinete do mapa"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "地图大头针"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "地圖大頭針"
           }
         }
       }
@@ -4898,12 +2036,6 @@
     "Move Down" : {
       "comment" : "Menu item and VoiceOver action that moves a card one place down the list.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "نقل لأسفل"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4916,46 +2048,10 @@
             "value" : "Bajar"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Déplacer vers le bas"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sposta in basso"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "下に移動"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "아래로 이동"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mover para Baixo"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "下移"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "向下移動"
           }
         }
       }
@@ -4963,12 +2059,6 @@
     "Move East" : {
       "comment" : "VoiceOver action on the Add Location map pin: moves the place east by the circle's radius.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "نقل شرقًا"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4981,46 +2071,10 @@
             "value" : "Mover al este"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Déplacer vers l’est"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sposta a est"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "東に移動"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "동쪽으로 이동"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mover para o Leste"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "向东移动"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "向東移動"
           }
         }
       }
@@ -5028,12 +2082,6 @@
     "Move North" : {
       "comment" : "VoiceOver action on the Add Location map pin: moves the place north by the circle's radius.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "نقل شمالًا"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5046,46 +2094,10 @@
             "value" : "Mover al norte"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Déplacer vers le nord"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sposta a nord"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "北に移動"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "북쪽으로 이동"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mover para o Norte"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "向北移动"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "向北移動"
           }
         }
       }
@@ -5093,12 +2105,6 @@
     "Move South" : {
       "comment" : "VoiceOver action on the Add Location map pin: moves the place south by the circle's radius.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "نقل جنوبًا"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5111,46 +2117,10 @@
             "value" : "Mover al sur"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Déplacer vers le sud"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sposta a sud"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "南に移動"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "남쪽으로 이동"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mover para o Sul"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "向南移动"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "向南移動"
           }
         }
       }
@@ -5158,12 +2128,6 @@
     "Move Up" : {
       "comment" : "Menu item and VoiceOver action that moves a card one place up the list.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "نقل لأعلى"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5176,46 +2140,10 @@
             "value" : "Subir"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Déplacer vers le haut"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sposta in alto"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "上に移動"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "위로 이동"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mover para Cima"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "上移"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "向上移動"
           }
         }
       }
@@ -5223,12 +2151,6 @@
     "Move West" : {
       "comment" : "VoiceOver action on the Add Location map pin: moves the place west by the circle's radius.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "نقل غربًا"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5241,46 +2163,10 @@
             "value" : "Mover al oeste"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Déplacer vers l’ouest"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sposta a ovest"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "西に移動"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "서쪽으로 이동"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mover para o Oeste"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "向西移动"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "向西移動"
           }
         }
       }
@@ -5288,12 +2174,6 @@
     "Moved east" : {
       "comment" : "VoiceOver announcement after the Move East action on the Add Location map pin.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تم النقل شرقًا"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5306,46 +2186,10 @@
             "value" : "Movido al este"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Déplacement vers l’est"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Spostato a est"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "東に移動しました"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "동쪽으로 이동함"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Movido para o leste"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已向东移动"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已向東移動"
           }
         }
       }
@@ -5353,12 +2197,6 @@
     "Moved north" : {
       "comment" : "VoiceOver announcement after the Move North action on the Add Location map pin.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تم النقل شمالًا"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5371,46 +2209,10 @@
             "value" : "Movido al norte"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Déplacement vers le nord"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Spostato a nord"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "北に移動しました"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "북쪽으로 이동함"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Movido para o norte"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已向北移动"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已向北移動"
           }
         }
       }
@@ -5418,12 +2220,6 @@
     "Moved south" : {
       "comment" : "VoiceOver announcement after the Move South action on the Add Location map pin.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تم النقل جنوبًا"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5436,46 +2232,10 @@
             "value" : "Movido al sur"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Déplacement vers le sud"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Spostato a sud"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "南に移動しました"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "남쪽으로 이동함"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Movido para o sul"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已向南移动"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已向南移動"
           }
         }
       }
@@ -5483,12 +2243,6 @@
     "Moved west" : {
       "comment" : "VoiceOver announcement after the Move West action on the Add Location map pin.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تم النقل غربًا"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5501,46 +2255,10 @@
             "value" : "Movido al oeste"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Déplacement vers l’ouest"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Spostato a ovest"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "西に移動しました"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "서쪽으로 이동함"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Movido para o oeste"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已向西移动"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已向西移動"
           }
         }
       }
@@ -5557,12 +2275,6 @@
     "Name" : {
       "comment" : "Label beside the card's name field in the card form. A noun.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "الاسم"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5575,46 +2287,10 @@
             "value" : "Nombre"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nom"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nome"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "名前"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "이름"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nome"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "名称"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "名稱"
           }
         }
       }
@@ -5652,12 +2328,6 @@
     "No cards yet" : {
       "comment" : "Title of the Home Screen widget before the user has added a card.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "لا توجد بطاقات بعد"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5670,46 +2340,10 @@
             "value" : "Aún no hay tarjetas"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aucune carte pour l’instant"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ancora nessuna carta"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "まだカードがありません"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "아직 카드 없음"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nenhum Cartão Ainda"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "暂无卡片"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "尚無卡片"
           }
         }
       }
@@ -5717,12 +2351,6 @@
     "No Cards Yet" : {
       "comment" : "Title of the empty card list, before the user has added a card.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "لا توجد بطاقات بعد"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5735,46 +2363,10 @@
             "value" : "Aún no hay tarjetas"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aucune carte"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nessuna carta"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "まだカードがありません"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "카드 없음"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nenhum Cartão Ainda"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "暂无卡片"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "尚無卡片"
           }
         }
       }
@@ -5785,12 +2377,6 @@
     "No place found for “%@”" : {
       "comment" : "Under the search field on the Add Location map when nothing is found. The argument is the postcode or address that was typed; use your language's quotation marks.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "لم يتم العثور على مكان لـ «%@»"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5803,46 +2389,10 @@
             "value" : "No se ha encontrado ningún lugar para «%@»"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aucun lieu trouvé pour « %@ »"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nessun luogo trovato per “%@”"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "「%@」に該当する場所が見つかりません"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "‘%@’에 대한 장소를 찾을 수 없음"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nenhum local encontrado para “%@”"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "未找到“%@”对应的地点"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "找不到「%@」的地點"
           }
         }
       }
@@ -5859,12 +2409,6 @@
     "Off" : {
       "comment" : "VoiceOver value of the Brightness Boost button on a card's screen when the boost is off.\nVoiceOver value of the torch button over the camera view in the new card form when the light is off.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "إيقاف"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5877,46 +2421,10 @@
             "value" : "Desactivado"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Désactivé"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Disattivata"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "オフ"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "꺼짐"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Desativado"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "关闭"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "關閉"
           }
         }
       }
@@ -5924,12 +2432,6 @@
     "OK" : {
       "comment" : "Dismisses the import result alert.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "حسنًا"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5942,46 +2444,10 @@
             "value" : "Aceptar"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "OK"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "OK"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "OK"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "확인"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "OK"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "好"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "好"
           }
         }
       }
@@ -5992,12 +2458,6 @@
     "On" : {
       "comment" : "VoiceOver value of the Brightness Boost button on a card's screen when the boost is on.\nVoiceOver value of the torch button over the camera view in the new card form when the light is on.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تشغيل"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6010,46 +2470,10 @@
             "value" : "Activado"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Activé"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Attivata"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "オン"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "켜짐"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ativado"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "打开"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "開啟"
           }
         }
       }
@@ -6069,12 +2493,6 @@
     "Opens in your web browser" : {
       "comment" : "VoiceOver hint for the Settings row that opens the author's website.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "يفتح في متصفح الويب"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6087,46 +2505,10 @@
             "value" : "Se abre en el navegador web"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ouvre la page dans votre navigateur web"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Si apre nel browser web"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Webブラウザで開きます"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "웹 브라우저에서 열립니다."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Abre no seu navegador"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "将在浏览器中打开"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在網頁瀏覽器中打開"
           }
         }
       }
@@ -6134,12 +2516,6 @@
     "Opens the card for editing" : {
       "comment" : "VoiceOver hint for the Edit button on a card's screen.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "يفتح البطاقة للتحرير"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6152,46 +2528,10 @@
             "value" : "Abre la tarjeta para editarla"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ouvre la carte pour la modifier"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apre la carta per modificarla"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "カードの編集画面を開きます"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "카드를 열어 편집할 수 있습니다."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Abre o cartão para edição"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "打开卡片进行编辑"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "打開卡片進行編輯"
           }
         }
       }
@@ -6202,12 +2542,6 @@
     "Opens the card in Card Barcodes" : {
       "comment" : "VoiceOver hint for the card in the Home Screen widget. Card Barcodes is the app's name.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "يفتح البطاقة في Card Barcodes"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6220,46 +2554,10 @@
             "value" : "Abre la tarjeta en Card Barcodes"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ouvre la carte dans Card Barcodes"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apre la carta in Card Barcodes"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Card Barcodesでカードを開きます"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Card Barcodes에서 카드를 엽니다."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Abre o cartão no Card Barcodes"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在 Card Barcodes 中打开这张卡片"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在 Card Barcodes 中打開卡片"
           }
         }
       }
@@ -6276,12 +2574,6 @@
     "Orange" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "برتقالي"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6294,46 +2586,10 @@
             "value" : "Naranja"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Orange"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Arancione"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "オレンジ"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "주황색"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Laranja"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "橙色"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "橙色"
           }
         }
       }
@@ -6347,12 +2603,6 @@
     "Paste exported JSON here" : {
       "comment" : "Prompt in the empty text box of the import sheet. JSON is a file format; keep the name.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "الصق JSON المُصدَّر هنا"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6365,46 +2615,10 @@
             "value" : "Pega aquí el JSON exportado"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Collez ici le JSON exporté"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Incolla qui il JSON esportato"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "書き出したJSONをここにペースト"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "내보낸 JSON을 여기에 붙여넣기"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cole aqui o JSON exportado"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在此粘贴导出的 JSON"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在此貼上輸出的 JSON"
           }
         }
       }
@@ -6412,12 +2626,6 @@
     "Paste from Clipboard" : {
       "comment" : "Button in the import sheet that fills the text box with what was last copied.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "لصق من الحافظة"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6430,46 +2638,10 @@
             "value" : "Pegar del portapapeles"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Coller depuis le presse-papiers"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Incolla dagli appunti"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "クリップボードからペースト"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "클립보드에서 붙여넣기"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Colar da Área de Transferência"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "从剪贴板粘贴"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "從剪貼板貼上"
           }
         }
       }
@@ -6480,12 +2652,6 @@
     "PDF 417" : {
       "comment" : "Barcode format in the barcode type picker: the stacked 2D PDF417 code, not a PDF file. Keep it as it is.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "PDF 417"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6498,43 +2664,7 @@
             "value" : "PDF 417"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "PDF 417"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "PDF 417"
-          }
-        },
         "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "PDF 417"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "PDF 417"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "PDF 417"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "PDF 417"
-          }
-        },
-        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "PDF 417"
@@ -6551,12 +2681,6 @@
     "Pink" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker: a deep raspberry pink.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "وردي"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6569,46 +2693,10 @@
             "value" : "Rosa"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rose"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rosa"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "ピンク"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "분홍색"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rosa"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "粉色"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "粉紅色"
           }
         }
       }
@@ -6616,12 +2704,6 @@
     "Pinned location" : {
       "comment" : "Name saved for a place added on the map without typing a name.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "موقع الدبوس"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6634,46 +2716,10 @@
             "value" : "Ubicación marcada"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lieu épinglé"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Posizione contrassegnata"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "マークした場所"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "핀 위치"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Local marcado"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "标记的位置"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "大頭針位置"
           }
         }
       }
@@ -6699,12 +2745,6 @@
     "Purple" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "أرجواني"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6717,46 +2757,10 @@
             "value" : "Morado"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Violet"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Viola"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "パープル"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "보라색"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Roxo"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "紫色"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "紫色"
           }
         }
       }
@@ -6770,12 +2774,6 @@
     "QR Code" : {
       "comment" : "Barcode format in the barcode type picker: the square 2D code. Use the usual name for a QR code in your language.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "رمز QR"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6788,46 +2786,10 @@
             "value" : "Código QR"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Code QR"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Codice QR"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "QRコード"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "QR 코드"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "QR Code"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "二维码"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "QR Code"
           }
         }
       }
@@ -6835,12 +2797,6 @@
     "Radius" : {
       "comment" : "Label above the slider that sets how far around the pin counts as being at the place.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "نصف القطر"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6853,46 +2809,10 @@
             "value" : "Radio"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rayon"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Raggio"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "半径"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "반경"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Raio"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "半径"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "半徑"
           }
         }
       }
@@ -6912,12 +2832,6 @@
     "Red" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "أحمر"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6930,46 +2844,10 @@
             "value" : "Rojo"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rouge"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rosso"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "レッド"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "빨간색"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vermelho"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "红色"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "紅色"
           }
         }
       }
@@ -6992,12 +2870,6 @@
     "Save" : {
       "comment" : "Toolbar button on the Edit Location map that saves the changed place. A verb.\nToolbar button that saves the card form. A verb.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "حفظ"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7010,46 +2882,10 @@
             "value" : "Guardar"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Enregistrer"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Salva"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "保存"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "저장"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Salvar"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "存储"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "儲存"
           }
         }
       }
@@ -7057,12 +2893,6 @@
     "Saves the card" : {
       "comment" : "VoiceOver hint for the Save button in the card form, for a new card or a changed one.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "يحفظ البطاقة"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7075,46 +2905,10 @@
             "value" : "Guarda la tarjeta"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Enregistre la carte"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Salva la carta"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "カードを保存します"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "카드를 저장합니다."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Salva o cartão"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "存储卡片"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "儲存卡片"
           }
         }
       }
@@ -7122,12 +2916,6 @@
     "Scan the barcode on a loyalty card to add it." : {
       "comment" : "Under “No Cards Yet” on the empty card list.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "امسح الرمز الشريطي ضوئيًا على بطاقة ولاء لإضافتها."
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7140,46 +2928,10 @@
             "value" : "Escanea el código de barras de una tarjeta de fidelización para añadirla."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Scannez le code-barres d’une carte de fidélité pour l’ajouter."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Scansiona il codice a barre di una carta fedeltà per aggiungerla."
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "ポイントカードのバーコードをスキャンして追加します。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "멤버십 카드의 바코드를 스캔하여 추가하십시오."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Escaneie o código de barras de um cartão de fidelidade para adicioná-lo."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "扫描会员卡上的条形码即可添加。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "掃描會員卡上的條碼來加入卡片。"
           }
         }
       }
@@ -7187,12 +2939,6 @@
     "Scanned %@: %@" : {
       "comment" : "VoiceOver announcement after the camera reads a barcode. The arguments are its format, then the code, as in “Scanned EAN-13: 5012345678900”. The format's name is already translated and may contain the word code, as QR Code and Code 128 do, so do not add one.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تم مسح %1$@ ضوئيًا: %2$@"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7211,46 +2957,10 @@
             "value" : "%1$@ escaneado: %2$@"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@ scanné : %2$@"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@ scansionato: %2$@"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$@をスキャンしました：%2$@"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@ 스캔됨: %2$@"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@ escaneado: %2$@"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已扫描 %1$@：%2$@"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已掃描 %1$@：%2$@"
           }
         }
       }
@@ -7258,12 +2968,6 @@
     "Scanned code %@" : {
       "comment" : "VoiceOver announcement after the camera reads a barcode of a format the app does not name. The argument is the code.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تم مسح الرمز ضوئيًا: %@"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7276,46 +2980,10 @@
             "value" : "Código escaneado: %@"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Code %@ scanné"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Codice scansionato: %@"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "コード%@をスキャンしました"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "코드 %@ 스캔됨"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Código escaneado: %@"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已扫描，卡号为 %@"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已掃描代碼 %@"
           }
         }
       }
@@ -7329,12 +2997,6 @@
     "Searching" : {
       "comment" : "VoiceOver label for the spinner beside the map's search field while a search runs.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "جارٍ البحث"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7347,46 +3009,10 @@
             "value" : "Buscando"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Recherche en cours"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ricerca in corso"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "検索中"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "검색 중"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Buscando"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "正在搜索"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "搜尋中"
           }
         }
       }
@@ -7397,12 +3023,6 @@
     "Sets the code for this card's barcode" : {
       "comment" : "VoiceOver hint for the field for the number or text that the barcode encodes, in the card form.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "يعيّن رمز الرمز الشريطي لهذه البطاقة"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7415,46 +3035,10 @@
             "value" : "Define el código del código de barras de esta tarjeta"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Définit le code du code-barres de cette carte"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Imposta il codice per il codice a barre di questa carta"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "このカードのバーコードのコードを設定します"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "이 카드의 바코드 번호를 설정합니다."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Define o código do código de barras deste cartão"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "设置这张卡片的卡号"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "設定這張卡片的代碼"
           }
         }
       }
@@ -7462,12 +3046,6 @@
     "Sets the name shown for this card in your list" : {
       "comment" : "VoiceOver hint for the card name field in the card form.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "يعيّن الاسم الذي يظهر لهذه البطاقة في قائمتك"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7480,46 +3058,10 @@
             "value" : "Define el nombre que se muestra para esta tarjeta en tu lista"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Définit le nom affiché pour cette carte dans votre liste"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Imposta il nome mostrato per questa carta nell'elenco"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "リストに表示されるこのカードの名前を設定します"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "목록에 표시되는 이 카드의 이름을 설정합니다."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Define o nome exibido para este cartão em sua lista"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "设置这张卡片在列表中显示的名称"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "設定這張卡片在列表中顯示的名稱"
           }
         }
       }
@@ -7527,12 +3069,6 @@
     "Sets the type of barcode for this card" : {
       "comment" : "VoiceOver hint for the barcode format menu in the card form.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "يعيّن نوع الرمز الشريطي لهذه البطاقة"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7545,46 +3081,10 @@
             "value" : "Define el tipo de código de barras de esta tarjeta"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Définit le type de code-barres de cette carte"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Imposta il tipo di codice a barre per questa carta"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "このカードのバーコードの種類を設定します"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "이 카드의 바코드 유형을 설정합니다."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Define o tipo de código de barras deste cartão"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "设置这张卡片的条形码类型"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "設定這張卡片的條碼類型"
           }
         }
       }
@@ -7592,12 +3092,6 @@
     "Settings" : {
       "comment" : "Tab bar item for the app's settings.\nTitle of the Settings screen.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "الإعدادات"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7610,43 +3104,7 @@
             "value" : "Ajustes"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Réglages"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Impostazioni"
-          }
-        },
         "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "設定"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "설정"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ajustes"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "设置"
-          }
-        },
-        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "設定"
@@ -7720,12 +3178,6 @@
     "Teal" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker: a dark blue-green.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "أزرق مخضر"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7738,46 +3190,10 @@
             "value" : "Verde azulado"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sarcelle"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Verde acqua"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "ティール"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "청록색"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Verde-azulado"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "深青色"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "藍綠色"
           }
         }
       }
@@ -7800,12 +3216,6 @@
     "This code can't be drawn" : {
       "comment" : "Shown in the Home Screen widget instead of the barcode when the card's code can't be drawn in its barcode format.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "يتعذر عرض هذا الرمز"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7818,46 +3228,10 @@
             "value" : "No se puede mostrar este código"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ce code ne peut pas être affiché"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Impossibile mostrare questo codice"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "このコードは表示できません"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "이 코드를 표시할 수 없음"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Não é possível mostrar este código"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "此卡号无法生成条形码"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "此代碼無法產生條碼"
           }
         }
       }
@@ -7868,48 +3242,6 @@
     "This will permanently delete all %lld cards. This action cannot be undone." : {
       "comment" : "Message in the delete-all dialog. The argument is how many cards there are, always at least one.",
       "localizations" : {
-        "ar" : {
-          "variations" : {
-            "plural" : {
-              "few" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "سيؤدي هذا إلى حذف جميع البطاقات الـ %lld نهائيًا. لا يمكن التراجع عن هذا الإجراء."
-                }
-              },
-              "many" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "سيؤدي هذا إلى حذف جميع البطاقات الـ %lld نهائيًا. لا يمكن التراجع عن هذا الإجراء."
-                }
-              },
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "سيؤدي هذا إلى حذف بطاقة واحدة نهائيًا. لا يمكن التراجع عن هذا الإجراء."
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "سيؤدي هذا إلى حذف جميع البطاقات الـ %lld نهائيًا. لا يمكن التراجع عن هذا الإجراء."
-                }
-              },
-              "two" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "سيؤدي هذا إلى حذف البطاقتين نهائيًا. لا يمكن التراجع عن هذا الإجراء."
-                }
-              },
-              "zero" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "سيؤدي هذا إلى حذف %lld بطاقة نهائيًا. لا يمكن التراجع عن هذا الإجراء."
-                }
-              }
-            }
-          }
-        },
         "de" : {
           "variations" : {
             "plural" : {
@@ -7970,54 +3302,6 @@
             }
           }
         },
-        "fr" : {
-          "variations" : {
-            "plural" : {
-              "many" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Les %lld de cartes seront définitivement supprimées. Cette action est irréversible."
-                }
-              },
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld carte sera définitivement supprimée. Cette action est irréversible."
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Les %lld cartes seront définitivement supprimées. Cette action est irréversible."
-                }
-              }
-            }
-          }
-        },
-        "it" : {
-          "variations" : {
-            "plural" : {
-              "many" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Verranno eliminate definitivamente %lld di carte. Questa azione non può essere annullata."
-                }
-              },
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Verrà eliminata definitivamente %lld carta. Questa azione non può essere annullata."
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Verranno eliminate definitivamente tutte e %lld le carte. Questa azione non può essere annullata."
-                }
-              }
-            }
-          }
-        },
         "ja" : {
           "variations" : {
             "plural" : {
@@ -8025,66 +3309,6 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "%lld枚のカードが完全に削除されます。この操作は取り消せません。"
-                }
-              }
-            }
-          }
-        },
-        "ko" : {
-          "variations" : {
-            "plural" : {
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "카드 %lld장이 영구적으로 삭제됩니다. 이 동작은 실행 취소할 수 없습니다."
-                }
-              }
-            }
-          }
-        },
-        "pt-BR" : {
-          "variations" : {
-            "plural" : {
-              "many" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Isto apagará permanentemente todos os %lld de cartões. Esta ação não pode ser desfeita."
-                }
-              },
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Isto apagará permanentemente %lld cartão. Esta ação não pode ser desfeita."
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Isto apagará permanentemente todos os %lld cartões. Esta ação não pode ser desfeita."
-                }
-              }
-            }
-          }
-        },
-        "zh-Hans" : {
-          "variations" : {
-            "plural" : {
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "这将永久删除 %lld 张卡片。此操作无法撤销。"
-                }
-              }
-            }
-          }
-        },
-        "zh-Hant" : {
-          "variations" : {
-            "plural" : {
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "這將永久刪除 %lld 張卡片。此動作無法還原。"
                 }
               }
             }
@@ -8116,12 +3340,6 @@
     "Turns full brightness on or off, so the barcode scans easily" : {
       "comment" : "VoiceOver hint for the Brightness Boost button on a card's screen. It works both ways: on when off, off when on.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "يشغّل السطوع الكامل أو يوقفه ليسهل مسح الرمز الشريطي ضوئيًا"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8134,46 +3352,10 @@
             "value" : "Activa o desactiva el brillo máximo para que el código de barras se escanee fácilmente"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Active ou désactive la luminosité maximale pour faciliter la lecture du code-barres"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Attiva o disattiva la luminosità massima, per far leggere facilmente il codice a barre"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "最大の明るさのオン/オフを切り替えて、バーコードを読み取りやすくします"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "바코드가 잘 스캔되도록 최대 밝기를 켜거나 끕니다."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ativa ou desativa o Brilho Máximo para facilitar a leitura do código de barras"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "打开或关闭最高亮度，方便扫描条形码"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "開啟或關閉最高亮度，讓條碼更容易掃描"
           }
         }
       }
@@ -8181,12 +3363,6 @@
     "Turns the screen up to full brightness while a card is open, so its barcode scans easily." : {
       "comment" : "Under the Brightness Boost switch in Settings, saying what the switch does when it is on.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "يرفع سطوع الشاشة إلى الحد الأقصى أثناء فتح بطاقة ليسهل مسح رمزها الشريطي ضوئيًا."
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8199,46 +3375,10 @@
             "value" : "Pone la pantalla al brillo máximo mientras hay una tarjeta abierta para que su código de barras se escanee fácilmente."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Passe l’écran à la luminosité maximale lorsqu’une carte est ouverte, pour faciliter la lecture de son code-barres."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Porta lo schermo alla luminosità massima quando una carta è aperta, per far leggere facilmente il suo codice a barre."
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "カードを開いている間、画面を最大の明るさにして、バーコードを読み取りやすくします。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "카드가 열려 있는 동안 화면을 최대 밝기로 전환하여 바코드가 잘 스캔되도록 합니다."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aumenta o brilho da tela ao máximo enquanto um cartão está aberto, para facilitar a leitura do código de barras."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "打开卡片时，屏幕最亮，便于扫描。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "打開卡片時，螢幕最亮，方便掃描。"
           }
         }
       }
@@ -8249,12 +3389,6 @@
     "UPC-E" : {
       "comment" : "Barcode format in the barcode type picker. A standard name: keep it as it is.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "UPC-E"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8267,43 +3401,7 @@
             "value" : "UPC-E"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "UPC-E"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "UPC-E"
-          }
-        },
         "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "UPC-E"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "UPC-E"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "UPC-E"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "UPC-E"
-          }
-        },
-        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "UPC-E"
@@ -8314,12 +3412,6 @@
     "Version" : {
       "comment" : "Settings row label for the app's version number.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "الإصدار"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8332,46 +3424,10 @@
             "value" : "Versión"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Version"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Versione"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "バージョン"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "버전"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Versão"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "版本"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "版本"
           }
         }
       }
@@ -8394,12 +3450,6 @@
     "Yellow" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "أصفر"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8412,46 +3462,10 @@
             "value" : "Amarillo"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Jaune"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Giallo"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "イエロー"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "노란색"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Amarelo"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "黄色"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "黃色"
           }
         }
       }
@@ -8465,12 +3479,6 @@
     "You're at %@" : {
       "comment" : "VoiceOver label when the user is inside one of a card's locations. The argument is the place's name, such as Boulder Barn.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "أنت في %@"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8483,46 +3491,10 @@
             "value" : "Estás en %@"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vous êtes à %@"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sei da %@"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@にいます"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "현재 %@에 있음"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Você está em %@"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "你在 %@"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "你在 %@"
           }
         }
       }
@@ -8530,12 +3502,6 @@
     "You're at %@. Your barcode is ready." : {
       "comment" : "Lock Screen notification on arriving at one of a card's places, under the card's name. The argument is the place's name.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "أنت في %@. رمزك الشريطي جاهز."
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8548,46 +3514,10 @@
             "value" : "Estás en %@. Tu código de barras está listo."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vous êtes à %@. Votre code-barres est prêt."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sei da %@. Il tuo codice a barre è pronto."
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@にいます。バーコードの準備ができました。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@에 도착했습니다. 바코드가 준비되었습니다."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Você está em %@. Seu código de barras está pronto."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "你已到达 %@。条形码已准备好。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "你在 %@，條碼已準備好。"
           }
         }
       }

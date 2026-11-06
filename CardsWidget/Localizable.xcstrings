@@ -8,12 +8,6 @@
     "%@ · %@" : {
       "comment" : "On a card's screen: the distance to the card's nearest location, then the place's name, as in “350 m · Boulder Barn”.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@ · %2$@"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -32,43 +26,7 @@
             "value" : "%1$@ · %2$@"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@ · %2$@"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@ · %2$@"
-          }
-        },
         "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@ · %2$@"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@ · %2$@"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@ · %2$@"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@ · %2$@"
-          }
-        },
-        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$@ · %2$@"
@@ -79,12 +37,6 @@
     "%@ from %@" : {
       "comment" : "VoiceOver label: how far the user is from a card's nearest location, in full, as in “350 metres from Boulder Barn”.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "على بُعد %1$@ من %2$@"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -103,46 +55,10 @@
             "value" : "A %1$@ de %2$@"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "À %1$@ de %2$@"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "A %1$@ da %2$@"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%2$@から%1$@"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%2$@에서 %1$@"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "A %1$@ de %2$@"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "距 %2$@ %1$@"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "距離 %2$@ %1$@"
           }
         }
       }
@@ -150,12 +66,6 @@
     "Add a card in Card Barcodes and it shows here." : {
       "comment" : "Under “No cards yet” in the Home Screen widget. Card Barcodes is the app's name.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "أضف بطاقة في Card Barcodes وستظهر هنا."
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -168,46 +78,10 @@
             "value" : "Añade una tarjeta en Card Barcodes y aparecerá aquí."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ajoutez une carte dans Card Barcodes et elle apparaîtra ici."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aggiungi una carta in Card Barcodes e apparirà qui."
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Card Barcodesで追加できます。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Card Barcodes에서 카드를 추가하면 여기에 표시됩니다."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Adicione um cartão no Card Barcodes e ele aparecerá aqui."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在 Card Barcodes 中添加卡片后将显示在这里。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在 Card Barcodes 中加入卡片後會顯示在這裡。"
           }
         }
       }
@@ -215,12 +89,6 @@
     "At %@" : {
       "comment" : "On a card's screen when the user is inside one of the card's locations. The argument is the place's name, such as Boulder Barn.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "في %@"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -233,46 +101,10 @@
             "value" : "En %@"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "À %@"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Presso %@"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@にいます"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@에 있음"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Em %@"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "你在 %@"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "你在 %@"
           }
         }
       }
@@ -280,12 +112,6 @@
     "Aztec" : {
       "comment" : "Barcode format in the barcode type picker: the square 2D Aztec Code. Keep it unless your language writes it differently.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aztec"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -298,43 +124,7 @@
             "value" : "Aztec"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aztec"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aztec"
-          }
-        },
         "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aztec"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aztec"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aztec"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aztec"
-          }
-        },
-        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aztec"
@@ -348,12 +138,6 @@
     "Blue" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "أزرق"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -366,46 +150,10 @@
             "value" : "Azul"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bleu"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Blu"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "ブルー"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "파란색"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Azul"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "蓝色"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "藍色"
           }
         }
       }
@@ -413,12 +161,6 @@
     "Brown" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "بني"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -431,46 +173,10 @@
             "value" : "Marrón"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Marron"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Marrone"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "ブラウン"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "갈색"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Marrom"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "棕色"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "棕色"
           }
         }
       }
@@ -478,12 +184,6 @@
     "Card" : {
       "comment" : "A noun: one loyalty card. The Home Screen widget's name in the widget gallery, the title of its setting for which card to show, and what Shortcuts calls a card.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "البطاقة"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -496,46 +196,10 @@
             "value" : "Tarjeta"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Carte"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Carta"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "カード"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "카드"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cartão"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "卡片"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "卡片"
           }
         }
       }
@@ -543,12 +207,6 @@
     "Card code: %@" : {
       "comment" : "VoiceOver label for a card's code, shown with its barcode on the card's screen and in the Home Screen widget. VoiceOver spells the code out character by character.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "رمز البطاقة: %@"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -561,46 +219,10 @@
             "value" : "Código de la tarjeta: %@"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Code de la carte : %@"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Codice della carta: %@"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "カードのコード：%@"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "카드 코드: %@"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Código do cartão: %@"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "卡号：%@"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "卡片代碼：%@"
           }
         }
       }
@@ -608,12 +230,6 @@
     "Choose Card" : {
       "comment" : "Title of the Home Screen widget's settings, where the user picks which card it shows. A verb phrase.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "اختيار البطاقة"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -626,46 +242,10 @@
             "value" : "Elegir tarjeta"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Choisir une carte"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Scegli carta"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "カードを選択"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "카드 선택"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Escolher Cartão"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "选取卡片"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "選擇卡片"
           }
         }
       }
@@ -673,12 +253,6 @@
     "Code 39" : {
       "comment" : "Barcode format in the barcode type picker. A standard name: keep it unless your language writes it differently.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Code 39"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -691,43 +265,7 @@
             "value" : "Code 39"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Code 39"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Code 39"
-          }
-        },
         "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Code 39"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Code 39"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Code 39"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Code 39"
-          }
-        },
-        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Code 39"
@@ -738,12 +276,6 @@
     "Code 93" : {
       "comment" : "Barcode format in the barcode type picker. A standard name: keep it unless your language writes it differently.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Code 93"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -756,43 +288,7 @@
             "value" : "Code 93"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Code 93"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Code 93"
-          }
-        },
         "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Code 93"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Code 93"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Code 93"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Code 93"
-          }
-        },
-        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Code 93"
@@ -803,12 +299,6 @@
     "Code 128" : {
       "comment" : "Barcode format in the barcode type picker. A standard name: keep it unless your language writes it differently.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Code 128"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -821,43 +311,7 @@
             "value" : "Code 128"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Code 128"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Code 128"
-          }
-        },
         "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Code 128"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Code 128"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Code 128"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Code 128"
-          }
-        },
-        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Code 128"
@@ -874,12 +328,6 @@
     "Default" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker: the plain grey card that follows light and dark mode.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "افتراضي"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -892,46 +340,10 @@
             "value" : "Por omisión"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Par défaut"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Predefinito"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "デフォルト"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "기본"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Padrão"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "默认"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "預設"
           }
         }
       }
@@ -939,12 +351,6 @@
     "EAN-8" : {
       "comment" : "Barcode format in the barcode type picker. A standard name: keep it as it is.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "EAN-8"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -957,43 +363,7 @@
             "value" : "EAN-8"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "EAN-8"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "EAN-8"
-          }
-        },
         "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "EAN-8"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "EAN-8"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "EAN-8"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "EAN-8"
-          }
-        },
-        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "EAN-8"
@@ -1004,12 +374,6 @@
     "EAN-13" : {
       "comment" : "Barcode format in the barcode type picker. A standard name: keep it as it is.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "EAN-13"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1022,43 +386,7 @@
             "value" : "EAN-13"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "EAN-13"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "EAN-13"
-          }
-        },
         "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "EAN-13"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "EAN-13"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "EAN-13"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "EAN-13"
-          }
-        },
-        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "EAN-13"
@@ -1069,12 +397,6 @@
     "Find nearest card" : {
       "comment" : "VoiceOver label for the Home Screen widget's refresh button, which finds the card nearest to you again.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "البحث عن أقرب بطاقة"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1087,46 +409,10 @@
             "value" : "Buscar la tarjeta más cercana"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rechercher la carte la plus proche"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Trova la carta più vicina"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "最寄りのカードを探す"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "가장 가까운 카드 찾기"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Buscar cartão mais próximo"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "查找最近的卡片"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "尋找最近的卡片"
           }
         }
       }
@@ -1134,12 +420,6 @@
     "Find Nearest Card" : {
       "comment" : "Title of the action behind the Home Screen widget's refresh button, which finds the card nearest to you again.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "البحث عن أقرب بطاقة"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1152,46 +432,10 @@
             "value" : "Buscar la tarjeta más cercana"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rechercher la carte la plus proche"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Trova la carta più vicina"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "最寄りのカードを探す"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "가장 가까운 카드 찾기"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Buscar Cartão Mais Próximo"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "查找最近的卡片"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "尋找最近的卡片"
           }
         }
       }
@@ -1199,12 +443,6 @@
     "Graphite" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker: a dark blue-grey.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "جرافيت"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1217,46 +455,10 @@
             "value" : "Grafito"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Graphite"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Grafite"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "グラファイト"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "그래파이트"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Grafite"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "石墨色"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "石墨色"
           }
         }
       }
@@ -1264,12 +466,6 @@
     "Green" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "أخضر"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1282,46 +478,10 @@
             "value" : "Verde"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vert"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Verde"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "グリーン"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "초록색"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Verde"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "绿色"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "綠色"
           }
         }
       }
@@ -1329,12 +489,6 @@
     "Here" : {
       "comment" : "Shown on a card in the list instead of a distance when the user is inside one of the card's locations. Keep it very short.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "هنا"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1347,46 +501,10 @@
             "value" : "Aquí"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ici"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Qui"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "現在地"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "여기"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aqui"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已到达"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在此"
           }
         }
       }
@@ -1394,12 +512,6 @@
     "Indigo" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker: a deep violet-blue.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "نيلي"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1412,46 +524,10 @@
             "value" : "Índigo"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Indigo"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Indaco"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "インディゴ"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "남색"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Índigo"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "靛蓝色"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "靛藍色"
           }
         }
       }
@@ -1474,12 +550,6 @@
     "Nearest card" : {
       "comment" : "In the Home Screen widget's settings: the choice that shows whichever card has the place nearest to you. The default.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "أقرب بطاقة"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1492,46 +562,10 @@
             "value" : "Tarjeta más cercana"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Carte la plus proche"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Carta più vicina"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "最寄りのカード"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "가장 가까운 카드"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cartão Mais Próximo"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "最近的卡片"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "最近的卡片"
           }
         }
       }
@@ -1539,12 +573,6 @@
     "No cards yet" : {
       "comment" : "Title of the Home Screen widget before the user has added a card.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "لا توجد بطاقات بعد"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1557,46 +585,10 @@
             "value" : "Aún no hay tarjetas"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aucune carte pour l’instant"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ancora nessuna carta"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "まだカードがありません"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "아직 카드 없음"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nenhum Cartão Ainda"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "暂无卡片"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "尚無卡片"
           }
         }
       }
@@ -1607,12 +599,6 @@
     "Opens the card in Card Barcodes" : {
       "comment" : "VoiceOver hint for the card in the Home Screen widget. Card Barcodes is the app's name.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "يفتح البطاقة في Card Barcodes"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1625,46 +611,10 @@
             "value" : "Abre la tarjeta en Card Barcodes"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ouvre la carte dans Card Barcodes"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apre la carta in Card Barcodes"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Card Barcodesでカードを開きます"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Card Barcodes에서 카드를 엽니다."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Abre o cartão no Card Barcodes"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在 Card Barcodes 中打开这张卡片"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在 Card Barcodes 中打開卡片"
           }
         }
       }
@@ -1672,12 +622,6 @@
     "Orange" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "برتقالي"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1690,46 +634,10 @@
             "value" : "Naranja"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Orange"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Arancione"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "オレンジ"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "주황색"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Laranja"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "橙色"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "橙色"
           }
         }
       }
@@ -1737,12 +645,6 @@
     "PDF 417" : {
       "comment" : "Barcode format in the barcode type picker: the stacked 2D PDF417 code, not a PDF file. Keep it as it is.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "PDF 417"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1755,43 +657,7 @@
             "value" : "PDF 417"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "PDF 417"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "PDF 417"
-          }
-        },
         "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "PDF 417"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "PDF 417"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "PDF 417"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "PDF 417"
-          }
-        },
-        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "PDF 417"
@@ -1802,12 +668,6 @@
     "Pick a card, or let the widget show the one nearest to you." : {
       "comment" : "Description under the title of the Home Screen widget's settings.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "اختر بطاقة، أو دع الأداة تعرض الأقرب إليك."
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1820,46 +680,10 @@
             "value" : "Elige una tarjeta o deja que el widget muestre la más cercana a ti."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Choisissez une carte ou laissez le widget afficher la plus proche de vous."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Scegli una carta o lascia che il widget mostri quella più vicina a te."
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "カードを選ぶか、最寄りのカードをウィジェットに表示できます。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "카드를 선택하거나 위젯이 가장 가까운 카드를 표시하도록 합니다."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Escolha um cartão ou deixe o widget mostrar o mais próximo de você."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "选取一张卡片，或让小组件显示距你最近的卡片。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "選一張卡片，或讓小工具顯示離你最近的卡片。"
           }
         }
       }
@@ -1867,12 +691,6 @@
     "Pink" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker: a deep raspberry pink.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "وردي"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1885,46 +703,10 @@
             "value" : "Rosa"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rose"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rosa"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "ピンク"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "분홍색"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rosa"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "粉色"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "粉紅色"
           }
         }
       }
@@ -1932,12 +714,6 @@
     "Purple" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "أرجواني"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1950,46 +726,10 @@
             "value" : "Morado"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Violet"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Viola"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "パープル"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "보라색"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Roxo"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "紫色"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "紫色"
           }
         }
       }
@@ -1997,12 +737,6 @@
     "QR Code" : {
       "comment" : "Barcode format in the barcode type picker: the square 2D code. Use the usual name for a QR code in your language.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "رمز QR"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2015,46 +749,10 @@
             "value" : "Código QR"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Code QR"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Codice QR"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "QRコード"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "QR 코드"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "QR Code"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "二维码"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "QR Code"
           }
         }
       }
@@ -2062,12 +760,6 @@
     "Red" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "أحمر"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2080,46 +772,10 @@
             "value" : "Rojo"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rouge"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rosso"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "レッド"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "빨간색"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vermelho"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "红色"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "紅色"
           }
         }
       }
@@ -2133,12 +789,6 @@
     "Shows the barcode of the card nearest to you, or one you choose." : {
       "comment" : "Description of the Home Screen widget in the widget gallery.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تعرض الرمز الشريطي لأقرب بطاقة إليك، أو لبطاقة تختارها."
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2151,46 +801,10 @@
             "value" : "Muestra el código de barras de la tarjeta más cercana a ti o de una que elijas."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Affiche le code-barres de la carte la plus proche de vous ou d’une carte de votre choix."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mostra il codice a barre della carta più vicina a te o di una a tua scelta."
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "最寄りのカード、または選んだカードのバーコードを表示します。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "가장 가까운 카드 또는 선택한 카드의 바코드를 표시합니다."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mostra o código de barras do cartão mais próximo de você ou de um que você escolher."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "显示距你最近或你选取的卡片的条形码。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "顯示離你最近或你所選卡片的條碼。"
           }
         }
       }
@@ -2201,12 +815,6 @@
     "Teal" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker: a dark blue-green.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "أزرق مخضر"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2219,46 +827,10 @@
             "value" : "Verde azulado"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sarcelle"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Verde acqua"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "ティール"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "청록색"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Verde-azulado"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "深青色"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "藍綠色"
           }
         }
       }
@@ -2266,12 +838,6 @@
     "This code can't be drawn" : {
       "comment" : "Shown in the Home Screen widget instead of the barcode when the card's code can't be drawn in its barcode format.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "يتعذر عرض هذا الرمز"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2284,46 +850,10 @@
             "value" : "No se puede mostrar este código"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ce code ne peut pas être affiché"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Impossibile mostrare questo codice"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "このコードは表示できません"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "이 코드를 표시할 수 없음"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Não é possível mostrar este código"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "此卡号无法生成条形码"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "此代碼無法產生條碼"
           }
         }
       }
@@ -2331,12 +861,6 @@
     "UPC-E" : {
       "comment" : "Barcode format in the barcode type picker. A standard name: keep it as it is.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "UPC-E"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2349,43 +873,7 @@
             "value" : "UPC-E"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "UPC-E"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "UPC-E"
-          }
-        },
         "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "UPC-E"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "UPC-E"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "UPC-E"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "UPC-E"
-          }
-        },
-        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "UPC-E"
@@ -2396,12 +884,6 @@
     "Yellow" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "أصفر"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2414,46 +896,10 @@
             "value" : "Amarillo"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Jaune"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Giallo"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "イエロー"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "노란색"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Amarelo"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "黄色"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "黃色"
           }
         }
       }
@@ -2461,12 +907,6 @@
     "You're at %@" : {
       "comment" : "VoiceOver label when the user is inside one of a card's locations. The argument is the place's name, such as Boulder Barn.",
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "أنت في %@"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2479,46 +919,10 @@
             "value" : "Estás en %@"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vous êtes à %@"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sei da %@"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@にいます"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "현재 %@에 있음"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Você está em %@"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "你在 %@"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "你在 %@"
           }
         }
       }

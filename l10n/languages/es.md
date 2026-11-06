@@ -18,6 +18,7 @@ Ajustes (Settings), pantalla bloqueada (Lock Screen, lower case in sentences), L
 - Location (titles, buttons): ubicación; place (sentences): lugar; Pinned location: Ubicación marcada; map pin: marcador del mapa.
 - Brightness Boost: Aumento de brillo (setting, button, announcements); Voice Control name: Brillo.
 - postcode: código postal; radius: radio ("Radio de %@").
+- icon: icono (never símbolo); share: compartir; search: buscar; sort: ordenar; torch: linterna; What's New: Novedades.
 - Colours use Apple's names: Morado, Grafito, Índigo, Verde azulado, Marrón.
 
 ## Punctuation and case
