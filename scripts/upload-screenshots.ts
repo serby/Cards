@@ -1,7 +1,8 @@
 // Replaces the App Store screenshots of the editable App Store version with
 // the store images in screenshots/store/<locale>/*.png, in file-name order.
-// The raw captures in screenshots/<locale>/, which CI compares against, are
-// never uploaded.
+// The raw captures in screenshots/<locale>/ are never uploaded, and neither is
+// the creative asset that creative-asset.json names, which is not a screenshot:
+// upload-creative-assets.ts sends it.
 //
 // Each image's display type comes from its pixel size. For every display type
 // it has images for, the set ends up holding exactly those, in order: images
@@ -38,6 +39,13 @@ function displayTypes(width: number, height: number): string[] {
     if (["2064x2752", "2048x2732"].includes(size)) return ["APP_IPAD_PRO_3GEN_129"];
     if (["2007x2853", "1398x2034"].includes(size)) return duoCandidates;
     return [];
+}
+
+/// The file name of the locale's creative asset, if its creative-asset.json names one.
+function creativeAssetFile(locale: string): string | undefined {
+    const entry = join(screenshotsDir, locale, "creative-asset.json");
+    if (!existsSync(entry)) return undefined;
+    return `${(JSON.parse(readFileSync(entry, "utf8")) as { file: string }).file}.png`;
 }
 
 function pngSize(path: string): { width: number; height: number } {
@@ -87,7 +95,8 @@ async function main(): Promise<void> {
             continue;
         }
         console.log(`==> ${locale}`);
-        const files = readdirSync(join(screenshotsDir, locale)).filter((name) => name.endsWith(".png")).sort();
+        const creativeAsset = creativeAssetFile(locale);
+        const files = readdirSync(join(screenshotsDir, locale)).filter((name) => name.endsWith(".png") && name !== creativeAsset).sort();
         const byType = new Map<string[], string[]>();
         for (const file of files) {
             const { width, height } = pngSize(join(screenshotsDir, locale, file));

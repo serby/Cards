@@ -1,6 +1,6 @@
 # Platforms and privacy
 
-The devices and systems Card Barcodes runs on, the language it speaks, and what it does and doesn't do with your data.
+The devices and systems Card Barcodes runs on, the language it speaks, what it does and doesn't do with your data, and when it asks for a rating.
 
 ### PLAT-1: Use the app on my iPhone
 
@@ -89,15 +89,32 @@ As a card holder, I want the app in my own language, so that I understand every 
 **Where:** `Cards/Localizable.xcstrings`, `Cards/InfoPlist.xcstrings`, `CardsWidget/Localizable.xcstrings`, `CardsWidget/InfoPlist.xcstrings`, `Cards.xcodeproj/project.pbxproj` (`knownRegions`), `CardsTests/LocalisationBundleTests.swift`, `CardsUITests/CardsLocalisationScreenshotTests.swift`
 **Notes:** French, Italian, Arabic, Traditional Chinese, Brazilian Portuguese, Korean and Simplified Chinese were translated on the localisation branch and are held back for later waves; `l10n/context.md` says how to bring each back. The right-to-left layout that Arabic needs is built and tested with right to left forced (`CardsRightToLeftUITests`).
 
-### PLAT-8: Find the app in the App Store in my language
+### PLAT-8: Be asked for a rating only once the app has helped
+
+As a card holder, I want the app to ask what I think only after it has worked for me, and never while I am showing a card, so that a prompt never gets between me and the till.
+
+- The app asks for a rating with Apple's own prompt (`requestReview`), which offers stars and an optional review. The app never shows a prompt of its own and never sends you to the App Store.
+- It counts the calendar days on which a card's screen opened (CARD-4), in the device's calendar and time zone. Opening several cards, or one card many times, on one day counts as one day. A card opened at 23:50 and another at 00:10 count as two days. A time earlier than the last one counted, after the clock is set back, counts nothing.
+- Once cards have been opened on three different days in the current version, it asks the next time you come back from a card to the list, a second after the list shows. Three days means the app has worked at a till on separate trips, not just on the day it was tried, so it can never ask on the day it was installed or first opened.
+- It asks only with the list showing in the Cards tab and the app in front. Not while a card or its edit form shows, or while the "Add Card?" sheet (SHARE-3) is up or the search field (CARD-11) has text in it; a return that does not fit leaves it due for the next one. Leaving the edit form, by deleting a card from it or cancelling Add Card, is not a return from a card and does not ask.
+- It asks at most once per version, as Apple advises. The first card opened in a new version starts the count again, so each version needs its own three days.
+- Apple decides whether its prompt appears: at most three times in 365 days, never in TestFlight builds, and not at all once the person has turned off In-App Ratings & Reviews in the App Store settings. Debug builds show it on every request.
+- The counts are kept on the device under `reviewPrompt` and don't sync, so each device counts its own days (DATA-1). They never leave the device (PLAT-4).
+- It never asks in UI tests (`-uiTesting` or `CARDS_UI_TESTING=1`) or the screenshot runs (`-screenshotSeed`), which do not count days either. The Storybook and previews show the pure views, which never ask.
+
+**Since:** In preparation for 1.4
+**Where:** `Cards/Core/Models/ReviewPrompt.swift`, `Cards/Core/Models/DeviceSettings.swift`, `Cards/Features/CardListScreen.swift`, `Cards/App/DevelopmentHooks.swift` (`asksForReviews`), `CardsTests/ReviewPromptTests.swift`
+**Notes:** The card shown in full above the grid where you are (SET-3) is not counted, because it never opens a card's screen.
+
+### PLAT-9: Find the app in the App Store in my language
 
 As someone looking for a card wallet, I want the App Store listing in my language, so that I can tell what the app does before I download it.
 
 - The listing has British English (en-GB), American English (en-US), Spanish for Spain (es-ES), Spanish for Mexico (es-MX), German (de-DE) and Japanese (ja) versions, in preparation for 1.4. Each one says the same thing in its own words, with the wording people search for there: "Fidelización" in Spain, "Cartera" in Mexico, "Kundenkarten" in Germany, "ポイントカード管理" in Japan.
-- Every listing keeps the name "Card Barcodes" and localises the part after the colon, within 30 characters. Names, subtitles and screenshot captions never mention the price; the description and promotional text may say the app is free.
+- Every listing keeps the name "Card Barcodes" and localises the part after the colon, within 30 characters. Names, subtitles, screenshot captions and the creative asset's title never mention the price; the description and promotional text may say the app is free.
 - Each listing has its own keywords, within 100 bytes, with no word already in its name or subtitle and no competitor's name.
-- Each listing's What's New is that version's changelog in its language (SET-2), and its screenshots show the app in its language, with captions in it.
+- Each listing's What's New is that version's changelog in its language (SET-2), and its screenshots and creative asset (the product page header and search result on iOS 27) show the app in its language, with captions in it.
 - App Review's notes are written once, in British English.
 
 **Since:** In preparation for 1.4
-**Where:** `metadata/<locale>/`, `screenshots/store/<locale>/captions.json`, `scripts/check-metadata.ts`, `scripts/check-store-images.ts`, `scripts/upload-metadata.ts`, `scripts/upload-screenshots.ts`
+**Where:** `metadata/<locale>/`, `screenshots/store/<locale>/captions.json`, `screenshots/store/<locale>/creative-asset.json`, `scripts/check-metadata.ts`, `scripts/check-store-images.ts`, `scripts/upload-metadata.ts`, `scripts/upload-screenshots.ts`

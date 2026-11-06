@@ -52,6 +52,15 @@
         },
         {
           "type": "new",
+          "text": "Show distances in kilometres or miles, or let them follow your iPhone's settings, with a new choice in Settings.",
+          "en-US": "Show distances in kilometers or miles, or let them follow your iPhone's settings, with a new choice in Settings.",
+          "es": "Muestra las distancias en kilómetros o en millas, o deja que sigan los ajustes de tu iPhone, con una nueva opción en Ajustes.",
+          "es-MX": "Muestra las distancias en kilómetros o en millas, o deja que sigan la configuración de tu iPhone, con una nueva opción en Ajustes.",
+          "de": "Zeige Entfernungen in Kilometern oder Meilen an, oder lass sie den Einstellungen deines iPhone folgen, mit einer neuen Auswahl in den Einstellungen.",
+          "ja": "「設定」の新しい項目で、距離をキロメートルかマイルで表示するか、iPhoneの設定に合わせるかを選べます。"
+        },
+        {
+          "type": "new",
           "text": "Find a place by searching for a shop, a street, a town or a postcode. Places are named from the map, and you can change the name.",
           "en-US": "Find a place by searching for a store, a street, a town or a ZIP code. Places are named from the map, and you can change the name.",
           "es": "Encuentra un lugar buscando una tienda, una calle, una población o un código postal. Los lugares toman su nombre del mapa, y puedes cambiarlo.",
@@ -84,11 +93,11 @@
         },
         {
           "type": "improved",
-          "text": "Your cards are laid out in a grid, two across on iPhone and four on iPad. Press and hold a card to delete it, or delete it from its edit screen.",
-          "es": "Tus tarjetas se muestran en una cuadrícula, de dos en dos en el iPhone y de cuatro en cuatro en el iPad. Mantén pulsada una tarjeta para eliminarla, o elimínala desde su pantalla de edición.",
-          "es-MX": "Tus tarjetas se muestran en una cuadrícula, de dos en dos en el iPhone y de cuatro en cuatro en el iPad. Mantén presionada una tarjeta para eliminarla, o elimínala desde su pantalla de edición.",
-          "de": "Deine Karten erscheinen in einem Raster, zwei nebeneinander auf dem iPhone und vier auf dem iPad. Halte eine Karte gedrückt, um sie zu löschen, oder lösche sie beim Bearbeiten.",
-          "ja": "カードがグリッドで表示されます（iPhoneでは2列、iPadでは4列）。カードを長押しして削除するか、編集画面から削除できます。"
+          "text": "Your cards are laid out in a grid, two across on iPhone and four on iPad. Press and hold a card to edit or delete it, or delete it from its edit screen.",
+          "es": "Tus tarjetas se muestran en una cuadrícula, de dos en dos en el iPhone y de cuatro en cuatro en el iPad. Mantén pulsada una tarjeta para editarla o eliminarla, o elimínala desde su pantalla de edición.",
+          "es-MX": "Tus tarjetas se muestran en una cuadrícula, de dos en dos en el iPhone y de cuatro en cuatro en el iPad. Mantén presionada una tarjeta para editarla o eliminarla, o elimínala desde su pantalla de edición.",
+          "de": "Deine Karten erscheinen in einem Raster, zwei nebeneinander auf dem iPhone und vier auf dem iPad. Halte eine Karte gedrückt, um sie zu bearbeiten oder zu löschen, oder lösche sie beim Bearbeiten.",
+          "ja": "カードがグリッドで表示されます（iPhoneでは2列、iPadでは4列）。カードを長押しして編集や削除ができ、編集画面からも削除できます。"
         },
         {
           "type": "fixed",

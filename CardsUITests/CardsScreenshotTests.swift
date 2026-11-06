@@ -7,9 +7,10 @@ import XCTest
 /// Each call to `attach` produces an XCTAttachment in the xcresult bundle with
 /// `.keepAlways` lifetime so the capture script can extract it post-test. The
 /// app is seeded with the screenshot cards and a fixed location (see
-/// ScreenshotSeed), so every run shows the same distances. Elements are found
-/// by identifier, and the system prompt's buttons by position, so the test
-/// runs in any language.
+/// ScreenshotSeed), so every run shows the same distances. The list, a card,
+/// the edit form and the map come from one run through the app; the share menu
+/// has a test of its own. Elements are found by identifier, and the system
+/// prompt's buttons by position, so the test runs in every store locale.
 final class CardsScreenshotTests: XCTestCase {
     override func setUpWithError() throws {
         continueAfterFailure = false
@@ -17,28 +18,9 @@ final class CardsScreenshotTests: XCTestCase {
 
     @MainActor
     func testCaptureScreenshots() throws {
-        let app = XCUIApplication()
-        // The cards in custom order, without the card for where you are, whatever
-        // the simulator's own settings say, so every capture shows the same grid.
-        app.launchArguments += ["-uiTesting", "-screenshotSeed", "-cardSortOrder", "custom", "-showsCardWhereYouAre", "NO"]
-        app.launchEnvironment["CARDS_UI_TESTING"] = "1"
-        app.launchEnvironment["CARDS_SCREENSHOT_SEED"] = "1"
-        app.launch()
+        let app = launchSeeded()
         defer { app.terminate() }
 
-        // iPad names end "_iPad"; other devices take theirs from the capture
-        // script, which sets TEST_RUNNER_SCREENSHOT_SUFFIX (for example "_Duo").
-        let isPad = UIDevice.current.userInterfaceIdiom == .pad
-        let suffix = isPad ? "_iPad" : ProcessInfo.processInfo.environment["SCREENSHOT_SUFFIX"] ?? ""
-
-        XCTAssertTrue(app.buttons["addCardButton"].waitForExistence(timeout: 5))
-        // Cards with locations ask for notifications, for the arrival reminders.
-        let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
-        let permission = springboard.alerts.firstMatch
-        if permission.waitForExistence(timeout: 5) {
-            permission.buttons.element(boundBy: 1).tap()
-            XCTAssertTrue(permission.waitForNonExistence(timeout: 3))
-        }
         for row in SeededCard.all {
             XCTAssertTrue(app.buttons[row].waitForExistence(timeout: 3), "Missing seeded card: \(row)")
         }
@@ -52,16 +34,7 @@ final class CardsScreenshotTests: XCTestCase {
         app.buttons["editCardButton"].tap()
         let nameField = app.textFields["nameTextField"]
         XCTAssertTrue(nameField.waitForExistence(timeout: 5))
-        // The name field takes focus on its own after a moment, bringing up the
-        // keyboard when the simulator shows one. Return puts it away. Scrolling
-        // would too, but a scroll up shrinks the tab bar to a single button.
-        if app.keyboards.firstMatch.waitForExistence(timeout: 4) {
-            app.typeText("\n")
-            // In case Return does not do it on some display; a swipe is the fallback.
-            if !waitForKeyboardToGo(app, timeout: 1.5) {
-                app.descendants(matching: .any)["editCardForm"].firstMatch.swipeDown()
-            }
-        }
+        // The form opens with the keyboard down (CARD-5).
         XCTAssertTrue(waitForKeyboardToGo(app, timeout: 3))
         attach(app, name: "03_EditCard\(suffix)")
 
@@ -75,6 +48,63 @@ final class CardsScreenshotTests: XCTestCase {
         // Map tiles load from the network after the map appears.
         Thread.sleep(forTimeInterval: 4)
         attach(app, name: "04_LocationPicker\(suffix)")
+    }
+
+    /// The card screen with its share menu open, offering the card as a link or
+    /// a picture (SHARE-1, SHARE-2). A test of its own, so it starts from the
+    /// list whatever the other capture left on screen.
+    @MainActor
+    func testCaptureShareScreenshot() throws {
+        let app = launchSeeded()
+        defer { app.terminate() }
+
+        let card = app.buttons[SeededCard.honeycomb]
+        XCTAssertTrue(card.waitForExistence(timeout: 3))
+        card.tap()
+        XCTAssertTrue(app.descendants(matching: .any)["barcodeView"].firstMatch.waitForExistence(timeout: 5))
+        let share = app.buttons["shareCardButton"]
+        XCTAssertTrue(share.waitForExistence(timeout: 3))
+        share.tap()
+        XCTAssertTrue(app.buttons["shareLinkButton"].waitForExistence(timeout: 3))
+        XCTAssertTrue(app.buttons["shareImageButton"].exists)
+        // The menu grows out of its button; let it finish.
+        Thread.sleep(forTimeInterval: 1)
+        attach(app, name: "06_ShareCard\(suffix)")
+    }
+
+    /// Launches with the screenshot cards in custom order and without the card
+    /// for where you are, whatever the simulator's own settings say, so every
+    /// capture shows the same grid, and answers the notification question.
+    @MainActor
+    private func launchSeeded() -> XCUIApplication {
+        let app = XCUIApplication()
+        // The cards in custom order, without the card for where you are and with
+        // distances in the locale's own units, whatever the simulator's own
+        // settings say, so every capture shows the same grid.
+        app.launchArguments += [
+            "-uiTesting", "-screenshotSeed", "-cardSortOrder", "custom", "-showsCardWhereYouAre", "NO", "-distanceUnits", "automatic"
+        ]
+        app.launchEnvironment["CARDS_UI_TESTING"] = "1"
+        app.launchEnvironment["CARDS_SCREENSHOT_SEED"] = "1"
+        app.launch()
+
+        XCTAssertTrue(app.buttons["addCardButton"].waitForExistence(timeout: 5))
+        // Cards with locations ask for notifications, for the arrival reminders.
+        let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
+        let permission = springboard.alerts.firstMatch
+        if permission.waitForExistence(timeout: 5) {
+            permission.buttons.element(boundBy: 1).tap()
+            XCTAssertTrue(permission.waitForNonExistence(timeout: 3))
+        }
+        return app
+    }
+
+    /// The end of every screenshot's name. iPad names end "_iPad"; other devices
+    /// take theirs from the capture script, which sets
+    /// TEST_RUNNER_SCREENSHOT_SUFFIX (for example "_Duo").
+    @MainActor
+    private var suffix: String {
+        UIDevice.current.userInterfaceIdiom == .pad ? "_iPad" : ProcessInfo.processInfo.environment["SCREENSHOT_SUFFIX"] ?? ""
     }
 
     /// Whether the keyboard has left the screen. On the iPhone Duo's outer display

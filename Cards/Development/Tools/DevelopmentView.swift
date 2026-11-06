@@ -26,6 +26,17 @@ struct DevelopmentView: View {
                         )
                     }
                     .accessibilityIdentifier("testNotificationTool")
+
+                    NavigationLink {
+                        ReviewPromptScreen()
+                    } label: {
+                        ToolRow(
+                            title: "Review Prompt",
+                            detail: "When the app asks for a rating, and asking now.",
+                            systemImage: "star.bubble"
+                        )
+                    }
+                    .accessibilityIdentifier("reviewPromptTool")
                 } header: {
                     Text(verbatim: "Tools")
                         .foregroundColor(.secondaryText)

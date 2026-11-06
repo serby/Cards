@@ -7,6 +7,8 @@ import SwiftUI
 @MainActor
 public struct CardListActions {
     public var selectCard: (CardSummary.ID) -> Void
+    /// Opens the card's edit form, from the long-press menu.
+    public var editCard: (CardSummary.ID) -> Void
     public var addCard: () -> Void
     /// Deletes the card at once.
     public var deleteCard: (CardSummary.ID) -> Void
@@ -15,11 +17,13 @@ public struct CardListActions {
 
     public init(
         selectCard: @escaping (CardSummary.ID) -> Void = { _ in },
+        editCard: @escaping (CardSummary.ID) -> Void = { _ in },
         addCard: @escaping () -> Void = {},
         deleteCard: @escaping (CardSummary.ID) -> Void = { _ in },
         moveCard: @escaping (_ card: CardSummary.ID, _ target: CardSummary.ID) -> Void = { _, _ in }
     ) {
         self.selectCard = selectCard
+        self.editCard = editCard
         self.addCard = addCard
         self.deleteCard = deleteCard
         self.moveCard = moveCard

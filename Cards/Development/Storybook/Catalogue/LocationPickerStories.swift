@@ -13,7 +13,7 @@ let locationPickerStory = Story(
         .options("Search", SearchBehaviour.allCases.map(\.rawValue), SearchBehaviour.finds.rawValue),
         .text("Search text", ""),
         .toggle("Editing Boulder Barn", false)
-    ],
+    ] + DistanceKnobs.knobs,
     gallery: [
         (name: "Boulder Barn", view: AnyView(picker(searching: .sample))),
         (name: "Suggestions", view: AnyView(picker(searching: .sample, for: "Joe"))),
@@ -42,6 +42,7 @@ let locationPickerStory = Story(
         }
         // The start position and search text are read once, so a new choice needs a fresh picker.
         .id("\(start)-\(behaviour)-\(text)-\(editing)")
+        .distances(knobs)
     )
 }
 

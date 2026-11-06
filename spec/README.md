@@ -54,6 +54,6 @@ Only write what the code does. If a criterion is wrong, fix the criterion or the
 | [settings.md](settings.md) | SET | The Settings screen and What's New |
 | [navigation.md](navigation.md) | NAV | The tabs, bringing the Cards tab forward, and `cards://` links |
 | [accessibility.md](accessibility.md) | A11Y | VoiceOver, larger text sizes, announcements, touch targets and haptics |
-| [platforms-and-privacy.md](platforms-and-privacy.md) | PLAT | iPhone, iPad, iPhone Duo, iOS 18 and later, languages and the App Store listings, and privacy: no accounts, analytics or tracking, location and camera on the device |
+| [platforms-and-privacy.md](platforms-and-privacy.md) | PLAT | iPhone, iPad, iPhone Duo, iOS 18 and later, languages and the App Store listings, privacy: no accounts, analytics or tracking, location and camera on the device, and when the app asks for an App Store rating |
 | [sharing.md](sharing.md) | SHARE | Sending a card as a link someone can add to their app, or as an image, and adding a shared card |
-| [development.md](development.md) | DEV | The debug builds' Development tab: the Storybook and a test arrival notification |
+| [development.md](development.md) | DEV | The debug builds' Development tab: the Storybook, a test arrival notification and the review prompt |

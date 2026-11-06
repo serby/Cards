@@ -13,14 +13,17 @@ extension XCTestCase {
         XCTWaiter.wait(for: [expectation(for: NSPredicate(format: "value == %@", value), evaluatedWith: element)], timeout: timeout) == .completed
     }
 
-    /// Launches with the six screenshot cards, in custom order and without the
-    /// card for where you are, whatever an earlier run left in those settings,
-    /// and in the suite's variant, such as right to left, where it has one.
+    /// Launches with the six screenshot cards, in custom order, without the
+    /// card for where you are and with Automatic distances, whatever an earlier
+    /// run left in those settings, and in the suite's variant, such as right to
+    /// left, where it has one.
     @MainActor
     func launchWithSeededCards() -> XCUIApplication {
         let app = XCUIApplication()
         let variant = (self as? CardsUITests).map { type(of: $0).variantArguments } ?? []
-        app.launchArguments += ["-uiTesting", "-screenshotSeed", "-cardSortOrder", "custom", "-showsCardWhereYouAre", "NO"] + variant
+        app.launchArguments += [
+            "-uiTesting", "-screenshotSeed", "-cardSortOrder", "custom", "-showsCardWhereYouAre", "NO", "-distanceUnits", "automatic"
+        ] + variant
         app.launch()
         dismissNotificationPrompt()
         return app

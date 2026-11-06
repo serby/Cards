@@ -16,7 +16,7 @@ XCODEBUILD := xcodebuild -project Cards.xcodeproj -scheme Cards -derivedDataPath
 
 .PHONY: build clean test test-unit test-e2e test-a11y test-tsan test-coverage coverage-report sim device \
 	check check-release check-metadata check-changelog check-screenshots \
-	capture-screenshots store-screenshots upload-build upload-metadata upload-screenshots \
+	capture-screenshots store-screenshots upload-build upload-metadata upload-screenshots upload-creative-assets \
 	l10n-status l10n-check l10n-translate l10n-add-language test-scripts capture-l10n
 
 build:
@@ -84,7 +84,8 @@ capture-screenshots:
 	node scripts/capture-screenshots.ts
 
 # Composes the App Store images in screenshots/store/<locale>/ from the raw
-# captures and each locale's captions.json, then checks them.
+# captures and each locale's captions.json, and the universal creative asset
+# from its creative-asset.json, then checks them.
 store-screenshots:
 	TEST_RUNNER_CARDS_STORE_SCREENSHOTS=1 $(XCODEBUILD) test -destination '$(DESTINATION)' \
 		-only-testing:CardsTests/StoreScreenshotTests
@@ -101,6 +102,10 @@ upload-metadata:
 upload-screenshots:
 	node scripts/upload-screenshots.ts
 
+# Uploads each locale's creative asset and places it as the product page header
+# and search results image.
+upload-creative-assets:
+	node scripts/upload-creative-assets.ts
 # Localisation (scripts/l10n.ts). The languages are the project's knownRegions,
 # and the catalogues every *.xcstrings under Cards/ and CardsWidget/ outside
 # Cards/Development. LANGS takes codes separated by spaces ("de ja"); empty means

@@ -111,8 +111,8 @@ describe("price words", () => {
             assert.equal(report.found, 6);
             assert.deepEqual(report.missing, ["screenshots/store/ja/captions.json"]);
             assert.deepEqual(report.problems, [
-                'screenshots/store/de-DE/captions.json: 01_Cards\'s subtitle has "Kostenlos"; App Store Review Guideline 2.3.7 keeps price words out of screenshot captions',
-                'screenshots/store/en-GB/captions.json: 01_Cards\'s title has "Free"; App Store Review Guideline 2.3.7 keeps price words out of screenshot captions',
+                'screenshots/store/de-DE/captions.json: 01_Cards\'s subtitle has "Kostenlos"; App Store Review Guideline 2.3.7 keeps price words out of screenshots and their captions',
+                'screenshots/store/en-GB/captions.json: 01_Cards\'s title has "Free"; App Store Review Guideline 2.3.7 keeps price words out of screenshots and their captions',
             ]);
         });
     });

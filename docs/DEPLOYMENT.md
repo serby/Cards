@@ -8,7 +8,7 @@ Cards ships with GitHub Actions driving plain `xcodebuild` and the scripts in `s
 |----------|---------|--------------|
 | `ci.yml` (CI) | Every push to `main` and every pull request, on `xcode-27` | Three jobs in parallel: the build and the unit tests; the release check; and, on Linux, the check that every App Store image is present plus the metadata and changelog checks. It captures no screenshots and runs no UI tests or SwiftLint: those run locally before a commit. A newer push cancels an older run, and pushes that only change docs, the spec or the website skip CI |
 | `release.yml` (Release to App Store) | `v*` tags, on `xcode-27` | Installs signing, then runs `scripts/release-version.ts`: it checks the tag, stamps a build number, archives and signs (`scripts/build-ipa.ts`), uploads (`scripts/upload-build.ts`), attaches the build to the version, sets What's New from the tag message and submits for review (`scripts/submit-for-review.ts`). Run by hand, it uploads without submitting |
-| `app-store-listing.yml` (App Store listing) | By hand | Gives the editable version its number with **prepare version**, then uploads the text in `metadata/` and the images in `screenshots/store/`. It does not upload or attach builds |
+| `app-store-listing.yml` (App Store listing) | By hand | Gives the editable version its number with **prepare version**, then uploads the text in `metadata/`, the images in `screenshots/store/` and each locale's creative asset (the product page header and search results image). It does not upload or attach builds |
 | `website.yml` (Deploy Website) | Pushes to `main` that change `Website/src/`, or by hand | Deploys `Website/src/` to Cloudflare Pages (`scripts/deploy-website.ts`) |
 
 Both macOS workflows run on GitHub's `xcode-27` image and select the Xcode named in `.xcode-version` with `scripts/select-xcode.ts`, the same one local builds use. They stop if the image lacks it. CI's unit tests (`scripts/run-unit-tests.ts`) use the newest iOS runtime that Xcode's SDK supports (`scripts/lib/simulator.ts`).
@@ -24,7 +24,7 @@ Every script is TypeScript, run with `node scripts/<name>.ts` (`docs/DEVELOPMENT
 - `scripts/check-release-build.ts`, `scripts/check-store-images.ts`, `scripts/check-metadata.ts` and `scripts/check-changelog.ts`: CI's checks.
 - `scripts/install-signing-certificate.ts` and `scripts/install-signing-profiles.ts` (run by `.github/actions/install-signing`): import the distribution certificate into a temporary keychain, and install an App Store profile for each bundle ID, creating it when it is missing or invalid. `install-signing-certificate.ts --remove` deletes the keychain afterwards.
 - `scripts/release-version.ts`: the release, from tag to submission, using `scripts/build-ipa.ts` (archive and export a signed `.ipa`, taking `BUILD_NUMBER`, `CARDS_APP_PROFILE` and `CARDS_WIDGET_PROFILE`), `scripts/upload-build.ts` (upload it with `xcrun altool`) and `scripts/submit-for-review.ts` (wait for processing, attach, set What's New and submit; `--dry-run` only reads).
-- `scripts/prepare-app-store-version.ts`, `scripts/upload-metadata.ts` and `scripts/upload-screenshots.ts`: the listing workflow's steps, which also run locally.
+- `scripts/prepare-app-store-version.ts`, `scripts/upload-metadata.ts`, `scripts/upload-screenshots.ts` and `scripts/upload-creative-assets.ts`: the listing workflow's steps, which also run locally.
 - `scripts/deploy-website.ts`: the website deploy.
 
 ## Secrets

@@ -8,6 +8,7 @@ public struct SettingsListView: View {
     @Binding private var brightnessBoost: Bool
     @Binding private var arrivalNotifications: Bool
     @Binding private var showsCardWhereYouAre: Bool
+    @Binding private var distanceUnits: DistanceUnits
     /// The import result to show in an alert, already in the app's language.
     @Binding private var message: String?
     private let actions: SettingsActions
@@ -18,12 +19,15 @@ public struct SettingsListView: View {
     @Environment(\.accessibilityAnnouncer) private var announcer
     @Environment(\.colorSchemeContrast) private var colorSchemeContrast
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    /// Says what Automatic means, as "Automatic (Kilometres)".
+    @Environment(\.locale) private var locale
 
     public init(
         state: SettingsState,
         brightnessBoost: Binding<Bool>,
         arrivalNotifications: Binding<Bool> = .constant(true),
         showsCardWhereYouAre: Binding<Bool> = .constant(false),
+        distanceUnits: Binding<DistanceUnits> = .constant(.automatic),
         message: Binding<String?> = .constant(nil),
         actions: SettingsActions = SettingsActions()
     ) {
@@ -31,6 +35,7 @@ public struct SettingsListView: View {
         _brightnessBoost = brightnessBoost
         _arrivalNotifications = arrivalNotifications
         _showsCardWhereYouAre = showsCardWhereYouAre
+        _distanceUnits = distanceUnits
         _message = message
         self.actions = actions
     }
@@ -110,6 +115,28 @@ public struct SettingsListView: View {
                     isOn: $showsCardWhereYouAre,
                     identifier: "showsCardWhereYouAreToggle"
                 )
+                Picker(selection: $distanceUnits) {
+                    ForEach(DistanceUnits.allCases) { units in
+                        Text(units.title(for: locale))
+                            .tag(units)
+                    }
+                } label: {
+                    Text(
+                        "Distances",
+                        comment: "Settings menu for the units distances and radii are shown in: Automatic, Kilometres or Miles."
+                    )
+                }
+                .tint(.accent)
+                .accessibilityIdentifier("distanceUnitsPicker")
+                Text(
+                    "Automatic follows the measurement system in Language & Region in the Settings app.",
+                    comment: """
+                        Under the Distances menu in Settings. Language & Region is the name of iOS's own settings screen; \
+                        use its name in your language.
+                        """
+                )
+                .font(.caption)
+                .foregroundStyle(Color.secondaryText)
             } header: {
                 Text("Locations", comment: "Settings section heading for the switches about arrival notifications and the card for where you are.")
                     .foregroundStyle(Color.secondaryText)
@@ -255,6 +282,27 @@ public struct SettingsListView: View {
     }
 }
 
+extension DistanceUnits {
+    /// The choice as Settings lists it. Automatic says what it means where
+    /// `locale` applies: "Automatic (Kilometres)" or "Automatic (Miles)".
+    func title(for locale: Locale) -> String {
+        switch self {
+        case .automatic:
+            String(
+                localized: "Automatic (\(resolved(for: locale).title(for: locale)))",
+                comment: """
+                    A choice in Settings > Distances: the units that follow the iPhone's measurement system. \
+                    The argument is those units, Kilometres or Miles.
+                    """
+            )
+        case .kilometres:
+            String(localized: "Kilometres", comment: "A choice in Settings > Distances: show distances in metres and kilometres.")
+        case .miles:
+            String(localized: "Miles", comment: "A choice in Settings > Distances: show distances in yards and miles.")
+        }
+    }
+}
+
 private extension SettingsListView {
     /// A label and its value or control side by side, or stacked at
     /// accessibility text sizes. No Spacer inside: the label fills the row.
@@ -311,6 +359,13 @@ private extension SettingsListView {
     @Previewable @State var boost = false
     NavigationStack {
         SettingsListView(state: .noCards, brightnessBoost: $boost)
+    }
+}
+
+#Preview("Distances in miles") {
+    @Previewable @State var units = DistanceUnits.miles
+    NavigationStack {
+        SettingsListView(state: .sample, brightnessBoost: .constant(true), distanceUnits: $units)
     }
 }
 #endif

@@ -8,6 +8,7 @@ public struct SettingsScreen: View {
     @AppStorage("brightnessBoost") private var brightnessBoost = true
     @AppStorage(ArrivalPlan.enabledKey) private var arrivalNotifications = true
     @AppStorage(DeviceSettings.showsCardWhereYouAreKey) private var showsCardWhereYouAre = false
+    @AppStorage(DeviceSettings.distanceUnitsKey) private var distanceUnits = DistanceUnits.automatic
     @Environment(ArrivalScheduler.self) private var arrivalScheduler
     @Environment(\.clipboard) private var clipboard
     @Environment(\.fileReader) private var fileReader
@@ -36,6 +37,7 @@ public struct SettingsScreen: View {
             brightnessBoost: $brightnessBoost,
             arrivalNotifications: $arrivalNotifications,
             showsCardWhereYouAre: $showsCardWhereYouAre,
+            distanceUnits: $distanceUnits,
             message: $message,
             actions: SettingsActions(
                 exportCards: { showExportSheet = true },

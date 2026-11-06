@@ -6,7 +6,6 @@ import SwiftUI
 public struct CardEditView<Scanner: View>: View {
     @Binding var draft: CardDraft
     let actions: CardEditActions
-    private let autofocusesName: Bool
     /// Where the location picker opens: the user's last known location, if any.
     private let mapCentre: CLLocationCoordinate2D?
     /// Codes other cards already use, which this card cannot take.
@@ -29,11 +28,8 @@ public struct CardEditView<Scanner: View>: View {
     @State var deletes = 0
     /// The place whose row was tapped, open in the picker to change it.
     @State private var editingLocation: CardLocation?
-    /// The name takes focus once, not each time the form is seen again after switching tabs.
-    @State private var hasAutofocused = false
     @Environment(\.layoutDirection) private var layoutDirection
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-    @Environment(\.accessibilityVoiceOverEnabled) private var voiceOverEnabled
     @Environment(\.accessibilityAnnouncer) private var announcer
 
     private enum Field {
@@ -87,7 +83,6 @@ public struct CardEditView<Scanner: View>: View {
     public init(
         draft: Binding<CardDraft>,
         actions: CardEditActions = CardEditActions(),
-        autofocusesName: Bool = false,
         mapCentre: CLLocationCoordinate2D? = nil,
         takenCodes: Set<String> = [],
         arrivalNotificationsEnabled: Bool = true,
@@ -97,7 +92,6 @@ public struct CardEditView<Scanner: View>: View {
     ) {
         _draft = draft
         self.actions = actions
-        self.autofocusesName = autofocusesName
         self.mapCentre = mapCentre
         self.takenCodes = takenCodes
         self.arrivalNotificationsEnabled = arrivalNotificationsEnabled
@@ -342,14 +336,6 @@ public struct CardEditView<Scanner: View>: View {
         // On the form for the UI tests, which scroll it; the controls inside keep
         // their own identifiers.
         .accessibilityIdentifier("editCardForm")
-        .task {
-            // With VoiceOver on, jumping to the field would cut across it reading
-            // the new screen; VoiceOver users reach the field themselves.
-            guard autofocusesName, !hasAutofocused, !voiceOverEnabled else { return }
-            hasAutofocused = true
-            try? await Task.sleep(for: .seconds(0.6))
-            focusedField = .name
-        }
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button(action: actions.save) {

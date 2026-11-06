@@ -271,6 +271,7 @@ private struct PlacesPanel: View {
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.displayScale) private var displayScale
+    @Environment(\.distanceFormat) private var distanceFormat
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -355,10 +356,9 @@ private struct PlacesPanel: View {
         .contentShape(.rect)
     }
 
-    /// The distance as VoiceOver reads it, which names the place, or the name
-    /// alone while where you are is unknown.
-    private func spoken(_ place: NearbyPlace) -> Text {
-        place.proximity?.spokenDescription ?? Text(place.location.name)
+    /// The distance as VoiceOver reads it, naming the place, or just the place.
+    private func spoken(_ place: NearbyPlace) -> String {
+        place.proximity?.spokenDescription(in: distanceFormat) ?? place.location.name
     }
 
     /// A hairline in the panel's ink, which stays dark on the white panel in dark mode.

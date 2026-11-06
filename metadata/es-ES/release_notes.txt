@@ -4,9 +4,10 @@ Pon a cada tarjeta un icono, entre 76 repartidos en 16 grupos, que aparece en la
 Añade una tarjeta desde una foto, una captura de pantalla o un PDF de su código de barras, como una entrada electrónica.
 Una tarjeta con varios lugares muestra los cinco más cercanos y a qué distancia está cada uno. Toca uno para abrirlo en Mapas.
 Muestra entera la tarjeta del lugar donde estás encima de tus demás tarjetas, con una nueva opción en Ajustes.
+Muestra las distancias en kilómetros o en millas, o deja que sigan los ajustes de tu iPhone, con una nueva opción en Ajustes.
 Encuentra un lugar buscando una tienda, una calle, una población o un código postal. Los lugares toman su nombre del mapa, y puedes cambiarlo.
 Cambia un lugar que hayas añadido a una tarjeta.
 Importa tarjetas desde un archivo JSON, además de pegándolas.
 La cámara enfoca una tarjeta que tengas cerca. Toca para enfocar, o enciende la linterna si hay poca luz.
-Tus tarjetas se muestran en una cuadrícula, de dos en dos en el iPhone y de cuatro en cuatro en el iPad. Mantén pulsada una tarjeta para eliminarla, o elimínala desde su pantalla de edición.
+Tus tarjetas se muestran en una cuadrícula, de dos en dos en el iPhone y de cuatro en cuatro en el iPad. Mantén pulsada una tarjeta para editarla o eliminarla, o elimínala desde su pantalla de edición.
 Abrir una tarjeta ya no produce una respuesta háptica, algo que solo ocurría la primera vez.

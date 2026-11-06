@@ -56,8 +56,14 @@ extension View {
     /// The location picker's pin and ring (`MapPinRing`, hidden from
     /// VoiceOver) as one element. VoiceOver cannot see the map under the pin
     /// or drag it, so the pin says what will be saved, `name` and `radius`,
-    /// and moves by actions, which call `onMove`.
-    func voiceOverMapPin(name: String, radius: CLLocationDistance, onMove: @escaping @MainActor (Compass) -> Void) -> some View {
+    /// and moves by actions, which call `onMove`. The radius is spoken in
+    /// `format`'s units.
+    func voiceOverMapPin(
+        name: String,
+        radius: CLLocationDistance,
+        in format: DistanceFormat,
+        onMove: @escaping @MainActor (Compass) -> Void
+    ) -> some View {
         ZStack {
             // At least a 44 pt target for VoiceOver and Switch Control, as the
             // pin alone is a narrow 14 pt: an element that ignores its children
@@ -70,7 +76,7 @@ extension View {
         .accessibilityLabel(
             Text("Map pin", comment: "VoiceOver label for the pin in the middle of the Add Location map, which marks the place to add.")
         )
-        .accessibilityValue(CardLocationRow.spokenDescription(name: name, radius: radius))
+        .accessibilityValue(CardLocationRow.spokenDescription(name: name, radius: radius, in: format))
         .accessibilityActions {
             ForEach(Compass.allCases, id: \.self) { direction in
                 Button {

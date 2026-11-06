@@ -12,6 +12,7 @@ Every version of Card Barcodes and what it changed, newest first. This file is g
 - Add a card from a photo, a screenshot or a PDF of its barcode, such as an e-ticket.
 - A card with several places lists the five nearest and how far away each is. Tap one to open it in Maps.
 - Show the card for where you are in full above your other cards, with a new switch in Settings.
+- Show distances in kilometres or miles, or let them follow your iPhone's settings, with a new choice in Settings.
 - Find a place by searching for a shop, a street, a town or a postcode. Places are named from the map, and you can change the name.
 - Change a place you have added to a card.
 - Import cards from a JSON file, as well as by pasting.
@@ -19,7 +20,7 @@ Every version of Card Barcodes and what it changed, newest first. This file is g
 ### Improved
 
 - The camera focuses on a card held close. Tap to focus, or turn on the torch in low light.
-- Your cards are laid out in a grid, two across on iPhone and four on iPad. Press and hold a card to delete it, or delete it from its edit screen.
+- Your cards are laid out in a grid, two across on iPhone and four on iPad. Press and hold a card to edit or delete it, or delete it from its edit screen.
 
 ### Fixed
 

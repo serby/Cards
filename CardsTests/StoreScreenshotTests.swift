@@ -3,13 +3,14 @@ import SwiftUI
 import Testing
 import UIKit
 
-/// Renders the App Store images. Not part of the normal test run: `make
-/// store-screenshots` turns it on with CARDS_STORE_SCREENSHOTS=1. It reads and
-/// writes the repository directly, which a simulator can do.
+/// Renders the App Store images: the screenshots, and the universal creative
+/// asset. Not part of the normal test run: `make store-screenshots` turns it on
+/// with CARDS_STORE_SCREENSHOTS=1. It reads and writes the repository directly,
+/// which a simulator can do.
 @MainActor
 struct StoreScreenshotTests {
     nonisolated private static let enabled = ProcessInfo.processInfo.environment["CARDS_STORE_SCREENSHOTS"] == "1"
-    private static let root = URL(filePath: #filePath).deletingLastPathComponent().deletingLastPathComponent()
+    private static let files = StoreListingFiles.repository
 
     /// Each device's suffix and the pixel size App Store Connect takes for it.
     private static let devices: [(suffix: String, size: CGSize)] = [
@@ -20,35 +21,45 @@ struct StoreScreenshotTests {
 
     @Test(.enabled(if: enabled))
     func renderStoreScreenshots() throws {
-        let store = Self.root.appending(path: "screenshots/store")
-        let locales = try FileManager.default.contentsOfDirectory(atPath: store.path()).filter { !$0.hasPrefix(".") }
+        let locales = try Self.files.locales()
         #expect(!locales.isEmpty)
-        for locale in locales.sorted() {
-            let folder = store.appending(path: locale)
+        for locale in locales {
+            let folder = Self.files.store.appending(path: locale)
             let captions = try JSONDecoder().decode(
                 [StoreScreenshotCaption].self,
                 from: Data(contentsOf: folder.appending(path: "captions.json"))
             )
             for caption in captions {
                 for device in Self.devices {
-                    let source = Self.root.appending(path: "screenshots/\(locale)/\(caption.screen)\(device.suffix).png")
-                    let image = try #require(UIImage(contentsOfFile: source.path()), "Missing \(source.path())")
-                    let png = try render(caption, image: image, size: device.size)
-                    try png.write(to: folder.appending(path: "\(caption.file)\(device.suffix).png"))
+                    let name = "\(caption.screen)\(device.suffix)"
+                    let image = try #require(Self.files.capture(name, locale: locale), "Missing screenshots/\(locale)/\(name).png")
+                    let view = StoreScreenshot(
+                        title: caption.title,
+                        subtitle: caption.subtitle,
+                        color: .stored(caption.color),
+                        screenshot: image,
+                        layout: caption.layout,
+                        canvas: device.size
+                    )
+                    try render(view, size: device.size).write(to: folder.appending(path: "\(caption.file)\(device.suffix).png"))
                 }
             }
         }
     }
 
-    private func render(_ caption: StoreScreenshotCaption, image: UIImage, size: CGSize) throws -> Data {
-        let view = StoreScreenshot(
-            title: caption.title,
-            subtitle: caption.subtitle,
-            color: .stored(caption.color),
-            screenshot: image,
-            layout: caption.layout,
-            canvas: size
-        )
+    /// One universal creative asset for each locale with a creative-asset.json.
+    @Test(.enabled(if: enabled))
+    func renderCreativeAssets() throws {
+        for locale in try Self.files.locales() {
+            guard let entry = try Self.files.creativeAsset(locale) else { continue }
+            let image = try #require(Self.files.capture(entry.screen, locale: locale), "Missing screenshots/\(locale)/\(entry.screen).png")
+            let view = StoreCreativeAsset(title: entry.title, color: .stored(entry.color), screenshot: image)
+            let png = try render(view, size: StoreCreativeAsset.canvas)
+            try png.write(to: Self.files.store.appending(path: "\(locale)/\(entry.file).png"))
+        }
+    }
+
+    private func render(_ view: some View, size: CGSize) throws -> Data {
         let renderer = ImageRenderer(content: view)
         renderer.scale = 1
         // App Store Connect refuses images with an alpha channel.

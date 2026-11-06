@@ -4,9 +4,10 @@ Gib jeder Karte ein Symbol, aus 76 in 16 Gruppen, zu sehen in der Liste und auf 
 Füge eine Karte aus einem Foto, einem Bildschirmfoto oder einem PDF ihres Barcodes hinzu, etwa aus einem E-Ticket.
 Eine Karte mit mehreren Orten zeigt die fünf nächsten und wie weit jeder entfernt ist. Tippe auf einen, um ihn in Apple Karten zu öffnen.
 Zeige die Karte für den Ort, an dem du bist, vollständig über deinen anderen Karten, mit einem neuen Schalter in den Einstellungen.
+Zeige Entfernungen in Kilometern oder Meilen an, oder lass sie den Einstellungen deines iPhone folgen, mit einer neuen Auswahl in den Einstellungen.
 Finde einen Ort, indem du nach einem Geschäft, einer Straße, einer Stadt oder einer Postleitzahl suchst. Orte bekommen ihren Namen automatisch, und du kannst ihn ändern.
 Ändere einen Ort, den du einer Karte hinzugefügt hast.
 Importiere Karten aus einer JSON-Datei, nicht nur durch Einsetzen.
 Die Kamera stellt auf eine nah gehaltene Karte scharf. Tippe zum Scharfstellen, oder schalte bei wenig Licht die Taschenlampe ein.
-Deine Karten erscheinen in einem Raster, zwei nebeneinander auf dem iPhone und vier auf dem iPad. Halte eine Karte gedrückt, um sie zu löschen, oder lösche sie beim Bearbeiten.
+Deine Karten erscheinen in einem Raster, zwei nebeneinander auf dem iPhone und vier auf dem iPad. Halte eine Karte gedrückt, um sie zu bearbeiten oder zu löschen, oder lösche sie beim Bearbeiten.
 Beim Öffnen einer Karte gibt es kein haptisches Feedback mehr, das es nur beim ersten Mal gab.

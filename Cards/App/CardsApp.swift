@@ -8,6 +8,9 @@ struct CardsApp: App {
     @State private var navigationManager: NavigationManager
     @State private var locationService = LocationService(fixedLocation: DevelopmentHooks.screenshotLocation)
     @State private var arrivalScheduler = ArrivalScheduler(notifications: .live)
+    /// Set in Settings, and handed to every screen and the widget from here (SET-4).
+    @AppStorage(DeviceSettings.distanceUnitsKey) private var distanceUnits = DistanceUnits.automatic
+    private let widgetSettings = WidgetSettings.live
     private let performanceTracker = PerformanceTracker()
     private let arrivalRouter: ArrivalNotificationRouter
 
@@ -72,6 +75,11 @@ struct CardsApp: App {
         .environment(arrivalScheduler)
         .environment(\.mapShowsPointsOfInterest, DevelopmentHooks.mapShowsPointsOfInterest)
         .environment(\.placeSearch, DevelopmentHooks.placeSearch)
+        .environment(\.distanceUnits, distanceUnits)
+        // The widget runs in its own process, so it gets a copy of the choice.
+        .onChange(of: distanceUnits, initial: true) {
+            widgetSettings.setDistanceUnits(distanceUnits)
+        }
         .background(Color.primaryBackground)
         .onAppear {
             performanceTracker.recordAppLaunch()

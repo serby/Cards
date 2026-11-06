@@ -73,6 +73,41 @@ struct WidgetTests {
         #expect(snapshot.read().isEmpty)
         #expect(reloads.value == 0)
     }
+
+    /// WID-7: the widget gets the Distances choice (SET-4) from the app's copy,
+    /// and is only redrawn when the choice changes.
+    @Test func settingsRoundTripAndSkipUnchangedWrites() {
+        let url = FileManager.default.temporaryDirectory.appending(path: "widget-settings-\(UUID().uuidString).json")
+        defer { try? FileManager.default.removeItem(at: url) }
+        let reloads = Count()
+        let settings = WidgetSettings.file(at: url, onChange: { reloads.increment() })
+
+        #expect(settings.distanceUnits() == .automatic)
+        settings.setDistanceUnits(.miles)
+        #expect(settings.distanceUnits() == .miles)
+        #expect(reloads.value == 1)
+        settings.setDistanceUnits(.miles)
+        #expect(reloads.value == 1)
+        settings.setDistanceUnits(.kilometres)
+        #expect(settings.distanceUnits() == .kilometres)
+        #expect(reloads.value == 2)
+    }
+
+    @Test(arguments: ["not json", #"{"distanceUnits":"leagues"}"#, "{}"])
+    func settingsThatCannotBeReadAreAutomatic(_ contents: String) throws {
+        let url = FileManager.default.temporaryDirectory.appending(path: "widget-settings-\(UUID().uuidString).json")
+        defer { try? FileManager.default.removeItem(at: url) }
+        try Data(contents.utf8).write(to: url)
+        #expect(WidgetSettings.file(at: url).distanceUnits() == .automatic)
+    }
+
+    @Test func settingsWithoutAnAppGroupReadAutomaticAndWriteNothing() {
+        let reloads = Count()
+        let settings = WidgetSettings.file(at: nil, onChange: { reloads.increment() })
+        settings.setDistanceUnits(.miles)
+        #expect(settings.distanceUnits() == .automatic)
+        #expect(reloads.value == 0)
+    }
 }
 
 /// Counts calls from any thread, for clients whose closures are `@Sendable`.

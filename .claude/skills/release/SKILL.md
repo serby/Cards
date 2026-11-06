@@ -32,7 +32,7 @@ Ask Paul before submitting: it publishes to the App Store and cannot be taken ba
 2. **Finish marking:** run "Mark changes" so nothing since the last entry is missing.
 3. **Date it:** set the version's `date` to today, then `generate`. The date is the day it is released on the App Store, which normally follows approval within a day or two. If Apple releases it on a different day, correct the date the next time you mark changes.
 4. **Settle the spec:** change any "In preparation for <version>" stories to "Since: <version>".
-5. **Screenshots:** if any screen the App Store shows has changed, run `make capture-screenshots`, then `make store-screenshots`, and look at every changed image.
+5. **Screenshots:** if any screen the App Store shows has changed, run `make capture-screenshots`, then `make store-screenshots`, and look at every changed image. The capture takes six screens on each device, including the card with its share menu open (`06_ShareCard`, shown by `05_Share`), and `make check-screenshots` must pass with nothing reported as not captured yet. `make store-screenshots` also composes each locale's universal creative asset (`screenshots/store/<locale>/CreativeAsset.png`, 5244 × 2950) from its `creative-asset.json` and the new card screen capture: look at it whole, and check the line and the barcode sit inside the safe area that the Storybook's StoreCreativeAsset story outlines. If a caption or the asset's line changed, check every locale's translation fits.
 6. **Validate:** run the loop in `docs/DEVELOPMENT.md` section 2, plus `node scripts/check-changelog.ts` and `node scripts/check-metadata.ts`. Commit, push, and wait for CI to pass.
 7. **Prepare the listing:** run the App Store listing workflow. Do a dry run first, then for real:
 
@@ -41,7 +41,7 @@ Ask Paul before submitting: it publishes to the App Store and cannot be taken ba
    gh workflow run app-store-listing.yml -f version=<version> -f prepare-version=true
    ```
 
-   The dry run must report every age rating question answered.
+   The dry run must report every age rating question answered, and for each locale the creative asset's specification and the header and search results placements it would make. After the real run, open the version in App Store Connect and check the header and search results in its preview, on iPhone and iPad in both orientations, with the line and the barcode in view.
 8. **Tag and submit:**
 
    ```bash

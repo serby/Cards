@@ -205,7 +205,6 @@ public extension CardEditView where Scanner == EmptyView {
     init(
         draft: Binding<CardDraft>,
         actions: CardEditActions = CardEditActions(),
-        autofocusesName: Bool = false,
         mapCentre: CLLocationCoordinate2D? = nil,
         takenCodes: Set<String> = [],
         arrivalNotificationsEnabled: Bool = true
@@ -213,7 +212,6 @@ public extension CardEditView where Scanner == EmptyView {
         self.init(
             draft: draft,
             actions: actions,
-            autofocusesName: autofocusesName,
             mapCentre: mapCentre,
             takenCodes: takenCodes,
             arrivalNotificationsEnabled: arrivalNotificationsEnabled,

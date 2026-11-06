@@ -76,6 +76,17 @@ enum DevelopmentHooks {
         #endif
     }
 
+    /// Whether the app counts the days cards are shown on and asks for an App
+    /// Store rating (PLAT-8): always, except in UI tests and the screenshots,
+    /// where Apple's prompt would cover the screen under test.
+    static var asksForReviews: Bool {
+        #if DEBUG
+        !isUITesting && !screenshotSeedRequested
+        #else
+        true
+        #endif
+    }
+
     #if DEBUG
     private static var screenshotSeedRequested: Bool {
         CommandLine.arguments.contains("-screenshotSeed")

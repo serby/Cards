@@ -2,9 +2,9 @@ import SwiftUI
 
 /// A card in the grid on the Cards tab: its full colour, its icon, its name
 /// and how far away its nearest place is. VoiceOver reads it as one button,
-/// the name and then the distance. A long press shows a menu with Move Up and
-/// Move Down, where the card can move that way, and Delete; VoiceOver offers
-/// the same as actions.
+/// the name and then the distance. A long press shows a menu with Edit, Move Up
+/// and Move Down, where the card can move that way, and Delete; VoiceOver
+/// offers the same as actions.
 public struct CardTileView: View {
     /// The tile's outline, for its fill and for the previews iOS lifts from it
     /// for the menu and for dragging.
@@ -14,6 +14,7 @@ public struct CardTileView: View {
     /// Whether a card being dragged is over this one, and would take its place.
     private let isDropTarget: Bool
     private let onTap: () -> Void
+    private let onEdit: () -> Void
     private let onDelete: () -> Void
     /// Moves the card one place earlier, or later; nil where it cannot go that way.
     private let onMoveUp: (() -> Void)?
@@ -24,11 +25,13 @@ public struct CardTileView: View {
     @ScaledMetric(relativeTo: .headline) private var minimumHeight: CGFloat = 112
     private static let tallestMinimumHeight: CGFloat = 200
     @Environment(\.colorSchemeContrast) private var colorSchemeContrast
+    @Environment(\.distanceFormat) private var distanceFormat
 
     public init(
         card: CardSummary,
         isDropTarget: Bool = false,
         onTap: @escaping () -> Void,
+        onEdit: @escaping () -> Void = {},
         onDelete: @escaping () -> Void = {},
         onMoveUp: (() -> Void)? = nil,
         onMoveDown: (() -> Void)? = nil
@@ -36,6 +39,7 @@ public struct CardTileView: View {
         self.card = card
         self.isDropTarget = isDropTarget
         self.onTap = onTap
+        self.onEdit = onEdit
         self.onDelete = onDelete
         self.onMoveUp = onMoveUp
         self.onMoveDown = onMoveDown
@@ -96,6 +100,7 @@ public struct CardTileView: View {
         // Dragging is not the only way to reorder: the menu serves pointer,
         // keyboard, Voice Control and Switch Control, and the actions VoiceOver.
         .contextMenu {
+            editButton
             moveButtons
             if onMoveUp != nil || onMoveDown != nil {
                 Divider()
@@ -106,6 +111,7 @@ public struct CardTileView: View {
         // You're at Joe's Market Notting Hill" (A11Y-1).
         .accessibilityLabel(spokenLabel)
         .accessibilityActions {
+            editButton
             moveButtons
             deleteButton
         }
@@ -117,12 +123,22 @@ public struct CardTileView: View {
     private var spokenLabel: Text {
         guard let proximity = card.proximity else { return Text(card.name) }
         return Text(
-            "\(card.name), \(proximity.spokenDescription)",
+            "\(card.name), \(proximity.spokenDescription(in: distanceFormat))",
             comment: """
                 VoiceOver label for a card's tile on the Cards tab: the card's name, then how far away its nearest place is, \
                 as in “Joe's Market, 350 metres from Joe's Market Notting Hill”.
                 """
         )
+    }
+
+    private var editButton: some View {
+        Button(action: onEdit) {
+            Label(
+                LocalizedStringResource("Edit", comment: "Menu item and VoiceOver action on a card's tile that opens the card's form. A verb."),
+                systemImage: "pencil"
+            )
+        }
+        .accessibilityIdentifier("editCardMenuItem")
     }
 
     /// Move Up and Move Down, where the card can move that way.

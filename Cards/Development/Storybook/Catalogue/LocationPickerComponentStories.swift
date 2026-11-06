@@ -34,19 +34,25 @@ let radiusSliderStory = Story(
     section: "Components",
     knobs: [
         .number("Radius (m)", CardLocation.defaultRadius, in: CardLocation.radiusRange, step: 25)
-    ],
+    ] + DistanceKnobs.knobs,
     gallery: [
         slider(at: CardLocation.radiusRange.lowerBound),
         slider(at: CardLocation.defaultRadius),
-        slider(at: CardLocation.radiusRange.upperBound)
+        slider(at: CardLocation.radiusRange.upperBound),
+        slider(at: CardLocation.defaultRadius, in: .miles),
+        slider(at: RadiusScale.yards.metres(RadiusScale.yards.range.upperBound), in: .miles)
     ]
 ) { knobs in
-    AnyView(RadiusSlider(radius: knobs.numberBinding("Radius (m)")).padding())
+    AnyView(RadiusSlider(radius: knobs.numberBinding("Radius (m)")).padding().distances(knobs))
 }
 
+/// The slider at `radius` metres, named for the radius as it shows it.
 @MainActor
-private func slider(at radius: Double) -> (name: String, view: AnyView) {
-    (name: radius.metres.formatted(.radius), view: AnyView(Stateful(radius) { RadiusSlider(radius: $0) }.padding()))
+private func slider(at radius: Double, in units: DistanceUnits = .kilometres) -> (name: String, view: AnyView) {
+    (
+        name: DistanceFormat(units: units, locale: Locale(identifier: "en_GB")).radius(radius),
+        view: AnyView(Stateful(radius) { RadiusSlider(radius: $0) }.padding().environment(\.distanceUnits, units))
+    )
 }
 
 /// The list under the location picker's search field, on a panel like the picker's.

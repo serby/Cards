@@ -54,42 +54,54 @@ struct CardLocationTests {
         #expect(imported.first?.toCardItem().locations == [boulderBarn])
     }
 
+    /// Automatic writes distances in each shipped language's own numbers and
+    /// road units (SET-4): a decimal comma in Spain and Germany, a point in Japan.
     @Test func distancesUseTheLocalesNumbersAndRoadUnits() {
-        let distance = CLLocationDistance(1_500).metres
-        let german = distance.formatted(.distance.locale(Locale(identifier: "de_DE")))
-        #expect(german.contains("1,5"), "German uses a decimal comma: \(german)")
-        #expect(german.hasSuffix("km"))
-        let british = distance.formatted(.distance.locale(Locale(identifier: "en_GB")))
-        #expect(british.contains("0.93"), "British English uses a decimal point: \(british)")
-        #expect(british.hasSuffix("mi"))
-        let saudi = distance.formatted(.distance.locale(Locale(identifier: "ar_SA")))
-        #expect(saudi.contains("١٫٥"), "Saudi Arabic uses Arabic-Indic digits: \(saudi)")
+        func automatic(_ identifier: String) -> String {
+            DistanceFormat(units: .automatic, locale: Locale(identifier: identifier)).distance(1_500)
+        }
+        #expect(automatic("de_DE").contains("1,5"), "German uses a decimal comma: \(automatic("de_DE"))")
+        #expect(automatic("de_DE").hasSuffix("km"))
+        #expect(automatic("es_ES").contains("1,5"), "Spanish uses a decimal comma: \(automatic("es_ES"))")
+        #expect(automatic("es_ES").hasSuffix("km"))
+        #expect(automatic("es_MX").contains("1.5"), "Mexican Spanish uses a decimal point: \(automatic("es_MX"))")
+        #expect(automatic("ja_JP").contains("1.5"), "Japanese uses a decimal point: \(automatic("ja_JP"))")
+        #expect(automatic("ja_JP").hasSuffix("km"))
+        #expect(automatic("en_GB").contains("0.93"), "British English uses a decimal point: \(automatic("en_GB"))")
+        #expect(automatic("en_GB").hasSuffix("mi"))
+        #expect(automatic("ar_SA").contains("١٫٥"), "Saudi Arabic uses Arabic-Indic digits: \(automatic("ar_SA"))")
     }
 
-    @Test(arguments: ["en_GB", "en_US", "de_DE", "ja_JP"])
-    func radiiStayInMetres(_ identifier: String) {
-        let radius = CLLocationDistance(200).metres.formatted(.radius.locale(Locale(identifier: identifier)))
-        #expect(radius.hasPrefix("200"))
-        #expect(radius.hasSuffix("m"))
+    /// Kilometres and miles keep the language's numbers whatever the region's units.
+    @Test(arguments: ["de_DE", "es_ES", "ja_JP"])
+    func chosenUnitsKeepTheLanguagesNumbers(_ identifier: String) {
+        let locale = Locale(identifier: identifier)
+        #expect(DistanceFormat(units: .miles, locale: locale).distance(1_500).hasSuffix("mi"))
+        #expect(DistanceFormat(units: .kilometres, locale: locale).radius(200).hasPrefix("200"))
+        #expect(DistanceFormat(units: .miles, locale: locale).radius(200).hasSuffix("yd"))
     }
 
-    /// VoiceOver hears units in words, never abbreviations it might misread.
+    /// VoiceOver hears units in words in every language, never abbreviations it might misread.
     @Test func spokenDistancesWriteTheUnitOut() {
-        let british = Locale(identifier: "en_GB")
-        #expect(CLLocationDistance(200).metres.formatted(.spokenRadius.locale(british)) == "200 metres")
-        let distance = CLLocationDistance(1_500).metres.formatted(.spokenDistance.locale(Locale(identifier: "de_DE")))
-        #expect(distance.contains("Kilometer"))
+        func spoken(_ identifier: String, _ units: DistanceUnits = .kilometres) -> String {
+            DistanceFormat(units: units, locale: Locale(identifier: identifier)).distance(1_500, width: .wide)
+        }
+        #expect(DistanceFormat(units: .kilometres, locale: Locale(identifier: "en_GB")).radius(200, width: .wide) == "200 metres")
+        #expect(spoken("de_DE").contains("Kilometer"), "\(spoken("de_DE"))")
+        #expect(spoken("es_ES").contains("kilómetros"), "\(spoken("es_ES"))")
+        #expect(spoken("ja_JP").contains("キロメートル"), "\(spoken("ja_JP"))")
+        #expect(spoken("de_DE", .miles).contains("Meile"), "\(spoken("de_DE", .miles))")
     }
 
-    /// Views format distances themselves, so the Storybook's locale (and any
-    /// `\.locale` set above them) reaches the number.
-    @Test @MainActor func viewsFormatDistancesInTheirLocale() {
-        let german = Locale(identifier: "de_DE")
-        let distance = CLLocationDistance(1_500).metres
-        let rendered = Snapshot.png(Text(distance, format: .distance).environment(\.locale, german))
-        let expected = Snapshot.png(Text(verbatim: distance.formatted(.distance.locale(german))))
-        #expect(rendered != nil)
-        #expect(rendered == expected)
+    /// Views take their distance format from the environment, so the
+    /// Storybook's locale (and any `\.locale` set above them) reaches the number.
+    @Test func viewsFormatDistancesInTheirLocale() {
+        var environment = EnvironmentValues()
+        environment.locale = Locale(identifier: "de_DE")
+        environment.distanceUnits = .kilometres
+        let german = DistanceFormat(units: .kilometres, locale: Locale(identifier: "de_DE"))
+        #expect(environment.distanceFormat.distance(1_500) == german.distance(1_500))
+        #expect(environment.distanceFormat.distance(1_500).contains("1,5"))
     }
 
     @Test func exportWithoutLocationsImportsWithNone() throws {

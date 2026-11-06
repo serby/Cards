@@ -1,8 +1,10 @@
 name: App Store listing
 
 # Pushes the App Store listing of the editable App Store version from the repo:
-# the text in metadata/ (scripts/upload-metadata.ts) and the images in
-# screenshots/store/ (scripts/upload-screenshots.ts). With "prepare version" it
+# the text in metadata/ (scripts/upload-metadata.ts), the images in
+# screenshots/store/ (scripts/upload-screenshots.ts) and each locale's universal
+# creative asset, the product page header and search results image
+# (scripts/upload-creative-assets.ts). With "prepare version" it
 # first numbers the version and attaches the newest processed build of that
 # number (scripts/prepare-app-store-version.ts). Run it by hand from the
 # Actions tab, or:
@@ -28,6 +30,10 @@ on:
         default: true
       screenshots:
         description: "Upload the images in screenshots/store/"
+        type: boolean
+        default: true
+      creative-assets:
+        description: "Upload and place the creative asset each creative-asset.json names"
         type: boolean
         default: true
       dry-run:
@@ -90,3 +96,12 @@ jobs:
         ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
         ASC_KEY_CONTENT: ${{ secrets.ASC_KEY_CONTENT }}
       run: node scripts/upload-screenshots.ts ${{ inputs.version != '' && !(inputs.dry-run && inputs.prepare-version) && '--version "$VERSION"' || '' }} ${{ inputs.dry-run && '--dry-run' || '' }}
+
+    # Last, so a problem with the newer asset library leaves the rest done.
+    - name: Upload creative assets
+      if: ${{ inputs.creative-assets }}
+      env:
+        ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+        ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+        ASC_KEY_CONTENT: ${{ secrets.ASC_KEY_CONTENT }}
+      run: node scripts/upload-creative-assets.ts ${{ inputs.version != '' && !(inputs.dry-run && inputs.prepare-version) && '--version "$VERSION"' || '' }} ${{ inputs.dry-run && '--dry-run' || '' }}

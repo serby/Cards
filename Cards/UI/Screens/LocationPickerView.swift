@@ -16,6 +16,7 @@ public struct LocationPickerView: View {
     @Environment(\.mapShowsPointsOfInterest) private var showsPointsOfInterest
     @Environment(\.accessibilityAnnouncer) var announcer
     @Environment(\.accessibilityReduceMotion) var reduceMotion
+    @Environment(\.distanceFormat) private var distanceFormat
     @State var position: MapCameraPosition
     /// The point under the pin. Kept as plain values so an unchanged camera
     /// never invalidates the view (MapKit reports camera changes generously).
@@ -143,7 +144,7 @@ public struct LocationPickerView: View {
             ZStack {
                 map
                 MapPinRing(diameter: metresPerPoint.map { 2 * radius / $0 })
-                    .voiceOverMapPin(name: name.savedName, radius: radius, onMove: nudge)
+                    .voiceOverMapPin(name: name.savedName, radius: radius, in: distanceFormat, onMove: nudge)
             }
             .safeAreaInset(edge: .bottom) {
                 // Scrolls when it does not fit, as at large text sizes with the

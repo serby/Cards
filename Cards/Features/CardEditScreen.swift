@@ -77,7 +77,6 @@ public struct CardEditScreen: View {
             CardEditView(
                 draft: $draft,
                 actions: actions,
-                autofocusesName: true,
                 mapCentre: locationService.current?.coordinate,
                 takenCodes: takenCodes,
                 arrivalNotificationsEnabled: arrivalNotifications

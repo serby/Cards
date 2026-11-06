@@ -928,6 +928,52 @@
         }
       }
     },
+    "Automatic (%@)" : {
+      "comment" : "A choice in Settings > Distances: the units that follow the iPhone's measurement system. The argument is those units, Kilometres or Miles.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatisch (%@)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automático (%@)"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自動（%@）"
+          }
+        }
+      }
+    },
+    "Automatic follows the measurement system in Language & Region in the Settings app." : {
+      "comment" : "Under the Distances menu in Settings. Language & Region is the name of iOS's own settings screen; use its name in your language.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "„Automatisch“ folgt dem Maßsystem unter „Sprache & Region“ in der App „Einstellungen“."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automático sigue el sistema de medida de Idioma y región en la app Ajustes."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「自動」は、「設定」アプリの「言語と地域」にある単位系に従います。"
+          }
+        }
+      }
+    },
     "Aztec" : {
       "comment" : "Barcode format in the barcode type picker: the square 2D Aztec Code. Keep it unless your language writes it differently.",
       "localizations" : {
@@ -2692,6 +2738,29 @@
         }
       }
     },
+    "Distances" : {
+      "comment" : "Settings menu for the units distances and radii are shown in: Automatic, Kilometres or Miles.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entfernungen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Distancias"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "距離"
+          }
+        }
+      }
+    },
     "DIY" : {
       "comment" : "Card icon picker, read by VoiceOver: a hammer, for DIY shops. DIY means do it yourself.",
       "localizations" : {
@@ -2877,7 +2946,7 @@
       }
     },
     "Edit" : {
-      "comment" : "Toolbar button on a card's screen that opens the card for editing. A verb.",
+      "comment" : "Menu item and VoiceOver action on a card's tile that opens the card's form. A verb.\nToolbar button on a card's screen that opens the card for editing. A verb.",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4057,6 +4126,29 @@
         }
       }
     },
+    "Kilometres" : {
+      "comment" : "A choice in Settings > Distances: show distances in metres and kilometres.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kilometer"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kilómetros"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "キロメートル"
+          }
+        }
+      }
+    },
     "Last Viewed" : {
       "comment" : "Choice in the Cards tab's Sort menu: the card opened most recently first.",
       "localizations" : {
@@ -4283,6 +4375,29 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "マルーン"
+          }
+        }
+      }
+    },
+    "Miles" : {
+      "comment" : "A choice in Settings > Distances: show distances in yards and miles.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meilen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Millas"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "マイル"
           }
         }
       }

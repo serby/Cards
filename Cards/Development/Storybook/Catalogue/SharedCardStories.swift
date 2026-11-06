@@ -15,7 +15,7 @@ let sharedCardStory = Story(
         .options("Colour", CardColor.allNames, CardDetail.sample.color.rawValue),
         IconKnob.knob(CardDetail.sample.icon),
         .number("Locations", 1, in: 0...Double(CardLocation.samples.count), step: 1)
-    ],
+    ] + DistanceKnobs.knobs,
     gallery: SharedCardKind.allCases.map { kind in
         (name: kind.rawValue, view: AnyView(SharedCardView(state: kind.state(sharedFace, places: [.sample]))))
     }
@@ -31,7 +31,7 @@ let sharedCardStory = Story(
     )
     let kind = SharedCardKind(rawValue: knobs.option("State")) ?? .new
     let places = Array(CardLocation.samples.prefix(knobs.integer("Locations")))
-    return AnyView(SharedCardView(state: kind.state(face, places: places)))
+    return AnyView(SharedCardView(state: kind.state(face, places: places)).distances(knobs))
 }
 
 /// The sample card as a link brings it: no distance, because the places are someone else's.

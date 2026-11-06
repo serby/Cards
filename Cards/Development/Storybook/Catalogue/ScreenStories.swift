@@ -65,7 +65,7 @@ private let cardListStory = Story(
         .toggle("Card where you are", false),
         .text("Search", ""),
         .options("Sort", CardSortOrder.allCases.map(\.rawValue), CardSortOrder.custom.rawValue)
-    ],
+    ] + DistanceKnobs.knobs,
     gallery: [
         (name: "Empty", view: pushed { CardListView(cards: []) }),
         (name: "Single", view: pushed { CardListView(cards: Array(CardSummary.samples.prefix(1))) }),
@@ -94,6 +94,7 @@ private let cardListStory = Story(
             search: knobs.stringBinding("Search"),
             sortOrder: sortOrder
         )
+        .distances(knobs)
     }
 }
 
@@ -146,6 +147,7 @@ private let cardDetailStory = Story(
             share: knobs.bool("Share menu") ? .sample(for: card) : nil,
             actions: CardDetailActions(placeSearch: .sample)
         )
+        .distances(knobs)
     }
 }
 
@@ -177,10 +179,9 @@ private let cardEditStory = Story(
         .toggle("Code already used", false),
         .toggle("Shows scanner", false),
         .toggle("Photo and file", false),
-        .toggle("Autofocus name", false),
         .toggle("Map opens at Boulder Barn", true),
         .toggle("Can delete", true)
-    ],
+    ] + DistanceKnobs.knobs,
     gallery: [
         (
             name: "Edit existing",
@@ -222,7 +223,6 @@ private let cardEditStory = Story(
         CardEditView(
             draft: draft,
             actions: CardEditActions(placeSearch: .sample, delete: knobs.bool("Can delete") ? {} : nil),
-            autofocusesName: knobs.bool("Autofocus name"),
             mapCentre: knobs.bool("Map opens at Boulder Barn") ? CardLocation.sample.coordinate : nil,
             takenCodes: knobs.bool("Code already used") ? [knobs.string("Code")] : [],
             arrivalNotificationsEnabled: knobs.bool("Arrival notifications on"),
@@ -233,6 +233,7 @@ private let cardEditStory = Story(
         }
         .navigationTitle(Text(verbatim: "Card"))
         .environment(\.accessibilityAnnouncer, .silent)
+        .distances(knobs)
     }
 }
 
@@ -254,7 +255,7 @@ private let settingsStory = Story(
         .toggle("Notifications blocked", false),
         .toggle("Has What's New", true),
         .text("Message", "")
-    ],
+    ] + DistanceKnobs.knobs,
     gallery: [
         (
             name: "With cards",
@@ -277,6 +278,14 @@ private let settingsStory = Story(
             view: pushed {
                 Stateful(true) { arrivals in
                     SettingsListView(state: .withNotificationsBlocked, brightnessBoost: .constant(true), arrivalNotifications: arrivals)
+                }
+            }
+        ),
+        (
+            name: "Distances in miles",
+            view: pushed {
+                Stateful(DistanceUnits.miles) { units in
+                    SettingsListView(state: .sample, brightnessBoost: .constant(true), distanceUnits: units)
                 }
             }
         )
@@ -302,8 +311,10 @@ private let settingsStory = Story(
             brightnessBoost: knobs.boolBinding("Brightness boost"),
             arrivalNotifications: knobs.boolBinding("Arrival notifications"),
             showsCardWhereYouAre: knobs.boolBinding("Show card where I am"),
+            distanceUnits: knobs.distanceUnitsBinding,
             message: message
         )
+        .distances(knobs)
     }
 }
 

@@ -13,6 +13,7 @@ struct CardWidget: Widget {
                 }
             }
             .widgetURL(entry.card?.url)
+            .environment(\.distanceUnits, entry.distanceUnits)
             .containerBackground(for: .widget) {
                 Rectangle().fill((entry.card?.color ?? .standard).widgetFill)
                     .keepsColoursWhenInverted()
@@ -42,6 +43,8 @@ struct CardEntry: TimelineEntry {
     let card: CardWidgetState?
     /// Whether the card depends on where you are, so a refresh can change it.
     let followsLocation: Bool
+    /// The units chosen in the app's Settings (SET-4).
+    var distanceUnits = DistanceUnits.automatic
 }
 
 struct CardTimelineProvider: AppIntentTimelineProvider {
@@ -50,10 +53,12 @@ struct CardTimelineProvider: AppIntentTimelineProvider {
     static let refreshInterval: TimeInterval = 15 * 60
 
     private let snapshot: WidgetSnapshot
+    private let settings: WidgetSettings
     private let location: WidgetLocation
 
-    init(snapshot: WidgetSnapshot = .live, location: WidgetLocation = .live) {
+    init(snapshot: WidgetSnapshot = .live, settings: WidgetSettings = .live, location: WidgetLocation = .live) {
         self.snapshot = snapshot
+        self.settings = settings
         self.location = location
     }
 
@@ -86,7 +91,8 @@ struct CardTimelineProvider: AppIntentTimelineProvider {
         return CardEntry(
             date: .now,
             card: card?.state(near: here),
-            followsLocation: chosen == nil && needsLocation
+            followsLocation: chosen == nil && needsLocation,
+            distanceUnits: settings.distanceUnits()
         )
     }
 }
