@@ -79,13 +79,14 @@ As a card holder, I want to see how far I am from the places I use each card, so
 - A card's distance is to the edge of its nearest place's circle. Inside a circle it is 0, and the card counts as here.
 - The list shows "Here", in semibold with a filled location arrow, or the distance, such as "350 m", on a white pill at the end of the row.
 - The card screen and the widget name the place too: "At Boulder Barn", or "350 m · Boulder Barn".
+- In preparation for 1.4: inside more than one of a card's places, the one whose middle you are nearer is named, where before it was the first in the card's order.
 - VoiceOver reads "You're at Boulder Barn" or "350 m from Boulder Barn" (A11Y-1).
 - Distances are in the units of the device's region, in the style used for road distances, such as "350 m" or "0.4 mi".
 - No distance shows for a card without places, or while the app doesn't know where you are.
 - Distances follow your location while the app is open, from fixes about 100 metres accurate, updated after you move 25 metres or more.
 
 **Since:** 1.3
-**Where:** `Cards/Core/Models/CardLocation.swift:34-75`, `Cards/UI/Components/ProximityLabel.swift`, `Cards/Core/Services/LocationService.swift`, `CardsTests/CardLocationTests.swift`, `CardsTests/WidgetTests.swift`
+**Where:** `Cards/Core/Models/CardLocation.swift:34-128`, `Cards/UI/Components/ProximityLabel.swift`, `Cards/Core/Services/LocationService.swift`, `CardsTests/CardLocationTests.swift`, `CardsTests/CardPlacesTests.swift`, `CardsTests/WidgetTests.swift`
 **Notes:** Distances only change while the app is in use. On coming back to the app they show the last known location until a new fix arrives.
 
 ### PLACE-7: Choose whether the app uses my location

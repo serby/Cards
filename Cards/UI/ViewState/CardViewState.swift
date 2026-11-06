@@ -28,6 +28,8 @@ public struct CardDetail: Identifiable, Hashable, Sendable {
     public let barcodeType: BarcodeType
     public let timestamp: Date
     public let color: CardColor
+    /// The places the card screen lists below the face, when it has more than one (PLACE-9).
+    public let places: CardPlaces
     public let proximity: CardProximity?
     /// The card's SF Symbol, or nil for none.
     public let symbol: String?
@@ -39,6 +41,7 @@ public struct CardDetail: Identifiable, Hashable, Sendable {
         barcodeType: BarcodeType,
         timestamp: Date,
         color: CardColor = .standard,
+        places: CardPlaces = .none,
         proximity: CardProximity? = nil,
         symbol: String? = nil
     ) {
@@ -48,6 +51,7 @@ public struct CardDetail: Identifiable, Hashable, Sendable {
         self.barcodeType = barcodeType
         self.timestamp = timestamp
         self.color = color
+        self.places = places
         self.proximity = proximity
         self.symbol = symbol
     }

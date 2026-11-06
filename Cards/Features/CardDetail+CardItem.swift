@@ -11,6 +11,7 @@ extension CardDetail {
             barcodeType: item.getBarcodeType(),
             timestamp: item.timestamp,
             color: item.getColor(),
+            places: CardPlaces(item.locations, near: location),
             proximity: item.locations.proximity(to: location),
             symbol: item.symbol
         )
