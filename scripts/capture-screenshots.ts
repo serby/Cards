@@ -7,7 +7,9 @@
 // half an hour; with a device, one device in one locale (en-US unless given).
 // The app is uninstalled first, so the widget test adds the only widget to a
 // clean Home Screen, and the status bar shows 9:41 with full signal and battery.
-// After each capture it runs check-screenshots.ts over the whole set.
+// Once every capture is done it runs check-screenshots.ts over the whole set:
+// not after each one, because a newly added screen is only complete once every
+// device and locale has it.
 //
 // Usage: node scripts/capture-screenshots.ts [<device> [<locale>]]
 //   node scripts/capture-screenshots.ts                                  # every device, en-US and en-GB
@@ -25,8 +27,9 @@ const locales = ["en-US", "en-GB"];
 const bundleIdentifier = "net.serby.Cards";
 const resultBundle = "/tmp/Cards-screenshots.xcresult";
 const exportFolder = "/tmp/Cards-screenshots-export";
-/// The screens the tests capture, before the device's suffix.
-const screens = ["01_CardList", "02_CardDetail", "03_EditCard", "04_LocationPicker", "05_Widget"];
+/// The screens the tests capture, before the device's suffix. check-screenshots.ts
+/// lists the same screens.
+const screens = ["01_CardList", "02_CardDetail", "03_EditCard", "04_LocationPicker", "05_Widget", "06_ShareCard"];
 
 interface CaptureSet {
     /// The suffix the screenshot names carry, such as "_iPad".
@@ -108,6 +111,7 @@ async function capture(device: string, locale: string): Promise<void> {
             "-scheme", "Cards",
             "-destination", `platform=iOS Simulator,id=${simulator.udid}`,
             "-only-testing:CardsUITests/CardsScreenshotTests/testCaptureScreenshots",
+            "-only-testing:CardsUITests/CardsScreenshotTests/testCaptureShareScreenshot",
             "-only-testing:CardsUITests/CardsWidgetScreenshotTests/testCaptureWidgetScreenshot",
             "-testLanguage", language,
             "-testRegion", region,
@@ -122,8 +126,6 @@ async function capture(device: string, locale: string): Promise<void> {
     run("xcrun", ["xcresulttool", "export", "attachments", "--path", resultBundle, "--output-path", exportFolder]);
     mkdirSync(outFolder, { recursive: true });
     copyAttachments(outFolder, set.names);
-
-    execFileSync(process.execPath, [join(root, "scripts", "check-screenshots.ts")], { stdio: "inherit" });
 
     console.log(`\n==> Screenshots in ${outFolder}:`);
     for (const name of readdirSync(outFolder).filter((file) => file.endsWith(".png")).sort()) {
@@ -145,6 +147,8 @@ try {
     for (const { device: each, locale } of runs) {
         await capture(each, locale);
     }
+    console.log("\n==> Checking the whole set");
+    execFileSync(process.execPath, [join(root, "scripts", "check-screenshots.ts")], { stdio: "inherit" });
 } catch (error) {
     console.error(`error: ${error instanceof Error ? error.message : String(error)}`);
     process.exit(1);

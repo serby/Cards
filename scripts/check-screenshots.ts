@@ -2,9 +2,17 @@
 // committed: there are exactly the en-GB and en-US folders (besides store/),
 // each holds exactly the expected PNGs, the iPhone, iPad and iPhone Duo screens
 // are the right size, every file is an 8-bit RGB or RGBA PNG and none is
-// suspiciously small. capture-screenshots.ts runs it after each capture, and
-// the Makefile before it composes the store images. CI does not: it only checks
-// that the composed store images are present (check-store-images.ts).
+// suspiciously small. capture-screenshots.ts runs it once it has captured
+// everything, and the Makefile after it composes the store images. CI does not:
+// it only checks that the composed store images are present
+// (check-store-images.ts).
+//
+// A screen with no capture in any locale on any device is new, added to the
+// tests since the last capture. It is reported as waiting for the next full
+// capture rather than failed, so the committed set still passes until the
+// release refresh takes it; once any capture of it exists, every locale and
+// device must have one. make store-screenshots cannot compose an image from it
+// before then, and CI's store image check fails while that image is missing.
 //
 // Usage: node scripts/check-screenshots.ts [<screenshots folder>]
 //   The folder is screenshots/ unless given, for checking a copy elsewhere.
@@ -19,22 +27,34 @@ interface Size {
     height: number;
 }
 
-const iPhone: Size = { width: 1320, height: 2868 };
-const iPad: Size = { width: 2064, height: 2752 };
-/// iPhone Duo's outer display: the simulator boots folded.
-const duo: Size = { width: 1398, height: 2034 };
-const screens = ["01_CardList", "02_CardDetail", "03_EditCard", "04_LocationPicker"];
-/// The files each locale holds, and the size each must be. The widget shot is a
-/// crop of the Home Screen round the widget, whatever size the widget takes
-/// there, so it can be any size (undefined).
-const expectedFiles = new Map<string, Size | undefined>([
-    ...screens.map((name): [string, Size] => [`${name}.png`, iPhone]),
-    ...screens.map((name): [string, Size] => [`${name}_Duo.png`, duo]),
-    ...screens.map((name): [string, Size] => [`${name}_iPad.png`, iPad]),
-    ["05_Widget.png", undefined],
-    ["05_Widget_Duo.png", undefined],
-    ["05_Widget_iPad.png", undefined],
-]);
+/// Each device's file name suffix and screen size: the iPhone 17 Pro Max, the
+/// iPad Pro 13-inch, and the iPhone Duo's outer display (the simulator boots folded).
+const devices: { suffix: string; size: Size }[] = [
+    { suffix: "", size: { width: 1320, height: 2868 } },
+    { suffix: "_Duo", size: { width: 1398, height: 2034 } },
+    { suffix: "_iPad", size: { width: 2064, height: 2752 } },
+];
+/// Whole screens, the device's size. capture-screenshots.ts lists the same screens.
+const screens = ["01_CardList", "02_CardDetail", "03_EditCard", "04_LocationPicker", "06_ShareCard"];
+/// Crops of the Home Screen round the widget, whatever size the widget takes
+/// there, so they can be any size.
+const bands = ["05_Widget"];
+
+interface ExpectedFile {
+    screen: string;
+    /// Undefined for a band, which can be any size.
+    size?: Size;
+}
+
+/// The files each locale holds, and the size each must be.
+const expectedFiles = new Map<string, ExpectedFile>(
+    [...screens, ...bands].flatMap((screen) =>
+        devices.map(({ suffix, size }): [string, ExpectedFile] => [
+            `${screen}${suffix}.png`,
+            { screen, size: bands.includes(screen) ? undefined : size },
+        ]),
+    ),
+);
 const locales = ["en-GB", "en-US"];
 /// Smaller than this and a capture is probably blank or broken.
 const minimumBytes = 50_000;
@@ -76,8 +96,19 @@ function sameSet(a: Set<string>, b: Set<string>): boolean {
     return a.size === b.size && [...a].every((name) => b.has(name));
 }
 
-/// Everything wrong with the captures in `folder`.
-function check(folder: string): string[] {
+/// The screens with no capture in any locale on any device: new ones, waiting
+/// for the next full capture.
+function uncaptured(folder: string): string[] {
+    const captured = new Set(
+        locales.flatMap((locale) =>
+            [...expectedFiles].filter(([name]) => existsSync(join(folder, locale, name))).map(([, file]) => file.screen),
+        ),
+    );
+    return [...screens, ...bands].filter((screen) => !captured.has(screen));
+}
+
+/// Everything wrong with the captures in `folder`, leaving out the `waiting` screens.
+function check(folder: string, waiting: string[]): string[] {
     const errors: string[] = [];
     const folders = new Set(
         readdirSync(folder, { withFileTypes: true })
@@ -87,14 +118,18 @@ function check(folder: string): string[] {
     if (!sameSet(folders, new Set(locales))) {
         errors.push(`locale folders: expected ${list(locales)}, found ${list(folders)}`);
     }
+    if (waiting.length === screens.length + bands.length) {
+        errors.push("no captures at all: run make capture-screenshots");
+    }
 
+    const expected = new Map([...expectedFiles].filter(([, file]) => !waiting.includes(file.screen)));
     for (const locale of locales) {
         const localeFolder = join(folder, locale);
         const files = new Set(existsSync(localeFolder) ? readdirSync(localeFolder).filter((name) => name.endsWith(".png")) : []);
-        if (!sameSet(files, new Set(expectedFiles.keys()))) {
-            errors.push(`${locale}: expected ${list(expectedFiles.keys())}, found ${list(files)}`);
+        if (!sameSet(files, new Set(expected.keys()))) {
+            errors.push(`${locale}: expected ${list(expected.keys())}, found ${list(files)}`);
         }
-        for (const [name, size] of expectedFiles) {
+        for (const [name, { size }] of expected) {
             const path = join(localeFolder, name);
             if (!existsSync(path)) continue;
             let header: PngHeader;
@@ -128,9 +163,13 @@ if (!existsSync(folder) || !statSync(folder).isDirectory()) {
     console.error(`ERROR: ${folder} is not a folder`);
     process.exit(1);
 }
-const errors = check(folder);
+const waiting = uncaptured(folder);
+const errors = check(folder, waiting);
 if (errors.length > 0) {
     for (const error of errors) console.error(`ERROR: ${error}`);
     process.exit(1);
+}
+for (const screen of waiting) {
+    console.log(`Not captured yet: ${screen}, a new screen the next make capture-screenshots takes.`);
 }
 console.log("Screenshot check passed.");
