@@ -14,6 +14,10 @@ public struct CardWidgetView<Accessory: View>: View {
     private let accessory: Accessory
     @Environment(\.colorSchemeContrast) private var colorSchemeContrast
 
+    /// Full colour on a normal Home Screen; tinted or clear Home Screens draw
+    /// everything in one tint, where white panels would hide the text.
+    @Environment(\.widgetRenderingMode) private var renderingMode
+
     public init(card: CardWidgetState?, @ViewBuilder accessory: () -> Accessory) {
         self.card = card
         self.accessory = accessory()
@@ -34,11 +38,13 @@ public struct CardWidgetView<Accessory: View>: View {
         .dynamicTypeSize(...Self.largestTextSize)
     }
 
-    /// Name and distance above a full-width strip of bars.
+    private var isFullColor: Bool { renderingMode == .fullColor }
+
+    /// Name and distance on a panel above a full-width strip of bars.
     private func stripLayout(_ card: CardWidgetState) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: 6) {
             HStack(alignment: .center, spacing: 8) {
-                VStack(alignment: .leading, spacing: 2) {
+                VStack(alignment: .leading, spacing: 1) {
                     title(card, lineLimit: 1)
                     proximity(card)
                 }
@@ -46,15 +52,16 @@ public struct CardWidgetView<Accessory: View>: View {
                 Spacer(minLength: 0)
                 accessory
             }
+            .widgetPanel(isFullColor)
             // About 4:1, the space a medium widget leaves under the name, so the bars use its full width.
             CardWidgetBarcode(card: card, pixelSize: CGSize(width: 900, height: 190), margin: 28)
                 .keepsColoursWhenInverted()
         }
     }
 
-    /// Name, distance and code beside a square code.
+    /// Name, distance and code on a panel beside a square code.
     private func squareLayout(_ card: CardWidgetState) -> some View {
-        HStack(spacing: 12) {
+        HStack(spacing: 6) {
             VStack(alignment: .leading, spacing: 4) {
                 VStack(alignment: .leading, spacing: 4) {
                     title(card, lineLimit: 2)
@@ -68,17 +75,26 @@ public struct CardWidgetView<Accessory: View>: View {
                     accessory
                 }
             }
+            .widgetPanel(isFullColor)
             CardWidgetBarcode(card: card, pixelSize: CGSize(width: 420, height: 420), margin: 24)
                 .aspectRatio(1, contentMode: .fit)
                 .keepsColoursWhenInverted()
         }
     }
 
+    private var ink: AnyShapeStyle {
+        isFullColor ? AnyShapeStyle(CardPanel.ink) : AnyShapeStyle(.primary)
+    }
+
+    private var secondaryInk: AnyShapeStyle {
+        isFullColor ? AnyShapeStyle(CardPanel.secondaryInk) : AnyShapeStyle(.secondary)
+    }
+
     private func title(_ card: CardWidgetState, lineLimit: Int) -> some View {
         Text(card.name)
             .font(.headline)
             .lineLimit(lineLimit)
-            .foregroundStyle(card.color.primaryInk)
+            .foregroundStyle(ink)
             .widgetAccentable()
     }
 
@@ -87,7 +103,7 @@ public struct CardWidgetView<Accessory: View>: View {
         if let proximity = card.proximity {
             ProximityLabel(proximity, showsPlace: true)
                 .font(.caption.weight(.medium))
-                .foregroundStyle(supportingInk(card))
+                .foregroundStyle(supportingInk)
         }
     }
 
@@ -97,7 +113,7 @@ public struct CardWidgetView<Accessory: View>: View {
         Text(card.code)
             .font(.caption.monospaced())
             .lineLimit(2)
-            .foregroundStyle(supportingInk(card))
+            .foregroundStyle(supportingInk)
             .readsLeftToRight()
             .accessibilityLabel(
                 Text(
@@ -112,8 +128,8 @@ public struct CardWidgetView<Accessory: View>: View {
 
     /// The distance and the code: a lighter ink, or with Increase Contrast the
     /// full ink of the name, as on the card's screen.
-    private func supportingInk(_ card: CardWidgetState) -> Color {
-        colorSchemeContrast == .increased ? card.color.primaryInk : card.color.secondaryInk
+    private var supportingInk: AnyShapeStyle {
+        colorSchemeContrast == .increased ? ink : secondaryInk
     }
 
     private var emptyState: some View {
@@ -167,22 +183,32 @@ struct CardWidgetBarcode: View {
                 )
                 .font(.caption)
                 .multilineTextAlignment(.center)
-                .foregroundStyle(Color(rgb: CardInk.dark.rgb))
+                .foregroundStyle(CardPanel.ink)
                 .padding(.horizontal, 8)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(.white)
             }
         }
-        .clipShape(.rect(cornerRadius: 10))
+        // A white panel that fills the space, so its edges line up with the text
+        // panel's, with its corners nested in the widget's own.
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(CardPanel.fill, in: ContainerRelativeShape())
+        .clipShape(ContainerRelativeShape())
         .accessibilityHidden(true)
     }
 }
 
 private extension View {
-    /// The name and distance read as one element, "Tesco Clubcard, 120 metres
-    /// from Tesco Express", which says what tapping the widget does. The
-    /// refresh button stays an element of its own.
+    /// The white panel text sits on, its corners nested in the widget's. Left out
+    /// on tinted Home Screens, which draw the text in the tint instead.
+    func widgetPanel(_ isFullColor: Bool) -> some View {
+        padding(.horizontal, 10)
+            .padding(.vertical, 6)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            .background(isFullColor ? CardPanel.fill : .clear, in: ContainerRelativeShape())
+    }
+
+    /// The name and distance read as one element, "Joe's Market, 120 metres
+    /// from Joe's Market Notting Hill", which says what tapping the widget
+    /// does. The refresh button stays an element of its own.
     func widgetCardDescription() -> some View {
         accessibilityElement(children: .combine)
             .accessibilityHint(
@@ -193,3 +219,38 @@ private extension View {
             )
     }
 }
+
+#if DEBUG
+// This file is also built into the widget extension, which has none of
+// Cards/Development, so these previews carry their own data.
+#Preview("Nearby") {
+    CardWidgetView(card: CardWidgetState(
+        name: "Joe's Market",
+        code: "5012345678900",
+        barcodeType: .ean13,
+        color: .blue,
+        proximity: CardProximity(placeName: "Joe's Market Notting Hill", distance: 120)
+    ))
+    .previewWidgetFrame(.blue)
+}
+
+#Preview("QR code") {
+    CardWidgetView(card: CardWidgetState(name: "Boulder Barn Climbing", code: "https://serby.net", barcodeType: .qrCode, color: .graphite))
+        .previewWidgetFrame(.graphite)
+}
+
+#Preview("No cards") {
+    CardWidgetView(card: nil)
+        .previewWidgetFrame(.standard)
+}
+
+private extension View {
+    /// The medium widget's size and corners, as WidgetKit draws it.
+    func previewWidgetFrame(_ color: CardColor) -> some View {
+        padding(16)
+            .frame(width: 338, height: 158)
+            .background(color.widgetFill, in: .rect(cornerRadius: 22))
+            .containerShape(.rect(cornerRadius: 22))
+    }
+}
+#endif

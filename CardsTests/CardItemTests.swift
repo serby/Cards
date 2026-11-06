@@ -80,7 +80,7 @@ struct CardItemTests {
     }
 
     @Test func exportRoundTripKeepsColour() throws {
-        let original = CardItem(timestamp: Date(timeIntervalSince1970: 0), code: "42", name: "Costa", color: .red)
+        let original = CardItem(timestamp: Date(timeIntervalSince1970: 0), code: "42", name: "Local Roast Coffee", color: .red)
         let data = try JSONEncoder().encode([CardItemDTO(from: original)])
         let imported = try JSONDecoder().decode([CardItemDTO].self, from: data)
         #expect(imported.first?.toCardItem().getColor() == .red)
@@ -88,7 +88,7 @@ struct CardItemTests {
 
     @Test func exportWithoutColourStillImports() throws {
         let legacy = """
-        [{"code":"42","name":"Costa","order":0,"timestamp":0,"type":"EAN-13"}]
+        [{"code":"42","name":"Local Roast Coffee","order":0,"timestamp":0,"type":"EAN-13"}]
         """
         let imported = try JSONDecoder().decode([CardItemDTO].self, from: Data(legacy.utf8))
         let card = try #require(imported.first?.toCardItem())

@@ -29,7 +29,7 @@ Save this as `BUILD_CERTIFICATE_BASE64` secret (copied to clipboard)
 
 ### Provisioning profiles
 
-None to export. CI creates and installs the App Store profiles for the app and its widget through the App Store Connect API on every run (`scripts/asc-profiles.ts`, see `docs/DEVELOPMENT.md` section 7). The `BUILD_PROVISION_PROFILE_BASE64` secret is no longer read and can be deleted.
+None to export. CI creates and installs the App Store profiles for the app and its widget through the App Store Connect API on every run (`scripts/install-signing-profiles.ts`, see `docs/DEVELOPMENT.md` section 7). The `BUILD_PROVISION_PROFILE_BASE64` secret is no longer read and can be deleted.
 
 ## Step 3: Get Apple IDs
 
@@ -92,7 +92,7 @@ git tag v1.0.0
 git push origin v1.0.0
 ```
 
-This will trigger the deployment workflow and upload to TestFlight.
+This triggers `release.yml`, which builds, uploads and submits the version for App Store review. Pushes to `main` only run CI.
 
 ## Troubleshooting
 
@@ -113,42 +113,3 @@ This will trigger the deployment workflow and upload to TestFlight.
 - Check `.github/workflows/` files are committed
 - Verify branch name is `main` (not `master`)
 - Check Actions are enabled in repository settings
-
-## Quick Setup Script
-
-Run this to check your setup:
-
-```bash
-#!/bin/bash
-
-echo "Checking CI/CD setup..."
-
-# Check if GitHub remote exists
-if git remote get-url origin &> /dev/null; then
-    echo "✅ GitHub remote configured"
-else
-    echo "❌ No GitHub remote found"
-fi
-
-# Check if workflows exist
-if [ -d ".github/workflows" ]; then
-    echo "✅ Workflow files exist"
-else
-    echo "❌ No workflow files found"
-fi
-
-# Check the Xcode project is present
-if [ -f "Cards.xcodeproj/project.pbxproj" ]; then
-    echo "✅ Xcode project present"
-else
-    echo "❌ Cards.xcodeproj missing"
-fi
-
-echo ""
-echo "Next steps:"
-echo "1. Push code to GitHub"
-echo "2. Configure secrets in GitHub repository settings"
-echo "3. Push a tag to trigger deployment"
-```
-
-Save as `check-cicd.sh` and run: `bash check-cicd.sh`

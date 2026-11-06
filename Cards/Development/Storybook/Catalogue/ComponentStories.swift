@@ -3,14 +3,21 @@ import SwiftUI
 @MainActor
 let componentStories: [Story] = [
     barcodeStory,
-    spinnerStory,
-    cardRowStory,
+    cardTileStory,
     cardColorPickerStory,
     proximityLabelStory,
     cardLocationRowStory,
+    mapPinRingStory,
+    radiusSliderStory,
+    placeSearchResultsStory,
     cardWidgetStory,
+    cameraUnavailableStory,
+    barcodeImportStory,
+    barcodeChoiceStory,
+    scannerControlsStory,
     scannerPlaceholderStory,
-    cameraAccessOffStory
+    cardFaceStory,
+    cardIconPickerStory
 ]
 
 @MainActor
@@ -49,66 +56,53 @@ private let barcodeStory = Story(
     )
 }
 
+/// A tile at the width it has in the grid on an iPhone.
 @MainActor
-private let spinnerStory = Story(
-    id: "spinner",
-    title: "Spinner",
-    section: "Components",
-    knobs: [
-        .toggle("Loading", true),
-        .number("Grace time", 0, in: 0...2, step: 0.25)
-    ],
-    gallery: [
-        (name: "Loading", view: AnyView(Spinner(isLoading: true))),
-        (name: "Idle", view: AnyView(Spinner(isLoading: false))),
-        (name: "Loading after 1s grace", view: AnyView(Spinner(isLoading: true, graceTime: 1)))
-    ]
-) { knobs in
+private func tile(_ card: CardSummary, isDropTarget: Bool = false) -> AnyView {
     AnyView(
-        Spinner(isLoading: knobs.bool("Loading"), graceTime: knobs.number("Grace time"))
+        CardTileView(card: card, isDropTarget: isDropTarget, onTap: {})
+            .frame(width: 180)
     )
 }
 
 @MainActor
-private let cardRowStory = Story(
-    id: "card-row",
-    title: "CardRowView",
+private let cardTileStory = Story(
+    id: "card-tile",
+    title: "CardTileView",
     section: "Components",
     knobs: [
-        .text("Name", "Tesco Clubcard"),
-        .options("Colour", CardColor.allNames, CardColor.blue.rawValue)
-    ] + ProximityKnobs.knobs(place: "Tesco Express"),
+        .text("Name", "Joe's Market"),
+        .options("Colour", CardColor.allNames, CardColor.blue.rawValue),
+        .options("Icon", CardSummary.storyIcons, "basket"),
+        .number("Width", 180, in: 120...400, step: 10),
+        .toggle("Drop target", false)
+    ] + ProximityKnobs.knobs(place: "Joe's Market Notting Hill", distance: 0),
     gallery: [
-        (
-            name: "Short name, here",
-            view: AnyView(CardRowView(card: CardSummary.samples[0]) {})
-        ),
-        (
-            name: "Nearby",
-            view: AnyView(CardRowView(card: CardSummary.samples[2]) {})
-        ),
-        (
-            name: "Long name",
-            view: AnyView(CardRowView(card: .longName) {})
-        )
+        (name: "Here, with an icon", view: tile(CardSummary.samples[0])),
+        (name: "Nearby", view: tile(CardSummary.samples[2])),
+        (name: "No place or icon", view: tile(CardSummary.samples[3])),
+        (name: "Long name", view: tile(.longName)),
+        (name: "Drop target", view: tile(CardSummary.samples[1], isDropTarget: true))
     ] + CardColor.allCases.map { color in
         let name = String(localized: color.displayName)
-        return (
-            name: name,
-            view: AnyView(CardRowView(card: CardSummary(id: color.rawValue, name: name, color: color)) {})
-        )
+        return (name: name, view: tile(CardSummary(id: color.rawValue, name: name, color: color)))
     }
 ) { knobs in
-    AnyView(
-        CardRowView(
+    let icon = knobs.option("Icon")
+    return AnyView(
+        CardTileView(
             card: CardSummary(
                 id: "story",
                 name: knobs.string("Name"),
                 color: .named(knobs.option("Colour")),
-                proximity: knobs.proximity()
-            )
-        ) {}
-            .padding()
+                proximity: knobs.proximity(),
+                icon: icon == CardSummary.noIcon ? nil : icon
+            ),
+            isDropTarget: knobs.bool("Drop target"),
+            onTap: {}
+        )
+        .frame(width: knobs.number("Width"))
+        .padding()
     )
 }
 
@@ -133,7 +127,22 @@ private let cardColorPickerStory = Story(
                         }
                     }
                 }
-                .frame(height: 200)
+                .frame(height: 280)
+            )
+        ),
+        (
+            name: "Custom colour chosen",
+            view: AnyView(
+                Stateful(CardColor.custom(0x3399CC)) { color in
+                    Form {
+                        Section {
+                            CardColorPicker(selection: color)
+                        } header: {
+                            Text(verbatim: "Colour")
+                        }
+                    }
+                }
+                .frame(height: 280)
             )
         )
     ]
@@ -155,24 +164,25 @@ private let proximityLabelStory = Story(
     title: "ProximityLabel",
     section: "Components",
     knobs: ProximityKnobs.knobs(optional: false) + [
-        .toggle("Shows place", false)
+        .toggle("Shows place", false),
+        .toggle("Highlights here", true)
     ],
     gallery: [
-        (name: "Here", view: AnyView(ProximityLabel(CardProximity(placeName: "Westway", distance: 0)))),
+        (name: "Here", view: AnyView(ProximityLabel(CardProximity(placeName: "Boulder Barn", distance: 0)))),
         (
             name: "Here, with place",
-            view: AnyView(ProximityLabel(CardProximity(placeName: "Westway", distance: 0), showsPlace: true))
+            view: AnyView(ProximityLabel(CardProximity(placeName: "Boulder Barn", distance: 0), showsPlace: true))
         ),
-        (name: "Nearby", view: AnyView(ProximityLabel(CardProximity(placeName: "Westway", distance: 350)))),
+        (name: "Nearby", view: AnyView(ProximityLabel(CardProximity(placeName: "Boulder Barn", distance: 350)))),
         (
             name: "Far, with place",
-            view: AnyView(ProximityLabel(CardProximity(placeName: "IKEA Wembley", distance: 6_800), showsPlace: true))
+            view: AnyView(ProximityLabel(CardProximity(placeName: "Nordic Nest Wembley", distance: 6_800), showsPlace: true))
         )
     ]
 ) { knobs in
     AnyView(
         knobs.proximity(optional: false).map { proximity in
-            ProximityLabel(proximity, showsPlace: knobs.bool("Shows place"))
+            ProximityLabel(proximity, showsPlace: knobs.bool("Shows place"), highlightsHere: knobs.bool("Highlights here"))
                 .padding()
         }
     )
@@ -203,53 +213,6 @@ private let cardLocationRowStory = Story(
 }
 
 @MainActor
-private let scannerPlaceholderStory = Story(
-    id: "scanner-placeholder",
-    title: "ScannerPlaceholderView",
-    section: "Components",
-    knobs: [
-        .toggle("Camera access off", false)
-    ],
-    gallery: [
-        (name: "Default", view: AnyView(ScannerPlaceholderView().frame(minHeight: 250))),
-        (name: "Camera access off", view: AnyView(ScannerPlaceholderView(cameraAccessOff: true).frame(minHeight: 250)))
-    ]
-) { knobs in
-    AnyView(
-        // At least 250 pt, as in the card form, and taller when the message
-        // needs it.
-        ScannerPlaceholderView(cameraAccessOff: knobs.bool("Camera access off"))
-            .frame(minHeight: 250)
-            .padding()
-    )
-}
-
-/// The message has no parameters; the story shows it on black, as the
-/// scanner does, in a box that grows with it.
-@MainActor
-private let cameraAccessOffStory = Story(
-    id: "camera-access-off-message",
-    title: "CameraAccessOffMessage",
-    section: "Components",
-    knobs: [],
-    gallery: [
-        (name: "On the camera", view: AnyView(onTheCamera(CameraAccessOffMessage())))
-    ]
-) { _ in
-    AnyView(onTheCamera(CameraAccessOffMessage()).padding())
-}
-
-@MainActor
-private func onTheCamera(_ message: some View) -> some View {
-    ZStack {
-        Rectangle().fill(.black)
-        message
-    }
-    .frame(minHeight: 250)
-    .clipShape(RoundedRectangle(cornerRadius: 12))
-}
-
-@MainActor
 private let cardWidgetStory = Story(
     id: "card-widget",
     title: "CardWidgetView",
@@ -260,7 +223,7 @@ private let cardWidgetStory = Story(
         .text("Code", CardWidgetState.sample.code),
         .options("Type", BarcodeType.allNames, BarcodeType.ean13.rawValue),
         .options("Colour", CardColor.allNames, CardColor.blue.rawValue)
-    ] + ProximityKnobs.knobs(place: "Tesco Express", distance: 120),
+    ] + ProximityKnobs.knobs(place: "Joe's Market Notting Hill", distance: 120),
     gallery: [
         (name: "Nearby", view: AnyView(CardWidgetView(card: .sample).widgetPreviewFrame(.blue))),
         (name: "Here", view: AnyView(CardWidgetView(card: .here).widgetPreviewFrame(.red))),
@@ -282,5 +245,54 @@ private let cardWidgetStory = Story(
         CardWidgetView(card: knobs.bool("Has card") ? card : nil)
             .widgetPreviewFrame(knobs.bool("Has card") ? color : .standard)
             .padding()
+    )
+}
+
+@MainActor
+private let cardFaceStory = Story(
+    id: "card-face",
+    title: "CardFaceView",
+    section: "Components",
+    knobs: [
+        .text("Name", CardDetail.sample.name),
+        .text("Code", CardDetail.sample.code),
+        .options("Type", BarcodeType.allNames, BarcodeType.ean13.rawValue),
+        .options("Colour", CardColor.allNames, CardDetail.sample.color.rawValue),
+        IconKnob.knob(CardDetail.sample.icon),
+        .toggle("Copy button", true)
+    ] + ProximityKnobs.knobs(place: "Green Leaf Shepherd's Bush", distance: 320) + [
+        .toggle("Panel below", false)
+    ],
+    gallery: [CardDetail.sample, .qr, .invalidCode].map { card in
+        (name: card.name, view: AnyView(CardFaceView(card: card).padding()))
+    }
+) { knobs in
+    let card = CardDetail(
+        id: "story",
+        name: knobs.string("Name"),
+        code: knobs.string("Code"),
+        barcodeType: .named(knobs.option("Type")),
+        timestamp: Date.now,
+        color: .named(knobs.option("Colour")),
+        proximity: knobs.proximity(),
+        icon: knobs.icon
+    )
+    return AnyView(
+        CardFaceView(card: card, accessoryWidth: knobs.bool("Copy button") ? 44 : 0) {
+            if knobs.bool("Copy button") {
+                Image(systemName: "doc.on.doc")
+                    .foregroundStyle(CardPanel.secondaryInk)
+                    .frame(width: 44, height: 44)
+            }
+        } footer: {
+            // The card screen puts its places here (PLACE-9).
+            if knobs.bool("Panel below") {
+                Text(verbatim: "A panel below the number")
+                    .font(.subheadline)
+                    .foregroundStyle(CardPanel.ink)
+                    .cardPanel()
+            }
+        }
+        .padding()
     )
 }

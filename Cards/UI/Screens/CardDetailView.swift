@@ -1,3 +1,4 @@
+import CoreLocation
 import SwiftUI
 
 /// The card detail screen. Brightness and VoiceOver announcements go through
@@ -6,115 +7,65 @@ public struct CardDetailView: View {
     private let card: CardDetail
     @Binding private var brightnessBoost: Bool
     private let actions: CardDetailActions
+    /// Where the location picker opens: the user's last known location, if any.
+    private let mapCentre: CLLocationCoordinate2D?
+    /// What the share menu sends; no share button without it.
+    private let share: CardShare?
 
     @Environment(\.screenBrightness) private var screenBrightness
     @Environment(\.accessibilityAnnouncer) private var announcer
     @State private var originalBrightness: CGFloat?
     /// VoiceOver starts on the card's name, which also confirms a save.
     @AccessibilityFocusState private var nameFocused: Bool
-    @Environment(\.colorSchemeContrast) private var colorSchemeContrast
-
-    /// The distance and date: a lighter ink, or with Increase Contrast the
-    /// full ink of the name and code.
-    private var supportingInk: Color {
-        colorSchemeContrast == .increased ? card.color.primaryInk : card.color.secondaryInk
-    }
+    @State private var showsLocationPicker = false
+    /// Counts copies, so each one plays the haptic and shows the tick afresh.
+    @State private var copies = 0
+    @State private var showsCopied = false
 
     public init(
         card: CardDetail,
         brightnessBoost: Binding<Bool>,
+        mapCentre: CLLocationCoordinate2D? = nil,
+        share: CardShare? = nil,
         actions: CardDetailActions = CardDetailActions()
     ) {
         self.card = card
         _brightnessBoost = brightnessBoost
+        self.mapCentre = mapCentre
+        self.share = share
         self.actions = actions
     }
 
     public var body: some View {
-        // Scrolls once the card is taller than the screen, as at the largest
-        // text sizes, so the text can never squeeze the barcode below a size a
-        // scanner reads, and nothing is cut off.
+        // Scrolls once the card is taller than the screen, with several places (PLACE-9) or at the largest
+        // text sizes, so the text never squeezes the barcode below a size a scanner reads.
         ScrollView {
-            VStack(spacing: 16) {
-                VStack(spacing: 6) {
-                    Text(card.name)
-                        .font(.title2.bold())
-                        .multilineTextAlignment(.center)
-                        .foregroundStyle(card.color.primaryInk)
-                        .accessibilityIdentifier("cardNameText")
-                        // The name alone, so the headings rotor lists cards by name.
-                        .accessibilityAddTraits(.isHeader)
-                        .accessibilityFocused($nameFocused)
-
-                    if let proximity = card.proximity {
-                        ProximityLabel(proximity, showsPlace: true)
-                            .font(.subheadline.weight(.medium))
-                            .foregroundStyle(supportingInk)
-                            .accessibilityIdentifier("cardProximityText")
-                            // Its own label replaces the text's, and with it the
-                            // static text trait, which left the accessibility
-                            // audit taking it for an 18 pt tall control.
-                            .accessibilityAddTraits(.isStaticText)
+            VStack {
+                CardFaceView(card: card, accessoryWidth: Self.copyButtonSize, nameFocus: $nameFocused) {
+                    copyCodeButton
+                } footer: {
+                    if card.places.isListed {
+                        PlacesPanel(places: card.places)
                     }
                 }
+                .shadow(color: .black.opacity(0.12), radius: 16, y: 8)
 
-                BarcodeView(barcodeString: card.code, barcodeType: card.barcodeType)
-
-                // Centred like the name above when they wrap, as at the largest
-                // text sizes, rather than each line at the leading edge.
-                VStack(spacing: 4) {
-                    Text(card.code)
-                        .font(.title3.monospaced().weight(.semibold))
-                        .multilineTextAlignment(.center)
-                        .foregroundStyle(card.color.primaryInk)
-                        .readsLeftToRight()
-                        .textSelection(.enabled)
-                        .accessibilityIdentifier("cardCodeText")
-                        .accessibilityLabel(
-                            Text(
-                                "Card code: \(Text(card.code).speechSpellsOutCharacters())",
-                                comment: """
-                                    VoiceOver label for a card's code, shown with its barcode on the card's screen and in the Home Screen \
-                                    widget. VoiceOver spells the code out character by character.
-                                    """
-                            )
-                        )
-                        .accessibilityAddTraits(.isStaticText)
-
-                    Text(card.timestamp, format: Date.FormatStyle(date: .abbreviated, time: .shortened))
-                        .font(.caption)
-                        .multilineTextAlignment(.center)
-                        .foregroundStyle(supportingInk)
-                        .accessibilityIdentifier("cardTimestampText")
-                        .accessibilityLabel(
-                            Text(
-                                "Created on \(card.timestamp, format: Date.FormatStyle(date: .long, time: .shortened))",
-                                comment: "VoiceOver label for when the card was added. The argument is a date and time: 14 November 2023 at 22:13."
-                            )
-                        )
-                        .accessibilityAddTraits(.isStaticText)
+                // Pointless where the card already is, so it goes once you are inside one of its places.
+                if card.proximity?.isHere != true {
+                    addCurrentLocationButton
                 }
             }
-            .padding(20)
-            .frame(maxWidth: .infinity)
-            // The shadow belongs to the card's shape alone. On the whole card it
-            // fell on every glyph too, haloing the text and lowering its contrast.
-            .background {
-                RoundedRectangle(cornerRadius: 24)
-                    .fill(card.color.cardFill)
-                    .shadow(color: .black.opacity(0.12), radius: 16, y: 8)
-            }
-            // With Increase Contrast the card gets an edge: the default grey card
-            // is barely lighter than the screen behind it.
-            .overlay {
-                if colorSchemeContrast == .increased {
-                    RoundedRectangle(cornerRadius: 24).strokeBorder(Color.primaryText, lineWidth: 1)
-                }
-            }
-            .keepsColoursWhenInverted()
             .padding()
         }
         .scrollBounceBehavior(.basedOnSize)
+        .sheet(isPresented: $showsLocationPicker) {
+            LocationPickerView(
+                centre: mapCentre,
+                search: actions.placeSearch,
+                onAppear: actions.requestLocationAccess,
+                onAdd: actions.addLocation
+            )
+        }
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("cardDetailView")
         // No announcement here: it would cut across VoiceOver reading the new
@@ -134,6 +85,13 @@ public struct CardDetailView: View {
             Task { await brightness.fade(to: originalBrightness, duration: 0.2) }
         }
         .toolbar {
+            // Share first, so brightness and Edit keep the places they had at the trailing edge.
+            if let share {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    shareMenu(share)
+                }
+            }
+
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button {
                     brightnessBoost.toggle()
@@ -185,6 +143,96 @@ public struct CardDetailView: View {
         }
     }
 
+    private static let copyButtonSize: CGFloat = 44
+
+    /// Sends the card as a link someone can add (SHARE-1), or as a picture (SHARE-2).
+    private func shareMenu(_ share: CardShare) -> some View {
+        Menu {
+            ShareLink(item: share.link, subject: Text(card.name), preview: SharePreview(card.name)) {
+                Label(
+                    LocalizedStringResource("Share Link", comment: "Share menu item on a card's screen: sends a link that adds the card."),
+                    systemImage: "link"
+                )
+            }
+            .accessibilityIdentifier("shareLinkButton")
+
+            ShareLink(item: share.image, preview: SharePreview(card.name, image: share.image)) {
+                Label(
+                    LocalizedStringResource("Share Image", comment: "Share menu item on a card's screen: sends a picture of the card."),
+                    systemImage: "photo"
+                )
+            }
+            .accessibilityIdentifier("shareImageButton")
+        } label: {
+            Image(systemName: "square.and.arrow.up")
+                .accessibilityHidden(true)
+        }
+        .accessibilityIdentifier("shareCardButton")
+        .accessibilityLabel(
+            Text("Share card", comment: "VoiceOver label for the share button, the share icon, in the toolbar of a card's screen.")
+        )
+        .accessibilityHint(
+            Text("Shares this card as a link to add it, or as an image", comment: "VoiceOver hint for the share button on a card's screen.")
+        )
+    }
+
+    /// Copies the number, for typing it into a website or another app. The icon
+    /// turns into a tick for a moment to show it worked.
+    private var copyCodeButton: some View {
+        Button {
+            actions.copyCode()
+            copies += 1
+            announcer.announce(
+                String(localized: "Card code copied", comment: "VoiceOver announcement after the copy button on a card's screen copies the code.")
+            )
+        } label: {
+            Image(systemName: showsCopied ? "checkmark" : "doc.on.doc")
+                .font(.body.weight(.semibold))
+                .foregroundStyle(CardPanel.secondaryInk)
+                .contentTransition(.symbolEffect(.replace))
+                .frame(width: Self.copyButtonSize, height: Self.copyButtonSize)
+                .contentShape(.rect)
+        }
+        .buttonStyle(.plain)
+        .sensoryFeedback(.success, trigger: copies)
+        .task(id: copies) {
+            guard copies > 0 else { return }
+            showsCopied = true
+            // A tap while the tick shows starts the moment again.
+            guard (try? await Task.sleep(for: .seconds(1.5))) != nil else { return }
+            showsCopied = false
+        }
+        .accessibilityIdentifier("copyCodeButton")
+        .accessibilityLabel(
+            showsCopied
+                ? Text("Copied", comment: "VoiceOver label for the copy button beside the code on a card's screen, just after a copy.")
+                : Text("Copy card code", comment: "VoiceOver label for the copy button, an icon, beside the code on a card's screen.")
+        )
+    }
+
+    /// A quiet way to remember this place for the card, without opening the editor.
+    private var addCurrentLocationButton: some View {
+        Button {
+            showsLocationPicker = true
+        } label: {
+            Label(
+                LocalizedStringResource("Add current location", comment: "Button below a card on its screen: opens a map to save a place for it."),
+                systemImage: "location"
+            )
+            .font(.footnote.weight(.medium))
+        }
+        .buttonStyle(.borderless)
+        .foregroundStyle(.secondary)
+        .padding(.top, 12)
+        .accessibilityIdentifier("addCurrentLocationButton")
+        .accessibilityHint(
+            Text(
+                "Opens a map to save where you are as one of this card's places",
+                comment: "VoiceOver hint for the Add current location button below the card on a card's screen."
+            )
+        )
+    }
+
     private func boost() async {
         if originalBrightness == nil {
             originalBrightness = screenBrightness.read()
@@ -206,3 +254,139 @@ public struct CardDetailView: View {
         }
     }
 }
+
+/// A card's places on a white panel at the foot of its face (PLACE-9): each
+/// name with its distance, nearest first, or in the card's order while where
+/// you are is unknown. A place opens in Maps.
+private struct PlacesPanel: View {
+    let places: CardPlaces
+
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @Environment(\.displayScale) private var displayScale
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            heading
+                .font(.footnote.weight(.semibold))
+                .foregroundStyle(CardPanel.secondaryInk)
+                .accessibilityAddTraits(.isHeader)
+                .accessibilityIdentifier("cardPlacesHeading")
+
+            ForEach(Array(places.listed.enumerated()), id: \.element.id) { index, place in
+                if index > 0 {
+                    separator
+                }
+                row(place)
+            }
+
+            if places.unlisted > 0 {
+                Text(
+                    "\(places.unlisted) more places",
+                    comment: "Below the places listed on a card's screen: how many more the card has. The argument is one or more."
+                )
+                .font(.footnote)
+                .foregroundStyle(CardPanel.secondaryInk)
+                .padding(.top, 4)
+                .accessibilityIdentifier("cardMorePlacesText")
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .cardPanel()
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("cardPlacesList")
+    }
+
+    /// "Nearest places" once there are distances to order them by.
+    private var heading: Text {
+        places.hasDistances
+            ? Text("Nearest places", comment: "Heading of the list of a card's places on its screen, nearest to the user first.")
+            : Text("Places", comment: "Heading of the list of a card's places on its screen, when the app does not know where the user is. A noun.")
+    }
+
+    /// One place, tall enough to tap, read as its name and distance (A11Y-1).
+    @ViewBuilder
+    private func row(_ place: NearbyPlace) -> some View {
+        if let url = place.location.mapsURL {
+            Link(destination: url) {
+                rowContent(place)
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(spoken(place))
+            .accessibilityHint(
+                Text("Opens this place in Maps", comment: "VoiceOver hint for a place in the list of places on a card's screen. Maps is Apple's app.")
+            )
+            .accessibilityIdentifier("cardPlaceRow")
+        } else {
+            rowContent(place)
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel(spoken(place))
+                .accessibilityIdentifier("cardPlaceRow")
+        }
+    }
+
+    /// The name, wrapping as far as it needs, with the distance beside it, or
+    /// below it at the accessibility text sizes.
+    private func rowContent(_ place: NearbyPlace) -> some View {
+        let layout = dynamicTypeSize.isAccessibilitySize
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: 4))
+            : AnyLayout(HStackLayout(alignment: .firstTextBaseline, spacing: 12))
+        return layout {
+            Text(place.location.name)
+                .foregroundStyle(CardPanel.ink)
+                .multilineTextAlignment(.leading)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            if let proximity = place.proximity {
+                ProximityLabel(proximity)
+                    .foregroundStyle(CardPanel.secondaryInk)
+                    .fixedSize()
+            }
+        }
+        .font(.subheadline)
+        .padding(.vertical, 10)
+        .frame(minHeight: 44)
+        .contentShape(.rect)
+    }
+
+    /// The distance as VoiceOver reads it, which names the place, or the name
+    /// alone while where you are is unknown.
+    private func spoken(_ place: NearbyPlace) -> Text {
+        place.proximity?.spokenDescription ?? Text(place.location.name)
+    }
+
+    /// A hairline in the panel's ink, which stays dark on the white panel in dark mode.
+    private var separator: some View {
+        Rectangle()
+            .fill(CardPanel.ink.opacity(0.12))
+            .frame(height: 1 / displayScale)
+            .accessibilityHidden(true)
+    }
+}
+
+#if DEBUG
+#Preview("Sample") {
+    @Previewable @State var boost = true
+    NavigationStack {
+        CardDetailView(card: .sample, brightnessBoost: $boost)
+    }
+    .environment(\.screenBrightness, .simulated(BrightnessBox()))
+    .environment(\.accessibilityAnnouncer, .silent)
+}
+
+#Preview("Seven places") {
+    @Previewable @State var boost = true
+    NavigationStack {
+        CardDetailView(card: .sevenPlaces, brightnessBoost: $boost)
+    }
+    .environment(\.screenBrightness, .simulated(BrightnessBox()))
+    .environment(\.accessibilityAnnouncer, .silent)
+}
+
+#Preview("Places, no location") {
+    @Previewable @State var boost = true
+    NavigationStack {
+        CardDetailView(card: .placesWithoutLocation, brightnessBoost: $boost)
+    }
+    .environment(\.screenBrightness, .simulated(BrightnessBox()))
+    .environment(\.accessibilityAnnouncer, .silent)
+}
+#endif

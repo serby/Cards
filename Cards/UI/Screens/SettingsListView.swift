@@ -1,13 +1,15 @@
 import SwiftUI
+import UniformTypeIdentifiers
 
 /// The settings screen. Export, import, delete and clipboard reads are all
-/// actions, so nothing here reaches for a store or the pasteboard directly.
+/// actions, so nothing here reaches for a store, the pasteboard or a file directly.
 public struct SettingsListView: View {
     private let state: SettingsState
     @Binding private var brightnessBoost: Bool
-    /// The import result to show in an alert. A resource, not a `String`, so
-    /// the view resolves it in its own locale.
-    @Binding private var message: LocalizedStringResource?
+    @Binding private var arrivalNotifications: Bool
+    @Binding private var showsCardWhereYouAre: Bool
+    /// The import result to show in an alert, already in the app's language.
+    @Binding private var message: String?
     private let actions: SettingsActions
 
     @State private var showDeleteConfirmation = false
@@ -20,73 +22,98 @@ public struct SettingsListView: View {
     public init(
         state: SettingsState,
         brightnessBoost: Binding<Bool>,
-        message: Binding<LocalizedStringResource?> = .constant(nil),
+        arrivalNotifications: Binding<Bool> = .constant(true),
+        showsCardWhereYouAre: Binding<Bool> = .constant(false),
+        message: Binding<String?> = .constant(nil),
         actions: SettingsActions = SettingsActions()
     ) {
         self.state = state
         _brightnessBoost = brightnessBoost
+        _arrivalNotifications = arrivalNotifications
+        _showsCardWhereYouAre = showsCardWhereYouAre
         _message = message
         self.actions = actions
     }
 
     public var body: some View {
         List {
-            Section {
-                if let version = state.appVersion, let build = state.appBuild {
-                    // Side by side, or the number under its label at accessibility
-                    // sizes, where both wrapped ("Versio- / n", "1.1 / (30)").
-                    rowLayout {
-                        Text("Version", comment: "Settings row label for the app's version number.")
+            if !state.changelog.isEmpty {
+                Section {
+                    NavigationLink {
+                        ChangelogView(versions: state.changelog)
+                    } label: {
+                        Text("What's New", comment: "Settings row that opens the list of what changed in each version of the app.")
                             .foregroundColor(.primaryText)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                        Text("\(version) (\(build))", comment: "The app's version and then its build number, as in “1.1 (42)”.")
-                            .foregroundColor(.secondaryText)
-                            .readsLeftToRight()
                     }
-                    // "Version, 1.1 (42)" as one element, not two.
-                    .accessibilityElement(children: .combine)
-                }
-
-                if let url = state.authorURL {
-                    Link(destination: url) {
-                        HStack {
-                            // A name breaks between lines as a whole, not between
-                            // its words ("Paul / Serby").
-                            Text(
-                                "Created by \(state.authorName.replacingOccurrences(of: " ", with: "\u{00A0}"))",
-                                comment: "Settings row that opens the author's website. The argument is the author's name."
-                            )
-                            .foregroundColor(.primaryText)
-                            Spacer()
-                            // The link trait and the hint say where it goes; the
-                            // arrow says it again for sighted users only.
-                            Image(systemName: "arrow.up.forward.square")
-                                .foregroundColor(.accent)
-                                .accessibilityHidden(true)
-                        }
-                    }
-                    .accessibilityHint(
-                        Text("Opens in your web browser", comment: "VoiceOver hint for the Settings row that opens the author's website.")
-                    )
+                    .accessibilityIdentifier("whatsNewRow")
                 }
             }
 
             Section {
-                // Side by side, or the switch under its text at accessibility
-                // sizes, where beside it the text had a third of the row and ran
-                // a word or two to a line. The row draws the text in both
-                // layouts, so nothing is swapped as the text size changes.
-                rowLayout {
-                    brightnessBoostLabel
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .accessibilityHidden(true)
-                    brightnessBoostToggle
-                        .labelsHidden()
-                }
+                switchRow(
+                    Text(
+                        "Brightness Boost",
+                        comment: "Settings switch for the feature that turns the screen up while a card is shown, so scanners can read its barcode."
+                    ),
+                    subtitle: Text(
+                        "Turns the screen up to full brightness while a card is open, so its barcode scans easily.",
+                        comment: "Under the Brightness Boost switch in Settings, saying what the switch does when it is on."
+                    ),
+                    isOn: $brightnessBoost,
+                    identifier: "brightnessBoostToggle"
+                )
             } header: {
                 Text("Display", comment: "Settings section heading for how cards are displayed.")
                     .foregroundStyle(Color.secondaryText)
                     .accessibilityIdentifier("displaySectionHeader")
+            }
+
+            Section {
+                switchRow(
+                    Text("Arrival Notifications", comment: "Settings switch for the notification shown on arriving at one of a card's places."),
+                    subtitle: Text(
+                        """
+                        Reminds you when you arrive at one of a card's places. \
+                        To stop one card reminding you, turn off Notify When I Arrive when you edit it.
+                        """,
+                        comment: """
+                        Under the Arrival Notifications switch in Settings, saying what it does. \
+                        Notify When I Arrive is the switch of that name in the card form; use its translation.
+                        """
+                    ),
+                    isOn: $arrivalNotifications,
+                    identifier: "arrivalNotificationsToggle"
+                )
+                if arrivalNotifications && state.notificationsBlocked {
+                    Button(action: actions.openNotificationSettings) {
+                        Label(
+                            LocalizedStringResource(
+                                "Notifications are off for Card Barcodes. Turn them on in Settings.",
+                                comment: """
+                                Button under the Arrival Notifications switch, shown when the switch is on but iOS has notifications \
+                                turned off for the app. It opens the app's page in the Settings app. Card Barcodes is the app's name.
+                                """
+                            ),
+                            systemImage: "bell.slash"
+                        )
+                        .font(.callout)
+                    }
+                    .foregroundColor(.accent)
+                    .accessibilityIdentifier("openNotificationSettingsButton")
+                }
+                switchRow(
+                    Text("Show Card Where I Am", comment: "Settings switch that puts the card for where the user is first in the card list."),
+                    subtitle: Text(
+                        "Shows the card for where you are at the top of your cards.",
+                        comment: "Under the Show Card Where I Am switch in Settings, saying what it does when it is on."
+                    ),
+                    isOn: $showsCardWhereYouAre,
+                    identifier: "showsCardWhereYouAreToggle"
+                )
+            } header: {
+                Text("Locations", comment: "Settings section heading for the switches about arrival notifications and the card for where you are.")
+                    .foregroundStyle(Color.secondaryText)
+                    .accessibilityIdentifier("locationsSectionHeader")
             }
 
             Section {
@@ -138,6 +165,46 @@ public struct SettingsListView: View {
                     .foregroundStyle(Color.secondaryText)
                     .accessibilityIdentifier("dataSectionHeader")
             }
+
+            Section {
+                if let version = state.appVersion, let build = state.appBuild {
+                    // Side by side, or the number under its label at accessibility
+                    // sizes, where both wrapped ("Versio- / n", "1.1 / (30)").
+                    rowLayout {
+                        Text("Version", comment: "Settings row label for the app's version number.")
+                            .foregroundColor(.primaryText)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        Text("\(version) (\(build))", comment: "The app's version and then its build number, as in “1.1 (42)”.")
+                            .foregroundColor(.secondaryText)
+                            .readsLeftToRight()
+                    }
+                    // "Version, 1.1 (42)" as one element, not two.
+                    .accessibilityElement(children: .combine)
+                }
+
+                if let url = state.authorURL {
+                    Link(destination: url) {
+                        HStack {
+                            // A name breaks between lines as a whole, not between
+                            // its words ("Paul / Serby").
+                            Text(
+                                "Created by \(state.authorName.replacingOccurrences(of: " ", with: "\u{00A0}"))",
+                                comment: "Settings row that opens the author's website. The argument is the author's name."
+                            )
+                            .foregroundColor(.primaryText)
+                            Spacer()
+                            // The link trait and the hint say where it goes; the
+                            // arrow says it again for sighted users only.
+                            Image(systemName: "arrow.up.forward.square")
+                                .foregroundColor(.accent)
+                                .accessibilityHidden(true)
+                        }
+                    }
+                    .accessibilityHint(
+                        Text("Opens in your web browser", comment: "VoiceOver hint for the Settings row that opens the author's website.")
+                    )
+                }
+            }
         }
         .listStyle(.insetGrouped)
         // White cells on a white screen: with Increase Contrast the list keeps
@@ -151,6 +218,11 @@ public struct SettingsListView: View {
                 readClipboard: actions.readClipboard,
                 onImport: {
                     actions.importCards(importText)
+                    showImportSheet = false
+                    importText = ""
+                },
+                onChooseFile: { choice in
+                    actions.importFile(choice)
                     showImportSheet = false
                     importText = ""
                 }
@@ -190,123 +262,53 @@ private extension SettingsListView {
             : AnyLayout(HStackLayout())
     }
 
-    /// The explanation is the switch's subtitle, so VoiceOver reads it with
-    /// the switch it explains. The label is hidden, as the row draws it.
-    var brightnessBoostToggle: some View {
-        Toggle(isOn: $brightnessBoost) {
-            brightnessBoostTitle
-            brightnessBoostSubtitle
-                .foregroundStyle(Color.secondaryText)
+    /// A switch with a line or two under its title saying what it does. Side by
+    /// side, or the switch under its text at accessibility sizes, where beside it
+    /// the text had a third of the row and ran a word or two to a line. The row
+    /// draws the text in both layouts, so nothing is swapped as the text size
+    /// changes, and hides it from VoiceOver, which reads the explanation as the
+    /// switch's subtitle, with the switch it explains.
+    func switchRow(_ title: Text, subtitle: Text, isOn: Binding<Bool>, identifier: String) -> some View {
+        rowLayout {
+            VStack(alignment: .leading, spacing: 2) {
+                title
+                subtitle
+                    .font(.subheadline)
+                    .foregroundStyle(Color.secondaryText)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .accessibilityHidden(true)
+            Toggle(isOn: isOn) {
+                title
+                subtitle
+                    .foregroundStyle(Color.secondaryText)
+            }
+            .labelsHidden()
+            .tint(.accent)
+            .accessibilityIdentifier(identifier)
         }
-        .tint(.accent)
-        .accessibilityIdentifier("brightnessBoostToggle")
-    }
-
-    /// The switch's title and subtitle, laid out as a switch lays them out.
-    var brightnessBoostLabel: some View {
-        VStack(alignment: .leading, spacing: 2) {
-            brightnessBoostTitle
-            brightnessBoostSubtitle
-                .font(.subheadline)
-                .foregroundStyle(Color.secondaryText)
-        }
-    }
-
-    var brightnessBoostTitle: Text {
-        Text(
-            "Brightness Boost",
-            comment: "Settings switch for the feature that turns the screen up while a card is shown, so scanners can read its barcode."
-        )
-    }
-
-    var brightnessBoostSubtitle: Text {
-        Text(
-            "Turns the screen up to full brightness while a card is open, so its barcode scans easily.",
-            comment: "Under the Brightness Boost switch in Settings, saying what the switch does when it is on."
-        )
     }
 }
 
-public struct ImportCardsView: View {
-    @Binding private var importText: String
-    private let readClipboard: () -> String?
-    private let onImport: () -> Void
-    @Environment(\.dismiss) private var dismiss
-
-    public init(
-        importText: Binding<String>,
-        readClipboard: @escaping () -> String? = { nil },
-        onImport: @escaping () -> Void
-    ) {
-        _importText = importText
-        self.readClipboard = readClipboard
-        self.onImport = onImport
-    }
-
-    public var body: some View {
-        NavigationStack {
-            VStack {
-                TextEditor(text: $importText)
-                    .font(.system(.body, design: .monospaced))
-                    .readsLeftToRight()
-                    .autocorrectionDisabled()
-                    .textInputAutocapitalization(.never)
-                    // Outside readsLeftToRight(), so the prompt follows the language.
-                    .overlay(alignment: .topLeading) {
-                        if importText.isEmpty {
-                            Text(
-                                "Paste exported JSON here",
-                                comment: "Prompt in the empty text box of the import sheet. JSON is a file format; keep the name."
-                            )
-                                .foregroundStyle(Color.secondaryText)
-                                .padding(.horizontal, 5)
-                                .padding(.vertical, 8)
-                                .allowsHitTesting(false)
-                                .accessibilityHidden(true)
-                        }
-                    }
-                    .accessibilityLabel(
-                        Text("JSON to import", comment: "VoiceOver label for the text box in the import sheet. JSON is a file format; keep the name.")
-                    )
-                    .accessibilityIdentifier("importTextEditor")
-                    .padding()
-
-                Button {
-                    if let clipboard = readClipboard() {
-                        importText = clipboard
-                    }
-                } label: {
-                    Text("Paste from Clipboard", comment: "Button in the import sheet that fills the text box with what was last copied.")
-                }
-                // Plain accent text: on the bordered style's pink wash the accent
-                // falls to 4:1.
-                .buttonStyle(.borderless)
-                .foregroundStyle(Color.accent)
-                .frame(minHeight: 44)
-                .accessibilityIdentifier("pasteFromClipboardButton")
-                .padding()
-            }
-            .navigationTitle(Text("Import JSON", comment: "Title of the sheet for pasting cards exported as JSON."))
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button {
-                        dismiss()
-                    } label: {
-                        Text("Cancel", comment: "Closes the import sheet without importing.")
-                    }
-                    .keyboardShortcut(.cancelAction)
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button(action: onImport) {
-                        Text("Import", comment: "Toolbar button in the import sheet that adds the pasted cards. A verb.")
-                    }
-                    .disabled(importText.isEmpty)
-                    // Command-Return, as Return types a new line in the JSON.
-                    .keyboardShortcut(.return, modifiers: .command)
-                    .accessibilityIdentifier("importButton")
-                }
-            }
-        }
+#if DEBUG
+#Preview("With cards") {
+    @Previewable @State var boost = true
+    NavigationStack {
+        SettingsListView(state: .sample, brightnessBoost: $boost)
     }
 }
+
+#Preview("Notifications blocked") {
+    @Previewable @State var arrivals = true
+    NavigationStack {
+        SettingsListView(state: .withNotificationsBlocked, brightnessBoost: .constant(true), arrivalNotifications: $arrivals)
+    }
+}
+
+#Preview("No cards") {
+    @Previewable @State var boost = false
+    NavigationStack {
+        SettingsListView(state: .noCards, brightnessBoost: $boost)
+    }
+}
+#endif

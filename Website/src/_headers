@@ -1,0 +1,4 @@
+# Cloudflare Pages response headers. The universal link file has no extension,
+# so Pages would serve it as application/octet-stream; Apple expects JSON.
+/.well-known/apple-app-site-association
+  Content-Type: application/json

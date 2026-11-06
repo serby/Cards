@@ -10,7 +10,7 @@ public struct BarcodeView: View {
     static let plate = Color.white
     /// Text drawn on the plate, the same in light and dark mode because the
     /// plate is.
-    static let plateInk = Color(rgb: CardInk.dark.rgb)
+    static let plateInk = CardPanel.ink
 
     public let barcodeString: String
     public let barcodeType: BarcodeType
@@ -34,7 +34,8 @@ public struct BarcodeView: View {
                         .flipsForRightToLeftLayoutDirection(false)
                 } else {
                     // Centred on the plate when it wraps, as it does in longer
-                    // languages and at large text sizes.
+                    // languages and at large text sizes. Dark ink: the white
+                    // stays white in dark mode, where the default would vanish.
                     failureText
                         .multilineTextAlignment(.center)
                         .foregroundStyle(Self.plateInk)
@@ -42,10 +43,10 @@ public struct BarcodeView: View {
             }
             .frame(maxWidth: .infinity)
             .padding()
-            .background(Self.plate)
+            .background(Self.plate, in: .rect(cornerRadius: CardGeometry.barcodeCornerRadius))
         }
-        .padding(6)
-        .background(.gray.opacity(0.5), in: .rect(cornerRadius: 12))
+        .padding(CardGeometry.barcodeFrame)
+        .background(.gray.opacity(0.5), in: .rect(cornerRadius: CardGeometry.panelCornerRadius))
         // One element that says what is shown: the barcode and its format, or
         // the failure, never "barcode" over a message. The code itself is read
         // out, spelled, by the line under the barcode.
@@ -74,3 +75,10 @@ public struct BarcodeView: View {
         return BarcodeImage.make(code, type: type, size: size)
     }
 }
+
+#if DEBUG
+#Preview {
+    BarcodeView(barcodeString: "123456", barcodeType: .code128)
+    BarcodeView(barcodeString: "", barcodeType: .ean13)
+}
+#endif

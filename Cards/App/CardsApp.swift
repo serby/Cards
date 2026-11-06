@@ -7,6 +7,7 @@ struct CardsApp: App {
     @Environment(\.scenePhase) private var scenePhase
     @State private var navigationManager: NavigationManager
     @State private var locationService = LocationService(fixedLocation: DevelopmentHooks.screenshotLocation)
+    @State private var arrivalScheduler = ArrivalScheduler(notifications: .live)
     private let performanceTracker = PerformanceTracker()
     private let arrivalRouter: ArrivalNotificationRouter
 
@@ -14,6 +15,8 @@ struct CardsApp: App {
         let navigationManager = NavigationManager()
         _navigationManager = State(initialValue: navigationManager)
         // Set before launch finishes so a tap that launched the app is not missed.
+        // Handing iOS its delegate is wiring, so it is done here at the composition
+        // root rather than through the notification client.
         arrivalRouter = ArrivalNotificationRouter { code in
             navigationManager.navigate(to: .card(code))
         }
@@ -34,16 +37,15 @@ struct CardsApp: App {
 
     @ViewBuilder
     private var tabView: some View {
-        TabView {
+        let nav = Bindable(navigationManager)
+        TabView(selection: nav.tab) {
+            // The stack keeps its place when you switch tabs, so a card opened from
+            // a link or notification while Settings was showing is still there.
             // Tab's own title-and-image initialisers that take a comment need iOS 26.
-            Tab {
-                let nav = Bindable(navigationManager)
+            Tab(value: AppTab.cards) {
                 NavigationStack(path: nav.navigationPath) {
                     CardListScreen()
                         .environment(navigationManager)
-                }
-                .onAppear {
-                    navigationManager.resetToRoot()
                 }
             } label: {
                 Label(
@@ -51,7 +53,7 @@ struct CardsApp: App {
                     systemImage: "barcode"
                 )
             }
-            Tab {
+            Tab(value: AppTab.settings) {
                 NavigationStack {
                     SettingsScreen()
                 }
@@ -60,13 +62,27 @@ struct CardsApp: App {
             }
             DevelopmentHooks.tabs
         }
+        // Presented from the root, over whatever the Cards tab shows, so Cancel
+        // leaves it as it was. Inside the tint, so the sheet takes the accent.
+        .sheet(item: nav.sharedCard) { link in
+            SharedCardScreen(link: link, navigationManager: navigationManager)
+        }
         .tint(.accent)
         .environment(locationService)
+        .environment(arrivalScheduler)
+        .environment(\.mapShowsPointsOfInterest, DevelopmentHooks.mapShowsPointsOfInterest)
+        .environment(\.placeSearch, DevelopmentHooks.placeSearch)
         .background(Color.primaryBackground)
         .onAppear {
             performanceTracker.recordAppLaunch()
         }
         .onOpenURL(perform: navigationManager.handleDeepLink)
+        // A universal link, such as a card shared from cards.serby.net (SHARE-3).
+        .onContinueUserActivity(NSUserActivityTypeBrowsingWeb) { activity in
+            if let url = activity.webpageURL {
+                navigationManager.handleDeepLink(url)
+            }
+        }
         .tabBarMinimizeBehaviorIfAvailable()
     }
 

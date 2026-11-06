@@ -58,8 +58,9 @@ public enum NavigationRoute: Hashable, Identifiable, Codable {
         return components.url
     }
 
-    private static let scheme = "cards"
-    private static let host = "cards"
+    /// The app's own links, which `SharedCardLink` shares.
+    static let scheme = "cards"
+    static let host = "cards"
     /// The unreserved URL characters, which a path segment keeps as they are.
     /// Everything else, "/" and non-ASCII letters included, is percent-encoded.
     private static let segmentCharacters = CharacterSet(

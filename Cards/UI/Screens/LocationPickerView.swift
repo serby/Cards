@@ -1,61 +1,149 @@
 import MapKit
 import SwiftUI
 
-/// Picks a place for a card: drag the map under the pin, or jump to a postcode
-/// or an address, then set how far around it counts as "there".
+/// Picks a place for a card: search for it, or drag the map under the pin,
+/// then set how far around it counts as "there". MapKit names the place until
+/// you type a name of your own (PLACE-10). Adds a new place, or changes one the
+/// card already has (PLACE-8).
 public struct LocationPickerView: View {
-    private let findPlace: (String) async -> PlaceMatch?
+    /// The place being changed, or nil when adding one.
+    let editing: CardLocation?
+    let search: PlaceSearch
     private let onAppear: () -> Void
-    private let onAdd: (CardLocation) -> Void
+    let onConfirm: (CardLocation) -> Void
 
-    @Environment(\.dismiss) private var dismiss
-    @Environment(\.accessibilityAnnouncer) private var announcer
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @State private var position: MapCameraPosition
+    @Environment(\.dismiss) var dismiss
+    @Environment(\.mapShowsPointsOfInterest) private var showsPointsOfInterest
+    @Environment(\.accessibilityAnnouncer) var announcer
+    @Environment(\.accessibilityReduceMotion) var reduceMotion
+    @State var position: MapCameraPosition
     /// The point under the pin. Kept as plain values so an unchanged camera
     /// never invalidates the view (MapKit reports camera changes generously).
-    @State private var center: MapPoint?
-    @State private var metresPerPoint: Double?
-    /// How far the camera is from the map, kept so moving the pin from an
-    /// accessibility action keeps the zoom.
-    @State private var cameraDistance: Double?
-    @State private var mapWidth: CGFloat = 0
-    @State private var radius = CardLocation.defaultRadius
-    @State private var name = ""
-    @State private var postcode = ""
-    @State private var isSearching = false
-    @State private var notFound = false
-    @FocusState private var focusedField: Field?
+    @State var center: MapPoint?
+    @State var metresPerPoint: Double?
+    @State var mapWidth: CGFloat = 0
+    @State var radius = CardLocation.defaultRadius
+    @State var name: PlaceNameDraft
+    @State var query: String
+    /// Whether the panel lists suggestions in place of the name and radius:
+    /// from typing in the search field until a place is chosen or it is cleared.
+    @State var showsSuggestions: Bool
+    @State var results = PlaceSearchStatus.searching
+    @State var isSuggesting = false
+    /// Finding the place a suggestion, or return, stands for.
+    @State var isFinding = false
+    /// Why the last place looked for was not found, shown below the search field.
+    @State var findProblem: PlaceSearchStatus?
+    @FocusState var focusedField: Field?
     @Namespace private var mapScope
 
-    private enum Field {
-        case postcode, name
+    enum Field {
+        case search, name
     }
 
-    private struct MapPoint: Equatable {
+    struct MapPoint: Equatable {
         let latitude: CLLocationDegrees
         let longitude: CLLocationDegrees
+
+        var coordinate: CLLocationCoordinate2D {
+            CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+        }
     }
 
-    private static let radiusRange: ClosedRange<CLLocationDistance> = 50...1_000
+    /// What the suggestion list is waiting for: new text, or the list showing again.
+    private struct SuggestionRequest: Equatable {
+        let text: String
+        let isShowing: Bool
+    }
 
+    /// What naming the pin waits for: the map coming to rest somewhere, or
+    /// zooming in close enough for the pin to mark a place. Not the name being
+    /// cleared, so MapKit never fills the field while you type in it.
+    private struct PinRest: Equatable {
+        let point: MapPoint?
+        let isStreetLevel: Bool
+    }
+
+    /// `query` starts the search field with text, and its suggestions showing.
     public init(
         initialPosition: MapCameraPosition = .userLocation(fallback: .automatic),
-        findPlace: @escaping (String) async -> PlaceMatch?,
+        search: PlaceSearch = .unavailable,
+        query: String = "",
         onAppear: @escaping () -> Void = {},
         onAdd: @escaping (CardLocation) -> Void
     ) {
-        _position = State(initialValue: initialPosition)
-        self.findPlace = findPlace
+        self.init(position: initialPosition, editing: nil, search: search, query: query, onAppear: onAppear, onConfirm: onAdd)
+    }
+
+    /// Opens on `location` with its name and radius filled in, titled "Edit
+    /// Location". Save hands back the changed place, with the same `id`.
+    public init(
+        editing location: CardLocation,
+        search: PlaceSearch = .unavailable,
+        onAppear: @escaping () -> Void = {},
+        onSave: @escaping (CardLocation) -> Void
+    ) {
+        // Wide enough to show the whole ring round the pin, and never closer than adding opens.
+        let span = max(800, location.radius * 4)
+        self.init(
+            position: .region(MKCoordinateRegion(center: location.coordinate, latitudinalMeters: span, longitudinalMeters: span)),
+            editing: location,
+            search: search,
+            query: "",
+            onAppear: onAppear,
+            onConfirm: onSave
+        )
+    }
+
+    /// Opens at `centre`, normally the user's last known location, or follows the
+    /// user's location when there is none yet.
+    public init(
+        centre: CLLocationCoordinate2D?,
+        search: PlaceSearch = .unavailable,
+        onAppear: @escaping () -> Void = {},
+        onAdd: @escaping (CardLocation) -> Void
+    ) {
+        self.init(
+            initialPosition: centre.map { centre in
+                .region(MKCoordinateRegion(center: centre, latitudinalMeters: 800, longitudinalMeters: 800))
+            } ?? .userLocation(fallback: .automatic),
+            search: search,
+            onAppear: onAppear,
+            onAdd: onAdd
+        )
+    }
+
+    private init(
+        position: MapCameraPosition,
+        editing: CardLocation?,
+        search: PlaceSearch,
+        query: String,
+        onAppear: @escaping () -> Void,
+        onConfirm: @escaping (CardLocation) -> Void
+    ) {
+        _position = State(initialValue: position)
+        _query = State(initialValue: query)
+        _showsSuggestions = State(initialValue: !query.trimmed.isEmpty)
+        if let editing {
+            _name = State(initialValue: PlaceNameDraft(editing: editing.name))
+            _radius = State(initialValue: editing.radius)
+            // The map reports its centre once it appears; until then it is the place's.
+            _center = State(initialValue: MapPoint(latitude: editing.latitude, longitude: editing.longitude))
+        } else {
+            _name = State(initialValue: PlaceNameDraft())
+        }
+        self.editing = editing
+        self.search = search
         self.onAppear = onAppear
-        self.onAdd = onAdd
+        self.onConfirm = onConfirm
     }
 
     public var body: some View {
         NavigationStack {
             ZStack {
                 map
-                pinAndRing
+                MapPinRing(diameter: metresPerPoint.map { 2 * radius / $0 })
+                    .voiceOverMapPin(name: name.savedName, radius: radius, onMove: nudge)
             }
             .safeAreaInset(edge: .bottom) {
                 // Scrolls when it does not fit, as at large text sizes with the
@@ -68,7 +156,9 @@ public struct LocationPickerView: View {
             }
             .mapScope(mapScope)
                 .navigationTitle(
-                    Text("Add Location", comment: "Title of the map sheet for adding a place where a card is used.")
+                    editing == nil
+                        ? Text("Add Location", comment: "Title of the map sheet for adding a place where a card is used.")
+                        : Text("Edit Location", comment: "Title of the map sheet for changing one of a card's places.")
                 )
                 .navigationBarTitleDisplayMode(.inline)
                 // Opaque, so the bar's buttons are read against the bar and not
@@ -77,25 +167,27 @@ public struct LocationPickerView: View {
                 .toolbarBackground(.visible, for: .navigationBar)
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) {
-                        Button {
-                            dismiss()
-                        } label: {
-                            Text("Cancel", comment: "Closes the Add Location sheet without adding a place.")
-                        }
-                        .keyboardShortcut(.cancelAction)
+                        Button { dismiss() } label: { Text("Cancel", comment: "Closes the Add Location sheet without adding a place.") }
+                            .keyboardShortcut(.cancelAction)
                     }
                     ToolbarItem(placement: .confirmationAction) {
-                        Button(action: add) {
-                            Text("Add", comment: "Toolbar button that adds the place under the map pin to the card. A verb.")
+                        Button(action: confirm) {
+                            editing == nil
+                                ? Text("Add", comment: "Toolbar button that adds the place under the map pin to the card. A verb.")
+                                : Text("Save", comment: "Toolbar button on the Edit Location map that saves the changed place. A verb.")
                         }
                         .disabled(center == nil)
                         // Command-Return, as Return searches from the search field.
                         .keyboardShortcut(.return, modifiers: .command)
-                        .accessibilityIdentifier("addLocationButton")
+                        .accessibilityIdentifier(editing == nil ? "addLocationButton" : "saveLocationButton")
                     }
                 }
         }
         .onAppear(perform: onAppear)
+        .task(id: SuggestionRequest(text: query, isShowing: showsSuggestions)) { await suggest() }
+        .task(id: PinRest(point: center, isStreetLevel: (mapWidthInMetres ?? .infinity) <= PlaceNameDraft.widestNamedMap)) {
+            await nameThePlaceUnderThePin()
+        }
     }
 
     /// The map never changes its own content while you drag: the radius ring
@@ -105,12 +197,12 @@ public struct LocationPickerView: View {
         Map(position: $position, scope: mapScope) {
             UserAnnotation()
         }
+        .mapStyle(.standard(pointsOfInterest: showsPointsOfInterest ? .all : .excludingAll))
         .mapControls {}
         .onMapCameraChange(frequency: .continuous) { context in
             let centre = context.region.center
             let point = MapPoint(latitude: centre.latitude, longitude: centre.longitude)
             if point != center { center = point }
-            if context.camera.distance != cameraDistance { cameraDistance = context.camera.distance }
             guard mapWidth > 0 else { return }
             let metres = context.rect.size.width * MKMetersPerMapPointAtLatitude(centre.latitude) / mapWidth
             if metres != metresPerPoint { metresPerPoint = metres }
@@ -121,167 +213,33 @@ public struct LocationPickerView: View {
         .accessibilityIdentifier("locationPickerMap")
     }
 
-    private var pinAndRing: some View {
-        ZStack {
-            // At least a 44 pt target for VoiceOver and Switch Control, as the
-            // pin alone is a narrow 14 pt; the element is the union of these.
-            Color.clear
-                .frame(width: 44, height: 44)
-            if let metresPerPoint {
-                let diameter = 2 * radius / metresPerPoint
-                Circle()
-                    .fill(Color.accent.opacity(0.16))
-                    .strokeBorder(Color.accent, lineWidth: 2)
-                    .frame(width: diameter, height: diameter)
-            }
-            Image(systemName: "mappin")
-                .font(.system(size: 34, weight: .semibold))
-                .foregroundStyle(Color.accent)
-                .shadow(color: .black.opacity(0.25), radius: 3, y: 2)
-                // Lift the pin so its point, not its middle, marks the centre.
-                .offset(y: -17)
-        }
-        // VoiceOver cannot see the map under the pin or drag it, so the pin says
-        // what will be added and moves by actions. Moving it changes only the
-        // camera, never the map's content (rule 7).
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(
-            Text("Map pin", comment: "VoiceOver label for the pin in the middle of the Add Location map, which marks the place to add.")
-        )
-        .accessibilityValue(CardLocationRow.spokenDescription(name: pinName, radius: radius))
-        .accessibilityActions {
-            ForEach(Compass.allCases, id: \.self) { direction in
-                Button {
-                    nudge(direction)
-                } label: {
-                    direction.actionName
-                }
-            }
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .allowsHitTesting(false)
-    }
-
-    /// The map flies to a new place, unless Reduce Motion is on, when it
-    /// cuts straight there: a long camera move is the kind of motion that
-    /// setting exists to stop.
-    private var mapAnimation: Animation? {
-        reduceMotion ? nil : .default
-    }
-
-    /// The name the place will be saved with.
-    private var pinName: String {
-        let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
-        return trimmed.isEmpty
-            ? String(localized: "Pinned location", comment: "Name saved for a place added on the map without typing a name.")
-            : trimmed
-    }
-
-    /// Moves the map, and so the place under the pin, one radius `direction`.
-    private func nudge(_ direction: Compass) {
-        guard let center else { return }
-        let metresPerDegree = 111_320.0
-        let latitudeStep = radius / metresPerDegree
-        let longitudeStep = radius / (metresPerDegree * max(cos(center.latitude * .pi / 180), 0.01))
-        var target = CLLocationCoordinate2D(latitude: center.latitude, longitude: center.longitude)
-        switch direction {
-        case .north:
-            target.latitude += latitudeStep
-        case .south:
-            target.latitude -= latitudeStep
-        case .east:
-            target.longitude += longitudeStep
-        case .west:
-            target.longitude -= longitudeStep
-        }
-        withAnimation(mapAnimation) {
-            position = .camera(MapCamera(centerCoordinate: target, distance: cameraDistance ?? 1_500))
-        }
-        announcer.announce(direction.announcement)
-    }
-
     private var controls: some View {
         VStack(spacing: 14) {
             HStack(spacing: 10) {
-                HStack(spacing: 10) {
-                    // Both fields wrap rather than cut their text off at large
-                    // text sizes; Return searches, or ends editing.
-                    TextField(
-                        "Postcode or address",
-                        text: $postcode.singleLine(onReturn: search),
-                        prompt: Text(verbatim: ""),
-                        axis: .vertical
-                    )
-                    .textInputAutocapitalization(.characters)
-                    .autocorrectionDisabled()
-                    .submitLabel(.search)
-                    .focused($focusedField, equals: .postcode)
-                    .accessibilityIdentifier("postcodeField")
-                    // The prompts are the fields' only visible labels, beside
-                    // their icons, so they wrap rather than being cut off, in
-                    // readable secondary text rather than the system
-                    // placeholder grey (1.7:1 on the field). Hidden from
-                    // VoiceOver there, they name the fields here instead.
-                    .accessibilityLabel(postcodePrompt)
-                    .wrappingPrompt(postcodePrompt, isShown: postcode.isEmpty, onTap: { focusedField = .postcode })
-                    if isSearching {
-                        ProgressView()
-                            .accessibilityLabel(
-                                Text("Searching", comment: "VoiceOver label for the spinner beside the map's search field while a search runs.")
-                            )
-                    } else if !postcode.isEmpty {
-                        Button(action: search) {
-                            Text("Find", comment: "Button beside the search field that moves the map to the postcode or address typed in it. A verb.")
-                                // The whole 44 pt square is the button, not just the word.
-                                .frame(minWidth: 44, minHeight: 44)
-                                .contentShape(.rect)
-                        }
-                        .font(.subheadline.weight(.semibold))
-                    }
-                }
-                .pickerField("magnifyingglass")
-
+                searchField
+                    .pickerField("magnifyingglass")
                 MapUserLocationButton(scope: mapScope)
             }
 
-            if notFound {
-                Text(Self.notFoundMessage(postcode))
-                    .font(.footnote)
-                    .foregroundStyle(Color.secondaryText)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-            }
-
-            TextField(
-                "Name, e.g. Westway",
-                text: $name.singleLine { focusedField = nil },
-                prompt: Text(verbatim: ""),
-                axis: .vertical
-            )
-            .submitLabel(.done)
-            .focused($focusedField, equals: .name)
-            // On the field, as on the search field: on the row it replaced
-            // the identifiers of everything in it, the prompt and icon too.
-            .accessibilityIdentifier("locationNameField")
-            .accessibilityLabel(namePrompt)
-            .wrappingPrompt(namePrompt, isShown: name.isEmpty, onTap: { focusedField = .name })
-            .pickerField("tag")
-
-            VStack(spacing: 6) {
-                HStack {
-                    Text("Radius", comment: "Label above the slider that sets how far around the pin counts as being at the place.")
-                    Spacer()
-                    Text(radius.metres, format: .radius)
-                        .monospacedDigit()
-                        .foregroundStyle(Color.secondaryText)
+            if showsSuggestions {
+                PlaceSearchResults(status: results, onChoose: choose)
+            } else {
+                if let findProblem {
+                    PlaceSearchResults(status: findProblem)
                 }
-                .font(.subheadline)
-                // The slider says both, so VoiceOver need not read them twice.
-                .accessibilityHidden(true)
-                Slider(value: $radius, in: Self.radiusRange, step: 25)
-                    .accessibilityLabel(
-                        Text("Radius", comment: "Label above the slider that sets how far around the pin counts as being at the place.")
-                    )
-                    .accessibilityValue(Text(radius.metres, format: .spokenRadius))
+
+                // Wraps rather than cutting a long name off at large text sizes.
+                TextField(text: nameText, prompt: Text(verbatim: ""), axis: .vertical) { placeNameLabel }
+                    .submitLabel(.done)
+                    .focused($focusedField, equals: .name)
+                    // The label and identifier go on the field: on the row they
+                    // replaced those of everything in it, the prompt and icon too.
+                    .accessibilityLabel(placeNameLabel)
+                    .accessibilityIdentifier("locationNameField")
+                    .wrappingPrompt(namePrompt, isShown: name.text.isEmpty) { focusedField = .name }
+                    .pickerField("tag")
+
+                RadiusSlider(radius: $radius)
             }
         }
         .padding(18)
@@ -296,104 +254,83 @@ public struct LocationPickerView: View {
         .padding(.bottom, 8)
     }
 
-    private func search() {
-        let query = postcode
-        guard !query.trimmingCharacters(in: .whitespaces).isEmpty else { return }
-        focusedField = nil
-        isSearching = true
-        notFound = false
-        Task {
-            let match = await findPlace(query)
-            isSearching = false
-            // Both results are spoken: the message and the map's move are
-            // otherwise silent.
-            guard let match else {
-                notFound = true
-                announcer.announce(String(localized: Self.notFoundMessage(query)))
-                return
-            }
-            radius = CardLocation.defaultRadius
-            if name.isEmpty { name = match.name }
-            withAnimation(mapAnimation) {
-                position = .region(
-                    MKCoordinateRegion(center: match.coordinate, latitudinalMeters: 1_200, longitudinalMeters: 1_200)
-                )
-            }
-            announcer.announce(
-                String(
-                    localized: "Map moved to \(match.name)",
-                    comment: "VoiceOver announcement after a search on the Add Location map finds a place. The argument is the place found."
-                )
-            )
-        }
-    }
-
-    private var postcodePrompt: Text {
-        Text("Postcode or address", comment: "Placeholder and VoiceOver label of the search field on the Add Location map.")
-    }
-
-    private var namePrompt: Text {
-        Text(
-            "Name, e.g. Westway",
-            comment: """
-                Placeholder and VoiceOver label for the new place's name. \
-                Westway is a London climbing centre: keep the name Westway and translate only “Name, e.g.”.
-                """
-        )
-    }
-
-    /// Shown under the search field, and spoken, when nothing is found.
-    private static func notFoundMessage(_ query: String) -> LocalizedStringResource {
-        LocalizedStringResource(
-            "No place found for \u{201C}\(query)\u{201D}",
-            comment: """
-                Under the search field on the Add Location map when nothing is found. \
-                The argument is the postcode or address that was typed; use your language's quotation marks.
-                """
-        )
-    }
-
-    private func add() {
-        guard let center else { return }
-        onAdd(
-            CardLocation(
-                // Saved with the card, so it is resolved to a String now.
-                name: pinName,
-                latitude: center.latitude,
-                longitude: center.longitude,
-                radius: radius
-            )
-        )
-        dismiss()
-    }
-}
-
-private extension View {
-    /// A text field row in the picker panel: leading icon, system fill, and
-    /// room to grow with Dynamic Type.
-    func pickerField(_ systemImage: String) -> some View {
-        modifier(PickerField(systemImage: systemImage))
-    }
-}
-
-private struct PickerField: ViewModifier {
-    let systemImage: String
-    /// The icon column grows with the symbol, which follows the text size, so
-    /// the two never overlap.
-    @ScaledMetric(relativeTo: .body) private var iconWidth = 20.0
-
-    func body(content: Content) -> some View {
+    private var searchField: some View {
         HStack(spacing: 10) {
-            Image(systemName: systemImage)
+            // Wraps rather than cutting the text off at large text sizes; Return
+            // finds the best match.
+            TextField(
+                text: Binding(get: { query }, set: edit).singleLine(onReturn: findBestMatch),
+                prompt: Text(verbatim: ""),
+                axis: .vertical
+            ) { searchPrompt }
+            .autocorrectionDisabled()
+            .submitLabel(.search)
+            .focused($focusedField, equals: .search)
+            .accessibilityLabel(searchPrompt)
+            .accessibilityHint(
+                Text("Finds shops, addresses, streets, towns and postcodes", comment: "VoiceOver hint of the location map's search field.")
+            )
+            .accessibilityIdentifier("placeSearchField")
+            // The prompts are the fields' only visible labels, so they wrap
+            // rather than being cut off, in readable secondary text rather
+            // than the system placeholder grey (1.7:1 on the field).
+            .wrappingPrompt(searchPrompt, isShown: query.isEmpty) { focusedField = .search }
+            if isFinding || (showsSuggestions && isSuggesting) {
+                ProgressView()
+                    // The clear button's size, so swapping the two never moves the field.
+                    .frame(minWidth: 44, minHeight: 44)
+                    .accessibilityLabel(
+                        Text("Searching", comment: "VoiceOver label for the spinner beside the map's search field while a search runs.")
+                    )
+            } else if !query.isEmpty {
+                Button(action: clearSearch) {
+                    Label(clearSearchTitle, systemImage: "xmark.circle.fill")
+                        // The whole 44 pt square is the button, not just the icon.
+                        .frame(minWidth: 44, minHeight: 44)
+                        .contentShape(.rect)
+                }
+                .labelStyle(.iconOnly)
                 .foregroundStyle(.secondary)
-                .frame(width: iconWidth)
-                .accessibilityHidden(true)
-            content
+                .accessibilityIdentifier("clearPlaceSearchButton")
+            }
         }
-        .padding(.horizontal, 14)
-        // Wrapped lines keep clear of the rounded edge; one line stays 44 pt.
-        .padding(.vertical, 10)
-        .frame(minHeight: 44)
-        .background(Color(UIColor.tertiarySystemFill), in: .rect(cornerRadius: 12))
+        .onChange(of: focusedField) { _, field in
+            // Back in the search field, show what it suggests again.
+            if field == .search, !query.trimmed.isEmpty { showsSuggestions = true }
+        }
+    }
+
+    /// How wide the map is in metres, once it has said.
+    var mapWidthInMetres: Double? {
+        metresPerPoint.map { $0 * mapWidth }
+    }
+
+    /// The map on screen, which searches lean towards. Before the map has
+    /// reported its size, the 800 metres it opens at round its centre.
+    var searchRegion: MKCoordinateRegion? {
+        guard let center else { return nil }
+        let width = mapWidthInMetres ?? 800
+        return MKCoordinateRegion(center: center.coordinate, latitudinalMeters: width, longitudinalMeters: width)
     }
 }
+
+private extension String {
+    var trimmed: String { trimmingCharacters(in: .whitespacesAndNewlines) }
+}
+
+#if DEBUG
+#Preview("Adding") {
+    LocationPickerView(initialPosition: .region(CardLocation.previewRegion), search: .sample, onAdd: { _ in })
+        .environment(\.accessibilityAnnouncer, .silent)
+}
+
+#Preview("Suggestions") {
+    LocationPickerView(initialPosition: .region(CardLocation.previewRegion), search: .sample, query: "Joe", onAdd: { _ in })
+        .environment(\.accessibilityAnnouncer, .silent)
+}
+
+#Preview("Offline") {
+    LocationPickerView(initialPosition: .region(CardLocation.previewRegion), search: .failing(.offline), query: "Local Roast", onAdd: { _ in })
+        .environment(\.accessibilityAnnouncer, .silent)
+}
+#endif

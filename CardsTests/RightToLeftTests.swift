@@ -28,7 +28,7 @@ struct RightToLeftTests {
         (BarcodeType.qrCode, "https://serby.net")
     ])
     func widgetBarcodesNeverMirror(_ type: BarcodeType, _ code: String) {
-        let card = CardWidgetState(name: "Tesco Clubcard", code: code, barcodeType: type)
+        let card = CardWidgetState(name: "Joe's Market", code: code, barcodeType: type)
         let size = type.isSquare ? CGSize(width: 420, height: 420) : CGSize(width: 900, height: 190)
         let barcode = CardWidgetBarcode(card: card, pixelSize: size, margin: 24)
             .frame(width: 300, height: type.isSquare ? 300 : 80)

@@ -10,7 +10,7 @@ public enum Announcements {
         if names.count == 1, let name = names.first {
             return String(
                 localized: "Deleted card \(name)",
-                comment: "VoiceOver announcement after one card is deleted from the list. The argument is the card's name, such as Tesco Clubcard."
+                comment: "VoiceOver announcement after one card is deleted from the list. The argument is the card's name, such as Joe's Market."
             )
         }
         return String(
@@ -25,7 +25,7 @@ public enum Announcements {
         if names.count == 1, let name = names.first {
             return String(
                 localized: "Deleted place \(name)",
-                comment: "VoiceOver announcement after one place is deleted from the card form. The argument is the place's name, such as Westway."
+                comment: "VoiceOver announcement after one place is deleted from the card form. The argument is the place's name, such as Boulder Barn."
             )
         }
         return String(

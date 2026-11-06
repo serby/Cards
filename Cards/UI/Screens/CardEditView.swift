@@ -1,19 +1,36 @@
-import MapKit
+import CoreLocation
 import SwiftUI
 
 /// The add/edit form. The scanner is a view slot so the camera stays in
 /// `CardsScanner` and stories can substitute a stand-in.
 public struct CardEditView<Scanner: View>: View {
-    @Binding private var draft: CardDraft
-    private let actions: CardEditActions
+    @Binding var draft: CardDraft
+    let actions: CardEditActions
     private let autofocusesName: Bool
     /// Where the location picker opens: the user's last known location, if any.
     private let mapCentre: CLLocationCoordinate2D?
+    /// Codes other cards already use, which this card cannot take.
+    let takenCodes: Set<String>
+    /// The Settings switch for every card's arrival notifications.
+    let arrivalNotificationsEnabled: Bool
     private let showsScanner: Bool
     private let scanner: () -> Scanner
+    /// Choose Photo and Choose File under the scanner (CARD-13). Nil offers
+    /// neither, as when editing a card.
+    private let barcodeImport: BarcodeImportActions?
 
     @FocusState private var focusedField: Field?
     @State private var showsLocationPicker = false
+    @State var showsIconPicker = false
+    /// The icon the grid's scroll view is at: the card's icon as the sheet opens.
+    @State var iconPickerPosition: String?
+    @State var confirmsDelete = false
+    /// Counts deletes, so the delete haptic plays (A11Y-5).
+    @State var deletes = 0
+    /// The place whose row was tapped, open in the picker to change it.
+    @State private var editingLocation: CardLocation?
+    /// The name takes focus once, not each time the form is seen again after switching tabs.
+    @State private var hasAutofocused = false
     @Environment(\.layoutDirection) private var layoutDirection
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.accessibilityVoiceOverEnabled) private var voiceOverEnabled
@@ -21,6 +38,24 @@ public struct CardEditView<Scanner: View>: View {
 
     private enum Field {
         case name, code
+    }
+
+    /// "Delete Joe's Market?", or "Delete this card?" while the name is blank.
+    var deleteTitle: Text {
+        let name = draft.trimmedName
+        if name.isEmpty {
+            return Text(
+                "Delete this card?",
+                comment: "Title of the dialog that asks before deleting a card from the card form, while the card has no name."
+            )
+        }
+        return Text(
+            "Delete \(name)?",
+            comment: """
+            Title of the dialog that asks before deleting a card from the card form. \
+            The argument is the card's name, such as Joe's Market.
+            """
+        )
     }
 
     /// Labels and fields side by side, or stacked at accessibility text sizes,
@@ -54,14 +89,20 @@ public struct CardEditView<Scanner: View>: View {
         actions: CardEditActions = CardEditActions(),
         autofocusesName: Bool = false,
         mapCentre: CLLocationCoordinate2D? = nil,
+        takenCodes: Set<String> = [],
+        arrivalNotificationsEnabled: Bool = true,
         showsScanner: Bool = true,
+        barcodeImport: BarcodeImportActions? = nil,
         @ViewBuilder scanner: @escaping () -> Scanner
     ) {
         _draft = draft
         self.actions = actions
         self.autofocusesName = autofocusesName
         self.mapCentre = mapCentre
+        self.takenCodes = takenCodes
+        self.arrivalNotificationsEnabled = arrivalNotificationsEnabled
         self.showsScanner = showsScanner
+        self.barcodeImport = barcodeImport
         self.scanner = scanner
     }
 
@@ -74,6 +115,14 @@ public struct CardEditView<Scanner: View>: View {
                     scanner()
                         .frame(maxWidth: .infinity, minHeight: 250)
                         .listRowInsets(EdgeInsets())
+                }
+            }
+
+            if let barcodeImport {
+                // Fills the code and type as the camera does.
+                BarcodeImportSection(actions: barcodeImport) { found in
+                    draft.code = found.code
+                    draft.barcodeType = found.type
                 }
             }
 
@@ -104,7 +153,7 @@ public struct CardEditView<Scanner: View>: View {
                         Text("Sets the name shown for this card in your list", comment: "VoiceOver hint for the card name field in the card form.")
                     )
                     .wrappingPrompt(
-                        Text("Enter name", comment: "Placeholder in the empty card name field, such as Tesco Clubcard."),
+                        Text("Enter name", comment: "Placeholder in the empty card name field, such as Joe's Market."),
                         isShown: draft.name.isEmpty,
                         alignment: nameAlignment,
                         onTap: { focusedField = .name }
@@ -143,6 +192,18 @@ public struct CardEditView<Scanner: View>: View {
                         onTap: { focusedField = .code }
                     )
                 }
+            } footer: {
+                if draft.codeIsTaken(by: takenCodes) {
+                    Label(
+                        LocalizedStringResource(
+                            "Another card already uses this code.",
+                            comment: "Message under the code field in the card form when the code typed is already another card's."
+                        ),
+                        systemImage: "exclamationmark.circle"
+                    )
+                    .foregroundStyle(Color.secondaryText)
+                    .accessibilityIdentifier("codeTakenMessage")
+                }
             }
 
             Section {
@@ -173,28 +234,53 @@ public struct CardEditView<Scanner: View>: View {
             }
 
             Section {
+                iconRow
+            }
+
+            Section {
                 ForEach(draft.locations) { location in
-                    CardLocationRow(location)
-                        // A way to remove a place without swiping.
-                        .contextMenu {
-                            Button(role: .destructive) {
-                                draft.locations.removeAll { $0.id == location.id }
-                                announcer.announce(Announcements.deletedPlaces([location.name]))
-                            } label: {
-                                Label(
-                                    LocalizedStringResource(
-                                        "Delete",
-                                        comment: "Menu item that deletes a card in the list, or a place in the card form. A verb."
-                                    ),
-                                    systemImage: "trash"
-                                )
-                            }
+                    Button {
+                        editingLocation = location
+                    } label: {
+                        CardLocationRow(location)
+                            .foregroundStyle(Color.primaryText)
+                    }
+                    .accessibilityHint(
+                        Text("Opens the map to change this place", comment: "VoiceOver hint for one of the card's places in the card form.")
+                    )
+                    .accessibilityIdentifier("locationRow_\(location.name)")
+                    // A way to remove a place without swiping.
+                    .contextMenu {
+                        Button(role: .destructive) {
+                            draft.locations.removeAll { $0.id == location.id }
+                            announcer.announce(Announcements.deletedPlaces([location.name]))
+                        } label: {
+                            Label(
+                                LocalizedStringResource(
+                                    "Delete",
+                                    comment: "Menu item that deletes a card in the list, or a place in the card form. A verb."
+                                ),
+                                systemImage: "trash"
+                            )
                         }
+                    }
                 }
                 .onDelete { offsets in
                     let names = offsets.map { draft.locations[$0].name }
                     draft.locations.remove(atOffsets: offsets)
                     announcer.announce(Announcements.deletedPlaces(names))
+                }
+
+                // Only a card with somewhere to arrive can notify you.
+                if !draft.locations.isEmpty {
+                    Toggle(isOn: $draft.notifiesOnArrival) {
+                        Text(
+                            "Notify When I Arrive",
+                            comment: "Switch in the card form, under the card's places, that sends a notification when you arrive at one of them."
+                        )
+                    }
+                    .tint(.accent)
+                    .disabled(!arrivalNotificationsEnabled)
                 }
 
                 Button {
@@ -214,20 +300,22 @@ public struct CardEditView<Scanner: View>: View {
                     .foregroundStyle(Color.secondaryText)
                     .accessibilityIdentifier("locationsSectionHeader")
             } footer: {
-                Text(
-                    "When you arrive at one of these places, the barcode appears on your Lock Screen.",
-                    comment: "Footer under the card's places in the card form, explaining the arrival notification."
-                )
-                .foregroundStyle(Color.secondaryText)
-                .accessibilityIdentifier("locationsFooter")
+                locationsFooter
+                    .foregroundStyle(Color.secondaryText)
+                    .accessibilityIdentifier("locationsFooter")
+            }
+
+            if actions.delete != nil {
+                Section {
+                    deleteButton
+                }
             }
         }
+        .sensoryFeedback(.impact(weight: .medium), trigger: deletes)
         .sheet(isPresented: $showsLocationPicker) {
             LocationPickerView(
-                initialPosition: mapCentre.map { centre in
-                    .region(MKCoordinateRegion(center: centre, latitudinalMeters: 800, longitudinalMeters: 800))
-                } ?? .userLocation(fallback: .automatic),
-                findPlace: actions.findPlace,
+                centre: mapCentre,
+                search: actions.placeSearch,
                 onAppear: actions.requestLocationAccess,
                 onAdd: { location in
                     draft.locations.append(location)
@@ -235,12 +323,27 @@ public struct CardEditView<Scanner: View>: View {
                 }
             )
         }
+        .sheet(item: $editingLocation) { location in
+            LocationPickerView(
+                editing: location,
+                search: actions.placeSearch,
+                onAppear: actions.requestLocationAccess,
+                onSave: { draft.update($0) }
+            )
+        }
+        .sheet(isPresented: $showsIconPicker) {
+            iconPicker
+        }
         .scrollDismissesKeyboard(.immediately)
         .navigationBarTitleDisplayMode(.inline)
+        // On the form for the UI tests, which scroll it; the controls inside keep
+        // their own identifiers.
+        .accessibilityIdentifier("editCardForm")
         .task {
             // With VoiceOver on, jumping to the field would cut across it reading
             // the new screen; VoiceOver users reach the field themselves.
-            guard autofocusesName, !voiceOverEnabled else { return }
+            guard autofocusesName, !hasAutofocused, !voiceOverEnabled else { return }
+            hasAutofocused = true
             try? await Task.sleep(for: .seconds(0.6))
             focusedField = .name
         }
@@ -249,64 +352,32 @@ public struct CardEditView<Scanner: View>: View {
                 Button(action: actions.save) {
                     Text("Save", comment: "Toolbar button that saves the card form. A verb.")
                 }
+                .disabled(!draft.canSave(takenCodes: takenCodes))
                 // Labelled by its visible text, so "Tap Save" works in Voice Control.
                 .keyboardShortcut("s")
                 .accessibilityIdentifier("saveCardButton")
-                .accessibilityHint(
-                    Text("Saves the card", comment: "VoiceOver hint for the Save button in the card form, for a new card or a changed one.")
-                )
+                .accessibilityHint(saveHint)
             }
         }
     }
 }
 
-private extension CardEditView {
-    /// The format menu. Its label is hidden, as the row draws it, but
-    /// VoiceOver still reads it.
-    var barcodeTypePicker: some View {
-        Picker(selection: $draft.barcodeType) {
-            ForEach(BarcodeType.allCases, id: \.self) { type in
-                Text(type.displayName).tag(type)
-                    .accessibilityIdentifier("barcodeType_\(type.rawValue.replacingOccurrences(of: " ", with: "_"))")
-            }
-        } label: {
-            barcodeTypeLabel
-        }
-        .pickerStyle(.menu)
-        .accessibilityIdentifier("barcodeTypePicker")
-        .accessibilityHint(
-            Text("Sets the type of barcode for this card", comment: "VoiceOver hint for the barcode format menu in the card form.")
-        )
+#if DEBUG
+#Preview("Edit") {
+    @Previewable @State var draft = CardDraft.sample
+    NavigationStack {
+        CardEditView(draft: $draft, actions: CardEditActions(delete: {}))
+            .navigationTitle(Text(verbatim: "Edit Card"))
     }
-
-    var barcodeTypeLabel: Text {
-        Text("Barcode Type", comment: "Label of the menu for choosing the card's barcode format, such as EAN-13 or QR Code.")
-    }
-
-    var nameLabel: Text {
-        Text("Name", comment: "Label beside the card's name field in the card form. A noun.")
-    }
-
-    var codeLabel: Text {
-        Text("Code", comment: "Label beside the field for the number or text that the barcode encodes. A noun.")
-    }
+    .environment(\.accessibilityAnnouncer, .silent)
 }
 
-public extension CardEditView where Scanner == EmptyView {
-    /// Form only — no scanner section.
-    init(
-        draft: Binding<CardDraft>,
-        actions: CardEditActions = CardEditActions(),
-        autofocusesName: Bool = false,
-        mapCentre: CLLocationCoordinate2D? = nil
-    ) {
-        self.init(
-            draft: draft,
-            actions: actions,
-            autofocusesName: autofocusesName,
-            mapCentre: mapCentre,
-            showsScanner: false,
-            scanner: { EmptyView() }
-        )
+#Preview("Add") {
+    @Previewable @State var draft = CardDraft.empty
+    NavigationStack {
+        CardEditView(draft: $draft, barcodeImport: BarcodeImportActions()) { ScannerPlaceholderView() }
+            .navigationTitle(Text(verbatim: "Add Card"))
     }
+    .environment(\.accessibilityAnnouncer, .silent)
 }
+#endif

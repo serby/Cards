@@ -29,28 +29,28 @@ struct SingleLineBindingTests {
     }
 
     @Test func typingGoesStraightThrough() {
-        let field = Field("Cost")
-        field.binding.wrappedValue = "Costa"
-        #expect(field.text == "Costa")
+        let field = Field("Local Roa")
+        field.binding.wrappedValue = "Local Roast"
+        #expect(field.text == "Local Roast")
         #expect(field.returns == 0)
     }
 
     /// Dropped in the same update, the value would be the one the field
     /// already had, SwiftUI would see no change, and the field drew blank.
     @Test func returnIsStoredThenDroppedAndEndsTheField() async {
-        let field = Field("Costa Coffee")
-        field.binding.wrappedValue = "Costa Coffee\n"
-        #expect(field.text == "Costa Coffee\n")
+        let field = Field("Local Roast Coffee")
+        field.binding.wrappedValue = "Local Roast Coffee\n"
+        #expect(field.text == "Local Roast Coffee\n")
         await field.settle()
-        #expect(field.text == "Costa Coffee")
+        #expect(field.text == "Local Roast Coffee")
         #expect(field.returns == 1)
     }
 
     @Test func pastedLineBreaksAreDropped() async {
         let field = Field("")
-        field.binding.wrappedValue = "Costa\nCoffee\r\nClub"
+        field.binding.wrappedValue = "Local\nRoast\r\nCoffee"
         await field.settle()
-        #expect(field.text == "CostaCoffeeClub")
+        #expect(field.text == "LocalRoastCoffee")
         #expect(field.returns == 1)
     }
 }

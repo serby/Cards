@@ -17,7 +17,7 @@ public struct ScreenBrightness: Sendable {
 
 public extension ScreenBrightness {
     /// Drives the real device screen.
-    static let system = ScreenBrightness(
+    static let live = ScreenBrightness(
         read: { UIScreen.current?.brightness ?? 0.5 },
         write: { UIScreen.current?.brightness = max(0, min(1, $0)) }
     )
@@ -39,48 +39,12 @@ public extension ScreenBrightness {
 }
 
 private struct ScreenBrightnessKey: EnvironmentKey {
-    static let defaultValue = ScreenBrightness.system
+    static let defaultValue = ScreenBrightness.live
 }
 
 public extension EnvironmentValues {
     var screenBrightness: ScreenBrightness {
         get { self[ScreenBrightnessKey.self] }
         set { self[ScreenBrightnessKey.self] = newValue }
-    }
-}
-
-/// Posts VoiceOver announcements, injected so stories do not emit them. An
-/// attributed message carries speech attributes, such as a code spelled out
-/// character by character.
-public struct AccessibilityAnnouncer: Sendable {
-    public var post: @MainActor @Sendable (AttributedString) -> Void
-
-    public init(post: @escaping @MainActor @Sendable (AttributedString) -> Void) {
-        self.post = post
-    }
-
-    public static let system = Self { message in
-        AccessibilityNotification.Announcement(message).post()
-    }
-
-    @MainActor
-    public func announce(_ message: String) {
-        post(AttributedString(message))
-    }
-
-    @MainActor
-    public func announce(_ message: AttributedString) {
-        post(message)
-    }
-}
-
-private struct AccessibilityAnnouncerKey: EnvironmentKey {
-    static let defaultValue = AccessibilityAnnouncer.system
-}
-
-public extension EnvironmentValues {
-    var accessibilityAnnouncer: AccessibilityAnnouncer {
-        get { self[AccessibilityAnnouncerKey.self] }
-        set { self[AccessibilityAnnouncerKey.self] = newValue }
     }
 }

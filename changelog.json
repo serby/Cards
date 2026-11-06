@@ -1,0 +1,203 @@
+{
+  "versions": [
+    {
+      "version": "1.4",
+      "date": null,
+      "changes": [
+        {
+          "type": "new",
+          "text": "Share a card as a link someone can add to their own Card Barcodes, or as a picture."
+        },
+        {
+          "type": "new",
+          "text": "Search your cards, and sort them by last viewed, your own order or the nearest place."
+        },
+        {
+          "type": "new",
+          "text": "Give each card an icon, from 76 in 16 groups, shown on its tile and on the card."
+        },
+        {
+          "type": "new",
+          "text": "Add a card from a photo, a screenshot or a PDF of its barcode, such as an e-ticket."
+        },
+        {
+          "type": "new",
+          "text": "A card with several places lists the five nearest and how far away each is. Tap one to open it in Maps."
+        },
+        {
+          "type": "new",
+          "text": "Show the card for where you are in full above your other cards, with a new switch in Settings."
+        },
+        {
+          "type": "new",
+          "text": "Find a place by searching for a shop, a street, a town or a postcode. Places are named from the map, and you can change the name.",
+          "en-US": "Find a place by searching for a store, a street, a town or a ZIP code. Places are named from the map, and you can change the name."
+        },
+        {
+          "type": "new",
+          "text": "Change a place you have added to a card."
+        },
+        {
+          "type": "new",
+          "text": "Import cards from a JSON file, as well as by pasting."
+        },
+        {
+          "type": "improved",
+          "text": "The camera focuses on a card held close. Tap to focus, or turn on the torch in low light.",
+          "en-US": "The camera focuses on a card held close. Tap to focus, or turn on the flashlight in low light."
+        },
+        {
+          "type": "improved",
+          "text": "Your cards are laid out in a grid, two across on iPhone and four on iPad. Press and hold a card to delete it, or delete it from its edit screen."
+        },
+        {
+          "type": "fixed",
+          "text": "Opening a card no longer plays a haptic, which it only did the first time."
+        }
+      ]
+    },
+    {
+      "version": "1.3",
+      "date": "2026-11-05",
+      "changes": [
+        {
+          "type": "new",
+          "text": "A Home Screen widget shows the barcode of the card for where you are, or one you choose."
+        },
+        {
+          "type": "new",
+          "text": "Give each card a colour from 23, or pick any colour you like.",
+          "en-US": "Give each card a color from 23, or pick any color you like."
+        },
+        {
+          "type": "new",
+          "text": "Add the places you use a card, from the map or by postcode, and see how far away they are.",
+          "en-US": "Add the places you use a card, from the map or by ZIP code, and see how far away they are."
+        },
+        {
+          "type": "new",
+          "text": "Arrive at one of a card's places and a notification reminds you, and opens the card when you tap it."
+        },
+        {
+          "type": "new",
+          "text": "Add where you are to a card straight from the card, with Add current location."
+        },
+        {
+          "type": "new",
+          "text": "Turn arrival notifications off for one card when you edit it, or for every card in Settings."
+        },
+        {
+          "type": "new",
+          "text": "Pinch to zoom when scanning a barcode."
+        },
+        {
+          "type": "new",
+          "text": "Copy a card's number with the button beside it."
+        },
+        {
+          "type": "new",
+          "text": "See what changed in each version in Settings > What's New."
+        },
+        {
+          "type": "improved",
+          "text": "Cards show their full colour in the list, with names you can read on any colour.",
+          "en-US": "Cards show their full color in the list, with names you can read on any color."
+        },
+        {
+          "type": "improved",
+          "text": "Card screens have a new design, with the name and number on white panels."
+        },
+        {
+          "type": "improved",
+          "text": "A new app icon shows a barcode card behind a QR code card."
+        },
+        {
+          "type": "improved",
+          "text": "VoiceOver spells out a card's number, and buttons in light mode use a deeper pink that is easier to read."
+        },
+        {
+          "type": "improved",
+          "text": "The Cards tab keeps your place when you switch to Settings and back."
+        },
+        {
+          "type": "fixed",
+          "text": "New cards go to the end of the list, not the top."
+        },
+        {
+          "type": "fixed",
+          "text": "A card needs a name and a code to save, and two cards cannot share a code."
+        },
+        {
+          "type": "fixed",
+          "text": "Importing skips cards you already have, and adds the rest to the end of the list in the order they were exported."
+        },
+        {
+          "type": "fixed",
+          "text": "The scanner says when the camera is off or missing, instead of showing a black box."
+        },
+        {
+          "type": "fixed",
+          "text": "Messages say \"1 card\", not \"1 cards\"."
+        }
+      ]
+    },
+    {
+      "version": "1.1",
+      "date": "2026-06-20",
+      "changes": [
+        {
+          "type": "new",
+          "text": "Use Card Barcodes on iPad, in portrait or landscape."
+        },
+        {
+          "type": "new",
+          "text": "Your cards sync between your iPhone and iPad through iCloud."
+        },
+        {
+          "type": "new",
+          "text": "Turn Brightness Boost on or off from the card screen."
+        },
+        {
+          "type": "improved",
+          "text": "Add a card with one button: the scanner sits at the top of the form and fills in the code and barcode type."
+        },
+        {
+          "type": "improved",
+          "text": "Delete All Cards is greyed out when there are no cards to delete.",
+          "en-US": "Delete All Cards is grayed out when there are no cards to delete."
+        }
+      ]
+    },
+    {
+      "version": "1.0",
+      "date": "2025-12-26",
+      "changes": [
+        {
+          "type": "new",
+          "text": "Scan a card's barcode with the camera, or type its number in."
+        },
+        {
+          "type": "new",
+          "text": "Keep cards with QR, EAN-13, EAN-8, UPC-E, Code 128, Code 39, Code 93, Aztec or PDF417 barcodes."
+        },
+        {
+          "type": "new",
+          "text": "Open a card and the screen brightens, so it scans first time at the till.",
+          "en-US": "Open a card and the screen brightens, so it scans first time at the checkout."
+        },
+        {
+          "type": "new",
+          "text": "Name your cards, drag them into any order and swipe to delete one."
+        },
+        {
+          "type": "new",
+          "text": "Export your cards as JSON and import them again."
+        },
+        {
+          "type": "new",
+          "text": "Card Barcodes works in light and dark mode."
+        }
+      ]
+    }
+  ]
+}

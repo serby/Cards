@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   Cards app icon: two loyalty cards, a barcode card behind a QR code card.
-  Master artwork for the light appearance. scripts/generate-app-icons.sh derives the
+  Master artwork for the light appearance. scripts/generate-app-icons.ts derives the
   dark and tinted variants by swapping the two colours below, then renders the PNGs.
     background  #FFFFFF  (also used for the codes and the gap around the front card)
     glyph       #0A0A0A

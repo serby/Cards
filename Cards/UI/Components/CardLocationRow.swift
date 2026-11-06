@@ -64,9 +64,17 @@ public struct CardLocationRow: View {
         Text(
             "\(name), \(radius.metres, format: .spokenRadius) radius",
             comment: """
-            VoiceOver label for a place: its name, then the size of the circle around it, as in “Westway, 200 metres radius”. \
+            VoiceOver label for a place: its name, then the size of the circle around it, as in “Boulder Barn, 200 metres radius”. \
             Read for a place in the card form and for the pin on the Add Location map.
             """
         )
     }
 }
+
+#if DEBUG
+#Preview {
+    List {
+        CardLocationRow(.sample)
+    }
+}
+#endif

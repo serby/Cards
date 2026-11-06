@@ -6,7 +6,7 @@
       "shouldTranslate" : false
     },
     "%@ · %@" : {
-      "comment" : "On a card's screen: the distance to the card's nearest location, then the place's name, as in “350 m · Westway”.",
+      "comment" : "On a card's screen: the distance to the card's nearest location, then the place's name, as in “350 m · Boulder Barn”.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -77,7 +77,7 @@
       }
     },
     "%@ from %@" : {
-      "comment" : "VoiceOver label: how far the user is from a card's nearest location, in full, as in “350 metres from Westway”.",
+      "comment" : "VoiceOver label: how far the user is from a card's nearest location, in full, as in “350 metres from Boulder Barn”.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -213,7 +213,7 @@
       }
     },
     "At %@" : {
-      "comment" : "On a card's screen when the user is inside one of the card's locations. The argument is the place's name, such as Westway.",
+      "comment" : "On a card's screen when the user is inside one of the card's locations. The argument is the place's name, such as Boulder Barn.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -341,6 +341,9 @@
           }
         }
       }
+    },
+    "Black" : {
+      "comment" : "Card colour name read by VoiceOver in the colour picker."
     },
     "Blue" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker.",
@@ -861,6 +864,12 @@
           }
         }
       }
+    },
+    "Coral" : {
+      "comment" : "Card colour name read by VoiceOver in the colour picker: a warm pinkish orange."
+    },
+    "Custom" : {
+      "comment" : "Card colour name read by VoiceOver in the colour picker: a colour the user chose themselves rather than one from the palette."
     },
     "Default" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker: the plain grey card that follows light and dark mode.",
@@ -1447,6 +1456,21 @@
         }
       }
     },
+    "Lavender" : {
+      "comment" : "Card colour name read by VoiceOver in the colour picker: a pale purple, the colour of the flower."
+    },
+    "Lime" : {
+      "comment" : "Card colour name read by VoiceOver in the colour picker: a light yellow-green, the colour of the fruit."
+    },
+    "Maroon" : {
+      "comment" : "Card colour name read by VoiceOver in the colour picker: a dark brownish red."
+    },
+    "Mint" : {
+      "comment" : "Card colour name read by VoiceOver in the colour picker: a soft pale green-blue."
+    },
+    "Navy" : {
+      "comment" : "Card colour name read by VoiceOver in the colour picker: a very dark blue."
+    },
     "Nearest card" : {
       "comment" : "In the Home Screen widget's settings: the choice that shows whichever card has the place nearest to you. The default.",
       "localizations" : {
@@ -1576,6 +1600,9 @@
           }
         }
       }
+    },
+    "Olive" : {
+      "comment" : "Card colour name read by VoiceOver in the colour picker: a dull dark green, the colour of green olives."
     },
     "Opens the card in Card Barcodes" : {
       "comment" : "VoiceOver hint for the card in the Home Screen widget. Card Barcodes is the app's name.",
@@ -2097,6 +2124,12 @@
         }
       }
     },
+    "Rose" : {
+      "comment" : "Card colour name read by VoiceOver in the colour picker: a light pink, the colour of a pink rose."
+    },
+    "Sand" : {
+      "comment" : "Card colour name read by VoiceOver in the colour picker: a pale yellowish beige, the colour of sand."
+    },
     "Shows the barcode of the card nearest to you, or one you choose." : {
       "comment" : "Description of the Home Screen widget in the widget gallery.",
       "localizations" : {
@@ -2161,6 +2194,9 @@
           }
         }
       }
+    },
+    "Sky" : {
+      "comment" : "Card colour name read by VoiceOver in the colour picker: a light blue, the colour of a clear sky."
     },
     "Teal" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker: a dark blue-green.",
@@ -2423,7 +2459,7 @@
       }
     },
     "You're at %@" : {
-      "comment" : "VoiceOver label when the user is inside one of a card's locations. The argument is the place's name, such as Westway.",
+      "comment" : "VoiceOver label when the user is inside one of a card's locations. The argument is the place's name, such as Boulder Barn.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {

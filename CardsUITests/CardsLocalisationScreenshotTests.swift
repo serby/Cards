@@ -40,12 +40,12 @@ final class CardsLocalisationScreenshotTests: XCTestCase {
         capturePages(app, "01-list")
     }
 
-    /// Costa is in the middle, so its menu offers Move Up and Move Down.
+    /// Local Roast Coffee is second, so its menu offers Move Up and Move Down.
     @MainActor
     func testCardMenu() {
         let app = launch()
-        let costa = app.buttons[SeededCard.costa]
-        XCTAssertTrue(app.openMenu(on: costa, showing: app.buttons["deleteCardMenuItem"]), "The card's menu did not open")
+        let localRoast = app.buttons[SeededCard.localRoast]
+        XCTAssertTrue(app.openMenu(on: localRoast, showing: app.buttons["deleteCardMenuItem"]), "The card's menu did not open")
         capture("02-card-menu")
     }
 
@@ -55,10 +55,11 @@ final class CardsLocalisationScreenshotTests: XCTestCase {
         capture("03-empty")
     }
 
+    /// Joe's Market has two places, so its screen lists the nearest.
     @MainActor
     func testCardDetail() {
         let app = launch()
-        app.openCard(SeededCard.costa)
+        app.openCard(SeededCard.joesMarket)
         capturePages(app, "04-detail")
     }
 
@@ -81,8 +82,19 @@ final class CardsLocalisationScreenshotTests: XCTestCase {
     @MainActor
     func testEditCard() {
         let app = launch()
-        app.openEditCard(SeededCard.costa)
+        app.openEditCard(SeededCard.localRoast)
         capturePages(app, "07-edit")
+    }
+
+    /// The grid of icons the form's Icon row opens.
+    @MainActor
+    func testIconPicker() {
+        let app = launch()
+        app.openEditCard(SeededCard.localRoast)
+        let iconRow = app.buttons["iconRow"]
+        XCTAssertTrue(app.reveal(iconRow), "Could not scroll to the Icon row")
+        iconRow.tap()
+        capturePages(app, "07-icon-picker")
     }
 
     /// The prompt shows the app's own reason for asking, from InfoPlist, but
@@ -115,6 +127,19 @@ final class CardsLocalisationScreenshotTests: XCTestCase {
         XCTAssertTrue(addLocation.waitForExistence(timeout: 5), "The form did not come back")
         XCTAssertTrue(app.reveal(addLocation), "Could not scroll to the new place")
         capture("10-add-with-location")
+    }
+
+    /// The place search, with the stand-in results UI tests get.
+    @MainActor
+    func testPlaceSearch() {
+        let app = launch()
+        app.openLocationPicker()
+        let search = app.textFields["placeSearchField"]
+        XCTAssertTrue(search.waitForExistence(timeout: 5), "The place search did not appear")
+        search.tap()
+        search.typeText("Local Roast")
+        XCTAssertTrue(app.buttons["placeSuggestion_Local Roast Notting Hill"].waitForExistence(timeout: 5), "No results")
+        capture("09-place-search")
     }
 
     @MainActor

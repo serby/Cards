@@ -4,10 +4,20 @@ import UIKit
 
 public struct SettingsScreen: View {
     @Environment(\.modelContext) private var modelContext
-    @Query private var cards: [CardItem]
+    @Query(sort: \CardItem.order) private var cards: [CardItem]
     @AppStorage("brightnessBoost") private var brightnessBoost = true
+    @AppStorage(ArrivalPlan.enabledKey) private var arrivalNotifications = true
+    @AppStorage(DeviceSettings.showsCardWhereYouAreKey) private var showsCardWhereYouAre = false
+    @Environment(ArrivalScheduler.self) private var arrivalScheduler
+    @Environment(\.clipboard) private var clipboard
+    @Environment(\.fileReader) private var fileReader
+    @Environment(\.openURL) private var openURL
+    @Environment(\.scenePhase) private var scenePhase
+    @State private var notificationsBlocked = false
+    /// Read once: it ships with the app and does not change while it runs.
+    private static let changelog = ChangelogStore.bundled()
 
-    @State private var message: LocalizedStringResource?
+    @State private var message: String?
     @State private var showExportSheet = false
 
     public init() {}
@@ -19,20 +29,39 @@ public struct SettingsScreen: View {
                 appBuild: Bundle.main.infoDictionary?["CFBundleVersion"] as? String,
                 authorName: "Paul Serby",
                 authorURL: URL(string: "https://github.com/serby"),
-                cardCount: cards.count
+                cardCount: cards.count,
+                notificationsBlocked: notificationsBlocked,
+                changelog: Self.changelog
             ),
             brightnessBoost: $brightnessBoost,
+            arrivalNotifications: $arrivalNotifications,
+            showsCardWhereYouAre: $showsCardWhereYouAre,
             message: $message,
             actions: SettingsActions(
                 exportCards: { showExportSheet = true },
-                importCards: importJSON,
+                importCards: { text in
+                    message = Self.importText(text, existing: cards, into: modelContext)
+                },
+                importFile: { choice in
+                    message = Self.importFile(choice, reader: fileReader, existing: cards, into: modelContext)
+                },
                 deleteAllCards: deleteAllCards,
-                readClipboard: { UIPasteboard.general.string }
+                readClipboard: { clipboard.read() },
+                openNotificationSettings: openNotificationSettings
             )
         )
         .sheet(isPresented: $showExportSheet) {
             ShareSheet(items: [exportJSON()])
         }
+        // Checked again on coming back, in case notifications were allowed in Settings.
+        .task(id: scenePhase) {
+            notificationsBlocked = await arrivalScheduler.isBlockedInSettings()
+        }
+    }
+
+    private func openNotificationSettings() {
+        guard let url = URL(string: UIApplication.openNotificationSettingsURLString) else { return }
+        openURL(url)
     }
 
     private func exportJSON() -> String {
@@ -48,43 +77,6 @@ public struct SettingsScreen: View {
         return json
     }
 
-    private func importJSON(_ text: String) {
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .iso8601
-
-        guard let data = text.data(using: .utf8),
-              let dtos = try? decoder.decode([CardItemDTO].self, from: data) else {
-            message = LocalizedStringResource(
-                "Invalid JSON format",
-                comment: "Import result alert when the pasted text is not a card export. JSON is a file format; keep the name."
-            )
-            return
-        }
-
-        for dto in dtos {
-            modelContext.insert(dto.toCardItem())
-        }
-
-        try? modelContext.save()
-        message = Self.importedMessage(count: dtos.count)
-    }
-
-    /// The import result after `count` cards were added, with a plural form
-    /// for each count. A valid export with no cards in it ("[]") says so,
-    /// rather than reporting that it imported 0 cards.
-    static func importedMessage(count: Int) -> LocalizedStringResource {
-        guard count > 0 else {
-            return LocalizedStringResource(
-                "No cards to import",
-                comment: "Import result alert when the pasted JSON is a valid card export with no cards in it, so nothing was added."
-            )
-        }
-        return LocalizedStringResource(
-            "Imported \(count) cards",
-            comment: "Import result alert after cards are added from pasted JSON. The argument is how many cards were added, always at least one."
-        )
-    }
-
     private func deleteAllCards() {
         for card in cards {
             modelContext.delete(card)
@@ -92,3 +84,61 @@ public struct SettingsScreen: View {
         try? modelContext.save()
     }
 }
+
+/// Importing an export, pasted or chosen as a file. Both end in `importJSON`,
+/// so a file imports exactly as its text would. Each says what happened in
+/// `locale`'s language: the app's own unless a test asks for another.
+extension SettingsScreen {
+    /// What the import alert says when there is nothing it can import.
+    static func invalidJSON(locale: Locale = .current) -> String {
+        var message = LocalizedStringResource(
+            "Invalid JSON format",
+            comment: "Import result alert when the pasted text is not a card export. JSON is a file format; keep the name."
+        )
+        message.locale = locale
+        return String(localized: message)
+    }
+
+    /// Imports pasted text, and says what happened.
+    static func importText(_ text: String, existing: [CardItem], into context: ModelContext, locale: Locale = .current) -> String {
+        importJSON(Data(text.utf8), existing: existing, into: context, locale: locale)
+    }
+
+    /// Imports the file chosen in the Files picker, read with `reader`, and says
+    /// what happened. A file that could not be chosen or read is invalid, as
+    /// text that is not an export is.
+    static func importFile(
+        _ choice: Result<URL, any Error>,
+        reader: FileReader,
+        existing: [CardItem],
+        into context: ModelContext,
+        locale: Locale = .current
+    ) -> String {
+        guard let data = try? reader.read(choice.get()) else { return invalidJSON(locale: locale) }
+        return importJSON(data, existing: existing, into: context, locale: locale)
+    }
+
+    /// Adds the cards in an export to `context`, after `existing`, and says what
+    /// happened (`CardImport`). Nothing is added unless it is a JSON array of cards.
+    static func importJSON(_ data: Data, existing: [CardItem], into context: ModelContext, locale: Locale = .current) -> String {
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        guard let dtos = try? decoder.decode([CardItemDTO].self, from: data) else {
+            return invalidJSON(locale: locale)
+        }
+        let result = CardImport.cards(from: dtos, existing: existing)
+        result.added.forEach(context.insert)
+        try? context.save()
+        return CardImport.summary(result, locale: locale)
+    }
+}
+
+#if DEBUG
+#Preview {
+    NavigationStack {
+        SettingsScreen()
+    }
+    .environment(ArrivalScheduler(notifications: .silent))
+    .modelContainer(for: CardItem.self, inMemory: true)
+}
+#endif

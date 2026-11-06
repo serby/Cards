@@ -16,8 +16,9 @@ extension BarcodeType {
 }
 
 extension CardColor {
+    /// The palette, then a custom colour, so knobs can show both kinds.
     static var allNames: [String] {
-        allCases.map(\.rawValue)
+        allCases.map(\.rawValue) + [CardColor.custom(0x3399CC).rawValue]
     }
 
     static func named(_ raw: String) -> Self {
@@ -33,7 +34,7 @@ enum ProximityKnobs {
     static let distance = "Distance (m)"
 
     /// With `optional`, a "Has location" toggle decides whether there is one at all.
-    static func knobs(optional: Bool = true, place: String = "Westway", distance: Double = 350) -> [StoryKnob] {
+    static func knobs(optional: Bool = true, place: String = "Boulder Barn", distance: Double = 350) -> [StoryKnob] {
         (optional ? [.toggle(hasLocation, true)] : []) + [
             .text(Self.place, place),
             .number(Self.distance, distance, in: 0...10_000, step: 50)

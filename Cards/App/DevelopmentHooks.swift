@@ -55,6 +55,27 @@ enum DevelopmentHooks {
         #endif
     }
 
+    /// Whether maps show Apple Maps' points of interest: always, except in the
+    /// App Store screenshots, where their real business names don't belong.
+    static var mapShowsPointsOfInterest: Bool {
+        #if DEBUG
+        !screenshotSeedRequested
+        #else
+        true
+        #endif
+    }
+
+    /// How the location picker finds and names places: MapKit, except in UI
+    /// tests, which search the made-up places in docs/LANGUAGE.md so every run
+    /// finds the same ones and no real business reaches a screenshot.
+    static var placeSearch: PlaceSearch {
+        #if DEBUG
+        isUITesting ? .sample : .live
+        #else
+        .live
+        #endif
+    }
+
     #if DEBUG
     private static var screenshotSeedRequested: Bool {
         CommandLine.arguments.contains("-screenshotSeed")
@@ -62,23 +83,24 @@ enum DevelopmentHooks {
     }
     #endif
 
-    /// Tabs that only exist while developing: the Storybook, kept out of UI
-    /// tests so they see the shipping UI. Never shown in release.
-    @TabContentBuilder<Never>
-    static var tabs: some TabContent<Never> {
+    /// Tabs that only exist while developing: Development, with the Storybook
+    /// and the other tools, kept out of UI tests so they see the shipping UI.
+    /// Never shown in release.
+    @TabContentBuilder<AppTab>
+    static var tabs: some TabContent<AppTab> {
         // A tab builder cannot be empty, so release keeps the tab and drops it here.
-        if showsStorybook {
-            Tab(storybookTitle, systemImage: "square.grid.2x2") {
-                storybook
+        if showsDevelopmentTab {
+            Tab(developmentTitle, systemImage: "hammer", value: AppTab.development) {
+                developmentTools
             }
         }
     }
 
     /// A plain `String`, not a literal key, so the development-only tab title
     /// stays out of the string catalogue and is never sent for translation.
-    private static let storybookTitle = "Storybook"
+    private static let developmentTitle = "Development"
 
-    private static var showsStorybook: Bool {
+    private static var showsDevelopmentTab: Bool {
         #if DEBUG
         !isUITesting
         #else
@@ -87,9 +109,9 @@ enum DevelopmentHooks {
     }
 
     @ViewBuilder
-    private static var storybook: some View {
+    private static var developmentTools: some View {
         #if DEBUG
-        StorybookView()
+        DevelopmentView()
         #endif
     }
 }

@@ -4,7 +4,7 @@ A barcode wallet for iOS. Store loyalty cards, scan their barcodes with the came
 
 - **Any barcode:** Code 128, Code 39, Code 93, EAN-8, EAN-13, UPC-E, QR, Aztec and PDF417, scanned with pinch to zoom or typed in.
 - **Colours:** each card takes a colour from a palette tested for readable text, shown on the card and as a tint in the list.
-- **Locations:** pin any number of places to a card on the map, or by postcode. The list and card show how far away the nearest is, and the barcode appears on the Lock Screen when you arrive.
+- **Locations:** pin any number of places to a card on the map, or by postcode. The list and card show how far away the nearest is, and a notification reminds you when you arrive.
 - **Sync and export:** cards sync through iCloud and export to JSON.
 
 Built with SwiftUI, SwiftData and CloudKit as a plain Xcode project, for iOS 18 and later.
@@ -18,7 +18,7 @@ make test              # unit and UI tests
 make sim               # build, boot a simulator, install and launch
 ```
 
-Needs Xcode 27.1, SwiftLint, and Node 24 for the release check.
+Needs Xcode 27.1, the version pinned in `.xcode-version` that CI also uses, SwiftLint, and Node 24 for the release check.
 
 ## Developing
 

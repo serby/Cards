@@ -2,9 +2,8 @@ import XCTest
 
 /// Xcode's accessibility audit on every screen: contrast, Dynamic Type,
 /// clipped text, hit regions, labels and traits. The base class runs in
-/// English at the default text size; `CardsArabicLargeTextAuditTests`
-/// runs every test again in Arabic, right to left, at the largest
-/// accessibility size. Elements are found by identifier, so both pass in
+/// English at the default text size; `CardsRightToLeftLargeTextAuditTests`
+/// runs every test again right to left at the largest accessibility size. Elements are found by identifier, so both pass in
 /// any language. A screen taller than the display is audited, scrolled to
 /// its end, a second time. The screens are reached through the shared
 /// helpers in `UITestNavigation.swift`.
@@ -21,13 +20,13 @@ class CardsAccessibilityAuditTests: XCTestCase {
     func testCardList() throws {
         let app = launch()
         try audit(app)
-        try audit(app, scrolledTo: app.buttons[SeededCard.ikea])
+        try audit(app, scrolledTo: app.buttons[SeededCard.nordicNest])
     }
 
     @MainActor
     func testCardDetail() throws {
         let app = launch()
-        app.openCard(SeededCard.costa)
+        app.openCard(SeededCard.localRoast)
         try audit(app)
         try audit(app, scrolledTo: app.staticTexts["cardTimestampText"])
     }
@@ -54,9 +53,9 @@ class CardsAccessibilityAuditTests: XCTestCase {
         let app = launch()
         // The helper puts the keyboard away, so this audits the form, not the
         // system keyboard.
-        app.openEditCard(SeededCard.costa)
+        app.openEditCard(SeededCard.localRoast)
         try audit(app)
-        // Costa has a place, so this reaches a place's row and the footer.
+        // Local Roast Coffee has a place, so this reaches a place's row and the footer.
         try audit(app, scrolledTo: app.buttons["addLocationRowButton"])
     }
 
@@ -204,7 +203,7 @@ class CardsAccessibilityAuditTests: XCTestCase {
         case .textClipped:
             // An empty field's prompt (`wrappingPrompt`), which the check says
             // may be clipped at larger sizes because it is one line tall at
-            // this one: German "Name, z. B. Westway" on the Add Location map.
+            // this one: German "Name, z. B. Boulder Barn" on the Add Location map.
             // It wraps in a stack that grows with it, and the AX5 captures
             // show it whole in every language.
             if element.identifier == "wrappingPrompt" { return true }
@@ -232,14 +231,14 @@ class CardsAccessibilityAuditTests: XCTestCase {
     }
 }
 
-/// Every test again in Arabic, right to left, at the largest accessibility
-/// text size. The Arabic translation lays the app out right to left by
-/// itself (`CardsArabicUITests.testLaysOutRightToLeft` checks it does).
-/// Dates and numbers follow the Saudi locale.
-final class CardsArabicLargeTextAuditTests: CardsAccessibilityAuditTests {
+/// Every test again right to left at the largest accessibility text size.
+/// No right-to-left language ships yet (Arabic is held back, l10n/context.md),
+/// so the direction is forced in English, as a right-to-left language sets
+/// it (`CardsRightToLeftUITests.testLaysOutRightToLeft` checks it does).
+final class CardsRightToLeftLargeTextAuditTests: CardsAccessibilityAuditTests {
     override static var variantArguments: [String] {
         [
-            "-AppleLanguages", "(ar)", "-AppleLocale", "ar_SA",
+            "-AppleTextDirection", "YES", "-NSForceRightToLeftWritingDirection", "YES",
             "-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL"
         ]
     }

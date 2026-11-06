@@ -1,4 +1,5 @@
 import SwiftUI
+import UserNotifications
 
 public extension ScreenBrightness {
     /// Keeps a value in memory without touching the device, so stories can show
@@ -25,4 +26,28 @@ public final class BrightnessBox {
 public extension AccessibilityAnnouncer {
     /// Swallows announcements, so stories and previews never speak.
     static let silent = Self { _ in }
+}
+
+public extension NotificationClient {
+    /// Schedules nothing and reports that permission was never asked, so
+    /// previews of the connectors never prompt or notify.
+    static let silent = Self(
+        add: { _ in },
+        addAfter: { _, _ in },
+        removeAllPending: {},
+        requestAuthorization: { false },
+        authorizationStatus: { .notDetermined }
+    )
+}
+
+public extension BarcodeImportActions {
+    /// Reads every photo and file as `reading`, after a moment so the story
+    /// shows "Reading the barcode…" first. Nothing is opened or sent to Vision.
+    static func always(_ reading: BarcodeReading) -> Self {
+        let simulated: () async -> BarcodeReading = {
+            try? await Task.sleep(for: .seconds(0.8))
+            return reading
+        }
+        return Self(readPhoto: { _ in await simulated() }, readFile: { _ in await simulated() })
+    }
 }

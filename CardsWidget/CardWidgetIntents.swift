@@ -79,12 +79,16 @@ struct CardEntity: AppEntity {
 }
 
 struct CardEntityQuery: EntityQuery {
+    /// Where the cards come from. AppIntents creates the query with `init()`,
+    /// which uses the live snapshot.
+    var snapshot = WidgetSnapshot.live
+
     func entities(for identifiers: [CardEntity.ID]) async throws -> [CardEntity] {
         try await suggestedEntities().filter { identifiers.contains($0.id) }
     }
 
     func suggestedEntities() async throws -> [CardEntity] {
-        [.nearest] + WidgetSnapshot.read().map(CardEntity.init)
+        [.nearest] + snapshot.read().map(CardEntity.init)
     }
 
     func defaultResult() async -> CardEntity? {

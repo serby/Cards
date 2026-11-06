@@ -19,21 +19,23 @@ struct SmartInvertTests {
     func cardFacesKeepTheirColours(_ color: CardColor) {
         let card = CardDetail(
             id: "1",
-            name: "Tesco Clubcard",
+            name: "Joe's Market",
             code: "5012345678900",
             barcodeType: .ean13,
             timestamp: .now,
             color: color
         )
-        let detail = CardDetailView(card: card, brightnessBoost: .constant(false))
-        #expect(ViewTree.count(of: KeepsColoursWhenInverted.self, in: detail.body) == 1)
+        // The card's screen and the shared picture both draw the card through
+        // CardFaceView, which keeps its colours.
+        let face = CardFaceView(card: card)
+        #expect(ViewTree.count(of: KeepsColoursWhenInverted.self, in: face.body) == 1)
     }
 
     /// The Home Screen widget's barcode, in both of its layouts. The widget
     /// keeps its card colour too, in `CardWidget`'s container background.
     @Test(arguments: [("5012345678900", BarcodeType.ean13), ("https://serby.net", .qrCode), ("nope", .ean13)])
     func widgetBarcodesKeepTheirColours(_ code: String, _ type: BarcodeType) {
-        let widget = CardWidgetView(card: CardWidgetState(name: "Tesco Clubcard", code: code, barcodeType: type, color: .blue))
+        let widget = CardWidgetView(card: CardWidgetState(name: "Joe's Market", code: code, barcodeType: type, color: .blue))
         #expect(ViewTree.count(of: KeepsColoursWhenInverted.self, in: widget.body) == 1)
     }
 

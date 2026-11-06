@@ -1,0 +1,50 @@
+[
+  {
+    "file": "01_Cards",
+    "screen": "01_CardList",
+    "color": "blue",
+    "layout": "screen",
+    "title": "All your loyalty cards",
+    "subtitle": "As many as you like, with no ads"
+  },
+  {
+    "file": "02_Scan",
+    "screen": "02_CardDetail",
+    "color": "graphite",
+    "layout": "screen",
+    "title": "Ready at the checkout",
+    "subtitle": "Open a card and the screen brightens"
+  },
+  {
+    "file": "03_Widget",
+    "screen": "05_Widget",
+    "color": "teal",
+    "layout": "band",
+    "title": "The card for where you are",
+    "subtitle": "On your Home Screen and when you arrive"
+  },
+  {
+    "file": "04_Places",
+    "screen": "04_LocationPicker",
+    "color": "red",
+    "layout": "screen",
+    "title": "A reminder when you arrive",
+    "subtitle": "Add the places you use each card"
+  },
+  {
+    "file": "05_Share",
+    "screen": "06_ShareCard",
+    "color": "green",
+    "layout": "screen",
+    "title": "Share a card",
+    "subtitle": "As a link or a picture"
+  },
+  {
+    "file": "06_Colours",
+    "screen": "03_EditCard",
+    "color": "purple",
+    "layout": "screen",
+    "title": "Any color you like",
+    "subtitle": "And an icon for every card"
+  }
+]

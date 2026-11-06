@@ -3,84 +3,85 @@ import Foundation
 import SwiftUI
 import Testing
 
-/// Guards the promise that the app's text can always be read, whatever colour
-/// the user picks. Thresholds are WCAG 2 AA for normal-size text. The tests
-/// that take a `ColorScheme` resolve the colours the views actually draw, as
-/// SwiftUI does, so system colours are covered as well as the palette.
+/// Guards the promise that a card stays readable whatever colour it is, palette
+/// or custom, and that the app's own text can always be read. Thresholds are
+/// WCAG 2 AA for normal-size text and never go down. The tests that take a
+/// `ColorScheme` resolve the colours the views actually draw, as SwiftUI does,
+/// so system colours are covered as well as the palette.
 struct CardColorTests {
-    private static let colours = CardColor.allCases.filter { $0 != .standard }
+    private static let palette = CardColor.allCases.filter { $0 != .standard }
     private static let minimumContrast = 4.5
     private static let schemes: [ColorScheme] = [.light, .dark]
 
+    /// A spread of custom colours: every channel at 0x00, 0x33 … 0xFF.
+    private static let customColours: [CardColor] = {
+        let steps: [UInt32] = [0x00, 0x33, 0x66, 0x99, 0xCC, 0xFF]
+        return steps.flatMap { red in
+            steps.flatMap { green in steps.map { blue in .custom(red << 16 | green << 8 | blue) } }
+        }
+    }()
+
     @Test func standardFollowsTheSystemAppearance() {
-        #expect(CardColor.standard.swatch == nil)
-        #expect(CardColor.standard.rowFill == .secondaryBackground)
+        #expect(CardColor.standard.background == nil)
+        #expect(CardColor.standard.gradientStops == nil)
     }
 
-    @Test(arguments: colours)
-    func primaryTextIsReadable(_ color: CardColor) throws {
-        let swatch = try #require(color.swatch)
-        #expect(Contrast.ratio(swatch.ink.rgb, swatch.background) >= Self.minimumContrast)
+    /// Card text sits on white panels in dark ink, whatever the card colour.
+    @Test func panelTextIsReadable() {
+        #expect(Contrast.ratio(CardInk.dark.rgb, 0xFFFFFF) >= Self.minimumContrast)
+        let secondary = Contrast.blend(CardInk.dark.rgb, over: 0xFFFFFF, opacity: CardPanel.secondaryInkOpacity)
+        #expect(Contrast.ratio(secondary, 0xFFFFFF) >= Self.minimumContrast)
     }
 
-    @Test(arguments: colours)
-    func secondaryTextIsReadable(_ color: CardColor) throws {
-        let swatch = try #require(color.swatch)
-        let text = Contrast.blend(swatch.ink.rgb, over: swatch.background, opacity: CardSwatch.secondaryInkOpacity)
-        #expect(Contrast.ratio(text, swatch.background) >= Self.minimumContrast)
+    /// The picker's tick is drawn straight on the swatch in its best ink.
+    @Test(arguments: palette)
+    func paletteInkIsReadable(_ color: CardColor) throws {
+        let background = try #require(color.background)
+        #expect(Contrast.ratio(CardInk.best(on: background).rgb, background) >= Self.minimumContrast)
     }
 
-    /// The card face as the detail screen draws it, `.standard` included: the
-    /// name and code in the primary ink, the distance and date in the
-    /// secondary ink.
-    @Test(arguments: CardColor.allCases)
-    func cardFaceTextIsReadable(_ color: CardColor) {
-        for scheme in Self.schemes {
-            let face = Resolved.rgb(color.cardFill, over: Resolved.rgb(.primaryBackground, in: scheme), in: scheme)
-            let primary = Resolved.rgb(color.primaryInk, over: face, in: scheme)
-            let secondary = Resolved.rgb(color.secondaryInk, over: face, in: scheme)
-            #expect(Contrast.ratio(primary, face) >= Self.minimumContrast, "primary ink, \(scheme)")
-            #expect(Contrast.ratio(secondary, face) >= Self.minimumContrast, "secondary ink, \(scheme)")
-        }
+    @Test func bestInkIsTheOneThatStandsOut() {
+        #expect(CardInk.best(on: 0xFFFFFF) == .dark)
+        #expect(CardInk.best(on: 0xFFFF00) == .dark)
+        #expect(CardInk.best(on: 0x000000) == .light)
+        #expect(CardInk.best(on: 0x1458B0) == .light)
     }
 
-    /// The Home Screen widget draws a card's name in the primary ink, and its
-    /// distance and code in the secondary ink, on its own background: the
-    /// card colour, or the system background for `.standard`.
-    @Test(arguments: CardColor.allCases)
-    func widgetTextIsReadable(_ color: CardColor) {
-        for scheme in Self.schemes {
-            let fill = Resolved.rgb(color.widgetFill, over: Resolved.rgb(.primaryBackground, in: scheme), in: scheme)
-            let primary = Resolved.rgb(color.primaryInk, over: fill, in: scheme)
-            let secondary = Resolved.rgb(color.secondaryInk, over: fill, in: scheme)
-            #expect(Contrast.ratio(primary, fill) >= Self.minimumContrast, "primary ink, \(scheme)")
-            #expect(Contrast.ratio(secondary, fill) >= Self.minimumContrast, "secondary ink, \(scheme)")
-        }
+    /// A list row puts the card name straight on the colour's gradient, so its
+    /// ink must meet AA at both ends, for any colour at all. Mid greys are where
+    /// neither ink is enough until the colour is moved.
+    @Test(arguments: palette + customColours + [0x767676, 0x777777, 0x808080, 0x8A8A8A, 0x6E8B3D].map(CardColor.custom))
+    func textOnTheColourIsReadable(_ color: CardColor) throws {
+        let background = try #require(color.background)
+        let stops = try #require(color.gradientStops)
+        let ink = CardInk.best(on: background).rgb
+        #expect(Contrast.ratio(ink, stops.top) >= Self.minimumContrast)
+        #expect(Contrast.ratio(ink, stops.bottom) >= Self.minimumContrast)
     }
 
-    /// The list row draws its name and distance over a faint wash of the
-    /// colour on the system background, in both appearances.
-    @Test(arguments: CardColor.allCases)
-    func listRowTextIsReadable(_ color: CardColor) {
-        for scheme in Self.schemes {
-            let row = Resolved.rgb(color.rowFill, over: Resolved.rgb(.primaryBackground, in: scheme), in: scheme)
-            let text = Resolved.rgb(color.rowInk, over: row, in: scheme)
-            #expect(Contrast.ratio(text, row) >= Self.minimumContrast, "\(scheme)")
-        }
+    /// Only colours that need it are moved: the palette shows exactly as designed.
+    @Test(arguments: palette)
+    func paletteColoursAreNotMoved(_ color: CardColor) {
+        #expect(color.readableBackground == color.background)
     }
 
-    /// Supporting text (the version, the Brightness Boost description, section
-    /// headings, a location's radius, the location picker's messages) on every
-    /// surface it is drawn on.
+    @Test func midGreyIsMovedOnlyAsFarAsItTakes() throws {
+        let grey = CardColor.custom(0x808080)
+        let moved = try #require(grey.readableBackground)
+        #expect(moved != 0x808080)
+        let ink = CardInk.best(on: 0x808080).rgb
+        #expect(Contrast.ratio(ink, moved) >= Self.minimumContrast)
+        #expect(Contrast.ratio(ink, moved) < Self.minimumContrast + 0.5)
+    }
+
+    /// Supporting text (the version, section headings, a location's radius, the
+    /// location picker's messages) on every surface it is drawn on.
     @Test func secondaryTextIsReadableOnEverySurface() {
         let surfaces: [(name: String, color: Color)] = [
             ("system background", .primaryBackground),
             ("secondary background", .secondaryBackground),
             ("grouped background", Color(UIColor.systemGroupedBackground)),
             ("grouped cell", Color(UIColor.secondarySystemGroupedBackground)),
-            ("standard card face", CardColor.standard.cardFill),
-            // The widget with no cards, and a `.standard` card's widget.
-            ("widget", CardColor.standard.widgetFill),
             // The location picker's fields, whose prompts are secondary text.
             ("picker field", Color(UIColor.tertiarySystemFill))
         ]
@@ -90,16 +91,6 @@ struct CardColorTests {
                 let text = Resolved.rgb(.secondaryText, over: background, in: scheme)
                 #expect(Contrast.ratio(text, background) >= Self.minimumContrast, "\(surface.name), \(scheme)")
             }
-        }
-    }
-
-    /// The barcode plate stays white in dark mode, so the text drawn on it when
-    /// a code cannot be drawn must not follow the appearance.
-    @Test @MainActor func textOnTheBarcodePlateIsReadable() {
-        for scheme in Self.schemes {
-            let plate = Resolved.rgb(BarcodeView.plate, in: scheme)
-            let text = Resolved.rgb(BarcodeView.plateInk, over: plate, in: scheme)
-            #expect(Contrast.ratio(text, plate) >= Self.minimumContrast, "\(scheme)")
         }
     }
 
@@ -161,15 +152,42 @@ struct CardColorTests {
     }
 
     @Test func storedValuesRoundTrip() {
-        for color in CardColor.allCases {
+        for color in CardColor.allCases + [.custom(0x123ABC), .custom(0x000000), .custom(0xFFFFFF)] {
             #expect(CardColor.stored(color.rawValue) == color)
         }
     }
 
+    /// Cards saved before the palette grew must keep their colour.
+    @Test func earlierPaletteNamesStillMatch() {
+        let earlier = ["standard", "red", "orange", "yellow", "green", "teal", "blue", "indigo", "purple", "pink", "brown", "graphite"]
+        for name in earlier {
+            #expect(CardColor.stored(name).rawValue == name)
+        }
+    }
+
+    @Test func customColoursAreStoredAsHex() {
+        #expect(CardColor.custom(0x3399CC).rawValue == "#3399CC")
+        #expect(CardColor.stored("#3399cc") == .custom(0x3399CC))
+        #expect(CardColor.custom(0x3399CC).background == 0x3399CC)
+    }
+
     @Test func unknownStoredValueFallsBackToStandard() {
-        #expect(CardColor.stored("chartreuse") == .standard)
-        #expect(CardColor.stored("") == .standard)
+        for value in ["chartreuse", "", "#12345", "#1234567", "3399CC", "#33 9CC", "#+12345", "#GGGGGG"] {
+            #expect(CardColor.stored(value) == .standard, "\(value)")
+        }
         #expect(CardColor.stored(nil) == .standard)
+    }
+
+    @Test func colourEncodesAsItsStoredString() throws {
+        let data = try JSONEncoder().encode([CardColor.blue, .custom(0x3399CC)])
+        #expect(String(data: data, encoding: .utf8) == ##"["blue","#3399CC"]"##)
+        #expect(try JSONDecoder().decode([CardColor].self, from: data) == [.blue, .custom(0x3399CC)])
+        #expect(try JSONDecoder().decode([CardColor].self, from: Data(#"["chartreuse"]"#.utf8)) == [.standard])
+    }
+
+    @Test func pickedColourBecomesCustom() {
+        #expect(CardColor.custom(from: Color(.sRGB, red: 1, green: 0, blue: 0)) == .custom(0xFF0000))
+        #expect(CardColor.custom(from: Color(.sRGB, red: 0.2, green: 0.6, blue: 0.8)) == .custom(0x3399CC))
     }
 
     @Test func displayNamesAreUnique() {
@@ -177,10 +195,24 @@ struct CardColorTests {
         #expect(Set(names).count == names.count)
     }
 
-    @Test(arguments: CardColor.allCases)
+    @Test(arguments: CardColor.allCases + [.custom(0x3399CC)])
     func everyColourHasADisplayName(_ color: CardColor) {
         #expect(!color.displayName.key.isEmpty)
         #expect(!String(localized: color.displayName).isEmpty)
+    }
+
+    /// The picker's grid is six wide, and the custom well takes the last cell.
+    @Test func paletteFillsWholeRowsWithTheCustomWell() {
+        #expect((CardColor.allCases.count + 1) % 6 == 0)
+    }
+}
+
+/// Corners nest: a shape inset into another takes its radius minus the inset.
+struct CardGeometryTests {
+    @Test func radiiNest() {
+        #expect(CardGeometry.panelCornerRadius == CardGeometry.cornerRadius - CardGeometry.inset)
+        #expect(CardGeometry.barcodeCornerRadius == CardGeometry.panelCornerRadius - CardGeometry.barcodeFrame)
+        #expect(CardGeometry.barcodeCornerRadius > 0)
     }
 }
 

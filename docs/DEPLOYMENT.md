@@ -1,129 +1,65 @@
 # Deployment Pipeline
 
-This project uses GitHub Actions driving plain `xcodebuild` and the shell
-scripts in `scripts/` for automated deployment.
+Cards ships with GitHub Actions driving plain `xcodebuild` and the scripts in `scripts/`. A push to `main` only runs CI. Nothing is uploaded to App Store Connect until a version is tagged. `docs/DEVELOPMENT.md` section 8 and the release skill (`.claude/skills/release/SKILL.md`) give the release steps in order.
 
-## Infrastructure as Code
+## Workflows
 
-### GitHub Actions Workflows
+| Workflow | Runs on | What it does |
+|----------|---------|--------------|
+| `ci.yml` (CI) | Every push to `main` and every pull request, on `xcode-27` | Three jobs in parallel: the build and the unit tests; the release check; and, on Linux, the check that every App Store image is present plus the metadata and changelog checks. It captures no screenshots and runs no UI tests or SwiftLint: those run locally before a commit. A newer push cancels an older run, and pushes that only change docs, the spec or the website skip CI |
+| `release.yml` (Release to App Store) | `v*` tags, on `xcode-27` | Installs signing, then runs `scripts/release-version.ts`: it checks the tag, stamps a build number, archives and signs (`scripts/build-ipa.ts`), uploads (`scripts/upload-build.ts`), attaches the build to the version, sets What's New from the tag message and submits for review (`scripts/submit-for-review.ts`). Run by hand, it uploads without submitting |
+| `app-store-listing.yml` (App Store listing) | By hand | Gives the editable version its number with **prepare version**, then uploads the text in `metadata/` and the images in `screenshots/store/`. It does not upload or attach builds |
+| `website.yml` (Deploy Website) | Pushes to `main` that change `Website/src/`, or by hand | Deploys `Website/src/` to Cloudflare Pages (`scripts/deploy-website.ts`) |
 
-#### CI Workflow (`.github/workflows/ci.yml`)
-- Triggers on push to `main` and pull requests
-- Runs on macOS 15
-- Executes build and test via Makefile
-- Uploads test results as artifacts
+Both macOS workflows run on GitHub's `xcode-27` image and select the Xcode named in `.xcode-version` with `scripts/select-xcode.ts`, the same one local builds use. They stop if the image lacks it. CI's unit tests (`scripts/run-unit-tests.ts`) use the newest iOS runtime that Xcode's SDK supports (`scripts/lib/simulator.ts`).
 
-#### Deploy Workflow (`.github/workflows/deploy.yml`)
-- Triggers on version tags (`v*`) or manual dispatch
-- Builds and deploys to TestFlight
-- Manages certificates and provisioning profiles
-- Runs `scripts/deploy-testflight.sh`
+There is no TestFlight workflow. To put a build on TestFlight, run `make upload-build` locally with an App Store Connect API key in the environment.
 
-### Build and Deploy Scripts
+## Scripts
 
-`scripts/build-ipa.sh` archives the app in Release and exports a signed `.ipa`,
-and the deploy scripts upload it with `xcrun altool`:
-- `scripts/deploy-testflight.sh` - archive, export, upload to TestFlight
-- `scripts/deploy-appstore.sh` - archive, export, upload to App Store Connect
-- `scripts/asc-submit.sh` - create the version and submit for review
+Every script is TypeScript, run with `node scripts/<name>.ts` (`docs/DEVELOPMENT.md`, rule 14). Those the pipelines use:
 
-Signing defaults to manual against the "Card Codes Wallet App Store Profile"
-that CI installs into `~/Library/MobileDevice/Provisioning Profiles`. Override
-with `PROVISIONING_PROFILE_SPECIFIER`, `CODE_SIGN_IDENTITY` or `EXPORT_METHOD`.
+- `scripts/select-xcode.ts`: prints the Developer directory of the Xcode in `.xcode-version`, for `DEVELOPER_DIR`.
+- `scripts/run-unit-tests.ts`: boots a simulator while the app and tests build, then runs `CardsTests` on it.
+- `scripts/check-release-build.ts`, `scripts/check-store-images.ts`, `scripts/check-metadata.ts` and `scripts/check-changelog.ts`: CI's checks.
+- `scripts/install-signing-certificate.ts` and `scripts/install-signing-profiles.ts` (run by `.github/actions/install-signing`): import the distribution certificate into a temporary keychain, and install an App Store profile for each bundle ID, creating it when it is missing or invalid. `install-signing-certificate.ts --remove` deletes the keychain afterwards.
+- `scripts/release-version.ts`: the release, from tag to submission, using `scripts/build-ipa.ts` (archive and export a signed `.ipa`, taking `BUILD_NUMBER`, `CARDS_APP_PROFILE` and `CARDS_WIDGET_PROFILE`), `scripts/upload-build.ts` (upload it with `xcrun altool`) and `scripts/submit-for-review.ts` (wait for processing, attach, set What's New and submit; `--dry-run` only reads).
+- `scripts/prepare-app-store-version.ts`, `scripts/upload-metadata.ts` and `scripts/upload-screenshots.ts`: the listing workflow's steps, which also run locally.
+- `scripts/deploy-website.ts`: the website deploy.
 
-#### Appfile
-Configures app identifiers and team IDs via environment variables.
+## Secrets
 
-## Required Secrets
+Set these in the repository's Settings > Secrets and variables > Actions:
 
-Configure these in GitHub repository settings → Secrets and variables → Actions:
+- `ASC_KEY_ID`, `ASC_ISSUER_ID` and `ASC_KEY_CONTENT`: the App Store Connect API key, used by the release and listing workflows.
+- `BUILD_CERTIFICATE_BASE64` and `P12_PASSWORD`: the Apple Distribution certificate as a base64 `.p12`, and its password.
+- `KEYCHAIN_PASSWORD`: a password for the temporary keychain the release job creates.
+- `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN`: for the website.
 
-### Apple Developer Account
-- `APPLE_ID` - Apple Developer email
-- `ITC_TEAM_ID` - App Store Connect Team ID
-- `TEAM_ID` - Developer Portal Team ID
-- `APP_STORE_CONNECT_API_KEY` - App-specific password
+CI keeps no provisioning profiles. `docs/CICD_SETUP.md` covers creating the certificate and the API key.
 
-### Code Signing
-- `BUILD_CERTIFICATE_BASE64` - Base64 encoded .p12 certificate
-- `P12_PASSWORD` - Certificate password
-- `BUILD_PROVISION_PROFILE_BASE64` - Base64 encoded provisioning profile
-- `KEYCHAIN_PASSWORD` - Temporary keychain password
+## Release flow
 
-## Setup Instructions
+1. Push to `main` and wait for CI to pass.
+2. Run the App Store listing workflow with **prepare version** to number the version and upload its text and images. Do a dry run first.
+3. Tag the release with its notes and push the tag:
+   ```bash
+   git tag -a v1.3 -F <(node scripts/print-release-notes.ts 1.3)
+   git push origin v1.3
+   ```
+4. `release.yml` uploads the build and submits it for review. Watch it through to the end.
 
-### 1. Install Dependencies
-Only Xcode is required — the build is a plain Xcode project driven by
-`xcodebuild`, and the deploy scripts use `xcrun altool`.
+## Local commands
+
 ```bash
-xcode-select --install
+make build              # build for the simulator
+make test               # unit and UI tests
+make check              # the quick checks CI runs, plus the raw screenshot check
+make upload-build       # archive and upload to App Store Connect, for TestFlight (needs ASC_KEY_ID, ASC_ISSUER_ID, ASC_KEY_CONTENT)
 ```
-
-### 2. Export Certificates
-```bash
-# Export certificate from Keychain as .p12
-# Then encode to base64
-base64 -i certificate.p12 | pbcopy
-
-# Export provisioning profile
-base64 -i profile.mobileprovision | pbcopy
-```
-
-### 3. Configure GitHub Secrets
-Add all required secrets to repository settings.
-
-### 4. Deploy
-
-#### Manual TestFlight Deployment
-```bash
-make deploy-testflight
-```
-
-#### Automated Deployment
-Push a version tag:
-```bash
-git tag v1.0.0
-git push origin v1.0.0
-```
-
-Or trigger manually via GitHub Actions UI.
-
-## Local Development
-
-### Run Tests
-```bash
-make test          # unit + UI
-make test-unit     # CardsTests only
-make test-e2e      # CardsUITests only
-```
-
-### Build
-```bash
-make build
-```
-
-## Deployment Flow
-
-1. Developer pushes code to `main`
-2. CI workflow runs tests
-3. On success, developer creates version tag
-4. Deploy workflow triggers automatically
-5. The deploy workflow archives, exports and uploads to TestFlight
-6. Build appears in App Store Connect
 
 ## Troubleshooting
 
-### Certificate Issues
-- Ensure certificate is valid and not expired
-- Check provisioning profile matches bundle identifier
-- Verify team IDs are correct
-
-### Build Failures
-- Check Xcode version compatibility
-- Verify all dependencies are resolved
-- Review build logs in GitHub Actions
-
-### Upload Errors
-- Check Apple Developer account status
-- Verify the ASC API key (`ASC_KEY_ID`, `ASC_ISSUER_ID`, `ASC_KEY_CONTENT`)
-- Confirm the exported profile matches the bundle identifier
+- **Signing:** check the distribution certificate has not expired, and look at the `install-signing-profiles.ts` output in the release log for the profile it installed.
+- **Upload rejected as a duplicate:** each upload needs a new build number. The release job stamps one from the time, so rerun it rather than reusing an old archive.
+- **Submission fails on the build:** `submit-for-review.ts` waits for the build of the tag's version to finish processing. If Apple is slow, rerun the workflow from the Actions tab.

@@ -37,8 +37,10 @@
 	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>The camera is used to scan the barcodes on your loyalty and membership cards.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Saves the picture of a card you share to your photos.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Your location is used to show how far you are from the places where you use your cards, and to put the right barcode on your Lock Screen when you arrive.</string>
+	<string>Your location is used to show how far you are from the places where you use your cards, and to remind you of the right card when you arrive.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

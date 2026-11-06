@@ -2,7 +2,7 @@
   "sourceLanguage" : "en",
   "strings" : {
     "%@ · %@" : {
-      "comment" : "On a card's screen: the distance to the card's nearest location, then the place's name, as in “350 m · Westway”.",
+      "comment" : "On a card's screen: the distance to the card's nearest location, then the place's name, as in “350 m · Boulder Barn”.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -143,8 +143,19 @@
         }
       }
     },
+    "%@ %@" : {
+      "comment" : "Joins two sentences of the import result alert, as in “Imported 3 cards. 1 was already in Card Barcodes.” The first argument is the result so far, the second the sentence that follows it. A language that writes sentences without a space between them, such as Japanese or Chinese, leaves the space out.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@"
+          }
+        }
+      }
+    },
     "%@ from %@" : {
-      "comment" : "VoiceOver label: how far the user is from a card's nearest location, in full, as in “350 metres from Westway”.",
+      "comment" : "VoiceOver label: how far the user is from a card's nearest location, in full, as in “350 metres from Boulder Barn”.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -279,8 +290,19 @@
         }
       }
     },
+    "%@, %@" : {
+      "comment" : "Name given to a place picked on the map from its street and then its district or town, as in “Portobello Road, Notting Hill”. Use your language's order and separator for the two.\nVoiceOver label for a card's tile on the Cards tab: the card's name, then how far away its nearest place is, as in “Joe's Market, 350 metres from Joe's Market Notting Hill”.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@, %2$@"
+          }
+        }
+      }
+    },
     "%@, %@ radius" : {
-      "comment" : "VoiceOver label for a place: its name, then the size of the circle around it, as in “Westway, 200 metres radius”. Read for a place in the card form and for the pin on the Add Location map.",
+      "comment" : "VoiceOver label for a place: its name, then the size of the circle around it, as in “Boulder Barn, 200 metres radius”. Read for a place in the card form and for the pin on the Add Location map.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -346,6 +368,121 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$@，半徑 %2$@"
+          }
+        }
+      }
+    },
+    "%lld barcodes found. Choose the one for this card." : {
+      "comment" : "Under the list of barcodes found in a photo or a file, when there are several to choose from. The argument is how many, usually two or more.",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld barcode found. Choose the one for this card."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld barcodes found. Choose the one for this card."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld more places" : {
+      "comment" : "Below the places listed on a card's screen: how many more the card has. The argument is one or more.",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld more place"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld more places"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld were already in Card Barcodes." : {
+      "comment" : "Import result alert, after “Imported 3 cards.” or “No cards imported.”: how many cards were left out because a card with the same code is already in the app. Card Barcodes is the app's name. The argument is that number, always at least one.",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld was already in Card Barcodes."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld were already in Card Barcodes."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld were in the file more than once." : {
+      "comment" : "Import result alert, after “Imported 3 cards.” or “No cards imported.”: how many cards were left out because a card with the same code came earlier in the same export, pasted or chosen as a file. The argument is that number, always at least one.",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld was in the file more than once."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld were in the file more than once."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld were missing a name or code." : {
+      "comment" : "Import result alert, after “Imported 3 cards.” or “No cards imported.”: how many cards were left out because they had no name or no code. The argument is that number, always at least one.",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld was missing a name or code."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld were missing a name or code."
+                }
+              }
+            }
           }
         }
       }
@@ -480,8 +617,11 @@
         }
       }
     },
+    "Add a place to be reminded when you arrive there." : {
+      "comment" : "Footer under the Locations section of the card form while the card has no places."
+    },
     "Add Card" : {
-      "comment" : "Button on the empty card list that opens the form for a new card.\nTitle of the form for adding a new card.\nVoiceOver label for the toolbar button, a barcode scanner icon, that adds a new card.",
+      "comment" : "Button at the bottom of the sheet for a card someone shared, which adds the card to the list.\nButton on the empty card list that opens the form for a new card.\nTitle of the form for adding a new card.\nVoiceOver label for the toolbar button, a barcode scanner icon, that adds a new card.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -544,6 +684,12 @@
           }
         }
       }
+    },
+    "Add Card?" : {
+      "comment" : "Title of the sheet that opens from a link to a card someone shared, asking whether to add it."
+    },
+    "Add current location" : {
+      "comment" : "Button below a card on its screen: opens a map to save a place for it."
     },
     "Add Location" : {
       "comment" : "Button in the card form that opens a map for adding a place where the card is used.\nTitle of the map sheet for adding a place where a card is used.",
@@ -675,6 +821,9 @@
         }
       }
     },
+    "Aeroplane" : {
+      "comment" : "Card icon picker, read by VoiceOver: an aeroplane, for airlines."
+    },
     "All cards deleted" : {
       "comment" : "VoiceOver announcement after Delete All in Settings deletes every card.",
       "localizations" : {
@@ -740,8 +889,20 @@
         }
       }
     },
+    "Another card already uses this code." : {
+      "comment" : "Message under the code field in the card form when the code typed is already another card's."
+    },
+    "Arrival Notifications" : {
+      "comment" : "Settings switch for the notification shown on arriving at one of a card's places."
+    },
+    "Arrival notifications are off for every card in Settings." : {
+      "comment" : "Footer under the card's places in the card form while the arrival notifications switch in Settings is off."
+    },
+    "Asks before deleting this card from all your devices" : {
+      "comment" : "VoiceOver hint for the Delete Card button in the card form."
+    },
     "At %@" : {
-      "comment" : "On a card's screen when the user is inside one of the card's locations. The argument is the place's name, such as Westway.",
+      "comment" : "On a card's screen when the user is inside one of the card's locations. The argument is the place's name, such as Boulder Barn.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -870,6 +1031,9 @@
         }
       }
     },
+    "Balloon" : {
+      "comment" : "Card icon picker, read by VoiceOver: a balloon."
+    },
     "Barcode" : {
       "comment" : "VoiceOver label for the barcode on a card's screen. Its format, such as EAN-13, is read after it.",
       "localizations" : {
@@ -934,6 +1098,9 @@
           }
         }
       }
+    },
+    "Barcode found: %@. Its code is filled in." : {
+      "comment" : "VoiceOver announcement after a barcode read from a photo or a file fills in the new card form. The argument is its format, as in “Barcode found: EAN-13”. The format's name is already translated and may contain the word code, as QR Code and Code 128 do, so do not add one."
     },
     "Barcode scanner" : {
       "comment" : "VoiceOver label for the live camera view at the top of the new card form.",
@@ -1065,6 +1232,18 @@
         }
       }
     },
+    "Basket" : {
+      "comment" : "Card icon picker, read by VoiceOver: a shopping basket."
+    },
+    "Beauty" : {
+      "comment" : "Card icon picker, read by VoiceOver: sparkles, for beauty shops and salons."
+    },
+    "Bicycle" : {
+      "comment" : "Card icon picker, read by VoiceOver: a bicycle."
+    },
+    "Black" : {
+      "comment" : "Card colour name read by VoiceOver in the colour picker."
+    },
     "Blue" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker.",
       "localizations" : {
@@ -1129,6 +1308,12 @@
           }
         }
       }
+    },
+    "Book" : {
+      "comment" : "Card icon picker, read by VoiceOver: a book. A noun."
+    },
+    "Books and libraries" : {
+      "comment" : "Heading in the card icon picker over icons for bookshops and libraries."
     },
     "Brightness" : {
       "comment" : "A name Voice Control users can say for the Brightness Boost button on a card's screen.",
@@ -1455,138 +1640,17 @@
         }
       }
     },
-    "Camera access is off. Type the code below, or allow camera access in Settings." : {
-      "comment" : "Shown over the black camera view at the top of the new card form when the app may not use the camera.",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "الوصول إلى الكاميرا مُعطّل. اكتب الرمز أدناه، أو اسمح بالوصول إلى الكاميرا في الإعدادات."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Der Kamerazugriff ist deaktiviert. Gib den Code unten ein oder erlaube den Kamerazugriff in den Einstellungen."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "El acceso a la cámara está desactivado. Escribe el código abajo o permite el acceso a la cámara en Ajustes."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "L’accès à l’appareil photo est désactivé. Saisissez le code ci-dessous ou autorisez l’accès dans Réglages."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "L'accesso alla fotocamera è disattivato. Inserisci il codice qui sotto oppure consenti l'accesso alla fotocamera in Impostazioni."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "カメラへのアクセスがオフです。下にコードを入力するか、「設定」でカメラへのアクセスを許可してください。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "카메라 접근이 꺼져 있습니다. 아래에 코드를 입력하거나 설정에서 카메라 접근을 허용하십시오."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O acesso à câmera está desativado. Digite o código abaixo ou permita o acesso à câmera nos Ajustes."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "相机访问已关闭。请在下方输入卡号，或在“设置”中允许访问相机。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "相機取用權限已關閉。請在下方輸入代碼，或前往「設定」允許取用相機。"
-          }
-        }
-      }
+    "Bus" : {
+      "comment" : "Card icon picker, read by VoiceOver: a bus."
     },
-    "Camera not available" : {
-      "comment" : "VoiceOver value of the camera view in the new card form when there is no camera to use.",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "الكاميرا غير متوفرة"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kamera nicht verfügbar"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cámara no disponible"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Appareil photo indisponible"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fotocamera non disponibile"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "カメラを使用できません"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "카메라를 사용할 수 없음"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Câmera indisponível"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "相机不可用"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "無法使用相機"
-          }
-        }
-      }
+    "Cake" : {
+      "comment" : "Card icon picker, read by VoiceOver: a cake, for bakeries."
+    },
+    "Camera access is off" : {
+      "comment" : "Heading where the camera would be in the new card form, when the app may not use the camera."
     },
     "Cancel" : {
-      "comment" : "Button in the delete-all dialog that keeps the cards.\nCloses the Add Location sheet without adding a place.\nCloses the import sheet without importing.",
+      "comment" : "Button in the delete-all dialog that keeps the cards.\nButton in the delete-card dialog that keeps the card.\nCloses the Add Location sheet without adding a place.\nCloses the import sheet without importing.\nCloses the list of barcodes found in a photo or a file without filling in the card form.\nCloses the sheet for a card someone shared without adding the card.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -1649,6 +1713,21 @@
           }
         }
       }
+    },
+    "Car" : {
+      "comment" : "Card icon picker, read by VoiceOver: a car."
+    },
+    "Card" : {
+      "comment" : "File name, before .png, of the picture of a card with no name, shared from the card's screen. A noun: one loyalty card."
+    },
+    "Card Barcodes cannot show %@ codes." : {
+      "comment" : "Under Choose Photo and Choose File in the new card form, and read by VoiceOver, when the photo or file has only kinds of barcode the app cannot draw. The argument is their standard names joined by “or”, as in “Data Matrix or ITF-14”. Card Barcodes is the app's name."
+    },
+    "Card Barcodes cannot show this kind of barcode." : {
+      "comment" : "Under Choose Photo and Choose File in the new card form, and read by VoiceOver, when the photo or file has only a kind of barcode the app cannot draw. Card Barcodes is the app's name."
+    },
+    "Card code copied" : {
+      "comment" : "VoiceOver announcement after the copy button on a card's screen copies the code."
     },
     "Card code: %@" : {
       "comment" : "VoiceOver label for a card's code, shown with its barcode on the card's screen and in the Home Screen widget. VoiceOver spells the code out character by character.",
@@ -1780,6 +1859,9 @@
         }
       }
     },
+    "Card icon" : {
+      "comment" : "VoiceOver label for the grid of icons in the card icon picker."
+    },
     "Card not found" : {
       "comment" : "Shown when a link or notification opens a card that has since been deleted.",
       "localizations" : {
@@ -1909,6 +1991,36 @@
           }
         }
       }
+    },
+    "Carrot" : {
+      "comment" : "Card icon picker, read by VoiceOver: a carrot, for greengrocers."
+    },
+    "Cat" : {
+      "comment" : "Card icon picker, read by VoiceOver: a cat."
+    },
+    "Check the spelling, or try another name." : {
+      "comment" : "Under “No Cards Match” on the Cards tab, when a search finds no card."
+    },
+    "Choose a Barcode" : {
+      "comment" : "Title of the sheet that lists the barcodes found in a photo or a file, to choose the one for the new card."
+    },
+    "Choose File" : {
+      "comment" : "Button in the import sheet that opens the Files picker to choose a file of exported cards.\nButton under the camera in the new card form that opens Files to read a barcode from an image or a PDF."
+    },
+    "Choose Photo" : {
+      "comment" : "Button under the camera in the new card form that opens the photo library to read a barcode from a picture."
+    },
+    "Cinema" : {
+      "comment" : "Card icon picker, read by VoiceOver: a strip of film, for cinemas."
+    },
+    "Cinema and entertainment" : {
+      "comment" : "Heading in the card icon picker over icons for cinemas and theatres."
+    },
+    "Clear Search" : {
+      "comment" : "VoiceOver label of the button that empties the location map's search field."
+    },
+    "Climbing" : {
+      "comment" : "Card icon picker, read by VoiceOver: a person climbing, for climbing walls. The sport, a noun."
     },
     "Code" : {
       "comment" : "Label beside the field for the number or text that the barcode encodes. A noun.",
@@ -2170,6 +2282,9 @@
         }
       }
     },
+    "Coffee cup" : {
+      "comment" : "Card icon picker, read by VoiceOver: a cup on a saucer, for cafés."
+    },
     "Colour" : {
       "comment" : "Section heading above the colour swatches in the card form. A noun.",
       "localizations" : {
@@ -2234,6 +2349,18 @@
           }
         }
       }
+    },
+    "Comb" : {
+      "comment" : "Card icon picker, read by VoiceOver: a comb. A noun."
+    },
+    "Copied" : {
+      "comment" : "VoiceOver label for the copy button beside the code on a card's screen, just after a copy."
+    },
+    "Copy card code" : {
+      "comment" : "VoiceOver label for the copy button, an icon, beside the code on a card's screen."
+    },
+    "Coral" : {
+      "comment" : "Card colour name read by VoiceOver in the colour picker: a warm pinkish orange."
     },
     "Created by %@" : {
       "comment" : "Settings row that opens the author's website. The argument is the author's name.",
@@ -2364,6 +2491,15 @@
           }
         }
       }
+    },
+    "Custom" : {
+      "comment" : "Card colour name read by VoiceOver in the colour picker: a colour the user chose themselves rather than one from the palette."
+    },
+    "Custom colour" : {
+      "comment" : "VoiceOver label for the last swatch in the card form's colour grid, which opens the system colour picker to choose any colour."
+    },
+    "Custom Order" : {
+      "comment" : "Choice in the Cards tab's Sort menu: the order the user set by dragging the cards."
     },
     "Data" : {
       "comment" : "Settings section heading for exporting, importing and deleting cards.",
@@ -2560,6 +2696,9 @@
         }
       }
     },
+    "Delete %@?" : {
+      "comment" : "Title of the dialog that asks before deleting a card from the card form. The argument is the card's name, such as Joe's Market."
+    },
     "Delete All" : {
       "comment" : "Destructive button in the delete-all dialog that deletes every card.",
       "localizations" : {
@@ -2689,6 +2828,12 @@
           }
         }
       }
+    },
+    "Delete Card" : {
+      "comment" : "Button at the foot of the card form that asks before deleting the card. A verb.\nDestructive button in the card form's delete dialog that deletes the card. A verb."
+    },
+    "Delete this card?" : {
+      "comment" : "Title of the dialog that asks before deleting a card from the card form, while the card has no name."
     },
     "Deleted %lld cards" : {
       "comment" : "VoiceOver announcement after several cards are deleted from the list at once. The argument is how many, always two or more.",
@@ -3145,7 +3290,7 @@
       }
     },
     "Deleted card %@" : {
-      "comment" : "VoiceOver announcement after one card is deleted from the list. The argument is the card's name, such as Tesco Clubcard.",
+      "comment" : "VoiceOver announcement after one card is deleted from the list. The argument is the card's name, such as Joe's Market.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -3210,7 +3355,7 @@
       }
     },
     "Deleted place %@" : {
-      "comment" : "VoiceOver announcement after one place is deleted from the card form. The argument is the place's name, such as Westway.",
+      "comment" : "VoiceOver announcement after one place is deleted from the card form. The argument is the place's name, such as Boulder Barn.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -3273,6 +3418,12 @@
           }
         }
       }
+    },
+    "Dice" : {
+      "comment" : "Card icon picker, read by VoiceOver: a pair of dice."
+    },
+    "Discount" : {
+      "comment" : "Card icon picker, read by VoiceOver: a percent sign, for discounts. A noun."
     },
     "Display" : {
       "comment" : "Settings section heading for how cards are displayed.",
@@ -3338,6 +3489,24 @@
           }
         }
       }
+    },
+    "DIY" : {
+      "comment" : "Card icon picker, read by VoiceOver: a hammer, for DIY shops. DIY means do it yourself."
+    },
+    "DIY and hardware" : {
+      "comment" : "Heading in the card icon picker over icons for DIY shops (do it yourself)."
+    },
+    "Doctor" : {
+      "comment" : "Card icon picker, read by VoiceOver: a stethoscope, for doctors."
+    },
+    "Dog" : {
+      "comment" : "Card icon picker, read by VoiceOver: a dog."
+    },
+    "Done" : {
+      "comment" : "Button that closes the grid of icons opened from the card form.\nCloses the sheet for a shared card when the link holds no card."
+    },
+    "Dumbbell" : {
+      "comment" : "Card icon picker, read by VoiceOver: a dumbbell, for gyms."
     },
     "EAN-8" : {
       "comment" : "Barcode format in the barcode type picker. A standard name: keep it as it is.",
@@ -3599,6 +3768,12 @@
         }
       }
     },
+    "Edit Location" : {
+      "comment" : "Title of the map sheet for changing one of a card's places."
+    },
+    "Education" : {
+      "comment" : "Card icon picker, read by VoiceOver: a graduation cap, for schools and courses."
+    },
     "Enter code" : {
       "comment" : "Placeholder in the empty field for the number or text that the barcode encodes.",
       "localizations" : {
@@ -3665,7 +3840,7 @@
       }
     },
     "Enter name" : {
-      "comment" : "Placeholder in the empty card name field, such as Tesco Clubcard.",
+      "comment" : "Placeholder in the empty card name field, such as Joe's Market.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -3859,70 +4034,53 @@
         }
       }
     },
-    "Find" : {
-      "comment" : "Button beside the search field that moves the map to the postcode or address typed in it. A verb.",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "بحث"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Suchen"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Buscar"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rechercher"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Trova"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "検索"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "찾기"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Buscar"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "查找"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "尋找"
-          }
-        }
-      }
+    "Fills in this code and type" : {
+      "comment" : "VoiceOver hint for a barcode in the list of those found in a photo or file: choosing it fills in the card form."
+    },
+    "Finds shops, addresses, streets, towns and postcodes" : {
+      "comment" : "VoiceOver hint of the location map's search field."
+    },
+    "First aid" : {
+      "comment" : "Card icon picker, read by VoiceOver: a first aid kit."
+    },
+    "Fish" : {
+      "comment" : "Card icon picker, read by VoiceOver: a fish. A noun."
+    },
+    "Fixed: %@" : {
+      "comment" : "VoiceOver label for a change on the What's New screen that fixes a problem in the app. The argument is the change in its own words, as the changelog has it."
+    },
+    "Flowers" : {
+      "comment" : "Card icon picker, read by VoiceOver: a flower, for florists."
+    },
+    "Food and drink" : {
+      "comment" : "Heading in the card icon picker over icons for cafés and restaurants."
+    },
+    "Football" : {
+      "comment" : "Card icon picker, read by VoiceOver: a football, or soccer ball."
+    },
+    "Fuel pump" : {
+      "comment" : "Card icon picker, read by VoiceOver: a fuel pump, for petrol stations."
+    },
+    "Furniture" : {
+      "comment" : "Card icon picker, read by VoiceOver: a sofa, for furniture shops."
+    },
+    "Games" : {
+      "comment" : "Card icon picker, read by VoiceOver: a game controller, for games shops."
+    },
+    "Gaming" : {
+      "comment" : "Heading in the card icon picker over icons for games shops and arcades. A noun."
+    },
+    "Garden" : {
+      "comment" : "Card icon picker, read by VoiceOver: a leaf, for garden centres. A noun."
+    },
+    "Gift" : {
+      "comment" : "Card icon picker, read by VoiceOver: a wrapped present. A noun."
+    },
+    "Gift card" : {
+      "comment" : "Card icon picker, read by VoiceOver: a gift card."
+    },
+    "Golf" : {
+      "comment" : "Card icon picker, read by VoiceOver: a person playing golf."
     },
     "Graphite" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker: a dark blue-grey.",
@@ -4054,6 +4212,24 @@
         }
       }
     },
+    "Guitar" : {
+      "comment" : "Card icon picker, read by VoiceOver: a guitar."
+    },
+    "Hairdresser" : {
+      "comment" : "Card icon picker, read by VoiceOver: a pair of scissors, for hairdressers."
+    },
+    "Hairdressers and services" : {
+      "comment" : "Heading in the card icon picker over icons for hair salons and such."
+    },
+    "Headphones" : {
+      "comment" : "Card icon picker, read by VoiceOver: a pair of headphones."
+    },
+    "Health and beauty" : {
+      "comment" : "Heading in the card icon picker over icons for health and beauty shops."
+    },
+    "Heart" : {
+      "comment" : "Card icon picker, read by VoiceOver: a heart."
+    },
     "Here" : {
       "comment" : "Shown on a card in the list instead of a distance when the user is inside one of the card's locations. Keep it very short.",
       "localizations" : {
@@ -4118,6 +4294,18 @@
           }
         }
       }
+    },
+    "Home" : {
+      "comment" : "Card icon picker, read by VoiceOver: a house, for home shops. A noun."
+    },
+    "Home and garden" : {
+      "comment" : "Heading in the card icon picker over icons for home shops and garden centres."
+    },
+    "Hotel" : {
+      "comment" : "Card icon picker, read by VoiceOver: a bed, for hotels."
+    },
+    "Icon" : {
+      "comment" : "Label of the row in the card form that shows the card's icon and opens a grid to choose one, and the title of that grid. A noun."
     },
     "Import" : {
       "comment" : "Toolbar button in the import sheet that adds the pasted cards. A verb.",
@@ -4314,232 +4502,34 @@
         }
       }
     },
-    "Imported %lld cards" : {
-      "comment" : "Import result alert after cards are added from pasted JSON. The argument is how many cards were added, always at least one.",
+    "Imported %lld cards." : {
+      "comment" : "Import result alert after cards are added from an export, pasted or chosen as a file. The argument is how many cards were added, always at least one. Sentences about cards left out may follow it.",
       "localizations" : {
-        "ar" : {
-          "variations" : {
-            "plural" : {
-              "few" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "تم استيراد %lld بطاقات"
-                }
-              },
-              "many" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "تم استيراد %lld بطاقة"
-                }
-              },
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "تم استيراد بطاقة واحدة"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "تم استيراد %lld بطاقة"
-                }
-              },
-              "two" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "تم استيراد بطاقتين"
-                }
-              },
-              "zero" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "تم استيراد %lld بطاقة"
-                }
-              }
-            }
-          }
-        },
-        "de" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld Karte importiert"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld Karten importiert"
-                }
-              }
-            }
-          }
-        },
         "en" : {
           "variations" : {
             "plural" : {
               "one" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Imported %lld card"
+                  "value" : "Imported %lld card."
                 }
               },
               "other" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Imported %lld cards"
-                }
-              }
-            }
-          }
-        },
-        "es" : {
-          "variations" : {
-            "plural" : {
-              "many" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Se han importado %lld de tarjetas"
-                }
-              },
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Se ha importado una tarjeta"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Se han importado %lld tarjetas"
-                }
-              }
-            }
-          }
-        },
-        "fr" : {
-          "variations" : {
-            "plural" : {
-              "many" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld de cartes importées"
-                }
-              },
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld carte importée"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld cartes importées"
-                }
-              }
-            }
-          }
-        },
-        "it" : {
-          "variations" : {
-            "plural" : {
-              "many" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld di carte importate"
-                }
-              },
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld carta importata"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld carte importate"
-                }
-              }
-            }
-          }
-        },
-        "ja" : {
-          "variations" : {
-            "plural" : {
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld枚のカードを読み込みました"
-                }
-              }
-            }
-          }
-        },
-        "ko" : {
-          "variations" : {
-            "plural" : {
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "카드 %lld장을 가져왔습니다."
-                }
-              }
-            }
-          }
-        },
-        "pt-BR" : {
-          "variations" : {
-            "plural" : {
-              "many" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld de cartões importados"
-                }
-              },
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld cartão importado"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld cartões importados"
-                }
-              }
-            }
-          }
-        },
-        "zh-Hans" : {
-          "variations" : {
-            "plural" : {
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "已导入 %lld 张卡片"
-                }
-              }
-            }
-          }
-        },
-        "zh-Hant" : {
-          "variations" : {
-            "plural" : {
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "已輸入 %lld 張卡片"
+                  "value" : "Imported %lld cards."
                 }
               }
             }
           }
         }
       }
+    },
+    "Imports the cards in a JSON file" : {
+      "comment" : "VoiceOver hint for the Choose File button in the import sheet. JSON is a file format; keep the name."
+    },
+    "Improved: %@" : {
+      "comment" : "VoiceOver label for a change on the What's New screen that makes something in the app better. The argument is the change in its own words, as the changelog has it."
     },
     "Indigo" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker: a deep violet-blue.",
@@ -4671,6 +4661,9 @@
         }
       }
     },
+    "It is deleted from all your devices. This cannot be undone." : {
+      "comment" : "Message in the dialog that asks before deleting a card from the card form."
+    },
     "JSON to import" : {
       "comment" : "VoiceOver label for the text box in the import sheet. JSON is a file format; keep the name.",
       "localizations" : {
@@ -4736,73 +4729,35 @@
         }
       }
     },
-    "Loading" : {
-      "comment" : "VoiceOver label for a spinner shown while something loads.",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "جارٍ التحميل"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wird geladen"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cargando"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Chargement"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Caricamento in corso"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "読み込み中"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "로드 중"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Carregando"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "正在载入"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "載入中"
-          }
-        }
-      }
+    "Keys" : {
+      "comment" : "Card icon picker, read by VoiceOver: a key, for key cutters."
+    },
+    "Kids and toys" : {
+      "comment" : "Heading in the card icon picker over icons for toy shops and children's things."
+    },
+    "Last Viewed" : {
+      "comment" : "Choice in the Cards tab's Sort menu: the card opened most recently first."
+    },
+    "Laundry" : {
+      "comment" : "Card icon picker, read by VoiceOver: a washing machine, for launderettes and dry cleaners."
+    },
+    "Lavender" : {
+      "comment" : "Card colour name read by VoiceOver in the colour picker: a pale purple, the colour of the flower."
+    },
+    "Library" : {
+      "comment" : "Card icon picker, read by VoiceOver: books on a shelf, for libraries."
+    },
+    "Lights up the card so the camera can read it in the dark" : {
+      "comment" : "VoiceOver hint for the torch button over the camera view in the new card form."
+    },
+    "Lime" : {
+      "comment" : "Card colour name read by VoiceOver in the colour picker: a light yellow-green, the colour of the fruit."
+    },
+    "Location" : {
+      "comment" : "Choice in the Cards tab's Sort menu: the cards with places nearest to the user first. A noun."
     },
     "Locations" : {
-      "comment" : "Section heading in the card form for the places where the card is used.",
+      "comment" : "Section heading in the card form for the places where the card is used.\nSection heading in the sheet for a card someone shared, over the places that come with the card.\nSettings section heading for the switches about arrival notifications and the card for where you are.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -4862,71 +4817,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "位置"
-          }
-        }
-      }
-    },
-    "Map moved to %@" : {
-      "comment" : "VoiceOver announcement after a search on the Add Location map finds a place. The argument is the place found.",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تم نقل الخريطة إلى %@"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ wird angezeigt"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mapa desplazado a %@"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Plan centré sur %@"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mappa spostata su %@"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "マップを%@に移動しました"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "지도가 %@(으)로 이동함"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mapa movido para %@"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "地图已移至 %@"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "地圖已移至 %@"
           }
         }
       }
@@ -4995,6 +4885,15 @@
           }
         }
       }
+    },
+    "Maroon" : {
+      "comment" : "Card colour name read by VoiceOver in the colour picker: a dark brownish red."
+    },
+    "Mint" : {
+      "comment" : "Card colour name read by VoiceOver in the colour picker: a soft pale green-blue."
+    },
+    "Money and payments" : {
+      "comment" : "Heading in the card icon picker over icons for money and gift cards."
     },
     "Move Down" : {
       "comment" : "Menu item and VoiceOver action that moves a card one place down the list.",
@@ -5646,6 +5545,15 @@
         }
       }
     },
+    "Mug" : {
+      "comment" : "Card icon picker, read by VoiceOver: a mug."
+    },
+    "Museum" : {
+      "comment" : "Card icon picker, read by VoiceOver: a building with columns, for museums."
+    },
+    "Music" : {
+      "comment" : "Card icon picker, read by VoiceOver: a musical note.\nHeading in the card icon picker over icons for music shops and venues."
+    },
     "Name" : {
       "comment" : "Label beside the card's name field in the card form. A noun.",
       "localizations" : {
@@ -5711,135 +5619,35 @@
         }
       }
     },
-    "Name, e.g. Westway" : {
-      "comment" : "Placeholder and VoiceOver label for the new place's name. Westway is a London climbing centre: keep the name Westway and translate only “Name, e.g.”.",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "الاسم، مثل Westway"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Name, z. B. Westway"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nombre, p. ej., Westway"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nom, p. ex. Westway"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nome, ad es. Westway"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "名前（例：Westway）"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "이름(예: Westway)"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nome, ex.: Westway"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "名称，如 Westway"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "名稱，例如：Westway"
-          }
-        }
-      }
+    "Name, e.g. Boulder Barn" : {
+      "comment" : "Placeholder in the empty name field on the location map. Boulder Barn is a made-up climbing centre: keep the name Boulder Barn and translate only “Name, e.g.”."
     },
-    "No cards to import" : {
-      "comment" : "Import result alert when the pasted JSON is a valid card export with no cards in it, so nothing was added.",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "لا توجد بطاقات للاستيراد"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Keine Karten zum Importieren"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No hay tarjetas que importar"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aucune carte à importer"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nessuna carta da importare"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "読み込めるカードがありません"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "가져올 카드가 없습니다."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nenhum cartão para importar"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "没有可导入的卡片"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "沒有可輸入的卡片"
-          }
-        }
-      }
+    "Navy" : {
+      "comment" : "Card colour name read by VoiceOver in the colour picker: a very dark blue."
+    },
+    "Nearest places" : {
+      "comment" : "Heading of the list of a card's places on its screen, nearest to the user first."
+    },
+    "Needs a name and a code no other card uses" : {
+      "comment" : "VoiceOver hint for the dimmed Save button in the card form, while the card has no name or no code, or another card has its code."
+    },
+    "New: %@" : {
+      "comment" : "VoiceOver label for a change on the What's New screen that adds something to the app. The argument is the change in its own words, as the changelog has it."
+    },
+    "Newspaper" : {
+      "comment" : "Card icon picker, read by VoiceOver: a newspaper."
+    },
+    "No barcode found. Try a picture where the whole barcode is sharp." : {
+      "comment" : "Under Choose Photo and Choose File in the new card form, and read by VoiceOver, when the photo or file has no barcode."
+    },
+    "No camera" : {
+      "comment" : "Heading where the camera would be in the new card form, on a device without a camera."
+    },
+    "No cards imported." : {
+      "comment" : "Import result alert when no card in the export was added. Sentences saying why may follow it."
+    },
+    "No Cards Match" : {
+      "comment" : "Title shown on the Cards tab when no card's name matches the search."
     },
     "No cards yet" : {
       "comment" : "Title of the Home Screen widget before the user has added a card.",
@@ -5971,6 +5779,9 @@
         }
       }
     },
+    "No Changes Yet" : {
+      "comment" : "Shown on the What's New screen when the app has no list of changes to show."
+    },
     "No place found for “%@”" : {
       "comment" : "Under the search field on the Add Location map when nothing is found. The argument is the postcode or address that was typed; use your language's quotation marks.",
       "localizations" : {
@@ -6036,8 +5847,17 @@
         }
       }
     },
+    "None" : {
+      "comment" : "First choice in the card icon picker, for a card with no icon, and read by VoiceOver. Keep it short: it fits in a small circle.\nShown in the card form's Icon row, and read by VoiceOver, when the card has no icon."
+    },
+    "Notifications are off for Card Barcodes. Turn them on in Settings." : {
+      "comment" : "Button under the Arrival Notifications switch, shown when the switch is on but iOS has notifications turned off for the app. It opens the app's page in the Settings app. Card Barcodes is the app's name."
+    },
+    "Notify When I Arrive" : {
+      "comment" : "Switch in the card form, under the card's places, that sends a notification when you arrive at one of them."
+    },
     "Off" : {
-      "comment" : "VoiceOver value of the Brightness Boost button on a card's screen when the boost is off.",
+      "comment" : "VoiceOver value of the Brightness Boost button on a card's screen when the boost is off.\nVoiceOver value of the torch button over the camera view in the new card form when the light is off.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -6166,8 +5986,11 @@
         }
       }
     },
+    "Olive" : {
+      "comment" : "Card colour name read by VoiceOver in the colour picker: a dull dark green, the colour of green olives."
+    },
     "On" : {
-      "comment" : "VoiceOver value of the Brightness Boost button on a card's screen when the boost is on.",
+      "comment" : "VoiceOver value of the Brightness Boost button on a card's screen when the boost is on.\nVoiceOver value of the torch button over the camera view in the new card form when the light is on.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -6230,6 +6053,18 @@
           }
         }
       }
+    },
+    "Open Card" : {
+      "comment" : "Button in the sheet for a card someone shared, when the card is already in the list: opens it."
+    },
+    "Open Settings" : {
+      "comment" : "Button where the camera would be in the new card form, when camera access is off: opens the app's page in Settings."
+    },
+    "Opens a grid of icons to choose from" : {
+      "comment" : "VoiceOver hint for the Icon row in the card form."
+    },
+    "Opens a map to save where you are as one of this card's places" : {
+      "comment" : "VoiceOver hint for the Add current location button below the card on a card's screen."
     },
     "Opens in your web browser" : {
       "comment" : "VoiceOver hint for the Settings row that opens the author's website.",
@@ -6361,6 +6196,9 @@
         }
       }
     },
+    "Opens the card for where you are" : {
+      "comment" : "VoiceOver hint for the card shown in full at the top of the Cards tab when the user is at one of its places."
+    },
     "Opens the card in Card Barcodes" : {
       "comment" : "VoiceOver hint for the card in the Home Screen widget. Card Barcodes is the app's name.",
       "localizations" : {
@@ -6426,6 +6264,15 @@
         }
       }
     },
+    "Opens the map to change this place" : {
+      "comment" : "VoiceOver hint for one of the card's places in the card form."
+    },
+    "Opens this place in Maps" : {
+      "comment" : "VoiceOver hint for a place in the list of places on a card's screen. Maps is Apple's app."
+    },
+    "Optician" : {
+      "comment" : "Card icon picker, read by VoiceOver: a pair of glasses, for opticians."
+    },
     "Orange" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker.",
       "localizations" : {
@@ -6490,6 +6337,12 @@
           }
         }
       }
+    },
+    "Paintbrush" : {
+      "comment" : "Card icon picker, read by VoiceOver: a paintbrush."
+    },
+    "Parking" : {
+      "comment" : "Card icon picker, read by VoiceOver: a parking sign, for car parks. A noun."
     },
     "Paste exported JSON here" : {
       "comment" : "Prompt in the empty text box of the import sheet. JSON is a file format; keep the name.",
@@ -6621,6 +6474,9 @@
         }
       }
     },
+    "Payment card" : {
+      "comment" : "Card icon picker, read by VoiceOver: a bank card."
+    },
     "PDF 417" : {
       "comment" : "Barcode format in the barcode type picker: the stacked 2D PDF417 code, not a PDF file. Keep it as it is.",
       "localizations" : {
@@ -6685,6 +6541,12 @@
           }
         }
       }
+    },
+    "Pets" : {
+      "comment" : "Card icon picker, read by VoiceOver: a paw print, for pet shops.\nHeading in the card icon picker over icons for pet shops and vets."
+    },
+    "Pharmacy" : {
+      "comment" : "Card icon picker, read by VoiceOver: pills, for pharmacies.\nHeading in the card icon picker over icons for pharmacies and doctors."
     },
     "Pink" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker: a deep raspberry pink.",
@@ -6816,70 +6678,23 @@
         }
       }
     },
-    "Postcode or address" : {
-      "comment" : "Placeholder and VoiceOver label of the search field on the Add Location map.",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "الرمز البريدي أو العنوان"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Postleitzahl oder Adresse"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Código postal o dirección"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Code postal ou adresse"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "CAP o indirizzo"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "郵便番号または住所"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "우편번호 또는 주소"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "CEP ou endereço"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "邮政编码或地址"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "郵遞區號或地址"
-          }
-        }
-      }
+    "Place name" : {
+      "comment" : "VoiceOver label of the name field on the location map, read before the name in it."
+    },
+    "Places" : {
+      "comment" : "Heading of the list of a card's places on its screen, when the app does not know where the user is. A noun."
+    },
+    "Plaster" : {
+      "comment" : "Card icon picker, read by VoiceOver: a sticking plaster for a cut, or adhesive bandage."
+    },
+    "Point the camera at a card's barcode to read it. Double-tap to focus on the middle." : {
+      "comment" : "VoiceOver hint for the live camera view at the top of the new card form. Double-tapping focuses the camera."
+    },
+    "Pound" : {
+      "comment" : "Card icon picker, read by VoiceOver: the pound sign, £. The British currency, not the weight."
+    },
+    "Price tag" : {
+      "comment" : "Card icon picker, read by VoiceOver: a price tag."
     },
     "Purple" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker.",
@@ -6945,6 +6760,12 @@
           }
         }
       }
+    },
+    "Pushchair" : {
+      "comment" : "Card icon picker, read by VoiceOver: a pushchair, or baby stroller."
+    },
+    "Puzzle" : {
+      "comment" : "Card icon picker, read by VoiceOver: a jigsaw puzzle piece."
     },
     "QR Code" : {
       "comment" : "Barcode format in the barcode type picker: the square 2D code. Use the usual name for a QR code in your language.",
@@ -7076,70 +6897,17 @@
         }
       }
     },
-    "Reads the barcode you point the camera at, and fills in its code" : {
-      "comment" : "VoiceOver hint for the live camera view at the top of the new card form.",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "يقرأ الرمز الشريطي الذي توجّه إليه الكاميرا ويُدخل رمزه"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Liest den Barcode, auf den du die Kamera richtest, und trägt seinen Code ein"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lee el código de barras al que apuntas con la cámara y rellena su código"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lit le code-barres visé par l’appareil photo et saisit son code"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Legge il codice a barre inquadrato con la fotocamera e inserisce il suo codice"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "カメラを向けたバーコードを読み取り、そのコードを入力します"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "카메라로 비춘 바코드를 읽고 코드를 입력합니다."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lê o código de barras apontado pela câmera e preenche o código"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "扫描相机对准的条形码，并填写卡号"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "讀取相機對準的條碼並填入其代碼"
-          }
-        }
-      }
+    "Read the barcode in a screenshot, a photo or a PDF, such as an e-ticket." : {
+      "comment" : "Under Choose Photo and Choose File in the new card form, saying what they do. PDF is a file format; keep the name."
+    },
+    "Reading the barcode…" : {
+      "comment" : "Beside a spinner under Choose Photo and Choose File in the new card form, while the chosen photo or file is read."
+    },
+    "Reads the barcode in a screenshot or a photo" : {
+      "comment" : "VoiceOver hint for the Choose Photo button in the new card form."
+    },
+    "Reads the barcode in an image or a PDF, such as an e-ticket" : {
+      "comment" : "VoiceOver hint for the Choose File button in the new card form. PDF is a file format; keep the name."
     },
     "Red" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker.",
@@ -7206,8 +6974,23 @@
         }
       }
     },
+    "Reminds you when you arrive at one of a card's places. To stop one card reminding you, turn off Notify When I Arrive when you edit it." : {
+      "comment" : "Under the Arrival Notifications switch in Settings, saying what it does. Notify When I Arrive is the switch of that name in the card form; use its translation."
+    },
+    "Restaurant" : {
+      "comment" : "Card icon picker, read by VoiceOver: a knife and fork, for restaurants."
+    },
+    "Rose" : {
+      "comment" : "Card colour name read by VoiceOver in the colour picker: a light pink, the colour of a pink rose."
+    },
+    "Running" : {
+      "comment" : "Card icon picker, read by VoiceOver: a person running. The sport, a noun."
+    },
+    "Sand" : {
+      "comment" : "Card colour name read by VoiceOver in the colour picker: a pale yellowish beige, the colour of sand."
+    },
     "Save" : {
-      "comment" : "Toolbar button that saves the card form. A verb.",
+      "comment" : "Toolbar button on the Edit Location map that saves the changed place. A verb.\nToolbar button that saves the card form. A verb.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -7537,6 +7320,12 @@
         }
       }
     },
+    "Search for a place" : {
+      "comment" : "Placeholder and VoiceOver label of the search field on the location map."
+    },
+    "Search is not working right now. Try again, or drag the map to the place." : {
+      "comment" : "Under the search field on the Add Location and Edit Location map when Apple's map search fails or does not answer."
+    },
     "Searching" : {
       "comment" : "VoiceOver label for the spinner beside the map's search field while a search runs.",
       "localizations" : {
@@ -7601,6 +7390,9 @@
           }
         }
       }
+    },
+    "Searching…" : {
+      "comment" : "Beside a spinner under the search field on the Add Location and Edit Location map, while the first suggestions load."
     },
     "Sets the code for this card's barcode" : {
       "comment" : "VoiceOver hint for the field for the number or text that the barcode encodes, in the card form.",
@@ -7862,6 +7654,69 @@
         }
       }
     },
+    "Share card" : {
+      "comment" : "VoiceOver label for the share button, the share icon, in the toolbar of a card's screen."
+    },
+    "Share Image" : {
+      "comment" : "Share menu item on a card's screen: sends a picture of the card."
+    },
+    "Share Link" : {
+      "comment" : "Share menu item on a card's screen: sends a link that adds the card."
+    },
+    "Shares this card as a link to add it, or as an image" : {
+      "comment" : "VoiceOver hint for the share button on a card's screen."
+    },
+    "Shop" : {
+      "comment" : "Card icon picker, read by VoiceOver: a shop front. A noun."
+    },
+    "Shopping" : {
+      "comment" : "Heading in the card icon picker over icons for shops."
+    },
+    "Shopping bag" : {
+      "comment" : "Card icon picker, read by VoiceOver: a shopping bag."
+    },
+    "Show Card Where I Am" : {
+      "comment" : "Settings switch that puts the card for where the user is first in the card list."
+    },
+    "Showing %@ on the map" : {
+      "comment" : "VoiceOver announcement once a search moves the location map to a place. The argument is the place's name."
+    },
+    "Shows the card for where you are at the top of your cards." : {
+      "comment" : "Under the Show Card Where I Am switch in Settings, saying what it does when it is on."
+    },
+    "Shows this place on the map" : {
+      "comment" : "VoiceOver hint for a place suggested under the search field on the Add Location and Edit Location map."
+    },
+    "Sky" : {
+      "comment" : "Card colour name read by VoiceOver in the colour picker: a light blue, the colour of a clear sky."
+    },
+    "Sort" : {
+      "comment" : "VoiceOver label for the toolbar menu on the Cards tab that chooses the order of the cards. A verb."
+    },
+    "Sort By" : {
+      "comment" : "Heading of the choices in the Cards tab's Sort menu, which sets the order of the cards."
+    },
+    "Spanner" : {
+      "comment" : "Card icon picker, read by VoiceOver: an adjustable spanner, or wrench."
+    },
+    "Sport and fitness" : {
+      "comment" : "Heading in the card icon picker over icons for gyms and sports clubs."
+    },
+    "Star" : {
+      "comment" : "Card icon picker, read by VoiceOver: a star. A noun."
+    },
+    "Suitcase" : {
+      "comment" : "Card icon picker, read by VoiceOver: a suitcase."
+    },
+    "Swimming" : {
+      "comment" : "Card icon picker, read by VoiceOver: a person swimming. The sport, a noun."
+    },
+    "T-shirt" : {
+      "comment" : "Card icon picker, read by VoiceOver: a T-shirt, for clothes shops."
+    },
+    "Takeaway" : {
+      "comment" : "Card icon picker, read by VoiceOver: a bag and a cup of takeaway food. A noun."
+    },
     "Teal" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker: a dark blue-green.",
       "localizations" : {
@@ -7927,6 +7782,21 @@
         }
       }
     },
+    "Teddy bear" : {
+      "comment" : "Card icon picker, read by VoiceOver: a teddy bear."
+    },
+    "Tennis" : {
+      "comment" : "Card icon picker, read by VoiceOver: a tennis racket."
+    },
+    "That photo or file could not be read." : {
+      "comment" : "Under Choose Photo and Choose File in the new card form, and read by VoiceOver, when the photo or file cannot be opened."
+    },
+    "Theatre" : {
+      "comment" : "Card icon picker, read by VoiceOver: theatre masks, for theatres."
+    },
+    "This card won't remind you when you arrive." : {
+      "comment" : "Footer under the card's places in the card form while Notify When I Arrive is off."
+    },
     "This code can't be drawn" : {
       "comment" : "Shown in the Home Screen widget instead of the barcode when the card's code can't be drawn in its barcode format.",
       "localizations" : {
@@ -7991,6 +7861,9 @@
           }
         }
       }
+    },
+    "This link doesn't contain a card." : {
+      "comment" : "In the sheet that opens from a link to a shared card, when the link is damaged or holds no card."
     },
     "This will permanently delete all %lld cards. This action cannot be undone." : {
       "comment" : "Message in the delete-all dialog. The argument is how many cards there are, always at least one.",
@@ -8219,6 +8092,27 @@
         }
       }
     },
+    "Ticket" : {
+      "comment" : "Card icon picker, read by VoiceOver: a ticket."
+    },
+    "Tools" : {
+      "comment" : "Card icon picker, read by VoiceOver: a spanner and a screwdriver. A noun."
+    },
+    "Torch" : {
+      "comment" : "VoiceOver label for the button over the camera view in the new card form that turns the phone's light on and off. A noun."
+    },
+    "Train" : {
+      "comment" : "Card icon picker, read by VoiceOver: a train. A noun."
+    },
+    "Travel" : {
+      "comment" : "Heading in the card icon picker over icons for travel, cars and hotels. A noun."
+    },
+    "Trolley" : {
+      "comment" : "Card icon picker, read by VoiceOver: a supermarket trolley, or shopping cart."
+    },
+    "Turn it on in Settings to scan a card, or type the code below." : {
+      "comment" : "Under “Camera access is off” where the camera would be in the new card form, above the Open Settings button."
+    },
     "Turns full brightness on or off, so the barcode scans easily" : {
       "comment" : "VoiceOver hint for the Brightness Boost button on a card's screen. It works both ways: on when off, off when on.",
       "localizations" : {
@@ -8348,6 +8242,9 @@
           }
         }
       }
+    },
+    "Type the card's code below." : {
+      "comment" : "Under “No camera” where the camera would be in the new card form, on a device without a camera."
     },
     "UPC-E" : {
       "comment" : "Barcode format in the barcode type picker. A standard name: keep it as it is.",
@@ -8479,70 +8376,20 @@
         }
       }
     },
-    "When you arrive at one of these places, the barcode appears on your Lock Screen." : {
-      "comment" : "Footer under the card's places in the card form, explaining the arrival notification.",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "عند وصولك إلى أحد هذه الأماكن، يظهر الرمز الشريطي على شاشة القفل."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wenn du an einem dieser Orte ankommst, erscheint der Barcode auf dem Sperrbildschirm."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cuando llegues a uno de estos lugares, el código de barras aparecerá en la pantalla bloqueada."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lorsque vous arrivez à l’un de ces lieux, le code-barres s’affiche sur votre écran verrouillé."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Quando arrivi in uno di questi luoghi, il codice a barre appare sulla schermata di blocco."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "これらの場所に到着すると、バーコードがロック画面に表示されます。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "이 장소 중 한 곳에 도착하면 바코드가 잠금 화면에 표시됩니다."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Quando você chegar a um desses lugares, o código de barras aparecerá na sua Tela Bloqueada."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "一到这些地点，条形码就会显示在锁定屏幕上。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "當你抵達其中一個地點時，條碼會顯示在鎖定畫面上。"
-          }
-        }
-      }
+    "Version %@" : {
+      "comment" : "Heading for one version of the app on the What's New screen. The argument is its number, as in “1.4”."
+    },
+    "Wellbeing" : {
+      "comment" : "Card icon picker, read by VoiceOver: a person meditating, for wellbeing and yoga."
+    },
+    "What's New" : {
+      "comment" : "Settings row that opens the list of what changed in each version of the app.\nTitle of the screen, opened from Settings, that lists what each version of the app changed."
+    },
+    "When you arrive at one of these places, a notification reminds you. Tap it to open the card." : {
+      "comment" : "Footer under the card's places in the card form while Notify When I Arrive is on. “It” is the notification."
+    },
+    "Wine glass" : {
+      "comment" : "Card icon picker, read by VoiceOver: a wine glass, for bars and wine shops."
     },
     "Yellow" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker.",
@@ -8609,8 +8456,14 @@
         }
       }
     },
+    "You already have this card." : {
+      "comment" : "In the sheet for a card someone shared, above Open Card, when a card with the same code is already in the list."
+    },
+    "You are offline. Connect to the internet to search, or drag the map to the place." : {
+      "comment" : "Under the search field on the Add Location and Edit Location map when the device is offline, so it cannot search."
+    },
     "You're at %@" : {
-      "comment" : "VoiceOver label when the user is inside one of a card's locations. The argument is the place's name, such as Westway.",
+      "comment" : "VoiceOver label when the user is inside one of a card's locations. The argument is the place's name, such as Boulder Barn.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {

@@ -3,19 +3,19 @@ import XCTest
 /// The seeded cards (user content, so never translated) by their rows'
 /// identifiers, which end in the card's code (`ScreenshotSeed`).
 enum SeededCard {
-    /// The first card, with two places, the nearer one where you are.
-    static let tesco = "cardRow_634004024987531"
-    /// The second card.
-    static let costa = "cardRow_1234567890128"
-    static let boots = "cardRow_9780201379624"
-    /// A QR code.
-    static let westway = "cardRow_https://serby.net"
-    static let nectar = "cardRow_9988776655443"
-    /// The last card, below the fold at large text sizes.
-    static let ikea = "cardRow_7350053850019"
+    /// The first card, Joe's Market, with two places, the nearer one where you are.
+    static let joesMarket = "cardRow_482019375610284"
+    /// The second card, Local Roast Coffee.
+    static let localRoast = "cardRow_1234567890128"
+    static let greenLeaf = "cardRow_9780201379624"
+    /// Boulder Barn Climbing, a QR code.
+    static let boulderBarn = "cardRow_https://serby.net"
+    static let honeycomb = "cardRow_9988776655443"
+    /// The last card, Nordic Nest Home, below the fold at large text sizes.
+    static let nordicNest = "cardRow_2093847561024"
 
     /// Every row, in list order.
-    static let all = [tesco, costa, boots, westway, nectar, ikea]
+    static let all = [joesMarket, localRoast, greenLeaf, boulderBarn, honeycomb, nordicNest]
 }
 
 /// Getting around the app, so every UI test that visits a screen reaches it
@@ -70,14 +70,14 @@ extension XCUIApplication {
         XCTAssertTrue(name.waitForExistence(timeout: 5), "The card's screen did not open")
     }
 
-    /// Opens Costa's screen with a code its format, EAN-13, cannot draw, so
+    /// Opens Local Roast Coffee's screen with a code its format, EAN-13, cannot draw, so
     /// the screen shows the failure message on the barcode's plate. Every
-    /// seeded code draws, so it adds a digit to Costa's: fourteen digits are
+    /// seeded code draws, so it adds a digit to Local Roast Coffee's: fourteen digits are
     /// too many for EAN-13. The form gives the name focus a moment after it
     /// opens, which would take it back from a tapped code field, so the test
     /// waits for that and then lets Return move on to the code.
     func openCardWithFailedBarcode() {
-        openCard(SeededCard.costa)
+        openCard(SeededCard.localRoast)
         buttons["editCardButton"].tap()
         let name = textFields["nameTextField"]
         XCTAssertTrue(name.waitForExistence(timeout: 5), "The card's form did not open")

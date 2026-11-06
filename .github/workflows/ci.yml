@@ -1,11 +1,17 @@
 name: CI
 
+# Kept fast: the build, the unit tests and quick checks, in parallel jobs.
+# Screenshots are captured, composed and looked at locally before they are
+# committed; CI only checks the App Store images are present.
+
 on:
   push:
     branches: [ main ]
     paths-ignore:
       - '**.md'
       - 'docs/**'
+      - 'spec/**'
+      - '.claude/**'
       - '.gitignore'
       - 'Website/**'
   pull_request:
@@ -13,127 +19,90 @@ on:
     paths-ignore:
       - '**.md'
       - 'docs/**'
+      - 'spec/**'
+      - '.claude/**'
       - '.gitignore'
       - 'Website/**'
 
-jobs:
-  build-and-test:
-    runs-on: macos-26
+# A newer push makes an older run's result moot.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
 
+jobs:
+  checks:
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v5
-
-    - name: Validate checked-in screenshots
-      run: python3 scripts/validate-screenshots.py
 
     - uses: actions/setup-node@v4
       with:
         node-version: 24
+
+    - name: Check the App Store images are present
+      run: node scripts/check-store-images.ts
+
+    # The App Store listing text in metadata/ must fit App Store Connect's limits.
+    - name: Check App Store metadata
+      run: node scripts/check-metadata.ts
+
+    # changelog.json must be valid, start with the app's version, and match the
+    # files generated from it.
+    - name: Check the changelog
+      run: node scripts/check-changelog.ts
 
     # Every language in knownRegions is complete in every catalogue, with
     # matching placeholders and plural forms (scripts/l10n.ts).
     - name: Check translations are complete
       run: node scripts/l10n.ts check
 
-    - name: Test the translation tool
-      run: node --test scripts/l10n.test.ts
+    - name: Test the scripts
+      run: node --test scripts/*.test.ts
 
-    # Pre-create and boot the exact simulator used by xcodebuild. This avoids
-    # CoreSimulator creation/boot races seen on macos-26 runners.
-    - name: Resolve and warm simulator
-      id: sim
+  # Development code (Cards/Development: Storybook, previews, sample data,
+  # UI-test hooks) must never reach a release build.
+  release-check:
+    # The Xcode 27 image, so CI builds with the same Xcode as local builds (.xcode-version).
+    runs-on: xcode-27
+    steps:
+    - uses: actions/checkout@v5
+
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 24
+
+    - name: Select the Xcode in .xcode-version
       run: |
-        scripts/ci-resolve-sim.sh "iPhone 16 Pro Max" >> "$GITHUB_OUTPUT"
+        developer_dir="$(node scripts/select-xcode.ts)"
+        echo "DEVELOPER_DIR=$developer_dir" >> "$GITHUB_ENV"
+        "$developer_dir/usr/bin/xcodebuild" -version
 
-    - name: Build
-      run: |
-        xcodebuild build \
-          -project Cards.xcodeproj \
-          -scheme Cards \
-          -destination "platform=iOS Simulator,name=${{ steps.sim.outputs.device }},OS=${{ steps.sim.outputs.version }}"
-
-    # Development code (Cards/Development: Storybook, previews, sample data,
-    # UI-test hooks) must never reach a release build.
     - name: Check release build has no development code
-      run: node scripts/check-release-clean.ts
+      run: node scripts/check-release-build.ts
 
-    - name: Test
-      run: |
-        rm -rf /tmp/CardsTests.xcresult
-        xcodebuild test \
-          -project Cards.xcodeproj \
-          -scheme Cards \
-          -destination "platform=iOS Simulator,name=${{ steps.sim.outputs.device }},OS=${{ steps.sim.outputs.version }}" \
-          -only-testing:CardsTests \
-          -only-testing:CardsUITests/CardsScreenshotTests \
-          -resultBundlePath /tmp/CardsTests.xcresult \
-          -testLanguage en \
-          -testRegion US \
-          -enableCodeCoverage NO \
-          -collect-test-diagnostics never \
-          -retry-tests-on-failure \
-          -test-iterations 2
+  build-and-test:
+    runs-on: xcode-27
+    steps:
+    - uses: actions/checkout@v5
 
-    - name: Validate iPhone screenshot captures
-      run: |
-        rm -rf /tmp/CardsPhoneAttachments
-        xcrun xcresulttool export attachments \
-          --path /tmp/CardsTests.xcresult \
-          --output-path /tmp/CardsPhoneAttachments
-        python3 scripts/validate-screenshots.py \
-          --attachments /tmp/CardsPhoneAttachments \
-          --capture-set iphone
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 24
 
-    - name: Resolve and warm iPad simulator
-      id: ipad
+    - name: Select the Xcode in .xcode-version
       run: |
-        scripts/ci-resolve-sim.sh "iPad Pro 13-inch (M4)" >> "$GITHUB_OUTPUT"
+        developer_dir="$(node scripts/select-xcode.ts)"
+        echo "DEVELOPER_DIR=$developer_dir" >> "$GITHUB_ENV"
+        "$developer_dir/usr/bin/xcodebuild" -version
 
-    # The iPad simulator is booted just before this step, and a cold simulator
-    # sometimes times out loading accessibility before the UI test runner starts
-    # ("failed to initialize for UI testing"). That failure is the simulator's,
-    # so it gets up to two more attempts; any other failure fails at once.
-    - name: Test iPad screenshot capture
-      run: |
-        for attempt in 1 2 3; do
-          rm -rf /tmp/CardsIPadTests.xcresult
-          set +e
-          xcodebuild test \
-            -project Cards.xcodeproj \
-            -scheme Cards \
-            -destination "platform=iOS Simulator,name=${{ steps.ipad.outputs.device }},OS=${{ steps.ipad.outputs.version }}" \
-            -only-testing:CardsUITests/CardsScreenshotTests/testCaptureScreenshots \
-            -testLanguage en \
-            -testRegion US \
-            -enableCodeCoverage NO \
-            -collect-test-diagnostics never \
-            -resultBundlePath /tmp/CardsIPadTests.xcresult 2>&1 | tee /tmp/CardsIPadTests.log
-          status=${PIPESTATUS[0]}
-          set -e
-          [ "$status" -eq 0 ] && exit 0
-          if ! grep -qi "failed to initialize for UI testing" /tmp/CardsIPadTests.log; then
-            exit "$status"
-          fi
-          echo "::warning::Attempt $attempt: the iPad simulator was not ready for UI testing; retrying"
-          sleep 30
-        done
-        exit 1
-
-    - name: Validate iPad screenshot capture
-      run: |
-        rm -rf /tmp/CardsIPadAttachments
-        xcrun xcresulttool export attachments \
-          --path /tmp/CardsIPadTests.xcresult \
-          --output-path /tmp/CardsIPadAttachments
-        python3 scripts/validate-screenshots.py \
-          --attachments /tmp/CardsIPadAttachments \
-          --capture-set ipad
+    # The simulator boots in the background while the app and tests build, since
+    # each takes minutes on a fresh runner, then the unit tests run on it.
+    - name: Build and run the unit tests
+      run: node scripts/run-unit-tests.ts
 
     - name: Upload test result bundle
       if: ${{ failure() }}
       uses: actions/upload-artifact@v4
       with:
         name: CardsTests.xcresult
-        path: |
-          /tmp/CardsTests.xcresult
-          /tmp/CardsIPadTests.xcresult
+        path: /tmp/CardsTests.xcresult

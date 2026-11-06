@@ -33,24 +33,14 @@ struct SettingsViewTests {
 }
 
 /// The counts in Settings use the catalogue's English plural forms, so one
-/// card is never "1 cards".
+/// card is never "1 cards". The import result's counts are tested with
+/// `CardImport.summary`, in `CardFixesTests`.
 @MainActor
 struct SettingsCopyTests {
     private func english(_ resource: LocalizedStringResource) -> String {
         var resource = resource
         resource.locale = Locale(identifier: "en_GB")
         return String(localized: resource)
-    }
-
-    @Test func importResultCountsCards() {
-        #expect(english(SettingsScreen.importedMessage(count: 1)) == "Imported 1 card")
-        #expect(english(SettingsScreen.importedMessage(count: 12)) == "Imported 12 cards")
-    }
-
-    /// An export with no cards in it is valid JSON, so the import works, but
-    /// "Imported 0 cards" would read as though something went wrong.
-    @Test func importOfNoCardsSaysThereWereNone() {
-        #expect(english(SettingsScreen.importedMessage(count: 0)) == "No cards to import")
     }
 
     @Test func deleteAllMessageCountsCards() {

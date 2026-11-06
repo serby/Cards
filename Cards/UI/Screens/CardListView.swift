@@ -1,106 +1,187 @@
 import SwiftUI
 
-public struct CardRowView: View {
-    private let card: CardSummary
-    private let onTap: () -> Void
-    @State private var trigger = false
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-    @Environment(\.colorSchemeContrast) private var colorSchemeContrast
-
-    public init(card: CardSummary, onTap: @escaping () -> Void) {
-        self.card = card
-        self.onTap = onTap
-    }
-
-    public var body: some View {
-        Button {
-            trigger.toggle()
-            onTap()
-        } label: {
-            layout {
-                Text(card.name)
-                    .font(.headline)
-                    .foregroundStyle(card.color.rowInk)
-                    .multilineTextAlignment(.leading)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                if let proximity = card.proximity {
-                    ProximityLabel(proximity)
-                        .font(.subheadline)
-                        .foregroundStyle(card.color.rowInk)
-                }
-            }
-            .padding(.horizontal, 18)
-            .padding(.vertical, 20)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(card.color.rowFill, in: .rect(cornerRadius: 18))
-            // With Increase Contrast each row gets an edge, as its faint wash
-            // alone barely parts it from the background.
-            .overlay {
-                if colorSchemeContrast == .increased {
-                    RoundedRectangle(cornerRadius: 18).strokeBorder(Color.primaryText, lineWidth: 1)
-                }
-            }
-            .contentShape(.rect(cornerRadius: 18))
-        }
-        .buttonStyle(.plain)
-        .sensoryFeedback(trigger: trigger, { SensoryFeedback.impact(weight: .heavy) })
-    }
-
-    /// Name and distance side by side, stacked at accessibility text sizes.
-    private var layout: AnyLayout {
-        dynamicTypeSize.isAccessibilitySize
-            ? AnyLayout(VStackLayout(alignment: .leading, spacing: 6))
-            : AnyLayout(HStackLayout(alignment: .firstTextBaseline, spacing: 12))
-    }
-}
-
-/// The card list, driven entirely by `cards` and `actions`.
+/// The Cards tab: the card for where you are, then every card as a tile in a
+/// grid, with search and a choice of order. Driven entirely by its inputs and
+/// `actions`.
 public struct CardListView: View {
     private let cards: [CardSummary]
+    private let cardHere: CardDetail?
+    @Binding private var search: String
+    @Binding private var sortOrder: CardSortOrder
     private let actions: CardListActions
+    @State private var toolbarVisible = true
+    @State private var searchPresented = false
     @State private var deleteTrigger = false
+    @State private var dropTarget: CardSummary.ID?
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.accessibilityAnnouncer) private var announcer
 
-    public init(cards: [CardSummary], actions: CardListActions = CardListActions()) {
+    /// - Parameters:
+    ///   - cards: The cards to show, already searched and in order.
+    ///   - cardHere: The card for where you are, shown in full above the grid (SET-3).
+    public init(
+        cards: [CardSummary],
+        cardHere: CardDetail? = nil,
+        search: Binding<String> = .constant(""),
+        sortOrder: Binding<CardSortOrder> = .constant(.custom),
+        actions: CardListActions = CardListActions()
+    ) {
         self.cards = cards
+        self.cardHere = cardHere
+        _search = search
+        _sortOrder = sortOrder
         self.actions = actions
     }
 
     public var body: some View {
-        List {
-            ForEach(cards) { card in
-                CardRowView(card: card) { actions.selectCard(card.id) }
-                    .accessibilityIdentifier("cardRow_\(card.id)")
-                    // Swiping and dragging are not the only ways: the menu serves
-                    // pointer, keyboard, Voice Control and Switch Control, and the
-                    // actions VoiceOver, whose swipe-to-delete is already an action.
-                    .contextMenu {
-                        moveButtons(for: card)
-                        Divider()
-                        Button(role: .destructive) {
-                            delete(card)
-                        } label: {
-                            Label(
-                                LocalizedStringResource(
-                                    "Delete",
-                                    comment: "Menu item that deletes a card in the list, or a place in the card form. A verb."
-                                ),
-                                systemImage: "trash"
-                            )
-                        }
-                        .accessibilityIdentifier("deleteCardMenuItem")
-                    }
-                    .accessibilityActions { moveButtons(for: card) }
-                    .listRowBackground(Color.clear)
-                    .listRowSeparator(.hidden)
-                    .listRowInsets(EdgeInsets(top: 5, leading: 16, bottom: 5, trailing: 16))
+        ScrollView {
+            VStack(spacing: 16) {
+                if let cardHere {
+                    cardWhereYouAre(cardHere)
+                }
+                grid
             }
-            .onDelete(perform: delete)
-            .onMove(perform: actions.moveCards)
+            .padding(.horizontal, 16)
+            .padding(.vertical, 8)
         }
-        .listStyle(.plain)
-        .overlay {
-            if cards.isEmpty {
+        .overlay { emptyState }
+        .background(Color.primaryBackground)
+        .navigationTitle(Text("Cards", comment: "Title of the screen that lists the user's loyalty cards."))
+        .searchable(text: $search, isPresented: $searchPresented)
+        .sensoryFeedback(trigger: deleteTrigger, { SensoryFeedback.impact(weight: .medium) })
+        // Kept while searching, so the search field does not scroll away under you.
+        .toolbar(toolbarVisible || searchPresented || isSearching ? .visible : .hidden, for: .navigationBar)
+        .toolbar { toolbarItems }
+        .onScrollGeometryChange(for: CGFloat.self) { geometry in
+            geometry.contentOffset.y
+        } action: { _, newValue in
+            withAnimation(.easeInOut(duration: 0.3)) {
+                toolbarVisible = newValue <= 0
+            }
+        }
+    }
+
+    private var isSearching: Bool { CardArrangement.isFiltering(search) }
+
+    /// No cards at all, rather than none matching a search: the empty state
+    /// then offers its own Add Card button.
+    private var hasNoCards: Bool { cards.isEmpty && !isSearching }
+
+    /// Only custom order can be rearranged, and only with every card showing.
+    private var canReorder: Bool { sortOrder == .custom && !isSearching }
+
+    /// Two columns on iPhone and four on iPad, halved at the accessibility text
+    /// sizes so names stay readable (A11Y-3).
+    private var columns: [GridItem] {
+        let count = horizontalSizeClass == .regular ? 4 : 2
+        return Array(
+            repeating: GridItem(.flexible(), spacing: 12, alignment: .top),
+            count: dynamicTypeSize.isAccessibilitySize ? count / 2 : count
+        )
+    }
+
+    private var grid: some View {
+        LazyVGrid(columns: columns, spacing: 12) {
+            ForEach(cards) { card in
+                CardTileView(
+                    card: card,
+                    isDropTarget: dropTarget == card.id,
+                    onTap: { actions.selectCard(card.id) },
+                    onDelete: { delete(card) },
+                    onMoveUp: move(card, by: -1),
+                    onMoveDown: move(card, by: 1)
+                )
+                .if(canReorder) { tile in
+                    reorderable(tile, card: card)
+                }
+            }
+        }
+        .animation(.default, value: cards.map(\.id))
+    }
+
+    /// Drag a tile onto another and it takes that one's place (CARD-10).
+    private func reorderable(_ tile: some View, card: CardSummary) -> some View {
+        tile
+            .contentShape(.dragPreview, CardTileView.shape)
+            .draggable(card.id)
+            .dropDestination(for: String.self) { codes, _ in
+                guard let code = codes.first, code != card.id else { return false }
+                actions.moveCard(code, card.id)
+                return true
+            } isTargeted: { isTargeted in
+                if isTargeted {
+                    dropTarget = card.id
+                } else if dropTarget == card.id {
+                    dropTarget = nil
+                }
+            }
+    }
+
+    /// The tile's Move Up or Move Down: `card` one place earlier or later in
+    /// custom order, as dropping it on its neighbour would. Nil where the card
+    /// cannot go that way, or the order cannot be rearranged.
+    private func move(_ card: CardSummary, by offset: Int) -> (() -> Void)? {
+        guard canReorder,
+              let index = cards.firstIndex(of: card),
+              cards.indices.contains(index + offset)
+        else { return nil }
+        let target = cards[index + offset].id
+        return { actions.moveCard(card.id, target) }
+    }
+
+    /// Deletes with a haptic, and says which card went, as the tile just
+    /// disappears.
+    private func delete(_ card: CardSummary) {
+        deleteTrigger.toggle()
+        actions.deleteCard(card.id)
+        announcer.announce(Announcements.deletedCards([card.name]))
+    }
+
+    private func cardWhereYouAre(_ card: CardDetail) -> some View {
+        Button {
+            actions.selectCard(card.id)
+        } label: {
+            CardFaceView(card: card)
+                // Read as the tile is, the name and then the distance, rather than every part of the face.
+                .accessibilityRepresentation {
+                    HStack {
+                        Text(card.name)
+                        if let proximity = card.proximity {
+                            ProximityLabel(proximity)
+                        }
+                    }
+                    .accessibilityElement(children: .combine)
+                }
+        }
+        .buttonStyle(.plain)
+        // A card face as wide as an iPad would leave no room for the grid.
+        .frame(maxWidth: 560)
+        .accessibilityHint(
+            Text(
+                "Opens the card for where you are",
+                comment: "VoiceOver hint for the card shown in full at the top of the Cards tab when the user is at one of its places."
+            )
+        )
+        .accessibilityIdentifier("cardWhereYouAre")
+    }
+
+    @ViewBuilder
+    private var emptyState: some View {
+        if cards.isEmpty {
+            if isSearching {
+                ContentUnavailableView {
+                    Label(
+                        LocalizedStringResource("No Cards Match", comment: "Title shown on the Cards tab when no card's name matches the search."),
+                        systemImage: "magnifyingglass"
+                    )
+                } description: {
+                    Text(
+                        "Check the spelling, or try another name.",
+                        comment: "Under “No Cards Match” on the Cards tab, when a search finds no card."
+                    )
+                }
+            } else {
                 ContentUnavailableView {
                     Label(
                         LocalizedStringResource("No Cards Yet", comment: "Title of the empty card list, before the user has added a card."),
@@ -117,70 +198,93 @@ public struct CardListView: View {
                 }
             }
         }
-        .scrollContentBackground(.hidden)
-        .background(Color.primaryBackground)
-        .navigationTitle(Text("Cards", comment: "Title of the screen that lists the user's loyalty cards."))
-        .sensoryFeedback(trigger: deleteTrigger, { SensoryFeedback.impact(weight: .medium) })
-        .toolbar {
-            // While the list is empty its own Add Card button is the one to use;
-            // two buttons with one name would make Voice Control ask which.
-            if !cards.isEmpty {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: actions.addCard) {
-                        Image(systemName: "barcode.viewfinder")
+    }
+
+    @ToolbarContentBuilder
+    private var toolbarItems: some ToolbarContent {
+        ToolbarItem(placement: .topBarTrailing) {
+            Menu {
+                Picker(selection: $sortOrder) {
+                    ForEach(CardSortOrder.allCases) { order in
+                        Label(order.title, systemImage: order.systemImage)
+                            .tag(order)
                     }
-                    .foregroundColor(.accent)
-                    .keyboardShortcut("n")
-                    .accessibilityIdentifier("addCardButton")
-                    .accessibilityLabel(
-                        Text("Add Card", comment: "VoiceOver label for the toolbar button, a barcode scanner icon, that adds a new card.")
-                    )
+                } label: {
+                    Text("Sort By", comment: "Heading of the choices in the Cards tab's Sort menu, which sets the order of the cards.")
                 }
+            } label: {
+                Label(
+                    LocalizedStringResource(
+                        "Sort",
+                        comment: "VoiceOver label for the toolbar menu on the Cards tab that chooses the order of the cards. A verb."
+                    ),
+                    systemImage: "arrow.up.arrow.down"
+                )
+            }
+            .foregroundColor(.accent)
+            .accessibilityIdentifier("sortMenu")
+        }
+        // While there are no cards the empty list's own Add Card button is the
+        // one to use; two buttons with one name would make Voice Control ask which.
+        if !hasNoCards {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button(action: actions.addCard) {
+                    Image(systemName: "barcode.viewfinder")
+                }
+                .foregroundColor(.accent)
+                .keyboardShortcut("n")
+                .accessibilityIdentifier("addCardButton")
+                .accessibilityLabel(
+                    Text("Add Card", comment: "VoiceOver label for the toolbar button, a barcode scanner icon, that adds a new card.")
+                )
             }
         }
-    }
-
-    /// Move Up and Move Down, where the card can move that way.
-    @ViewBuilder
-    private func moveButtons(for card: CardSummary) -> some View {
-        if let index = cards.firstIndex(of: card) {
-            if index > 0 {
-                Button {
-                    actions.moveCards(IndexSet(integer: index), index - 1)
-                } label: {
-                    Label(
-                        LocalizedStringResource("Move Up", comment: "Menu item and VoiceOver action that moves a card one place up the list."),
-                        systemImage: "arrow.up"
-                    )
-                }
-                .accessibilityIdentifier("moveCardUpMenuItem")
-            }
-            if index < cards.count - 1 {
-                Button {
-                    // Past the next card, as a List move counts its destination.
-                    actions.moveCards(IndexSet(integer: index), index + 2)
-                } label: {
-                    Label(
-                        LocalizedStringResource("Move Down", comment: "Menu item and VoiceOver action that moves a card one place down the list."),
-                        systemImage: "arrow.down"
-                    )
-                }
-                .accessibilityIdentifier("moveCardDownMenuItem")
-            }
-        }
-    }
-
-    private func delete(_ card: CardSummary) {
-        guard let index = cards.firstIndex(of: card) else { return }
-        delete(IndexSet(integer: index))
-    }
-
-    /// Deletes with a haptic, and says which cards went, as the row just
-    /// disappears.
-    private func delete(_ offsets: IndexSet) {
-        let names = offsets.map { cards[$0].name }
-        deleteTrigger.toggle()
-        actions.deleteCards(offsets)
-        announcer.announce(Announcements.deletedCards(names))
     }
 }
+
+extension CardSortOrder {
+    var title: LocalizedStringResource {
+        switch self {
+        case .lastViewed:
+            LocalizedStringResource(
+                "Last Viewed",
+                comment: "Choice in the Cards tab's Sort menu: the card opened most recently first."
+            )
+        case .custom:
+            LocalizedStringResource(
+                "Custom Order",
+                comment: "Choice in the Cards tab's Sort menu: the order the user set by dragging the cards."
+            )
+        case .location:
+            LocalizedStringResource(
+                "Location",
+                comment: "Choice in the Cards tab's Sort menu: the cards with places nearest to the user first. A noun."
+            )
+        }
+    }
+
+    var systemImage: String {
+        switch self {
+        case .lastViewed:
+            "clock"
+        case .custom:
+            "line.3.horizontal"
+        case .location:
+            "location"
+        }
+    }
+}
+
+#if DEBUG
+#Preview("Populated") {
+    NavigationStack {
+        CardListView(cards: CardSummary.samples)
+    }
+}
+
+#Preview("Empty") {
+    NavigationStack {
+        CardListView(cards: [])
+    }
+}
+#endif
