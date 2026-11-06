@@ -67,4 +67,19 @@ public struct CardDetailScreen: View {
     .environment(LocationService())
     .modelContainer(for: CardItem.self, inMemory: true)
 }
+
+#Preview("Several places") {
+    let item = CardItem(
+        code: "482019375610284",
+        name: "Joe's Market",
+        barcodeType: .code128,
+        color: .blue,
+        locations: CardLocation.joesMarket
+    )
+    NavigationStack {
+        CardDetailScreen(item: item, navigationManager: NavigationManager())
+    }
+    .environment(LocationService(fixedLocation: .sampleHere))
+    .modelContainer(for: CardItem.self, inMemory: true)
+}
 #endif

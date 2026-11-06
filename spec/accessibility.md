@@ -17,6 +17,7 @@ As someone using VoiceOver, I want every card read in plain words, so that I can
 - Edit reads "Edit card", with the hint "Tap to edit this card's details".
 - The brightness button reads "Brightness Boost", with the hint "Toggles screen brightness to maximum for easier barcode scanning".
 - "Add current location" has the hint "Opens a map to save where you are as one of this card's places" (1.3).
+- In preparation for 1.4: on a card with more than one place, "Nearest places", or "Places", reads as a heading, and each place reads as a button the way its distance does, such as "350 m from Joe's Market Kensington", with the hint "Opens this place in Maps" (PLACE-9).
 - In the edit form the fields read "Card name" and "Card code", the type menu "Barcode type", and Save "Save card".
 - Save's hint is "Save changes to this card", or "Needs a name and a code no other card uses" while it is disabled (CARD-3, CARD-9) (1.3).
 
@@ -42,6 +43,7 @@ As a card holder who uses large text, I want the app to grow with my text size, 
 - At the accessibility text sizes, a list row stacks the name above the distance (1.3). In preparation for 1.4: a tile always has the name above the distance, and at those sizes the grid has half as many columns, one on iPhone and two on iPad (CARD-10).
 - The location sheet's fields are at least 44 points high and grow with the text (1.3).
 - Distances never wrap: they stay on one line (PLACE-6).
+- In preparation for 1.4: in the card screen's list of places, long names wrap, and at the accessibility text sizes each distance moves below its name. The card screen scrolls (PLACE-9).
 
 **Since:** 1.0
 **Where:** `Cards/UI/Screens/CardListView.swift`, `Cards/UI/Screens/LocationPickerView.swift`, `Cards/UI/Components/ProximityLabel.swift`

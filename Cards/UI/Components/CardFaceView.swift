@@ -2,19 +2,27 @@ import SwiftUI
 
 /// The card face: its colour, with the name, the barcode, and the number and
 /// date on white panels. The card screen shows it with a copy button beside the
-/// number; anywhere else (a shared image, the card at the top of the list) shows
-/// it as it is.
-public struct CardFaceView<NumberAccessory: View>: View {
+/// number, and the card's places on a panel below (PLACE-9); anywhere else (a
+/// shared image, the card at the top of the list) shows it as it is.
+public struct CardFaceView<NumberAccessory: View, Footer: View>: View {
     private let card: CardDetail
     /// How wide `numberAccessory` is, so a matching space on the other side keeps
     /// the number centred on its panel.
     private let accessoryWidth: CGFloat
     private let numberAccessory: NumberAccessory
+    /// Panels below the number's, in the same column; each takes `cardPanel()`.
+    private let footer: Footer
 
-    public init(card: CardDetail, accessoryWidth: CGFloat, @ViewBuilder numberAccessory: () -> NumberAccessory) {
+    public init(
+        card: CardDetail,
+        accessoryWidth: CGFloat,
+        @ViewBuilder numberAccessory: () -> NumberAccessory,
+        @ViewBuilder footer: () -> Footer
+    ) {
         self.card = card
         self.accessoryWidth = accessoryWidth
         self.numberAccessory = numberAccessory()
+        self.footer = footer()
     }
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
@@ -61,6 +69,8 @@ public struct CardFaceView<NumberAccessory: View>: View {
                     .accessibilityAddTraits(.isStaticText)
             }
             .cardPanel()
+
+            footer
         }
         .padding(CardGeometry.inset)
         .frame(maxWidth: .infinity)
@@ -90,14 +100,21 @@ public struct CardFaceView<NumberAccessory: View>: View {
     }
 }
 
-public extension CardFaceView where NumberAccessory == EmptyView {
-    /// The face with nothing beside the number.
+public extension CardFaceView where Footer == EmptyView {
+    /// The face with nothing below the number.
+    init(card: CardDetail, accessoryWidth: CGFloat, @ViewBuilder numberAccessory: () -> NumberAccessory) {
+        self.init(card: card, accessoryWidth: accessoryWidth, numberAccessory: numberAccessory) { EmptyView() }
+    }
+}
+
+public extension CardFaceView where NumberAccessory == EmptyView, Footer == EmptyView {
+    /// The face with nothing beside or below the number.
     init(card: CardDetail) {
         self.init(card: card, accessoryWidth: 0) { EmptyView() }
     }
 }
 
-private extension View {
+extension View {
     /// A white panel for text on the card face, its corners nested inside the card's.
     func cardPanel() -> some View {
         padding(.vertical, 12)

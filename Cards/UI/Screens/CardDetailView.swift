@@ -35,19 +35,26 @@ public struct CardDetailView: View {
     }
 
     public var body: some View {
-        VStack {
-            CardFaceView(card: card, accessoryWidth: Self.copyButtonSize) {
-                copyCodeButton
-            }
-            .shadow(color: .black.opacity(0.12), radius: 16, y: 8)
+        // Scrolls once a card's places make it taller than the screen (PLACE-9).
+        ScrollView {
+            VStack {
+                CardFaceView(card: card, accessoryWidth: Self.copyButtonSize) {
+                    copyCodeButton
+                } footer: {
+                    if card.places.isListed {
+                        PlacesPanel(places: card.places)
+                    }
+                }
+                .shadow(color: .black.opacity(0.12), radius: 16, y: 8)
 
-            // Pointless where the card already is, so it goes once you are inside one of its places.
-            if card.proximity?.isHere != true {
-                addCurrentLocationButton
+                // Pointless where the card already is, so it goes once you are inside one of its places.
+                if card.proximity?.isHere != true {
+                    addCurrentLocationButton
+                }
             }
-            Spacer()
+            .padding()
         }
-        .padding()
+        .scrollBounceBehavior(.basedOnSize)
         .sheet(isPresented: $showsLocationPicker) {
             LocationPickerView(
                 centre: mapCentre,
@@ -182,6 +189,99 @@ public struct CardDetailView: View {
     }
 }
 
+/// A card's places on a white panel at the foot of its face (PLACE-9): each
+/// name with its distance, nearest first, or in the card's order while where
+/// you are is unknown. A place opens in Maps.
+private struct PlacesPanel: View {
+    let places: CardPlaces
+
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @Environment(\.displayScale) private var displayScale
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Text(places.hasDistances ? "Nearest places" : "Places")
+                .font(.footnote.weight(.semibold))
+                .foregroundStyle(CardPanel.secondaryInk)
+                .accessibilityAddTraits(.isHeader)
+                .accessibilityIdentifier("cardPlacesHeading")
+
+            ForEach(Array(places.listed.enumerated()), id: \.element.id) { index, place in
+                if index > 0 {
+                    separator
+                }
+                row(place)
+            }
+
+            if places.unlisted > 0 {
+                Text(places.unlisted == 1 ? "1 more place" : "\(places.unlisted) more places")
+                    .font(.footnote)
+                    .foregroundStyle(CardPanel.secondaryInk)
+                    .padding(.top, 4)
+                    .accessibilityIdentifier("cardMorePlacesText")
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .cardPanel()
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("cardPlacesList")
+    }
+
+    /// One place, tall enough to tap, read as its name and distance (A11Y-1).
+    @ViewBuilder
+    private func row(_ place: NearbyPlace) -> some View {
+        if let url = place.location.mapsURL {
+            Link(destination: url) {
+                rowContent(place)
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(spoken(place))
+            .accessibilityHint("Opens this place in Maps")
+            .accessibilityIdentifier("cardPlaceRow")
+        } else {
+            rowContent(place)
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel(spoken(place))
+                .accessibilityIdentifier("cardPlaceRow")
+        }
+    }
+
+    /// The name, wrapping as far as it needs, with the distance beside it, or
+    /// below it at the accessibility text sizes.
+    private func rowContent(_ place: NearbyPlace) -> some View {
+        let layout = dynamicTypeSize.isAccessibilitySize
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: 4))
+            : AnyLayout(HStackLayout(alignment: .firstTextBaseline, spacing: 12))
+        return layout {
+            Text(place.location.name)
+                .foregroundStyle(CardPanel.ink)
+                .multilineTextAlignment(.leading)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            if let proximity = place.proximity {
+                ProximityLabel(proximity)
+                    .foregroundStyle(CardPanel.secondaryInk)
+                    .fixedSize()
+            }
+        }
+        .font(.subheadline)
+        .padding(.vertical, 10)
+        .frame(minHeight: 44)
+        .contentShape(.rect)
+    }
+
+    private func spoken(_ place: NearbyPlace) -> String {
+        place.proximity?.spokenDescription ?? place.location.name
+    }
+
+    /// A hairline in the panel's ink, which stays dark on the white panel in dark mode.
+    private var separator: some View {
+        Rectangle()
+            .fill(CardPanel.ink.opacity(0.12))
+            .frame(height: 1 / displayScale)
+            .accessibilityHidden(true)
+    }
+}
+
 #if DEBUG
 #Preview("Sample") {
     @Previewable @State var boost = true
@@ -192,10 +292,19 @@ public struct CardDetailView: View {
     .environment(\.accessibilityAnnouncer, .silent)
 }
 
-#Preview("Invalid code") {
+#Preview("Seven places") {
     @Previewable @State var boost = true
     NavigationStack {
-        CardDetailView(card: .invalidCode, brightnessBoost: $boost)
+        CardDetailView(card: .sevenPlaces, brightnessBoost: $boost)
+    }
+    .environment(\.screenBrightness, .simulated(BrightnessBox()))
+    .environment(\.accessibilityAnnouncer, .silent)
+}
+
+#Preview("Places, no location") {
+    @Previewable @State var boost = true
+    NavigationStack {
+        CardDetailView(card: .placesWithoutLocation, brightnessBoost: $boost)
     }
     .environment(\.screenBrightness, .simulated(BrightnessBox()))
     .environment(\.accessibilityAnnouncer, .silent)

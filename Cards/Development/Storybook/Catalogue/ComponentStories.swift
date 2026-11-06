@@ -286,7 +286,9 @@ private let cardFaceStory = Story(
         .options("Colour", CardColor.allNames, CardDetail.sample.color.rawValue),
         SymbolKnob.knob(CardDetail.sample.symbol),
         .toggle("Copy button", true)
-    ] + ProximityKnobs.knobs(place: "Green Leaf Shepherd's Bush", distance: 320),
+    ] + ProximityKnobs.knobs(place: "Green Leaf Shepherd's Bush", distance: 320) + [
+        .toggle("Panel below", false)
+    ],
     gallery: [CardDetail.sample, .qr, .invalidCode].map { card in
         (name: card.name, view: AnyView(CardFaceView(card: card).padding()))
     }
@@ -302,15 +304,19 @@ private let cardFaceStory = Story(
         symbol: knobs.symbol
     )
     return AnyView(
-        Group {
+        CardFaceView(card: card, accessoryWidth: knobs.bool("Copy button") ? 44 : 0) {
             if knobs.bool("Copy button") {
-                CardFaceView(card: card, accessoryWidth: 44) {
-                    Image(systemName: "doc.on.doc")
-                        .foregroundStyle(CardPanel.secondaryInk)
-                        .frame(width: 44, height: 44)
-                }
-            } else {
-                CardFaceView(card: card)
+                Image(systemName: "doc.on.doc")
+                    .foregroundStyle(CardPanel.secondaryInk)
+                    .frame(width: 44, height: 44)
+            }
+        } footer: {
+            // The card screen puts its places here (PLACE-9).
+            if knobs.bool("Panel below") {
+                Text("A panel below the number")
+                    .font(.subheadline)
+                    .foregroundStyle(CardPanel.ink)
+                    .cardPanel()
             }
         }
         .padding()

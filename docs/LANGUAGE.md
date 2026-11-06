@@ -31,7 +31,7 @@ Use this cast instead, so examples agree wherever they appear:
 
 | Business | Its places | Stands in for |
 |---|---|---|
-| Joe's Market | Joe's Market Notting Hill, Joe's Market Kensington, Joe's Market Holland Park | A supermarket loyalty card |
+| Joe's Market | Joe's Market Notting Hill, Joe's Market Kensington, Joe's Market Holland Park, and where an example needs more than five places, Joe's Market Earl's Court, Joe's Market Bayswater, Joe's Market Shepherd's Bush and Joe's Market Ladbroke Grove | A supermarket loyalty card |
 | Local Roast Coffee | Local Roast Portobello, Local Roast Notting Hill | A coffee shop |
 | Green Leaf Pharmacy | Green Leaf Shepherd's Bush | A pharmacy |
 | Boulder Barn Climbing | Boulder Barn | A gym or climbing wall, and the QR code example |

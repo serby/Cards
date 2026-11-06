@@ -16,6 +16,24 @@ public extension CardLocation {
         latitudinalMeters: 1_200,
         longitudinalMeters: 1_200
     )
+
+    /// Joe's Market's places round Notting Hill, in the card's order, which is
+    /// not the order of their distance from `CLLocation.sampleHere` (PLACE-9).
+    static let joesMarket: [CardLocation] = [
+        CardLocation(name: "Joe's Market Notting Hill", latitude: 51.5090, longitude: -0.1960, radius: 150),
+        CardLocation(name: "Joe's Market Kensington", latitude: 51.4990, longitude: -0.1990),
+        CardLocation(name: "Joe's Market Holland Park", latitude: 51.5075, longitude: -0.2058, radius: 150),
+        CardLocation(name: "Joe's Market Earl's Court", latitude: 51.4920, longitude: -0.1934),
+        CardLocation(name: "Joe's Market Bayswater", latitude: 51.5122, longitude: -0.1879, radius: 150),
+        CardLocation(name: "Joe's Market Shepherd's Bush", latitude: 51.5046, longitude: -0.2187),
+        CardLocation(name: "Joe's Market Ladbroke Grove", latitude: 51.5172, longitude: -0.2107, radius: 150)
+    ]
+}
+
+public extension CLLocation {
+    /// Notting Hill Gate, inside Joe's Market Notting Hill: where you are in the
+    /// stories and previews that measure distances to the sample places.
+    static let sampleHere = CLLocation(latitude: 51.5091, longitude: -0.1963)
 }
 
 public extension CardSummary {
@@ -98,6 +116,31 @@ public extension CardDetail {
         proximity: CardProximity(placeName: "Joe's Market Notting Hill", distance: 0),
         symbol: "basket"
     )
+}
+
+/// Joe's Market with several places, for the card screen's list of them (PLACE-9).
+public extension CardDetail {
+    /// Joe's Market with its first `places` sample places, measured from `location`.
+    static func joesMarket(places: Int, near location: CLLocation? = .sampleHere) -> CardDetail {
+        let locations = Array(CardLocation.joesMarket.prefix(places))
+        return CardDetail(
+            id: "482019375610284",
+            name: "Joe's Market",
+            code: "482019375610284",
+            barcodeType: .code128,
+            timestamp: Date(timeIntervalSince1970: 1_700_000_000),
+            color: .blue,
+            places: CardPlaces(locations, near: location),
+            proximity: locations.proximity(to: location)
+        )
+    }
+
+    /// Two places, as Joe's Market has in the screenshot cards.
+    static let twoPlaces = joesMarket(places: 2)
+    /// Seven places: the list shows the nearest five and says there are 2 more.
+    static let sevenPlaces = joesMarket(places: 7)
+    /// Seven places while where you are is unknown: the first five in the card's order.
+    static let placesWithoutLocation = joesMarket(places: 7, near: nil)
 }
 
 public extension CardShare {

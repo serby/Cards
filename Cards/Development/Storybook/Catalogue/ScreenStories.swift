@@ -105,19 +105,21 @@ private let cardDetailStory = Story(
         .number("Created (days ago)", 30, in: 0...3_650, step: 1),
         .toggle("Brightness boost", true),
         .toggle("Map opens at Boulder Barn", true),
+        // Joe's Market's sample places, listed below the face from two (PLACE-9).
+        // "Has location" also decides whether they have distances.
+        .number("Places", 0, in: 0...Double(CardLocation.joesMarket.count), step: 1),
         .toggle("Share menu", true)
     ] + ProximityKnobs.knobs(place: "Green Leaf Shepherd's Bush", distance: 320),
-    gallery: [CardDetail.sample, .qr, .invalidCode].map { card in
-        (
-            name: card.name,
-            view: pushed {
-                Stateful(true) { boost in
-                    CardDetailView(card: card, brightnessBoost: boost, share: .sample(for: card))
-                }
-            }
-        )
-    }
+    gallery: [CardDetail.sample, .qr, .invalidCode].map { card in (name: card.name, view: cardDetailScreen(card)) } + [
+        (name: "2 places", view: cardDetailScreen(.twoPlaces)),
+        (name: "7 places", view: cardDetailScreen(.sevenPlaces)),
+        (name: "No location", view: cardDetailScreen(.placesWithoutLocation))
+    ]
 ) { knobs in
+    let places = CardPlaces(
+        Array(CardLocation.joesMarket.prefix(knobs.integer("Places"))),
+        near: knobs.bool(ProximityKnobs.hasLocation) ? .sampleHere : nil
+    )
     let card = CardDetail(
         id: "story",
         name: knobs.string("Name"),
@@ -125,6 +127,7 @@ private let cardDetailStory = Story(
         barcodeType: .named(knobs.option("Type")),
         timestamp: Date.now.addingTimeInterval(-knobs.number("Created (days ago)") * 86_400),
         color: .named(knobs.option("Colour")),
+        places: places,
         proximity: knobs.proximity(),
         symbol: knobs.symbol
     )
@@ -135,6 +138,16 @@ private let cardDetailStory = Story(
             mapCentre: knobs.bool("Map opens at Boulder Barn") ? CardLocation.sample.coordinate : nil,
             share: knobs.bool("Share menu") ? .sample(for: card) : nil
         )
+    }
+}
+
+/// The card screen for `card`, as the gallery shows it.
+@MainActor
+private func cardDetailScreen(_ card: CardDetail) -> AnyView {
+    pushed {
+        Stateful(true) { boost in
+            CardDetailView(card: card, brightnessBoost: boost, share: .sample(for: card))
+        }
     }
 }
 
