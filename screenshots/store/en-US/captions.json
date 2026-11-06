@@ -4,8 +4,8 @@
     "screen": "01_CardList",
     "color": "blue",
     "layout": "screen",
-    "title": "Every card in full color",
-    "subtitle": "Loyalty, membership and gym cards, ready to scan"
+    "title": "All your loyalty cards",
+    "subtitle": "As many as you like, with no ads"
   },
   {
     "file": "02_Scan",
@@ -13,7 +13,7 @@
     "color": "graphite",
     "layout": "screen",
     "title": "Ready at the checkout",
-    "subtitle": "A bright, clear barcode"
+    "subtitle": "Open a card and the screen brightens"
   },
   {
     "file": "03_Widget",
@@ -21,7 +21,7 @@
     "color": "teal",
     "layout": "band",
     "title": "The card for where you are",
-    "subtitle": "On your Home Screen, with the widget"
+    "subtitle": "On your Home Screen and when you arrive"
   },
   {
     "file": "04_Places",
@@ -32,11 +32,19 @@
     "subtitle": "Add the places you use each card"
   },
   {
-    "file": "05_Colours",
+    "file": "05_Share",
+    "screen": "06_ShareCard",
+    "color": "green",
+    "layout": "screen",
+    "title": "Share a card",
+    "subtitle": "As a link or a picture"
+  },
+  {
+    "file": "06_Colours",
     "screen": "03_EditCard",
     "color": "purple",
     "layout": "screen",
     "title": "Any color you like",
-    "subtitle": "Pick your own to match your card"
+    "subtitle": "And an icon for every card"
   }
 ]

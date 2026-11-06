@@ -1,25 +1,25 @@
-Card Barcodes keeps your loyalty, membership and gym cards on your iPhone, ready to scan at the till.
-
-SCAN A CARD IN SECONDS
-Point the camera at a card's barcode and Card Barcodes reads it. It supports QR codes, EAN-13, EAN-8, UPC-E, Code 128, Code 39, Code 93, Aztec and PDF417. If a card has no barcode, type its number in.
+Card Barcodes keeps every loyalty and membership card on your iPhone, ready to scan. It is free, with no ads, no in-app purchases and no limit on how many cards you keep, and it always will be.
 
 READY AT THE TILL
 Open a card and the screen brightens, so the scanner reads it first time. The number sits under the barcode for when it needs typing in.
 
-YOUR NEAREST CARD ON THE HOME SCREEN
-Add the widget and it shows the barcode of the card for where you are, or a card you choose. Tap it to open the card.
+THE RIGHT CARD WHEN YOU ARRIVE
+Add the places you use a card, from the map or by searching for a shop, a street or a postcode. When you get there, a notification reminds you, and tapping it opens the card. The Home Screen widget shows the card for where you are, and a card with several places lists the five nearest.
 
-A REMINDER WHEN YOU ARRIVE
-Add the places you use a card, from the map or by postcode. When you get there, a notification reminds you, and tapping it opens the card. The list shows how far away each card's places are, and you can add where you are straight from a card.
+ADD A CARD IN SECONDS
+Point the camera at a card's barcode, or choose a photo or a file of it. Card Barcodes reads QR codes, EAN-13, EAN-8, UPC-E, Code 128, Code 39, Code 93, Aztec and PDF417. If a card has no barcode, type its number in.
+
+FIND AND SHARE
+Search your cards and sort them by last viewed, your own order or the nearest place. Share a card as a link someone can add to their own Card Barcodes, or as a picture.
 
 EVERY CARD IN ITS OWN COLOUR
-Choose from 23 colours or pick any colour you like. Text stays readable on all of them.
+Choose from 23 colours or any colour you like, and give each card an icon. Text stays readable on all of them.
 
 ON YOUR IPHONE AND IPAD
 Your cards sync through your own iCloud account, so they are on your iPhone, iPad and iPhone Duo. There is no account to create.
 
 PRIVATE
-There are no ads or analytics, and nothing tracks you. Your current location is only used on your device. Export your cards to a file whenever you want.
+There are no ads or analytics, and nothing tracks you. Your location stays on your device, except that Apple Maps is asked to find and name the places you add. Export your cards to a file whenever you want.
 
 FOR EVERYONE
 Card Barcodes works with VoiceOver, larger text sizes and dark mode.

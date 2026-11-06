@@ -1,1 +1,1 @@
-membership,rewards,points,qr,code,gym,library,shop,pass,discount,coupon,fob,widget,nearby,colour
+store,membership,rewards,points,gym,library,qr,code,scanner,coupon,pass,keyring,fob,widget,nearby
