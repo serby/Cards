@@ -103,6 +103,7 @@ private final class NotificationCenterStandIn {
     var client: NotificationClient {
         NotificationClient(
             add: { [self] alert in added.append(alert) },
+            addAfter: { _, _ in Issue.record("The scheduler only schedules arrivals") },
             removeAllPending: { [self] in removals += 1 },
             requestAuthorization: { [self] in
                 authorizationRequests += 1

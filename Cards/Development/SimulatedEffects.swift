@@ -33,6 +33,7 @@ public extension NotificationClient {
     /// previews of the connectors never prompt or notify.
     static let silent = Self(
         add: { _ in },
+        addAfter: { _, _ in },
         removeAllPending: {},
         requestAuthorization: { false },
         authorizationStatus: { .notDetermined }
