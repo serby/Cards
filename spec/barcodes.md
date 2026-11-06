@@ -53,5 +53,5 @@ As a card holder, I want the screen at full brightness while I show a card, so t
 - The Settings caption reads "Boosts brightness when viewing card to improve scannability".
 
 **Since:** 1.0
-**Where:** `Cards/UI/Screens/CardDetailView.swift:94-157`, `Cards/UI/Environment/ScreenBrightness.swift`, `Cards/Features/CardDetailScreen.swift`, `Cards/UI/Screens/SettingsListView.swift`
+**Where:** `Cards/UI/Screens/CardDetailView.swift`, `Cards/UI/Environment/ScreenBrightness.swift`, `Cards/Features/CardDetailScreen.swift`, `Cards/UI/Screens/SettingsListView.swift`
 **Notes:** The brightness is put back when the card screen goes away, which includes opening Edit from it. The app doesn't put it back itself when it goes to the background with a card open.

@@ -34,7 +34,7 @@ As a card holder, I want to type a postcode and jump there, so that I can add a 
 - Searching for an empty or blank postcode does nothing.
 
 **Since:** 1.3
-**Where:** `Cards/UI/Screens/LocationPickerView.swift:135-214`, `Cards/Core/Services/PostcodeLookup.swift`
+**Where:** `Cards/UI/Screens/LocationPickerView.swift`, `Cards/Core/Services/PostcodeLookup.swift`
 
 ### PLACE-3: Set how far round a place counts as there
 
@@ -60,7 +60,7 @@ As a card holder, I want to save the place I am at from the card itself, so that
 - The button also shows when the app doesn't know where you are.
 
 **Since:** 1.3
-**Where:** `Cards/UI/Screens/CardDetailView.swift:77-91`, `Cards/UI/Screens/CardDetailView.swift:127-140`, `Cards/Features/CardDetailScreen.swift:41-44`, `CardsUITests/CardsUITests.swift` (`testAddCurrentLocationFromCard`)
+**Where:** `Cards/UI/Screens/CardDetailView.swift`, `Cards/UI/Screens/CardDetailView.swift`, `Cards/Features/CardDetailScreen.swift`, `CardsUITests/CardsUITests.swift` (`testAddCurrentLocationFromCard`)
 
 ### PLACE-5: Remove a place
 
@@ -99,7 +99,7 @@ As a card holder, I want the app to ask before it uses my location, and only use
 - Without permission, places can still be added by postcode or by dragging the map, but no distances show (PLACE-6) and iOS doesn't deliver arrival notifications (ARR-1).
 
 **Since:** 1.3
-**Where:** `Cards/Core/Services/LocationService.swift`, `Cards/Features/CardListScreen.swift:35-41`, `Info.plist`
+**Where:** `Cards/Core/Services/LocationService.swift`, `Cards/Features/CardListScreen.swift`, `Info.plist`
 **Notes:** The widget asks Core Location for its own fix (WID-1), and the arrival notifications are watched by iOS (ARR-1). Neither needs the app to be running.
 
 ### PLACE-8: Change a place

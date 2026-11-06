@@ -13,7 +13,7 @@ As a card holder, I want the app split into my cards and its settings, so that t
 - The tab bar uses the pink accent (COL-7). On iOS 26 and later it minimises on scroll (`tabBarMinimizeBehavior(.onScrollUp)`).
 
 **Since:** 1.0
-**Where:** `Cards/App/CardsApp.swift:38-66`, `Cards/Core/Navigation/NavigationManager.swift`, `Cards/Core/Navigation/AppTab.swift`, `Cards/UI/Modifiers/ConditionalModifier.swift:18-25`, `CardsTests/NavigationTests.swift`, `CardsTests/CardFixesTests.swift` (`openingACardBringsTheCardsTabForward`)
+**Where:** `Cards/App/CardsApp.swift`, `Cards/Core/Navigation/NavigationManager.swift`, `Cards/Core/Navigation/AppTab.swift`, `Cards/UI/Modifiers/ConditionalModifier.swift:18-25`, `CardsTests/NavigationTests.swift`, `CardsTests/CardFixesTests.swift` (`openingACardBringsTheCardsTabForward`)
 **Notes:** Debug builds add a third tab; release builds never have it. In preparation for 1.4 it is the Development tab, with a hammer icon, which holds the Storybook and the other development tools (DEV-1); before, it was the Storybook tab. Before 1.3 the Cards tab went back to the list each time it appeared, and a link or notification opened the card behind Settings without selecting the Cards tab.
 
 ### NAV-2: Open a card from a link
@@ -31,5 +31,5 @@ As a card holder, I want a link to open a card directly, so that the widget and 
 - In preparation for 1.4: share links, `https://cards.serby.net/add#…` (a universal link) and `cards://cards/add#…`, ask whether to add the card in them (SHARE-3). They show a sheet over the Cards tab instead of replacing what it shows. Other `https` links, and `https://cards.serby.net` links to any other page, are ignored.
 
 **Since:** 1.0
-**Where:** `Cards/Core/Navigation/NavigationRoute.swift`, `Cards/Core/Navigation/NavigationManager.swift`, `Cards/Features/CardListScreen.swift:101-137`, `Info.plist`, `CardsTests/NavigationTests.swift`, `CardsTests/CardFixesTests.swift` (`openingACardBringsTheCardsTabForward`), `Cards/Core/Navigation/SharedCardLink.swift`, `Cards/App/CardsApp.swift`
+**Where:** `Cards/Core/Navigation/NavigationRoute.swift`, `Cards/Core/Navigation/NavigationManager.swift`, `Cards/Features/CardListScreen.swift`, `Info.plist`, `CardsTests/NavigationTests.swift`, `CardsTests/CardFixesTests.swift` (`openingACardBringsTheCardsTabForward`), `Cards/Core/Navigation/SharedCardLink.swift`, `Cards/App/CardsApp.swift`
 **Notes:** `NavigationRoute.path` gives "/cards/card/<code>", which `NavigationRoute.from(path:)` doesn't read back: it expects "/card/<code>". Only the tests use either (`Cards/Core/Navigation/NavigationRoute.swift:22-37`).

@@ -32,7 +32,7 @@ As someone using VoiceOver, I want to be told when the app changes the screen br
 - The brightness button announces "Brightness boost on" or "Brightness boost off" (BAR-4).
 
 **Since:** 1.0
-**Where:** `Cards/UI/Screens/CardDetailView.swift:94-157`, `Cards/UI/Environment/AccessibilityAnnouncer.swift`
+**Where:** `Cards/UI/Screens/CardDetailView.swift`, `Cards/UI/Environment/AccessibilityAnnouncer.swift`
 
 ### A11Y-3: Use the app at large text sizes
 
@@ -44,7 +44,7 @@ As a card holder who uses large text, I want the app to grow with my text size, 
 - Distances never wrap: they stay on one line (PLACE-6).
 
 **Since:** 1.0
-**Where:** `Cards/UI/Screens/CardListView.swift:69-77`, `Cards/UI/Screens/LocationPickerView.swift:231-245`, `Cards/UI/Components/ProximityLabel.swift`
+**Where:** `Cards/UI/Screens/CardListView.swift`, `Cards/UI/Screens/LocationPickerView.swift`, `Cards/UI/Components/ProximityLabel.swift`
 
 ### A11Y-4: Use every control with VoiceOver and touch
 

@@ -90,5 +90,5 @@ As a card holder, I want the widget to reflect the cards I have, so that it neve
 - Until the app has written the copy, or if it can't be read, the widget shows its empty state (WID-5).
 
 **Since:** 1.3
-**Where:** `Cards/Core/Services/WidgetSnapshot.swift`, `Cards/Features/CardListScreen.swift:42-44`, `Cards/Features/CardListScreen.swift:85-87`, `CardsTests/WidgetTests.swift` (`snapshotRoundTripsAndSkipsUnchangedWrites`, `snapshotThatCannotBeReadIsEmpty`, `snapshotWithoutAnAppGroupReadsAndWritesNothing`)
+**Where:** `Cards/Core/Services/WidgetSnapshot.swift`, `Cards/Features/CardListScreen.swift`, `Cards/Features/CardListScreen.swift`, `CardsTests/WidgetTests.swift` (`snapshotRoundTripsAndSkipsUnchangedWrites`, `snapshotThatCannotBeReadIsEmpty`, `snapshotWithoutAnAppGroupReadsAndWritesNothing`)
 **Notes:** Only the app writes the copy, so cards that arrive through iCloud reach the widget once the app is opened on that device. A new widget added before the app has ever been opened shows "No cards yet".

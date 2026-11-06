@@ -35,7 +35,7 @@ As a card holder with an iPhone Duo, I want the app to work on it, so that my ca
 - The App Store screenshots are captured on the iPhone Duo's outer display, among other devices.
 
 **Since:** 1.3
-**Where:** `Cards/UI/Screens/CardEditView.swift:146`, `CardsUITests/CardsScreenshotTests.swift`, `CardsUITests/CardsWidgetScreenshotTests.swift`
+**Where:** `Cards/UI/Screens/CardEditView.swift`, `CardsUITests/CardsScreenshotTests.swift`, `CardsUITests/CardsWidgetScreenshotTests.swift`
 **Notes:** Nothing in the app's code targets iPhone Duo. 1.3 is the first version captured and described for it.
 
 ### PLAT-4: Use the app without an account, ads or tracking
