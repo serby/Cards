@@ -15,6 +15,17 @@ struct DevelopmentView: View {
                         ToolRow(title: "Storybook", detail: "Every view, with live parameters.", systemImage: "square.grid.2x2")
                     }
                     .accessibilityIdentifier("storybookTool")
+
+                    NavigationLink {
+                        TestNotificationScreen()
+                    } label: {
+                        ToolRow(
+                            title: "Test Notification",
+                            detail: "A card's arrival notification, in \(Int(TestArrival.delay)) seconds.",
+                            systemImage: "bell.badge"
+                        )
+                    }
+                    .accessibilityIdentifier("testNotificationTool")
                 } header: {
                     Text("Tools")
                         .foregroundColor(.secondaryText)
