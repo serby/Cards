@@ -40,7 +40,7 @@ Ask Paul before submitting: it publishes to the App Store and cannot be taken ba
    gh workflow run app-store-listing.yml -f version=<version> -f prepare-version=true
    ```
 
-   The dry run must report every age rating question answered.
+   The dry run must report every age rating question answered, and for each locale the creative asset's specification and the header and search results placements it would make. After the real run, open the version in App Store Connect and check the header and search results in its preview, on iPhone and iPad in both orientations, with the line and the barcode in view.
 8. **Tag and submit:**
 
    ```bash

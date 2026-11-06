@@ -16,7 +16,7 @@ XCODEBUILD := xcodebuild -project Cards.xcodeproj -scheme Cards -derivedDataPath
 
 .PHONY: build clean test test-unit test-e2e test-tsan test-coverage coverage-report sim device \
 	check check-release check-metadata check-changelog check-screenshots \
-	capture-screenshots store-screenshots upload-build upload-metadata upload-screenshots
+	capture-screenshots store-screenshots upload-build upload-metadata upload-screenshots upload-creative-assets
 
 build:
 	$(XCODEBUILD) build -destination '$(DESTINATION)'
@@ -93,3 +93,8 @@ upload-metadata:
 
 upload-screenshots:
 	node scripts/upload-screenshots.ts
+
+# Uploads each locale's creative asset and places it as the product page header
+# and search results image.
+upload-creative-assets:
+	node scripts/upload-creative-assets.ts
