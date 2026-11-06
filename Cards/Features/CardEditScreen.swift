@@ -7,6 +7,7 @@ public struct CardEditScreen: View {
     private let onSave: ((CardItem) -> Void)?
     @Environment(LocationService.self) private var locationService
     @Query private var cards: [CardItem]
+    @Environment(\.modelContext) private var modelContext
     @Environment(\.postcodeLookup) private var postcodeLookup
     @AppStorage(ArrivalPlan.enabledKey) private var arrivalNotifications = true
 
@@ -80,7 +81,8 @@ public struct CardEditScreen: View {
         CardEditActions(
             save: save,
             requestLocationAccess: locationService.requestAccess,
-            findPlace: postcodeLookup.find
+            findPlace: postcodeLookup.find,
+            delete: isNewCard ? nil : { delete() }
         )
     }
 
@@ -104,6 +106,15 @@ public struct CardEditScreen: View {
         } else {
             navigationManager?.navigate(to: .card(cardItem.code))
         }
+    }
+
+    /// Deletes the card and goes back to the list, past its card screen, which
+    /// no longer has a card to show (CARD-6).
+    private func delete() {
+        modelContext.delete(cardItem)
+        CardItem.renumber(cards.filter { $0 !== cardItem })
+        try? modelContext.save()
+        navigationManager?.resetToRoot()
     }
 }
 

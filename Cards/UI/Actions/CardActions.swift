@@ -56,15 +56,20 @@ public struct CardEditActions {
     /// Called when the location picker opens, so the map can show where you are.
     public var requestLocationAccess: () -> Void
     public var findPlace: (String) async -> PlaceMatch?
+    /// Deletes the card being edited, once the person has confirmed. Nil when
+    /// adding a card, which has nothing to delete yet, so the form offers none.
+    public var delete: (() -> Void)?
 
     public init(
         save: @escaping () -> Void = {},
         requestLocationAccess: @escaping () -> Void = {},
-        findPlace: @escaping (String) async -> PlaceMatch? = { _ in nil }
+        findPlace: @escaping (String) async -> PlaceMatch? = { _ in nil },
+        delete: (() -> Void)? = nil
     ) {
         self.save = save
         self.requestLocationAccess = requestLocationAccess
         self.findPlace = findPlace
+        self.delete = delete
     }
 }
 

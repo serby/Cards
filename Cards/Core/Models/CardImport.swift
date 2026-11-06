@@ -5,6 +5,13 @@ public extension CardItem {
     static func nextOrder(after cards: [CardItem]) -> Int {
         (cards.map(\.order).max() ?? -1) + 1
     }
+
+    /// Numbers `cards` from 0 in their current order, as after one is deleted.
+    static func renumber(_ cards: [CardItem]) {
+        cards.sorted { $0.order < $1.order }.enumerated().forEach { index, card in
+            card.order = index
+        }
+    }
 }
 
 /// Adding cards from an export.

@@ -136,9 +136,7 @@ public struct CardListScreen: View {
         withAnimation {
             modelContext.delete(card)
             // The rest keep their order, renumbered from 0.
-            cardItems.filter { $0 !== card }.enumerated().forEach { index, item in
-                item.order = index
-            }
+            CardItem.renumber(cardItems.filter { $0 !== card })
             try? modelContext.save()
         }
     }

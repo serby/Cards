@@ -68,7 +68,7 @@ As a card holder, I want a tap I can feel when I do something, so that I know it
 
 - Tapping a card in the list plays a heavy haptic tap. In preparation for 1.4 it plays none: the tap only played the first time a card was opened, and opening a card needs no haptic.
 - In preparation for 1.4: a long press on a card's tile plays a haptic as its menu appears (CARD-10). It is the system's own context menu haptic; the app adds none.
-- Deleting a card plays a medium haptic tap. In preparation for 1.4: from the tile's menu (CARD-6).
+- Deleting a card plays a medium haptic tap. In preparation for 1.4: from the tile's menu, or from Delete Card in the edit form once you confirm (CARD-6).
 - A successful scan vibrates the phone (CARD-2).
 - Choosing a colour plays a selection haptic (1.3).
 

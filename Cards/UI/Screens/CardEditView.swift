@@ -19,6 +19,14 @@ public struct CardEditView<Scanner: View>: View {
     @FocusState private var focusedField: Field?
     @State private var showsLocationPicker = false
     @State private var showsSymbolPicker = false
+    @State private var confirmsDelete = false
+    /// Counts deletes, so the delete haptic plays (A11Y-5).
+    @State private var deletes = 0
+
+    /// "Delete Joe's Market?", or "Delete this card?" while the name is blank.
+    private var deleteTitle: String {
+        "Delete \(draft.trimmedName.isEmpty ? "this card" : draft.trimmedName)?"
+    }
     /// The place whose row was tapped, open in the picker to change it.
     @State private var editingLocation: CardLocation?
     /// The name takes focus once, not each time the form is seen again after switching tabs.
@@ -145,7 +153,28 @@ public struct CardEditView<Scanner: View>: View {
             } footer: {
                 Text(locationsFooter)
             }
+
+            if actions.delete != nil {
+                Section {
+                    Button("Delete Card", role: .destructive) {
+                        confirmsDelete = true
+                    }
+                    .frame(maxWidth: .infinity)
+                    .accessibilityIdentifier("deleteCardButton")
+                    .accessibilityHint("Asks before deleting this card from all your devices")
+                }
+            }
         }
+        .confirmationDialog(deleteTitle, isPresented: $confirmsDelete, titleVisibility: .visible) {
+            Button("Delete Card", role: .destructive) {
+                deletes += 1
+                actions.delete?()
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("It is deleted from all your devices. This cannot be undone.")
+        }
+        .sensoryFeedback(.impact(weight: .medium), trigger: deletes)
         .sheet(isPresented: $showsLocationPicker) {
             LocationPickerView(
                 centre: mapCentre,
@@ -281,7 +310,7 @@ public extension CardEditView where Scanner == EmptyView {
 #Preview("Edit") {
     @Previewable @State var draft = CardDraft.sample
     NavigationStack {
-        CardEditView(draft: $draft)
+        CardEditView(draft: $draft, actions: CardEditActions(delete: {}))
             .navigationTitle("Edit Card")
     }
 }

@@ -258,6 +258,31 @@ final class CardsUITests: XCTestCase {
         option.tap()
     }
 
+    /// Delete Card at the foot of the edit form asks first, deletes the card and
+    /// goes back to the list (CARD-5, CARD-6).
+    @MainActor
+    func testDeleteFromTheEditForm() throws {
+        let app = launchWithSeededCards()
+        let honeycomb = tile(app, "Honeycomb Rewards")
+        XCTAssertTrue(waitForElement(honeycomb))
+        honeycomb.tap()
+        app.buttons["editCardButton"].tap()
+
+        let deleteRow = app.buttons["deleteCardButton"]
+        for _ in 0..<4 where !(deleteRow.exists && deleteRow.isHittable) {
+            app.descendants(matching: .any)["editCardForm"].firstMatch.swipeUp()
+        }
+        deleteRow.tap()
+        // The dialog's own Delete Card, not the row that opened it.
+        let confirm = app.buttons.matching(NSPredicate(format: "label == %@ AND identifier != %@", "Delete Card", "deleteCardButton")).firstMatch
+        XCTAssertTrue(waitForElement(confirm))
+        confirm.tap()
+
+        XCTAssertTrue(waitForElement(app.buttons["addCardButton"]))
+        XCTAssertTrue(tile(app, "Honeycomb Rewards").waitForNonExistence(timeout: 3))
+        XCTAssertTrue(tile(app, "Nordic Nest Home").exists)
+    }
+
     /// A symbol chosen in the grid is saved with the card and is there when the
     /// form opens again (CARD-12).
     @MainActor

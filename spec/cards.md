@@ -82,10 +82,10 @@ As a card holder, I want to change a card's details, so that I can fix a mistake
 - Save follows the same rules as adding: it is disabled without a name and a code, or while another card uses the code, and it trims both (CARD-3, CARD-9) (1.3).
 - Save writes every field to the card and shows the card screen; going back from there returns to the list.
 - Going back from the form without saving discards every change, including places added or removed in it.
-- A card can't be deleted from the form (CARD-6).
+- A card can't be deleted from the form (CARD-6). In preparation for 1.4 it can: Delete Card at the foot of the edit form asks "Delete Joe's Market?", saying it is deleted from all your devices and cannot be undone, then deletes the card and goes back to the list. Adding a card has no Delete Card.
 
 **Since:** 1.0
-**Where:** `Cards/Features/CardEditScreen.swift`, `Cards/UI/Screens/CardEditView.swift`, `Cards/UI/ViewState/CardViewState.swift`, `Cards/Core/Navigation/NavigationManager.swift`
+**Where:** `Cards/Features/CardEditScreen.swift`, `Cards/UI/Screens/CardEditView.swift`, `Cards/UI/ViewState/CardViewState.swift`, `Cards/Core/Navigation/NavigationManager.swift`, `Cards/UI/Actions/CardActions.swift`, `CardsUITests/CardsUITests.swift` (`testDeleteFromTheEditForm`)
 **Notes:** Links, the widget's chosen card and arrival notifications find a card by its code (CARD-8), so changing the code changes which card they point at. A widget set to the old code goes back to showing the nearest card (WID-2).
 
 ### CARD-6: Delete a card
@@ -97,10 +97,11 @@ As a card holder, I want to delete a card I no longer use, so that the list only
 - With iCloud, the card is deleted on every device (DATA-1).
 - The card's arrival notifications are cancelled (ARR-1) and the widget stops offering it (WID-7).
 - Every card can be deleted at once from Settings (DATA-5).
+- In preparation for 1.4: Delete Card at the foot of the edit form deletes the card too, after asking, and goes back to the list (CARD-5).
 - In preparation for 1.4: the grid has no swipe actions, so Delete moves to the menu a long press on a tile shows (CARD-10). It deletes the card at once, with the same medium haptic, and the remaining cards are renumbered from 0 in their order. VoiceOver offers Delete as an action on the tile (A11Y-1).
 
 **Since:** 1.0
-**Where:** `Cards/UI/Screens/CardListView.swift`, `Cards/UI/Components/CardTileView.swift`, `Cards/Features/CardListScreen.swift`, `CardsUITests/CardsUITests.swift` (`testDeleteFromTheLongPressMenu`)
+**Where:** `Cards/UI/Screens/CardListView.swift`, `Cards/UI/Components/CardTileView.swift`, `Cards/Features/CardListScreen.swift`, `CardsUITests/CardsUITests.swift` (`testDeleteFromTheLongPressMenu`), `Cards/Features/CardEditScreen.swift`, `Cards/Core/Models/CardImport.swift` (`renumber`), `CardsUITests/CardsUITests.swift` (`testDeleteFromTheEditForm`)
 
 ### CARD-7: Put my cards in the order I want
 

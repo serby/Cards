@@ -156,7 +156,8 @@ private let cardEditStory = Story(
         .toggle("Code already used", false),
         .toggle("Shows scanner", false),
         .toggle("Autofocus name", false),
-        .toggle("Map opens at Boulder Barn", true)
+        .toggle("Map opens at Boulder Barn", true),
+        .toggle("Can delete", true)
     ],
     gallery: [
         (
@@ -198,6 +199,7 @@ private let cardEditStory = Story(
     return pushed {
         CardEditView(
             draft: draft,
+            actions: CardEditActions(delete: knobs.bool("Can delete") ? {} : nil),
             autofocusesName: knobs.bool("Autofocus name"),
             mapCentre: knobs.bool("Map opens at Boulder Barn") ? CardLocation.sample.coordinate : nil,
             takenCodes: knobs.bool("Code already used") ? [knobs.string("Code")] : [],

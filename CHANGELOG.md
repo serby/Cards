@@ -15,7 +15,7 @@ Every version of Card Barcodes and what it changed, newest first. This file is g
 
 ### Improved
 
-- Your cards are laid out in a grid, two across on iPhone and four on iPad. Press and hold a card to delete it.
+- Your cards are laid out in a grid, two across on iPhone and four on iPad. Press and hold a card to delete it, or delete it from its edit screen.
 
 ### Fixed
 
