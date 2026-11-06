@@ -96,7 +96,8 @@ Cards/
   Scanner/       Camera scanning (AVFoundation), pinch to zoom
   Features/      Connectors: SwiftData, navigation, location and clients in, view state out;
                  the arrival notifications (ArrivalPlan, ArrivalScheduler, ArrivalNotificationRouter)
-  Development/   Never in a release build. Storybook, previews, sample data, stand-ins, test seeds
+  Development/   Never in a release build. The Development tab's tools (Tools/), Storybook, previews,
+                 sample data, stand-ins, test seeds
 CardsWidget/     The Home Screen widget extension: timeline, configuration intents, WidgetLocation
 CardsTests/      Unit tests (Swift Testing)
 CardsUITests/    UI and screenshot tests (XCTest)
@@ -327,7 +328,7 @@ Everything on the App Store product page lives in the repository, so it can be c
 
 Xcode 27 has no Simulator.app; `make sim` opens Device Hub to show the screen, and every `simctl` command works headless.
 
-- **Launch arguments:** `-uiTesting` gives an in-memory store and hides the Storybook tab; `-screenshotSeed` adds the six screenshot cards; `-initializeCloudKitSchema` creates the CloudKit schema in the Development environment ([section 8](#8-releasing)). The environment variables `CARDS_UI_TESTING=1` and `CARDS_SCREENSHOT_SEED=1` do the same as the first two. All of them are ignored in release builds.
+- **Launch arguments:** `-uiTesting` gives an in-memory store and hides the Development tab; `-screenshotSeed` adds the six screenshot cards; `-initializeCloudKitSchema` creates the CloudKit schema in the Development environment ([section 8](#8-releasing)). The environment variables `CARDS_UI_TESTING=1` and `CARDS_SCREENSHOT_SEED=1` do the same as the first two. All of them are ignored in release builds.
 - **Deep links:** `cards://cards/card/<code>`, `cards://cards/card/<code>/edit` and `cards://cards/new`, with the code percent-encoded (`NavigationRoute.url` builds them). `xcrun simctl openurl` shows a confirmation prompt first.
 - **The widget:** open the app once so it writes the snapshot, then long-press the Home Screen, tap **Edit > Add Widget**, find Card Barcodes and add the medium size. Long-press the widget and choose **Edit Widget** to pick a card instead of the nearest one. Its views are also in the Storybook (`CardWidgetView`), which is quicker for layout work.
 - **Location:** `xcrun simctl privacy <udid> grant location net.serby.Cards`, then `xcrun simctl location <udid> set 51.5203,-0.2094`.

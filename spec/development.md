@@ -6,12 +6,13 @@ What debug builds add for building and testing the app. None of it is in release
 
 As someone building the app, I want the development tools in one place, so that I can reach them without disturbing the app's own screens.
 
-- Debug builds have a third tab, "Development", after Cards and Settings. Release builds have no such tab.
-- The tab lists its tools: Storybook, which is the story browser that used to be its own tab, and Test Notification (DEV-2).
-- The tab is hidden during UI tests, as the Storybook tab was.
+- Debug builds have a third tab, "Development", with a hammer icon, after Cards and Settings. Release builds have no such tab.
+- The tab opens on a list titled "Development" with its tools under "Tools", each with a line saying what it does: Storybook, the story browser that used to be its own tab, and Test Notification (DEV-2).
+- Storybook opens full screen over the tabs, with Done to close it, because its story list and stage are a split view that can't be pushed onto the tab's stack. Test Notification is pushed, with Back to return.
+- The tab is hidden during UI tests (`-uiTesting` or `CARDS_UI_TESTING=1`), as the Storybook tab was.
 
 **Since:** In preparation for 1.4
-**Where:** `Cards/App/DevelopmentHooks.swift`, `Cards/Development/`
+**Where:** `Cards/App/DevelopmentHooks.swift`, `Cards/Core/Navigation/AppTab.swift`, `Cards/Development/Tools/DevelopmentView.swift`, `Cards/Development/Storybook/StorybookView.swift`
 
 ### DEV-2: Send a test arrival notification
 

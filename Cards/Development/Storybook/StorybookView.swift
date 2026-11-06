@@ -1,10 +1,13 @@
 import SwiftUI
 
 /// Browser for every pure `CardsUI` view: pick a story on the left, tune it on
-/// the right. Runs with no store and no camera.
+/// the right. Runs with no store and no camera. The Development tab presents it
+/// full screen, since a split view cannot be pushed onto a stack, and gives it
+/// `onDone` for its Done button.
 @MainActor
 public struct StorybookView: View {
     private let stories: [Story]
+    private let onDone: (() -> Void)?
     @State private var selection: Story.ID?
     @State private var display = DisplayOptions()
     // Keeps the story list alongside the stage on iPad instead of collapsing to
@@ -12,12 +15,13 @@ public struct StorybookView: View {
     // list first and pushes the stage.
     @State private var columns = NavigationSplitViewVisibility.all
 
-    public init() {
-        self.stories = Story.all
+    public init(onDone: (() -> Void)? = nil) {
+        self.init(stories: Story.all, onDone: onDone)
     }
 
-    public init(stories: [Story]) {
+    public init(stories: [Story], onDone: (() -> Void)? = nil) {
         self.stories = stories
+        self.onDone = onDone
     }
 
     private var sections: [String] {
@@ -40,6 +44,14 @@ public struct StorybookView: View {
                 }
             }
             .navigationTitle("Storybook")
+            .toolbar {
+                if let onDone {
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button("Done", action: onDone)
+                            .accessibilityIdentifier("storybookDoneButton")
+                    }
+                }
+            }
         } detail: {
             if let story = stories.first(where: { $0.id == selection }) {
                 StoryStage(story: story, display: display)

@@ -62,19 +62,20 @@ enum DevelopmentHooks {
     }
     #endif
 
-    /// Tabs that only exist while developing: the Storybook, kept out of UI
-    /// tests so they see the shipping UI. Never shown in release.
+    /// Tabs that only exist while developing: Development, with the Storybook
+    /// and the other tools, kept out of UI tests so they see the shipping UI.
+    /// Never shown in release.
     @TabContentBuilder<AppTab>
     static var tabs: some TabContent<AppTab> {
         // A tab builder cannot be empty, so release keeps the tab and drops it here.
-        if showsStorybook {
-            Tab("Storybook", systemImage: "square.grid.2x2", value: AppTab.storybook) {
-                storybook
+        if showsDevelopmentTab {
+            Tab("Development", systemImage: "hammer", value: AppTab.development) {
+                developmentTools
             }
         }
     }
 
-    private static var showsStorybook: Bool {
+    private static var showsDevelopmentTab: Bool {
         #if DEBUG
         !isUITesting
         #else
@@ -83,9 +84,9 @@ enum DevelopmentHooks {
     }
 
     @ViewBuilder
-    private static var storybook: some View {
+    private static var developmentTools: some View {
         #if DEBUG
-        StorybookView()
+        DevelopmentView()
         #endif
     }
 }
