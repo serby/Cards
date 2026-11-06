@@ -13,8 +13,8 @@ As a card holder, I want the app split into my cards and its settings, so that t
 - The tab bar uses the pink accent (COL-7). On iOS 26 and later it minimises on scroll (`tabBarMinimizeBehavior(.onScrollUp)`).
 
 **Since:** 1.0
-**Where:** `Cards/App/CardsApp.swift:35-62`, `Cards/Core/Navigation/NavigationManager.swift`, `Cards/Core/Navigation/AppTab.swift`, `Cards/UI/Modifiers/ConditionalModifier.swift:18-25`, `CardsTests/NavigationTests.swift`, `CardsTests/CardFixesTests.swift` (`openingACardBringsTheCardsTabForward`)
-**Notes:** Debug builds add a Storybook tab; release builds never have it. Before 1.3 the Cards tab went back to the list each time it appeared, and a link or notification opened the card behind Settings without selecting the Cards tab.
+**Where:** `Cards/App/CardsApp.swift:38-66`, `Cards/Core/Navigation/NavigationManager.swift`, `Cards/Core/Navigation/AppTab.swift`, `Cards/UI/Modifiers/ConditionalModifier.swift:18-25`, `CardsTests/NavigationTests.swift`, `CardsTests/CardFixesTests.swift` (`openingACardBringsTheCardsTabForward`)
+**Notes:** Debug builds add a Storybook tab; release builds never have it. In preparation for 1.4 it becomes the Development tab, which holds the Storybook (DEV-1). Before 1.3 the Cards tab went back to the list each time it appeared, and a link or notification opened the card behind Settings without selecting the Cards tab.
 
 ### NAV-2: Open a card from a link
 

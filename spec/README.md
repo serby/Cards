@@ -28,7 +28,7 @@ As a card holder, I want to type a card's number in, so that I can keep a card t
 - **Title:** short, in the person's terms.
 - **Story:** `As a <person>, I want <goal>, so that <reason>.` The person is a card holder in most stories, sometimes someone using VoiceOver or a person with several devices.
 - **Acceptance criteria:** a bullet list of statements that can be checked against the app: numbers, defaults, wording and what happens when something goes wrong. A criterion added after the story's first version can say so, as in "(1.3)".
-- **Since:** the version that introduced the story: 1.0, 1.1 or 1.3, or Unknown when the history doesn't say. "In preparation for 1.3" marks work being built for 1.3 that is not yet on `main`.
+- **Since:** the version that introduced the story: 1.0, 1.1, 1.3 or 1.4, or Unknown when the history doesn't say. "In preparation for 1.4" marks work planned or being built for the next version and not yet released; a criterion in an older story can be marked the same way.
 - **Where:** the main source files and the tests that cover the story, as repo-relative paths, with `path:line` only when a line really helps.
 - **Notes:** optional. Surprising behaviour and known gaps, stated as facts. No wishlists.
 
@@ -44,7 +44,7 @@ Only write what the code does. If a criterion is wrong, fix the criterion or the
 
 | File | Prefix | What it covers |
 |------|--------|----------------|
-| [cards.md](cards.md) | CARD | The list, adding by scanning or typing, opening, editing, deleting, reordering and naming cards, and keeping each card's code its own |
+| [cards.md](cards.md) | CARD | The list and grid, search and order, adding by scanning or typing, opening, editing, deleting, reordering, naming and symbols, and keeping each card's code its own |
 | [barcodes.md](barcodes.md) | BAR | Supported barcode types, how codes are drawn, codes that can't be drawn, and the brightness boost |
 | [colours-and-design.md](colours-and-design.md) | COL | The palette, custom colours, the card face, full-colour list rows, gradients, readable text, appearance and the app icon |
 | [places.md](places.md) | PLACE | Adding places on the map or by postcode, the radius, Add current location, removing places, distances and location permission |
@@ -55,3 +55,5 @@ Only write what the code does. If a criterion is wrong, fix the criterion or the
 | [navigation.md](navigation.md) | NAV | The tabs, bringing the Cards tab forward, and `cards://` links |
 | [accessibility.md](accessibility.md) | A11Y | VoiceOver, larger text sizes, announcements, touch targets and haptics |
 | [platforms-and-privacy.md](platforms-and-privacy.md) | PLAT | iPhone, iPad, iPhone Duo, iOS 18 and later, language, and privacy: no accounts, analytics or tracking, location and camera on the device |
+| [sharing.md](sharing.md) | SHARE | Sending a card as a link someone can add to their app, or as an image, and adding a shared card |
+| [development.md](development.md) | DEV | The debug builds' Development tab: the Storybook and a test arrival notification |

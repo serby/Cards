@@ -9,6 +9,7 @@ As a card holder, I want all my cards in one list, so that I can find the one I 
 - The Cards tab opens on a list titled "Cards", with one row per card in the order the cards are saved in (each card's `order`).
 - Each row shows the card's name, filled with the card's colour (COL-4), and the distance to the nearest of its places when the card has places and the app knows where you are (PLACE-6).
 - Tapping a row opens the card (CARD-4) with a heavy haptic tap.
+- In preparation for 1.4: the list becomes a grid (CARD-10), with search and a choice of order (CARD-11), and opening a card plays no haptic (A11Y-5).
 - The navigation bar, with its add button, hides when the list scrolls down from the top, and comes back when the list is at the top again.
 - With no cards, the list shows "No Cards Yet", "Scan the barcode on a loyalty card to add it." and an "Add Card" button that opens the add form (1.3).
 - At the accessibility text sizes, a row stacks the name above the distance (A11Y-3).
@@ -94,6 +95,7 @@ As a card holder, I want to delete a card I no longer use, so that the list only
 - With iCloud, the card is deleted on every device (DATA-1).
 - The card's arrival notifications are cancelled (ARR-1) and the widget stops offering it (WID-7).
 - Every card can be deleted at once from Settings (DATA-5).
+- In preparation for 1.4: the grid has no swipe actions, so Delete moves to the menu a long press on a tile shows (CARD-10).
 
 **Since:** 1.0
 **Where:** `Cards/UI/Screens/CardListView.swift`, `Cards/Features/CardListScreen.swift:112-123`
@@ -106,6 +108,7 @@ As a card holder, I want to move cards up and down the list, so that the ones I 
 - After a move every card is renumbered from 0 in its new order and saved, so the order syncs with the cards (DATA-1).
 - The top card is the one the widget shows when it can't pick a nearest card (WID-1).
 - New cards, added in the form or imported, go at the end of the list (CARD-3, DATA-3) (1.3).
+- In preparation for 1.4: tiles are dragged to a new place in the grid, and only while the grid is in custom order (CARD-10, CARD-11).
 
 **Since:** 1.0
 **Where:** `Cards/UI/Screens/CardListView.swift`, `Cards/Features/CardListScreen.swift:125-136`, `Cards/Core/Models/CardImport.swift`, `CardsTests/CardFixesTests.swift` (`newCardsGoAtTheEnd`)
@@ -133,5 +136,50 @@ As a card holder, I want no two cards to share a code, so that links, the widget
 - Import skips a card whose code is already in the app, or earlier in the same text (DATA-3).
 
 **Since:** 1.3
-**Where:** `Cards/UI/ViewState/CardViewState.swift`, `Cards/UI/Screens/CardEditView.swift:84-90`, `Cards/Features/CardEditScreen.swift:85-91`, `Cards/Core/Models/CardImport.swift`, `CardsTests/CardFixesTests.swift` (`aCardNeedsANameAndACodeOfItsOwn`, `importSkipsCardsAlreadyThereAndAppendsInExportedOrder`)
-**Notes:** Cards that shared a code before 1.3, or that were given the same code on two devices before they synced (DATA-1), still share it. Opening or linking to either then finds the first in the list, the list's rows share an identity, and the edit form won't save the card until its code is changed (`Cards/Features/CardListScreen.swift:106-108`, `Cards/UI/Screens/CardListView.swift:67`).
+**Where:** `Cards/UI/ViewState/CardViewState.swift`, `Cards/UI/Screens/CardEditView.swift:84-90`, `Cards/Features/CardEditScreen.swift:86-92`, `Cards/Core/Models/CardImport.swift`, `CardsTests/CardFixesTests.swift` (`aCardNeedsANameAndACodeOfItsOwn`, `importSkipsCardsAlreadyThereAndAppendsInExportedOrder`)
+**Notes:** Cards that shared a code before 1.3, or that were given the same code on two devices before they synced (DATA-1), still share it. Opening or linking to either then finds the first in the list, the list's rows share an identity, and the edit form won't save the card until its code is changed (`Cards/Features/CardListScreen.swift:108-110`, `Cards/UI/Screens/CardListView.swift:67`).
+
+### CARD-10: See my cards in a grid
+
+As a card holder, I want my cards laid out in a grid, so that I can see more of them at once and pick one quickly.
+
+- The Cards tab shows the cards as tiles in a grid: two columns on iPhone and four on iPad. The order runs left to right, then on to the next row.
+- Each tile shows the card in its full colour, with its name, its symbol if it has one (CARD-12), and how far away its nearest place is (PLACE-6).
+- Tapping a tile opens the card (CARD-4). Opening a card plays no haptic (A11Y-5).
+- A long press on a tile plays a haptic and shows a menu over the tile with Delete. Delete removes the card at once, as swiping did in the list (CARD-6).
+- In custom order (CARD-11), you drag a tile to a new place in the grid to reorder the cards. The new order is saved and syncs (DATA-1).
+- The add button and the empty state stay as they are on the list.
+
+**Since:** In preparation for 1.4
+**Where:** `Cards/UI/Screens/CardListView.swift`, `Cards/Features/CardListScreen.swift`
+**Notes:** It replaces the single-column list. A grid has no swipe actions, which is why Delete moved to the long-press menu.
+
+### CARD-11: Find a card by searching and sorting
+
+As a card holder, I want to search my cards and choose their order, so that the card I need is always easy to reach.
+
+- The Cards tab has a search field. Typing filters the grid to cards whose name contains the text, ignoring case and accents. Clearing the search shows every card again.
+- The search shows "No cards match" when nothing matches.
+- A sort menu in the toolbar offers three orders:
+  - **Last viewed:** the card opened most recently comes first. Cards never opened follow, in custom order.
+  - **Custom order:** the order you set by dragging (CARD-10), as before.
+  - **Location:** cards with a place come first, nearest first (PLACE-6). Cards without places, or when the app does not know where you are, follow in custom order.
+- The chosen order is kept on the device and is still chosen the next time the app opens. It starts as custom order.
+- Only custom order can be rearranged by dragging.
+- Opening a card records when it was last viewed. That date is stored with the card, so it syncs (DATA-1) and is exported (DATA-2).
+
+**Since:** In preparation for 1.4
+**Where:** `Cards/UI/Screens/CardListView.swift`, `Cards/Features/CardListScreen.swift`, `Cards/Core/Models/CardItem.swift`
+
+### CARD-12: Give a card a symbol
+
+As a card holder, I want each card to carry a symbol, so that I can recognise it at a glance.
+
+- The edit form has a Symbol row that opens a grid of symbols suited to cards, such as a basket, a coffee cup, a dumbbell, a book, a fuel pump and a shopping bag, plus None.
+- A card has no symbol until you choose one. Older cards and older exports have none.
+- The symbol shows on the card's tile in the grid (CARD-10), and on the card screen beside the name in the top panel (CARD-4). It is drawn in the panel's ink, so it stays readable (COL-4).
+- VoiceOver does not read the symbol, because the card's name already says what it is (A11Y-4).
+- The symbol is stored with the card, so it syncs (DATA-1), is exported, and is imported with the card (DATA-2, DATA-3).
+
+**Since:** In preparation for 1.4
+**Where:** `Cards/UI/Screens/CardEditView.swift`, `Cards/Core/Models/CardItem.swift`, `Cards/UI/Screens/CardDetailView.swift`, `Cards/UI/Screens/CardListView.swift`

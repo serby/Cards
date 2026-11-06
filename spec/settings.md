@@ -33,3 +33,16 @@ As a card holder, I want to read what each version of the app changed, so that I
 
 **Since:** 1.3
 **Where:** `Cards/UI/Screens/ChangelogView.swift`, `Cards/Core/Services/ChangelogStore.swift`, `Cards/Core/Models/Changelog.swift`, `Cards/UI/Screens/SettingsListView.swift`, `changelog.json`, `scripts/lib/changelog.ts`, `scripts/generate-changelog.ts`, `scripts/check-changelog.ts`, `CardsTests/ChangelogTests.swift`
+
+### SET-3: See the card for where I am at the top of the list
+
+As a card holder, I want the card for the place I am in shown in full above my other cards, so that I can scan it straight away.
+
+- Settings > Locations has a "Show Card Where I Am" switch, with a caption saying it shows the card for where you are at the top of your cards. It is off until you turn it on, and it is kept on the device.
+- With the switch on, when you are inside one of a card's places (PLACE-6), the Cards tab shows that card in full above the grid: its face, name, barcode and number, as on the card screen (CARD-4). If you are inside places for several cards, it shows the card whose place is nearest.
+- Tapping the full card opens it.
+- When you leave the place, or turn the switch off, the full card goes and the grid moves up.
+- The card still appears in the grid as well.
+
+**Since:** In preparation for 1.4
+**Where:** `Cards/UI/Screens/SettingsListView.swift`, `Cards/Features/SettingsScreen.swift`, `Cards/UI/Screens/CardListView.swift`, `Cards/Features/CardListScreen.swift`

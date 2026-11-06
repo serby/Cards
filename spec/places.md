@@ -101,3 +101,15 @@ As a card holder, I want the app to ask before it uses my location, and only use
 **Since:** 1.3
 **Where:** `Cards/Core/Services/LocationService.swift`, `Cards/Features/CardListScreen.swift:35-41`, `Info.plist`
 **Notes:** The widget asks Core Location for its own fix (WID-1), and the arrival notifications are watched by iOS (ARR-1). Neither needs the app to be running.
+
+### PLACE-8: Change a place
+
+As a card holder, I want to change a place I added, so that I can fix its name, its position or its radius without adding it again.
+
+- In the edit form, tapping a place opens the location picker (PLACE-1) with that place's name, position and radius filled in. The sheet's title is "Edit Location" and its confirm button is "Save".
+- Moving the map, searching a postcode (PLACE-2), renaming the place or changing the radius, then tapping Save, updates the place in the form. Cancel leaves it as it was.
+- The change is kept when the card is saved (CARD-5). Arrival reminders use the new position and radius from then on (ARR-3).
+- Swiping a place to remove it still works as before (PLACE-5).
+
+**Since:** In preparation for 1.4
+**Where:** `Cards/UI/Screens/CardEditView.swift`, `Cards/UI/Screens/LocationPickerView.swift`

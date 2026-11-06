@@ -65,7 +65,8 @@ As someone using VoiceOver, I want every control labelled and every image that a
 
 As a card holder, I want a tap I can feel when I do something, so that I know it worked without looking closely.
 
-- Tapping a card in the list plays a heavy haptic tap.
+- Tapping a card in the list plays a heavy haptic tap. In preparation for 1.4 it plays none: the tap only played the first time a card was opened, and opening a card needs no haptic.
+- In preparation for 1.4: a long press on a card's tile plays a haptic as its menu appears (CARD-10).
 - Deleting a card plays a medium haptic tap.
 - A successful scan vibrates the phone (CARD-2).
 - Choosing a colour plays a selection haptic (1.3).

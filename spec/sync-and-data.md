@@ -87,3 +87,14 @@ As a card holder, I want my cards to survive every update, so that I never lose 
 **Since:** 1.0
 **Where:** `Cards/Core/Services/CardStore.swift`, `Cards/Core/Models/CardItem.swift`, `CardsTests/CardStoreTests.swift`
 **Notes:** SwiftData puts its default store in the first App Group in the entitlements. The widget added one in 1.3, so the store is pinned to the app's container with `groupContainer: .none`; without it every existing card would be left behind in the old file.
+
+### DATA-7: Import cards from a file
+
+As a card holder, I want to import an export saved as a file, so that I don't have to copy and paste its text.
+
+- The Import JSON sheet (DATA-3) has a "Choose File" button that opens the Files picker, limited to JSON files.
+- Choosing a file imports its cards with the same rules and messages as pasted text (DATA-3, DATA-4): duplicates are skipped and the rest are added at the end.
+- A file that cannot be read, or is not a card export, shows "Invalid JSON format", and nothing is imported.
+
+**Since:** In preparation for 1.4
+**Where:** `Cards/UI/Screens/SettingsListView.swift`, `Cards/Features/SettingsScreen.swift`, `Cards/Core/Models/CardImport.swift`
