@@ -58,18 +58,7 @@ struct StoreScreenshot: View {
 
     /// The whole screen, framed like a device, running off the bottom edge.
     private var device: some View {
-        let width = canvas.width * 0.8
-        let radius = width * 0.105
-        let bezel = unit * 1.6
-        return Image(uiImage: screenshot)
-            .resizable()
-            .aspectRatio(contentMode: .fit)
-            .frame(width: width)
-            .clipShape(.rect(cornerRadius: radius - bezel))
-            .padding(bezel)
-            .background(Color(rgb: 0x111111), in: .rect(cornerRadius: radius))
-            .shadow(color: .black.opacity(0.35), radius: unit * 4, y: unit * 2)
-            .accessibilityHidden(true)
+        StorePhoneFrame(screenshot: screenshot, width: canvas.width * 0.8)
     }
 
     private var band: some View {
