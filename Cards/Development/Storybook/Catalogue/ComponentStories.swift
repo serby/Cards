@@ -165,7 +165,8 @@ private let proximityLabelStory = Story(
     section: "Components",
     knobs: ProximityKnobs.knobs(optional: false) + [
         .toggle("Shows place", false),
-        .toggle("Highlights here", true)
+        .toggle("Highlights here", true),
+        .toggle("Wraps", false)
     ],
     gallery: [
         (name: "Here", view: AnyView(ProximityLabel(CardProximity(placeName: "Boulder Barn", distance: 0)))),
@@ -182,7 +183,12 @@ private let proximityLabelStory = Story(
 ) { knobs in
     AnyView(
         knobs.proximity(optional: false).map { proximity in
-            ProximityLabel(proximity, showsPlace: knobs.bool("Shows place"), highlightsHere: knobs.bool("Highlights here"))
+            ProximityLabel(
+                proximity,
+                showsPlace: knobs.bool("Shows place"),
+                highlightsHere: knobs.bool("Highlights here"),
+                wraps: knobs.bool("Wraps")
+            )
                 .padding()
         }
     )

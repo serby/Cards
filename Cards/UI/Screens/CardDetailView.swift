@@ -48,6 +48,9 @@ public struct CardDetailView: View {
                         PlacesPanel(places: card.places)
                     }
                 }
+                // Flattened, so only the card's outline casts it: every line of text cast its own, a grey
+                // haze on the panels that the audit measured below AA at the largest text sizes.
+                .compositingGroup()
                 .shadow(color: .black.opacity(0.12), radius: 16, y: 8)
 
                 // Pointless where the card already is, so it goes once you are inside one of its places.
@@ -220,9 +223,14 @@ public struct CardDetailView: View {
                 systemImage: "location"
             )
             .font(.footnote.weight(.medium))
+            // Quiet, but 44 pt tall like any button.
+            .padding(.horizontal, 12)
+            .frame(minHeight: 44)
+            .contentShape(.rect)
         }
         .buttonStyle(.borderless)
-        .foregroundStyle(.secondary)
+        // The app's supporting text: the system's secondary grey is 3.4:1 on white.
+        .foregroundStyle(Color.secondaryText)
         .padding(.top, 12)
         .accessibilityIdentifier("addCurrentLocationButton")
         .accessibilityHint(

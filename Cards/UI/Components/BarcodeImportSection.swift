@@ -117,6 +117,9 @@ extension BarcodeImportSection {
                 "Read the barcode in a screenshot, a photo or a PDF, such as an e-ticket.",
                 comment: "Under Choose Photo and Choose File in the new card form, saying what they do. PDF is a file format; keep the name."
             )
+            // The app's supporting text, as every footer in the form takes: the
+            // system's footer grey is 3.2:1 on the form's background.
+            .foregroundStyle(Color.secondaryText)
         }
     }
 

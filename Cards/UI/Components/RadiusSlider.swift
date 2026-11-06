@@ -17,7 +17,8 @@ public struct RadiusSlider: View {
                 Spacer()
                 Text(radius.metres, format: .radius)
                     .monospacedDigit()
-                    .foregroundStyle(.secondary)
+                    // The app's supporting text: the system's secondary grey is 3.4:1 on the panel.
+                    .foregroundStyle(Color.secondaryText)
             }
             .font(.subheadline)
             Slider(value: $radius, in: CardLocation.radiusRange, step: 25)

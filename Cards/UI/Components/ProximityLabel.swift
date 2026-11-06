@@ -4,16 +4,20 @@ import SwiftUI
 /// With `showsPlace`, it names the place too: "At Boulder Barn", "350 m · Boulder Barn".
 /// "Here" stands out in its own capsule unless `highlightsHere` is off, for
 /// callers that already put the label on a capsule of its own.
+/// It keeps to one line, except at the accessibility text sizes, unless
+/// `wraps` is on, for a screen that shows everything at every size.
 public struct ProximityLabel: View {
     private let proximity: CardProximity
     private let showsPlace: Bool
     private let highlightsHere: Bool
+    private let wraps: Bool
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
-    public init(_ proximity: CardProximity, showsPlace: Bool = false, highlightsHere: Bool = true) {
+    public init(_ proximity: CardProximity, showsPlace: Bool = false, highlightsHere: Bool = true, wraps: Bool = false) {
         self.proximity = proximity
         self.showsPlace = showsPlace
         self.highlightsHere = highlightsHere
+        self.wraps = wraps
     }
 
     private var drawsCapsule: Bool { proximity.isHere && highlightsHere }
@@ -35,7 +39,7 @@ public struct ProximityLabel: View {
         .monospacedDigit()
         // One line keeps rows tidy, but at accessibility sizes it would leave
         // only a few letters of the place's name.
-        .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 1)
+        .lineLimit(wraps || dynamicTypeSize.isAccessibilitySize ? nil : 1)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(proximity.spokenDescription)
     }

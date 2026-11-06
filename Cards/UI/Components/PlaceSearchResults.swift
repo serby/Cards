@@ -53,7 +53,7 @@ public struct PlaceSearchResults: View {
         if let message = status.message {
             Text(message)
                 .font(.footnote)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Color.secondaryText)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .accessibilityIdentifier("placeSearchMessage")
         }
@@ -69,7 +69,7 @@ public struct PlaceSearchResults: View {
                 if !suggestion.subtitle.isEmpty {
                     Text(suggestion.subtitle)
                         .font(.footnote)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(Color.secondaryText)
                 }
             }
             .multilineTextAlignment(.leading)

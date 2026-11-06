@@ -44,7 +44,11 @@ public struct CardFaceView<NumberAccessory: View, Footer: View>: View {
                 nameAndIcon
 
                 if let proximity = card.proximity {
-                    ProximityLabel(proximity, showsPlace: true)
+                    // The card's screen shows the whole place at every size,
+                    // centred like the name above when it wraps: on one line it
+                    // was cut off at the larger text sizes.
+                    ProximityLabel(proximity, showsPlace: true, wraps: true)
+                        .multilineTextAlignment(.center)
                         .font(.subheadline.weight(.medium))
                         .foregroundStyle(supportingInk)
                         .accessibilityIdentifier("cardProximityText")
