@@ -19,6 +19,8 @@ public struct CardEditView<Scanner: View>: View {
     @FocusState private var focusedField: Field?
     @State private var showsLocationPicker = false
     @State private var showsSymbolPicker = false
+    /// The place whose row was tapped, open in the picker to change it.
+    @State private var editingLocation: CardLocation?
     /// The name takes focus once, not each time the form is seen again after switching tabs.
     @State private var hasAutofocused = false
 
@@ -114,7 +116,14 @@ public struct CardEditView<Scanner: View>: View {
 
             Section {
                 ForEach(draft.locations) { location in
-                    CardLocationRow(location)
+                    Button {
+                        editingLocation = location
+                    } label: {
+                        CardLocationRow(location)
+                            .foregroundStyle(Color.primaryText)
+                    }
+                    .accessibilityHint("Opens the map to change this place")
+                    .accessibilityIdentifier("locationRow_\(location.name)")
                 }
                 .onDelete { draft.locations.remove(atOffsets: $0) }
 
@@ -143,6 +152,14 @@ public struct CardEditView<Scanner: View>: View {
                 findPlace: actions.findPlace,
                 onAppear: actions.requestLocationAccess,
                 onAdd: { draft.locations.append($0) }
+            )
+        }
+        .sheet(item: $editingLocation) { location in
+            LocationPickerView(
+                editing: location,
+                findPlace: actions.findPlace,
+                onAppear: actions.requestLocationAccess,
+                onSave: { draft.update($0) }
             )
         }
         .sheet(isPresented: $showsSymbolPicker) {

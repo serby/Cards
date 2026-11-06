@@ -291,6 +291,40 @@ final class CardsUITests: XCTestCase {
         XCTAssertEqual(symbolRow.value as? String, "Basket")
     }
 
+    /// Tapping a place in the form opens it in the picker to change, and Save
+    /// puts the change in the form (PLACE-8).
+    @MainActor
+    func testEditAPlace() throws {
+        let app = XCUIApplication()
+        app.launchArguments += ["-uiTesting", "-screenshotSeed"]
+        app.launch()
+        dismissNotificationPrompt()
+
+        let tesco = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Tesco Clubcard")).firstMatch
+        XCTAssertTrue(waitForElement(tesco))
+        tesco.tap()
+        app.buttons["editCardButton"].tap()
+
+        let form = app.descendants(matching: .any)["editCardForm"].firstMatch
+        let express = app.buttons["locationRow_Tesco Express"]
+        for _ in 0..<4 where !(express.exists && express.isHittable) {
+            form.swipeUp()
+        }
+        express.tap()
+
+        XCTAssertTrue(waitForElement(app.navigationBars["Edit Location"]))
+        let nameField = app.textFields["locationNameField"]
+        XCTAssertEqual(nameField.value as? String, "Tesco Express")
+        // Put the cursor at the end, then replace the name.
+        nameField.coordinate(withNormalizedOffset: CGVector(dx: 0.95, dy: 0.5)).tap()
+        nameField.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: 20) + "Tesco Metro")
+        app.buttons["saveLocationButton"].tap()
+
+        XCTAssertTrue(waitForElement(app.buttons["locationRow_Tesco Metro"]))
+        XCTAssertFalse(app.buttons["locationRow_Tesco Express"].exists)
+        XCTAssertTrue(app.buttons["locationRow_Tesco Kensington"].exists, "The other place is left as it was")
+    }
+
     /// Cards with locations ask for notifications once; answer so the alert
     /// does not cover the app.
     @MainActor

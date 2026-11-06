@@ -2,11 +2,14 @@ import MapKit
 import SwiftUI
 
 /// Picks a place for a card: drag the map under the pin, or jump to a postcode,
-/// then set how far around it counts as "there".
+/// then set how far around it counts as "there". Adds a new place, or changes
+/// one the card already has (PLACE-8).
 public struct LocationPickerView: View {
+    /// The place being changed, or nil when adding one.
+    private let editing: CardLocation?
     private let findPlace: (String) async -> PlaceMatch?
     private let onAppear: () -> Void
-    private let onAdd: (CardLocation) -> Void
+    private let onConfirm: (CardLocation) -> Void
 
     @Environment(\.dismiss) private var dismiss
     @State private var position: MapCameraPosition
@@ -32,18 +35,52 @@ public struct LocationPickerView: View {
         let longitude: CLLocationDegrees
     }
 
-    private static let radiusRange: ClosedRange<CLLocationDistance> = 50...1_000
-
     public init(
         initialPosition: MapCameraPosition = .userLocation(fallback: .automatic),
         findPlace: @escaping (String) async -> PlaceMatch?,
         onAppear: @escaping () -> Void = {},
         onAdd: @escaping (CardLocation) -> Void
     ) {
-        _position = State(initialValue: initialPosition)
+        self.init(position: initialPosition, editing: nil, findPlace: findPlace, onAppear: onAppear, onConfirm: onAdd)
+    }
+
+    /// Opens on `location` with its name and radius filled in, titled "Edit
+    /// Location". Save hands back the changed place, with the same `id`.
+    public init(
+        editing location: CardLocation,
+        findPlace: @escaping (String) async -> PlaceMatch?,
+        onAppear: @escaping () -> Void = {},
+        onSave: @escaping (CardLocation) -> Void
+    ) {
+        // Wide enough to show the whole ring round the pin, and never closer than adding opens.
+        let span = max(800, location.radius * 4)
+        self.init(
+            position: .region(MKCoordinateRegion(center: location.coordinate, latitudinalMeters: span, longitudinalMeters: span)),
+            editing: location,
+            findPlace: findPlace,
+            onAppear: onAppear,
+            onConfirm: onSave
+        )
+    }
+
+    private init(
+        position: MapCameraPosition,
+        editing: CardLocation?,
+        findPlace: @escaping (String) async -> PlaceMatch?,
+        onAppear: @escaping () -> Void,
+        onConfirm: @escaping (CardLocation) -> Void
+    ) {
+        _position = State(initialValue: position)
+        if let editing {
+            _name = State(initialValue: editing.name)
+            _radius = State(initialValue: editing.radius)
+            // The map reports its centre once it appears; until then it is the place's.
+            _center = State(initialValue: MapPoint(latitude: editing.latitude, longitude: editing.longitude))
+        }
+        self.editing = editing
         self.findPlace = findPlace
         self.onAppear = onAppear
-        self.onAdd = onAdd
+        self.onConfirm = onConfirm
     }
 
     /// Opens at `centre`, normally the user's last known location, or follows the
@@ -72,7 +109,7 @@ public struct LocationPickerView: View {
             }
             .safeAreaInset(edge: .bottom) { controls }
             .mapScope(mapScope)
-                .navigationTitle("Add Location")
+                .navigationTitle(editing == nil ? "Add Location" : "Edit Location")
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbarBackground(.visible, for: .navigationBar)
                 .toolbar {
@@ -80,9 +117,9 @@ public struct LocationPickerView: View {
                         Button("Cancel") { dismiss() }
                     }
                     ToolbarItem(placement: .confirmationAction) {
-                        Button("Add", action: add)
+                        Button(editing == nil ? "Add" : "Save", action: confirm)
                             .disabled(center == nil)
-                            .accessibilityIdentifier("addLocationButton")
+                            .accessibilityIdentifier(editing == nil ? "addLocationButton" : "saveLocationButton")
                     }
                 }
         }
@@ -176,7 +213,7 @@ public struct LocationPickerView: View {
                         .foregroundStyle(.secondary)
                 }
                 .font(.subheadline)
-                Slider(value: $radius, in: Self.radiusRange, step: 25)
+                Slider(value: $radius, in: CardLocation.radiusRange, step: 25)
                     .accessibilityLabel("Radius")
                     .accessibilityValue(radiusText)
             }
@@ -213,11 +250,13 @@ public struct LocationPickerView: View {
         }
     }
 
-    private func add() {
+    /// Adds the place under the pin, or saves the changed one in place of the old.
+    private func confirm() {
         guard let center else { return }
         let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
-        onAdd(
+        onConfirm(
             CardLocation(
+                id: editing?.id ?? UUID(),
                 name: trimmed.isEmpty ? "Pinned location" : trimmed,
                 latitude: center.latitude,
                 longitude: center.longitude,

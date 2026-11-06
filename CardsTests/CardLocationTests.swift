@@ -58,6 +58,27 @@ struct CardLocationTests {
         let imported = try JSONDecoder().decode([CardItemDTO].self, from: Data(legacy.utf8))
         #expect(imported.first?.toCardItem().locations.isEmpty == true)
     }
+
+    /// PLACE-8: a changed place takes the old one's spot and keeps its id, so its
+    /// arrival reminder is replaced rather than joined by a second one.
+    @Test func changingAPlaceInTheFormKeepsItsSpotAndId() {
+        let pool = CardLocation(name: "Pool", latitude: 51.50, longitude: -0.20)
+        var draft = CardDraft(name: "Gym", code: "1", locations: [westway, pool])
+        var moved = westway
+        moved.name = "Westway Climbing"
+        moved.latitude = 51.5210
+        moved.radius = 400
+        draft.update(moved)
+        #expect(draft.locations == [moved, pool])
+        #expect(draft.locations.map(\.id) == [westway.id, pool.id])
+    }
+
+    @Test func aPlaceRemovedMeanwhileIsNotBroughtBack() {
+        var draft = CardDraft(name: "Gym", code: "1", locations: [westway])
+        draft.locations.removeAll()
+        draft.update(westway)
+        #expect(draft.locations.isEmpty)
+    }
 }
 
 @MainActor

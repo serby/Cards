@@ -19,7 +19,7 @@ As a card holder, I want to mark on a map where I use a card, so that the app kn
 - Opening the sheet asks for location permission if it has not been asked before (PLACE-7).
 
 **Since:** 1.3
-**Where:** `Cards/UI/Screens/LocationPickerView.swift`, `Cards/UI/Screens/CardEditView.swift:112-136`, `Cards/UI/Components/CardLocationRow.swift`, `CardsUITests/CardsScreenshotTests.swift`
+**Where:** `Cards/UI/Screens/LocationPickerView.swift`, `Cards/UI/Screens/CardEditView.swift` (the Locations section), `Cards/UI/Components/CardLocationRow.swift`, `CardsUITests/CardsScreenshotTests.swift`
 
 ### PLACE-2: Find a place by its postcode
 
@@ -44,10 +44,10 @@ As a card holder, I want to set the size of a place, so that a big shop or a sma
 - A Radius slider sets it from 50 m to 1,000 m in steps of 25 m, with the value beside it, as "200 m".
 - A pink ring round the pin shows the radius at the map's scale as you drag and zoom.
 - In the edit form, each place shows its name on one line and its radius below, as "200 m radius".
-- A place's name and radius can't be changed once it is added. Remove it and add it again (PLACE-5).
+- In 1.3 a place's name and radius can't be changed once it is added; you remove it and add it again (PLACE-5). In preparation for 1.4, tapping the place changes it (PLACE-8).
 
 **Since:** 1.3
-**Where:** `Cards/UI/Screens/LocationPickerView.swift:35`, `Cards/Core/Models/CardLocation.swift:7`, `Cards/UI/Components/CardLocationRow.swift`
+**Where:** `Cards/Core/Models/CardLocation.swift` (`defaultRadius`, `radiusRange`), `Cards/UI/Screens/LocationPickerView.swift`, `Cards/UI/Components/CardLocationRow.swift`
 
 ### PLACE-4: Add where I am straight from the card
 
@@ -70,7 +70,7 @@ As a card holder, I want to remove a place I no longer use, so that the card sto
 - The removal is saved when the form is saved. Going back without saving keeps the place.
 
 **Since:** 1.3
-**Where:** `Cards/UI/Screens/CardEditView.swift:113-116`
+**Where:** `Cards/UI/Screens/CardEditView.swift` (the Locations section's `onDelete`)
 
 ### PLACE-6: See how far away my cards' places are
 
@@ -107,9 +107,11 @@ As a card holder, I want the app to ask before it uses my location, and only use
 As a card holder, I want to change a place I added, so that I can fix its name, its position or its radius without adding it again.
 
 - In the edit form, tapping a place opens the location picker (PLACE-1) with that place's name, position and radius filled in. The sheet's title is "Edit Location" and its confirm button is "Save".
-- Moving the map, searching a postcode (PLACE-2), renaming the place or changing the radius, then tapping Save, updates the place in the form. Cancel leaves it as it was.
-- The change is kept when the card is saved (CARD-5). Arrival reminders use the new position and radius from then on (ARR-3).
+- The map opens centred on the place, at least 800 metres across and wide enough to show the whole ring, so Save works straight away.
+- Moving the map, searching a postcode (PLACE-2), renaming the place or changing the radius, then tapping Save, updates the place in the form, in the same position in the list. Cancel leaves it as it was. A name left empty becomes "Pinned location", as when adding (PLACE-1).
+- The place keeps its identity, so its arrival reminder is replaced rather than joined by a second one. The change is kept when the card is saved (CARD-5), and arrival reminders use the new position and radius from then on (ARR-3). Going back from the form without saving keeps the place as it was.
+- VoiceOver reads a place's row as a button, with the hint "Opens the map to change this place".
 - Swiping a place to remove it still works as before (PLACE-5).
 
 **Since:** In preparation for 1.4
-**Where:** `Cards/UI/Screens/CardEditView.swift`, `Cards/UI/Screens/LocationPickerView.swift`
+**Where:** `Cards/UI/Screens/CardEditView.swift`, `Cards/UI/Screens/LocationPickerView.swift` (`init(editing:findPlace:onAppear:onSave:)`), `Cards/UI/ViewState/CardViewState.swift` (`CardDraft.update(_:)`), `CardsTests/CardLocationTests.swift` (`changingAPlaceInTheFormKeepsItsSpotAndId`, `aPlaceRemovedMeanwhileIsNotBroughtBack`), `CardsUITests/CardsUITests.swift` (`testEditAPlace`)

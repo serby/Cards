@@ -208,67 +208,6 @@ private let cardEditStory = Story(
 }
 
 @MainActor
-private let locationPickerStory = Story(
-    id: "location-picker",
-    title: "LocationPickerView",
-    section: "Screens",
-    galleryLayout: .oneAtATime,
-    knobs: [
-        .options("Start at", PickerStart.allCases.map(\.rawValue), PickerStart.westway.rawValue),
-        .toggle("Postcode found", true)
-    ],
-    gallery: [
-        (
-            name: "Westway",
-            view: standalone {
-                LocationPickerView(
-                    initialPosition: .region(CardLocation.previewRegion),
-                    findPlace: { _ in nil },
-                    onAdd: { _ in }
-                )
-            }
-        )
-    ]
-) { knobs in
-    let start = PickerStart(rawValue: knobs.option("Start at")) ?? .westway
-    let found = knobs.bool("Postcode found")
-    return standalone {
-        LocationPickerView(
-            initialPosition: start.position,
-            findPlace: { query in
-                found ? PlaceMatch(name: query.uppercased(), latitude: 51.5203, longitude: -0.2094) : nil
-            },
-            onAdd: { _ in }
-        )
-        // The start position is read once, so a new choice needs a fresh picker.
-        .id(start)
-    }
-}
-
-private enum PickerStart: String, CaseIterable {
-    case westway = "Westway"
-    case centralLondon = "Central London"
-    case userLocation = "Your location"
-
-    var position: MapCameraPosition {
-        switch self {
-        case .westway:
-            .region(CardLocation.previewRegion)
-        case .centralLondon:
-            .region(
-                MKCoordinateRegion(
-                    center: CLLocationCoordinate2D(latitude: 51.5074, longitude: -0.1278),
-                    latitudinalMeters: 3_000,
-                    longitudinalMeters: 3_000
-                )
-            )
-        case .userLocation:
-            .userLocation(fallback: .automatic)
-        }
-    }
-}
-
-@MainActor
 private let settingsStory = Story(
     id: "settings",
     title: "SettingsListView",

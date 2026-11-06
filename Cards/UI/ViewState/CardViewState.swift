@@ -97,6 +97,13 @@ public extension CardDraft {
     func canSave(takenCodes: Set<String>) -> Bool {
         !trimmedName.isEmpty && !trimmedCode.isEmpty && !codeIsTaken(by: takenCodes)
     }
+
+    /// Puts a changed place where the one with its `id` was, keeping the order.
+    /// A place the draft no longer has, such as one swiped away meanwhile, is left out.
+    mutating func update(_ location: CardLocation) {
+        guard let index = locations.firstIndex(where: { $0.id == location.id }) else { return }
+        locations[index] = location
+    }
 }
 
 /// Everything the settings screen displays that it cannot derive itself.
