@@ -37,7 +37,10 @@ import {
     projectAt,
     projectLanguages,
     readKnownRegions,
+    removeKnownRegion,
+    removeLanguage,
     requiredPluralCategories,
+    restoreLanguage,
     runCommand,
     singleNumber,
     type Text,
@@ -374,6 +377,13 @@ describe("the project's knownRegions", () => {
         assert.deepEqual(addKnownRegion(after, "zh-Hans"), { text: after, changed: false });
     });
 
+    test("taking the ten languages out again gives back the project as it was", () => {
+        let text = after;
+        for (const code of ["zh-Hant", "ar", "ja", "pt-BR", "de", "es", "fr", "it", "ko", "zh-Hans"]) text = removeKnownRegion(text, code).text;
+        assert.equal(text, before);
+        assert.deepEqual(removeKnownRegion(before, "ja"), { text: before, changed: false });
+    });
+
     test("every list is edited, hyphenated codes are quoted, and nothing else moves", () => {
         const two = "\t\t\tknownRegions = (\n\t\t\t\ten,\n\t\t\t);\n\t\t\tother = 1;\n\t\tknownRegions = (\n\t\t\ten,\n\t\t\tBase,\n\t\t);\n";
         const { text, changed } = addKnownRegion(two, "pt-BR");
@@ -603,6 +613,65 @@ describe("add-language", () => {
         } finally {
             rmSync(root, { recursive: true, force: true });
         }
+    });
+});
+
+describe("remove-language and add-language --from", () => {
+    const git = (root: string, args: string[]): string => {
+        const result = spawnSync("git", ["-c", "user.name=Test", "-c", "user.email=test@example.com", ...args], { cwd: root, encoding: "utf8" });
+        assert.equal(result.status, 0, result.stderr);
+        return result.stdout.trim();
+    };
+
+    test("a removed language leaves no translations, and comes back from the commit that had them", () => {
+        const root = projectCopy();
+        const pbxproj = join(root, "Cards.xcodeproj", "project.pbxproj");
+        const catalogue = join(root, "Cards", "Localizable.xcstrings");
+        try {
+            assert.equal(cli(root, ["translate"]).status, 0);
+            // A translation a person wrote, which the fake AI would never give.
+            const doc = readJSON(catalogue);
+            doc.strings.Settings.localizations.ja = unit("設定");
+            writeFileSync(catalogue, formatCatalogue(doc));
+            git(root, ["init", "--quiet"]);
+            git(root, ["add", "."]);
+            git(root, ["commit", "--quiet", "-m", "with Japanese"]);
+            const withJapanese = git(root, ["rev-parse", "--short", "HEAD"]);
+
+            const removed = cli(root, ["remove-language", "ja"]);
+            assert.equal(removed.status, 0, removed.stderr);
+            assert.match(removed.stdout, /Took ja out of knownRegions and removed its 3 translations/);
+            assert.match(removed.stdout, new RegExp(`add-language ja --from ${withJapanese}`));
+            assert.doesNotMatch(readFileSync(pbxproj, "utf8"), /\bja,/);
+            assert.equal(readJSON(catalogue).strings.Settings.localizations?.ja, undefined);
+            assert.equal(cli(root, ["check"]).status, 0);
+            assert.match(cli(root, ["remove-language", "ja"]).stdout, /not a project language/);
+            git(root, ["commit", "--quiet", "-am", "without Japanese"]);
+
+            const restored = cli(root, ["add-language", "ja", "--from", withJapanese]);
+            assert.equal(restored.status, 0, restored.stderr);
+            assert.match(restored.stdout, /Restored 3 translations into ja/);
+            assert.deepEqual(readJSON(catalogue).strings.Settings.localizations.ja, unit("設定"));
+            assert.match(restored.stderr, /ja: nothing to translate/);
+            assert.equal(cli(root, ["add-language", "ja", "--from", "no-such-commit"]).status, 2);
+        } finally {
+            rmSync(root, { recursive: true, force: true });
+        }
+    });
+
+    test("restoring skips a string whose English changed, and keeps translations already there", () => {
+        const before = catalogueOf({ Edit: { localizations: { ja: unit("編集") } }, Old: { localizations: { ja: unit("古い") } } });
+        const now = catalogueOf({ Edit: {}, Old: { localizations: { en: unit("New") } }, Kept: { localizations: { ja: unit("そのまま") } } });
+        assert.equal(restoreLanguage([now], new Map([[now.name, before.doc]]), "ja"), 1);
+        assert.deepEqual(now.doc.strings.Edit.localizations?.ja, unit("編集"));
+        assert.equal(now.doc.strings.Old.localizations?.ja, undefined);
+        assert.equal(removeLanguage([now], "ja"), 2);
+    });
+
+    test("check fails on translations for a language the project does not have", () => {
+        const catalogue = catalogueOf({ Edit: { localizations: { ja: unit("編集"), fr: unit("Modifier") } } });
+        const { errors } = checkReport([catalogue], ["ja"]);
+        assert.deepEqual(errors, ["Cards/Localizable.xcstrings [fr]: 1 translation for a language the project does not have; take them out with remove-language fr, or add it back with add-language fr"]);
     });
 });
 

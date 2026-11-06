@@ -4,8 +4,9 @@
 // catalogues are every *.xcstrings under the targets' source folders, Cards/
 // (the app) and CardsWidget/ (the widget extension), except Cards/Development,
 // so there is no separate configuration. A string compiled into both targets
-// is in both catalogues; it is translated once and must read the same in both. The AI is any shell command that reads a
-// prompt on stdin and writes its reply on stdout: L10N_AI_COMMAND, or by default
+// is in both catalogues; it is translated once and must read the same in both.
+// The AI is any shell command that reads a prompt on stdin and writes its reply
+// on stdout: L10N_AI_COMMAND, or by default
 // the local Claude Code CLI with no tools. Every reply is validated with the
 // same rules as `check` before anything is written, and catalogues are written
 // in Xcode's own format, so Xcode re-saving them changes nothing.
@@ -16,13 +17,16 @@
 //   translate [--lang <code>…]      Translate what needs it (--force: everything)
 //   export --lang <code> --out <f>  Write the translation payload for a person or another AI
 //   import --lang <code> <file>     Apply a filled-in payload, validated like translate
-//   add-language <code>             Add a language to the project, then translate it
+//   add-language <code> [--from <commit>]
+//                                   Add a language to the project, then translate it,
+//                                   first restoring its translations from a commit
+//   remove-language <code>          Take a language out of the project and the catalogues
 //   normalise [<file>…]             Rewrite catalogues in Xcode's format
 // Options: --root <dir> (default: this repository), --jobs <n> (languages in
 // parallel, default 3), --batch-size <n> (units per AI call, default 50).
 // Environment: L10N_AI_COMMAND, L10N_AI_TIMEOUT (seconds per call, default 900).
 
-import { spawn } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import { existsSync, readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { join, relative, resolve } from "node:path";
 import { parseArgs } from "node:util";
@@ -240,6 +244,20 @@ export function addKnownRegion(pbxproj: string, code: string): { text: string; c
         let kept = body.replace(/\s+$/, "");
         if (kept.trim() !== "" && !kept.endsWith(",")) kept += ",";
         return `${indent}knownRegions = (${kept}\n${itemIndent}${pbxQuote(code)},\n${indent});`;
+    });
+    return { text, changed };
+}
+
+/// Takes the code out of every knownRegions list that has it, as Xcode's
+/// project editor does, so the diff is that line and nothing else.
+export function removeKnownRegion(pbxproj: string, code: string): { text: string; changed: boolean } {
+    let changed = false;
+    const text = pbxproj.replace(knownRegionsPattern, (whole: string, indent: string, body: string) => {
+        const lines = body.split("\n");
+        const kept = lines.filter((line) => unquote(line.trim().replace(/,$/, "")) !== code);
+        if (kept.length === lines.length) return whole;
+        changed = true;
+        return `${indent}knownRegions = (${kept.join("\n")});`;
     });
     return { text, changed };
 }
@@ -543,6 +561,58 @@ export function validate(source: Text, translation: unknown, lang: string, path 
     const extra = Object.keys(translation.substitutions).filter((name) => !(name in source.substitutions));
     if (extra.length > 0) problems.push(invalid(`${at}unexpected substitution ${extra.join(", ")}`));
     return problems;
+}
+
+// MARK: - Taking a language out and bringing it back
+
+/// Deletes the language's translations from every catalogue, and says how many
+/// there were.
+export function removeLanguage(catalogues: Catalogue[], lang: string): number {
+    let removed = 0;
+    for (const catalogue of catalogues) {
+        for (const entry of Object.values(catalogue.doc.strings)) {
+            if (entry.localizations?.[lang] === undefined) continue;
+            delete entry.localizations[lang];
+            removed++;
+        }
+    }
+    return removed;
+}
+
+/// Brings back the language's translations from `earlier`, the same catalogues
+/// as they were in another commit, for every string whose English is unchanged,
+/// which is every key still in use, as English is the key. Translations already
+/// here are kept. Returns how many came back.
+export function restoreLanguage(catalogues: Catalogue[], earlier: Map<string, CatalogueDocument>, lang: string): number {
+    let restored = 0;
+    for (const catalogue of catalogues) {
+        const old = earlier.get(catalogue.name);
+        if (!old) continue;
+        for (const unit of unitsOf(catalogue).units) {
+            const oldEntry = old.strings[unit.key];
+            const localisation = oldEntry?.localizations?.[lang];
+            if (!localisation || unit.entry.localizations?.[lang] !== undefined) continue;
+            const oldText = textOf(oldEntry.localizations?.[old.sourceLanguage]);
+            const oldSource = oldText === undefined || oldText === "" ? unit.key : oldText;
+            if (formatJSON(oldSource) !== formatJSON(unit.source)) continue;
+            unit.entry.localizations = { ...unit.entry.localizations, [lang]: localisation };
+            restored++;
+        }
+    }
+    return restored;
+}
+
+/// The catalogues as they were in `commit`, read with git, by catalogue name.
+/// A catalogue the commit does not have is left out.
+function cataloguesAt(project: Project, catalogues: Catalogue[], commit: string): Map<string, CatalogueDocument> {
+    const verify = spawnSync("git", ["rev-parse", "--verify", "--quiet", `${commit}^{commit}`], { cwd: project.root, encoding: "utf8" });
+    if (verify.status !== 0) throw new UsageError(`${commit} is not a commit in ${project.root}`);
+    const found = new Map<string, CatalogueDocument>();
+    for (const catalogue of catalogues) {
+        const show = spawnSync("git", ["show", `${commit}:${catalogue.name}`], { cwd: project.root, encoding: "utf8", maxBuffer: 64 * 1024 * 1024 });
+        if (show.status === 0) found.set(catalogue.name, parseCatalogue(show.stdout, `${commit}:${catalogue.name}`));
+    }
+    return found;
 }
 
 // MARK: - Units
@@ -1019,6 +1089,17 @@ export function checkReport(catalogues: Catalogue[], languages: string[]): { err
             }
         }
     }
+    for (const catalogue of catalogues) {
+        const leftover = new Map<string, number>();
+        for (const entry of Object.values(catalogue.doc.strings)) {
+            for (const lang of Object.keys(entry.localizations ?? {})) {
+                if (lang !== catalogue.doc.sourceLanguage && !languages.includes(lang)) leftover.set(lang, (leftover.get(lang) ?? 0) + 1);
+            }
+        }
+        for (const [lang, count] of leftover) {
+            errors.push(`${catalogue.name} [${lang}]: ${count} translation${count === 1 ? "" : "s"} for a language the project does not have; take them out with remove-language ${lang}, or add it back with add-language ${lang}`);
+        }
+    }
     for (const group of twinsOf(catalogues).values()) {
         if (group.length < 2) continue;
         for (const lang of languages) {
@@ -1088,7 +1169,10 @@ Commands:
   export --lang <code> --out <file> [--force]
                                     Write the payload for a person or another AI
   import --lang <code> <file>       Apply a filled-in payload
-  add-language <code>               Add a language to the project, then translate it
+  add-language <code> [--from <commit>]
+                                    Add a language to the project, then translate it;
+                                    --from first restores its translations from a commit
+  remove-language <code>            Take a language out of knownRegions and every catalogue
   normalise [<file>…]               Rewrite catalogues in Xcode's format
 
 Options:
@@ -1182,6 +1266,7 @@ export async function main(argv: string[]): Promise<number> {
             lang: { type: "string", multiple: true },
             force: { type: "boolean", default: false },
             out: { type: "string" },
+            from: { type: "string" },
             jobs: { type: "string" },
             "batch-size": { type: "string" },
             help: { type: "boolean", short: "h", default: false },
@@ -1267,6 +1352,7 @@ export async function main(argv: string[]): Promise<number> {
             const catalogues = loadCatalogues(project);
             const source = catalogues[0]?.doc.sourceLanguage ?? "en";
             if (lang === "en" || lang === source) throw new UsageError(`${lang} is the source language`);
+            const earlier = values.from === undefined ? undefined : cataloguesAt(project, catalogues, values.from);
             const edit = addKnownRegion(pbxproj(), lang);
             if (edit.changed) {
                 writeFileSync(project.pbxproj, edit.text);
@@ -1274,7 +1360,36 @@ export async function main(argv: string[]): Promise<number> {
             } else {
                 console.log(`${lang} (${name}) is already a project language.`);
             }
+            if (earlier) {
+                const restored = restoreLanguage(catalogues, earlier, lang);
+                for (const catalogue of catalogues) {
+                    if (saveCatalogue(catalogue)) log(`wrote ${catalogue.name}`);
+                }
+                console.log(`Restored ${restored} translation${restored === 1 ? "" : "s"} into ${lang} from ${values.from}.`);
+            }
             return runTranslate(project, catalogues, [lang], values.force, jobs, batchSize);
+        }
+        case "remove-language": {
+            const [code, ...others] = rest;
+            if (!code || others.length > 0) throw new UsageError("remove-language needs one language code, such as fr or pt-BR");
+            const lang = cliLanguage(code);
+            const catalogues = loadCatalogues(project);
+            const source = catalogues[0]?.doc.sourceLanguage ?? "en";
+            if (lang === "en" || lang === source) throw new UsageError(`${lang} is the source language`);
+            const edit = removeKnownRegion(pbxproj(), lang);
+            if (edit.changed) writeFileSync(project.pbxproj, edit.text);
+            const removed = removeLanguage(catalogues, lang);
+            for (const catalogue of catalogues) {
+                if (saveCatalogue(catalogue)) log(`wrote ${catalogue.name}`);
+            }
+            if (!edit.changed && removed === 0) {
+                console.log(`${lang} is not a project language and has no translations.`);
+                return 0;
+            }
+            const head = spawnSync("git", ["rev-parse", "--short", "HEAD"], { cwd: project.root, encoding: "utf8" }).stdout?.trim();
+            console.log(`Took ${lang} out of knownRegions and removed its ${removed} translation${removed === 1 ? "" : "s"}.`);
+            if (head) console.log(`Bring it back with: node scripts/l10n.ts add-language ${lang} --from ${head}`);
+            return 0;
         }
         case "normalise": {
             const paths = rest.length > 0 ? rest.map((path) => resolve(path)) : findCatalogues(project);
