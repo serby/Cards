@@ -18,7 +18,7 @@ Run this whenever an agreed change is about to be pushed, or when asked to mark 
 3. **Write the entries.** Add only changes people notice: new things they can do (`new`), things that work better (`improved`), and problems that no longer happen (`fixed`). Leave out tests, CI, refactors and docs unless the person using the app would notice. Merge related commits into one entry and update an existing entry rather than adding a near duplicate.
    - **Wording:** one short sentence each, saying what the person can do or what changed: "Give each card a colour from 23, or pick any colour you like."
    - **Spelling:** `text` is British English. Add `"en-US"` only where American English differs (colour/color, till/checkout, postcode/ZIP code).
-   - **Voice:** Paul's. Plain and active, no hype, no exclamation marks, "it is" and "that is" in full, no em-dashes, never "land" for shipping.
+   - **Voice:** Paul's, as [docs/LANGUAGE.md](../../../docs/LANGUAGE.md) sets out. Plain and active, no hype, no exclamation marks, "it is" and "that is" in full, no em-dashes, never "land" for shipping, and no real brand names.
 4. **Update the spec.** For each change, update the matching stories in `spec/`, or add new ones with an ID, acceptance criteria and "Since:" the version. Keep `spec/README.md`'s index current.
 5. **Generate and check:** `node scripts/generate-changelog.ts`, then `node scripts/check-changelog.ts` and `node scripts/check-metadata.ts`.
 6. **Commit** the changelog, generated files and spec together as `docs(changelog): <what>`. Commit the version bump separately as `chore: version <x.y>`, explaining why.

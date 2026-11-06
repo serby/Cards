@@ -266,6 +266,10 @@ The app's Swift follows a few long-standing design principles, applied where the
 - **Don't repeat knowledge (DRY).** Every fact lives in one place: a colour, a radius, a rule such as "codes are unique", or a string the app and the store share. Code that only looks alike can stay apart until a third copy appears; then extract it.
 - **Test through the seams.** Logic is tested with stand-in clients, never by waiting on real notifications, location or the network.
 
+### Rule 16: Words follow the language guide
+
+[LANGUAGE.md](LANGUAGE.md) covers spelling, voice and capitalisation for everything people read: the app, notifications, the App Store listing, the website and the changelog. Every example, in the store screenshots, placeholders, sample data, previews, stories, tests, the spec and the docs, uses its cast of made-up businesses (Joe's Market, Local Roast Coffee and the rest), never a real brand.
+
 ## 5. Recipes
 
 ### Add a view
