@@ -2,6 +2,25 @@
 
 Every version of Card Barcodes and what it changed, newest first. This file is generated from `changelog.json` by `node scripts/generate-changelog.ts`: edit that, not this. The app shows the same list in Settings > What's New.
 
+## 1.4 (in preparation)
+
+### New
+
+- Share a card as a link someone can add to their own Card Barcodes, or as a picture.
+- Search your cards, and sort them by last viewed, your own order or the nearest place.
+- Give each card a symbol, shown on its tile and on the card.
+- Show the card for where you are in full above your other cards, with a new switch in Settings.
+- Change a place you have added to a card.
+- Import cards from a JSON file, as well as by pasting.
+
+### Improved
+
+- Your cards are laid out in a grid, two across on iPhone and four on iPad. Press and hold a card to delete it.
+
+### Fixed
+
+- Opening a card no longer plays a haptic, which it only did the first time.
+
 ## 1.3 (5 November 2026)
 
 ### New
