@@ -9,5 +9,5 @@ Find a place by searching for a store, a street, a town or a ZIP code. Places ar
 Change a place you have added to a card.
 Import cards from a JSON file, as well as by pasting.
 The camera focuses on a card held close. Tap to focus, or turn on the flashlight in low light.
-Your cards are laid out in a grid, two across on iPhone and four on iPad. Press and hold a card to delete it, or delete it from its edit screen.
+Your cards are laid out in a grid, two across on iPhone and four on iPad. Press and hold a card to edit or delete it, or delete it from its edit screen.
 Opening a card no longer plays a haptic, which it only did the first time.

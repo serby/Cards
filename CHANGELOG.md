@@ -20,7 +20,7 @@ Every version of Card Barcodes and what it changed, newest first. This file is g
 ### Improved
 
 - The camera focuses on a card held close. Tap to focus, or turn on the torch in low light.
-- Your cards are laid out in a grid, two across on iPhone and four on iPad. Press and hold a card to delete it, or delete it from its edit screen.
+- Your cards are laid out in a grid, two across on iPhone and four on iPad. Press and hold a card to edit or delete it, or delete it from its edit screen.
 
 ### Fixed
 
