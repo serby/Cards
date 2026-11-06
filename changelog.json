@@ -30,6 +30,11 @@
         },
         {
           "type": "new",
+          "text": "Show distances in kilometres or miles, or let them follow your iPhone's settings, with a new choice in Settings.",
+          "en-US": "Show distances in kilometers or miles, or let them follow your iPhone's settings, with a new choice in Settings."
+        },
+        {
+          "type": "new",
           "text": "Find a place by searching for a shop, a street, a town or a postcode. Places are named from the map, and you can change the name.",
           "en-US": "Find a place by searching for a store, a street, a town or a ZIP code. Places are named from the map, and you can change the name."
         },
