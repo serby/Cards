@@ -23,6 +23,8 @@ public struct ProximityLabel: View {
     }
 
     private var drawsCapsule: Bool { proximity.isHere && highlightsHere }
+    /// Whether the text can run onto more lines, as `lineLimit` lets it.
+    private var mayWrap: Bool { wraps || dynamicTypeSize.isAccessibilitySize }
 
     public var body: some View {
         HStack(alignment: .firstTextBaseline, spacing: 4) {
@@ -32,16 +34,23 @@ public struct ProximityLabel: View {
         }
         .fontWeight(proximity.isHere ? .semibold : nil)
         .padding(.horizontal, drawsCapsule ? 8 : 0)
+        .padding(.vertical, drawsCapsule && mayWrap ? 4 : 0)
         .background {
             if drawsCapsule {
-                // Drawn beyond the text vertically so "Here" never makes a row taller.
-                Capsule().fill(.quaternary).padding(.vertical, -3)
+                if mayWrap {
+                    // A capsule round several lines is an oval; a rounded
+                    // rectangle keeps the wrapped place readable as one label.
+                    RoundedRectangle(cornerRadius: 14, style: .continuous).fill(.quaternary)
+                } else {
+                    // Drawn beyond the text vertically so "Here" never makes a row taller.
+                    Capsule().fill(.quaternary).padding(.vertical, -3)
+                }
             }
         }
         .monospacedDigit()
         // One line keeps rows tidy, but at accessibility sizes it would leave
         // only a few letters of the place's name.
-        .lineLimit(wraps || dynamicTypeSize.isAccessibilitySize ? nil : 1)
+        .lineLimit(mayWrap ? nil : 1)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(proximity.spokenDescription(in: distanceFormat))
     }

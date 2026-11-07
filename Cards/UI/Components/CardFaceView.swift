@@ -32,6 +32,11 @@ public struct CardFaceView<NumberAccessory: View, Footer: View>: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.colorSchemeContrast) private var colorSchemeContrast
 
+    /// The code and its accessory side by side, or stacked at the accessibility sizes.
+    private var numberLayout: AnyLayout {
+        dynamicTypeSize.isAccessibilitySize ? AnyLayout(VStackLayout(spacing: 4)) : AnyLayout(HStackLayout(spacing: 0))
+    }
+
     /// The place and the date: a lighter ink, or with Increase Contrast the
     /// full ink of the name and code.
     private var supportingInk: Color {
@@ -66,10 +71,15 @@ public struct CardFaceView<NumberAccessory: View, Footer: View>: View {
             // Centred like the name above when they wrap, as at the largest
             // text sizes, rather than each line at the leading edge.
             VStack(spacing: 4) {
-                HStack(spacing: 0) {
-                    Color.clear
-                        .frame(width: accessoryWidth, height: 1)
-                        .accessibilityHidden(true)
+                // Beside the code, with a matching space on the other side, or
+                // under it at the accessibility sizes, where the grown accessory
+                // would run into the code's wrapped lines.
+                numberLayout {
+                    if !dynamicTypeSize.isAccessibilitySize {
+                        Color.clear
+                            .frame(width: accessoryWidth, height: 1)
+                            .accessibilityHidden(true)
+                    }
                     Text(card.code)
                         .font(.title3.monospaced().weight(.semibold))
                         .foregroundStyle(CardPanel.ink)

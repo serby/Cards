@@ -41,24 +41,28 @@ extension CardEditView {
             iconPickerPosition = nil
             showsIconPicker = true
         } label: {
-            HStack {
+            // Side by side, or the value under its title at the accessibility
+            // sizes, where beside it each word broke part-way ("Sym-bol", "Ohn-e").
+            rowLayout {
                 iconLabel
                     .foregroundStyle(Color.primaryText)
-                Spacer()
-                if let icon = draft.icon {
-                    Image(systemName: icon)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                HStack {
+                    if let icon = draft.icon {
+                        Image(systemName: icon)
+                            .foregroundStyle(Color.secondaryText)
+                            .accessibilityHidden(true)
+                    } else {
+                        noIcon
+                            .foregroundStyle(Color.secondaryText)
+                    }
+                    // Forward, so it points left in a right-to-left language, as the
+                    // system's own disclosure chevrons do.
+                    Image(systemName: "chevron.forward")
+                        .font(.footnote.weight(.semibold))
                         .foregroundStyle(Color.secondaryText)
                         .accessibilityHidden(true)
-                } else {
-                    noIcon
-                        .foregroundStyle(Color.secondaryText)
                 }
-                // Forward, so it points left in a right-to-left language, as the
-                // system's own disclosure chevrons do.
-                Image(systemName: "chevron.forward")
-                    .font(.footnote.weight(.semibold))
-                    .foregroundStyle(Color.secondaryText)
-                    .accessibilityHidden(true)
             }
             .contentShape(.rect)
         }

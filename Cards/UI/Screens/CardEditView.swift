@@ -60,7 +60,7 @@ public struct CardEditView<Scanner: View>: View {
         dynamicTypeSize.isAccessibilitySize
     }
 
-    private var rowLayout: AnyLayout {
+    var rowLayout: AnyLayout {
         stacksFields
             ? AnyLayout(VStackLayout(alignment: .leading, spacing: 4))
             : AnyLayout(HStackLayout())
