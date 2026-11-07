@@ -66,17 +66,18 @@ extension XCUIApplication {
     /// Opens Local Roast Coffee's screen with a code its format, EAN-13, cannot draw, so
     /// the screen shows the failure message on the barcode's plate. Every
     /// seeded code draws, so it adds a digit to Local Roast Coffee's: fourteen digits are
-    /// too many for EAN-13. The form gives the name focus a moment after it
-    /// opens, which would take it back from a tapped code field, so the test
-    /// waits for that and then lets Return move on to the code.
+    /// too many for EAN-13. The form opens with the keyboard down (CARD-5),
+    /// so it taps the name, waits for it to take focus, which iOS 18 gives a
+    /// moment after the tap, and lets Return move on to the code. Waiting
+    /// three seconds first for the form to give the name focus itself ran out
+    /// every time, and on iOS 18.1 typing straight after the tap found no focus.
     func openCardWithFailedBarcode() {
         openCard(SeededCard.localRoast)
         buttons["editCardButton"].tap()
         let name = textFields["nameTextField"]
         XCTAssertTrue(name.appears(within: 5), "The card's form did not open")
-        if !Self.gainsFocus(name, within: 3) {
-            name.tap()
-        }
+        name.tap()
+        XCTAssertTrue(Self.gainsFocus(name, within: 3), "The name did not take focus")
         name.typeText("\n")
         XCTAssertTrue(Self.gainsFocus(textFields["codeTextField"], within: 2), "Return did not move on to the code")
         typeText("0")
