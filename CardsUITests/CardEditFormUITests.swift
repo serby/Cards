@@ -16,11 +16,11 @@ final class CardEditFormUITests: XCTestCase {
         XCTAssertTrue(waitForElement(honeycomb))
         honeycomb.press(forDuration: 1)
 
-        let edit = app.buttons["Edit"]
+        let edit = app.buttons["editCardMenuItem"]
         XCTAssertTrue(waitForElement(edit))
         edit.tap()
 
-        let nameField = app.textFields["Card name"]
+        let nameField = app.textFields["nameTextField"]
         XCTAssertTrue(waitForElement(nameField))
         XCTAssertEqual(nameField.value as? String, "Honeycomb Rewards")
         XCTAssertFalse(app.keyboards.firstMatch.waitForExistence(timeout: 2), "The form should open with the keyboard down")
