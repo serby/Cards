@@ -12,7 +12,7 @@ import { rmSync } from "node:fs";
 import { resolve } from "node:path";
 import { parseArgs } from "node:util";
 import { bootSimulator } from "./lib/simulator.ts";
-import { finished, start } from "./lib/xcode.ts";
+import { finished, projectArgs as project, start } from "./lib/xcode.ts";
 
 const usage = "Usage: node scripts/run-unit-tests.ts [--device <device type>] [--result-bundle <path>]";
 
@@ -30,7 +30,6 @@ try {
     process.exit(2);
 }
 const resultBundle = resolve(options["result-bundle"]);
-const project = ["-project", "Cards.xcodeproj", "-scheme", "Cards", "-derivedDataPath", "build/dd"];
 
 function message(error: unknown): string {
     return error instanceof Error ? error.message : String(error);

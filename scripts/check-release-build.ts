@@ -22,7 +22,6 @@ const xcodebuildArgs = [
     "-scheme", "Cards",
     "-configuration", "Release",
     "-destination", "generic/platform=iOS Simulator",
-    "-derivedDataPath", join(root, "build", "dd"),
     // A generic simulator build makes every architecture; one is enough to inspect.
     "ARCHS=arm64",
 ];

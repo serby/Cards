@@ -119,7 +119,12 @@ export function buildIpa(options: BuildOptions = {}): string {
         "-configuration", "Release",
         "-destination", "generic/platform=iOS",
         "-archivePath", archivePath,
+        // The one build with DerivedData of its own, build/release/dd, and
+        // IDEBuildLocationStyle=Unique to keep a custom build location out of it
+        // too: what goes to the App Store reuses nothing a development build left
+        // behind, locally as on CI's fresh runner.
         "-derivedDataPath", join(buildDir, "dd"),
+        "-IDEBuildLocationStyle=Unique",
         "CODE_SIGN_STYLE=Manual",
         `DEVELOPMENT_TEAM=${teamId}`,
         `CARDS_APP_PROFILE=${appProfile}`,

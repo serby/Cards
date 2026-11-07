@@ -116,15 +116,14 @@ function boot(udid: string): void {
 /// what the runs test.
 function buildForTesting(destination: string, buildDir: string, logs: string): string {
     const args = [
-        "-project", join(root, "Cards.xcodeproj"), "-scheme", "Cards",
-        "-derivedDataPath", join(root, "build", "dd"), "-destination", destination,
+        "-project", join(root, "Cards.xcodeproj"), "-scheme", "Cards", "-destination", destination,
     ];
     console.log("==> Building for testing");
     if (!runLogged("xcodebuild", ["build-for-testing", ...args], join(logs, "build.log"))) {
         throw new Error(`The build failed; see ${join(logs, "build.log")}`);
     }
-    // Never assume the products' location: a custom build location
-    // preference overrides -derivedDataPath (docs/DEVELOPMENT.md, section 2).
+    // Never assume the products' location: it is a per-user Xcode setting
+    // (docs/DEVELOPMENT.md, section 2).
     const settings = run("xcodebuild", [...args, "-showBuildSettings"]);
     const productsDir = /^\s*BUILT_PRODUCTS_DIR = (.+)$/m.exec(settings)?.[1];
     if (!productsDir) throw new Error("xcodebuild did not report BUILT_PRODUCTS_DIR");

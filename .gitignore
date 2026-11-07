@@ -23,7 +23,10 @@ xcuserdata/
 # Xcode build output. Fastlane is no longer used, but this Mac's Xcode has a
 # custom build location (Settings > Locations > Advanced: relative to the
 # workspace, fastlane/derived_data/Build/Products) set for other projects, so
-# every build of Cards writes here. Safe to delete; the next build recreates it.
+# every build of Cards, in Xcode or from the command line, writes its products
+# and intermediates here; the rest (module cache, package checkouts, index,
+# logs) is in Xcode's DerivedData. Safe to delete (`make clean` empties it); the
+# next build recreates it.
 fastlane/derived_data/
 
 # Certificates
@@ -47,7 +50,8 @@ fastlane/derived_data/
 # Signing
 Cards.mobileprovision
 
-# Build output (xcodebuild derived data and archives)
+# Build output kept apart from Xcode's: the release archive (build/release),
+# the coverage build (build/cov) and script logs
 build/
 
 # Coverage

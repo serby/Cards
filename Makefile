@@ -15,7 +15,9 @@ export DEVELOPER_DIR
 SIMULATOR_DEVICE ?= iPhone 16 Pro
 SIMULATOR_VERSION ?= 18.1
 DESTINATION := platform=iOS Simulator,name=$(SIMULATOR_DEVICE),OS=$(SIMULATOR_VERSION)
-XCODEBUILD := xcodebuild -project Cards.xcodeproj -scheme Cards -derivedDataPath build/dd
+# No -derivedDataPath: these builds use Xcode's own DerivedData and build
+# location, so they and Xcode carry on from each other's builds.
+XCODEBUILD := xcodebuild -project Cards.xcodeproj -scheme Cards
 
 .PHONY: build clean test test-unit test-e2e test-a11y test-tsan test-coverage coverage-report sim device initialize-cloudkit-schema \
 	check check-release check-metadata check-changelog check-screenshots \
@@ -25,8 +27,12 @@ XCODEBUILD := xcodebuild -project Cards.xcodeproj -scheme Cards -derivedDataPath
 build:
 	$(XCODEBUILD) build -destination '$(DESTINATION)'
 
+# Empties the build folder Xcode and these targets share, as Product > Clean
+# Build Folder does, then the builds kept apart from it: the release archive
+# and the coverage run.
 clean:
-	rm -rf build/dd build/release build/cov coverage-html
+	$(XCODEBUILD) clean
+	rm -rf build/release build/cov coverage-html
 
 test:
 	$(XCODEBUILD) test -destination '$(DESTINATION)'

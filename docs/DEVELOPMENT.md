@@ -82,7 +82,7 @@ Run these in order after every change, and fix what fails before moving on:
 
 The automated tests and `make build` run on `SIMULATOR_DEVICE` with `SIMULATOR_VERSION`, the iPhone 16 Pro on iOS 18.1 unless overridden on the command line, so they test close to the iOS 18.0 deployment target. They are separate from the devices Paul tests on by hand, which `make sim` and `make device` use ([test devices](#test-devices)).
 
-Xcode on this project writes build products to `fastlane/derived_data/Build/Products` (a custom build location preference), not to `-derivedDataPath`. Never guess the path; ask: `xcodebuild -project Cards.xcodeproj -scheme Cards -showBuildSettings | sed -n 's/^ *BUILT_PRODUCTS_DIR = //p'`.
+**One build location.** Builds in Xcode and from the command line (the Makefile and the scripts) use Xcode's own DerivedData and build location, as no script passes `-derivedDataPath`, so `make build` carries on from a build in Xcode and the other way round. On Paul's Mac a custom build location preference, set for other projects, puts the products and intermediates in `fastlane/derived_data/Build/` and the rest (module cache, package checkouts, index, logs) in `~/Library/Developer/Xcode/DerivedData/Cards-<hash>/`; CI has no such preference, so there it is all in DerivedData. Two builds keep a place of their own, with `-IDEBuildLocationStyle=Unique` so the preference cannot pull them back in: the release archive in `build/release` (`scripts/build-ipa.ts`), so what goes to the App Store reuses nothing a development build left, and the coverage run in `build/cov` (`scripts/report-test-coverage.ts`), so a later build cannot replace the binaries the coverage was recorded against. `make clean` empties the shared build folder, as Product > Clean Build Folder does, and removes those two. Never guess the products' path; ask: `xcodebuild -project Cards.xcodeproj -scheme Cards -showBuildSettings | sed -n 's/^ *BUILT_PRODUCTS_DIR = //p'`.
 
 ## 3. Project layout
 
@@ -498,7 +498,7 @@ Xcode 27 has no Simulator.app; `make sim` opens Device Hub to show the screen, a
 | Upload fails because the extension's `CFBundleVersion` or `CFBundleShortVersionString` differs from the app's | A version was set on one target or in an Info.plist. Keep both in the project-level build settings, and pass build numbers as `BUILD_NUMBER` |
 | Cards are missing after an update | The store moved. Build the container with `CardStore.configuration` ([rule 6](#rule-6-models-stay-cloudkit--and-export-compatible)) |
 | The app behaves like an older build | `simctl install` kept the old binary; uninstall, then install |
-| A build fails in `PrecompileModule` with "cannot find interface declaration" | Stale generated `*-Swift.h` headers after a type was deleted; delete them under `fastlane/derived_data/Build/Intermediates.noindex` and rebuild |
+| A build fails in `PrecompileModule` with "cannot find interface declaration" | Stale generated `*-Swift.h` headers after a type was deleted; `make clean` and rebuild |
 | "Cannot create new type CD_CardItem in production schema" in the log | The Production CloudKit schema is missing the model; deploy it ([section 8](#8-releasing)) |
 | The map picker freezes the app | Something updates `Map` content from `onMapCameraChange` ([rule 7](#rule-7-swift-6-no-warnings-clean-lint)) |
 | A story shows several Edit buttons | The screen story is missing `galleryLayout: .oneAtATime` |

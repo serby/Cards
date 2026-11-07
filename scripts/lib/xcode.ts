@@ -87,13 +87,16 @@ export function finished(child: ChildProcess, name: string): Promise<void> {
     });
 }
 
-/// The project, scheme and DerivedData every build of the app uses.
-export const projectArgs = ["-project", "Cards.xcodeproj", "-scheme", "Cards", "-derivedDataPath", "build/dd"];
+/// The project and scheme every build of the app uses. There is no
+/// -derivedDataPath: builds from the command line use Xcode's own DerivedData
+/// and build location, as a build in Xcode does, so each carries on from the
+/// other's products, intermediates, module cache and package checkouts.
+export const projectArgs = ["-project", "Cards.xcodeproj", "-scheme", "Cards"];
 
 /// Where xcodebuild puts the products for `destination`, built with the same
-/// `extraArgs`, such as a -configuration. Never assume build/dd/Build/Products:
-/// Xcode honours a per-user custom build location, which overrides
-/// -derivedDataPath, so ask it.
+/// `extraArgs`, such as a -configuration. Never assume a path: the build
+/// location is a per-user Xcode setting (a custom one on Paul's Mac, DerivedData
+/// on CI), so ask it.
 export function builtProductsDir(destination: string, extraArgs: string[] = []): string {
     const settings = capture("xcodebuild", [...projectArgs, ...extraArgs, "-destination", destination, "-showBuildSettings"]);
     const match = /^\s*BUILT_PRODUCTS_DIR = (.+)$/m.exec(settings);

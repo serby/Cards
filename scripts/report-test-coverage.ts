@@ -3,9 +3,10 @@
 //
 // Both simulators test the same build in one DerivedData, build/cov, so a rerun
 // builds incrementally, and the coverage both recorded is merged into one report.
-// The build stays in build/cov even where Xcode is set to a custom build
-// location, so a later `make build` cannot replace the binaries the coverage
-// was recorded against. If tests fail, the report is still written from the
+// It is kept apart from Xcode's build folder, which every other build shares,
+// even where Xcode is set to a custom build location, so a later `make build`
+// cannot replace the binaries the coverage was recorded against, and the
+// instrumented build never lands in Xcode's. If tests fail, the report is still written from the
 // coverage they recorded, and the script then exits with xcodebuild's status.
 //
 // --report-only skips the tests and reports the last run's coverage again.
