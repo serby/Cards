@@ -36,6 +36,8 @@ public struct LocationPickerView: View {
     /// Why the last place looked for was not found, shown below the search field.
     @State var findProblem: PlaceSearchStatus?
     @FocusState var focusedField: Field?
+    /// How tall the controls under the map are, so their scroll view takes no more.
+    @State private var controlsHeight: CGFloat = 0
     @Namespace private var mapScope
 
     enum Field {
@@ -148,12 +150,16 @@ public struct LocationPickerView: View {
             }
             .safeAreaInset(edge: .bottom) {
                 // Scrolls when it does not fit, as at large text sizes with the
-                // keyboard up, so the field being typed in stays on screen.
-                ViewThatFits(in: .vertical) {
+                // keyboard up, so the field being typed in stays on screen. One
+                // scroll view, as tall as the controls or as the space allows:
+                // a ViewThatFits swapped in a second copy of the fields when the
+                // keyboard came up, and the field just tapped lost its focus.
+                ScrollView {
                     controls
-                    ScrollView { controls }
-                        .scrollBounceBehavior(.basedOnSize)
+                        .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { controlsHeight = $0 }
                 }
+                .scrollBounceBehavior(.basedOnSize)
+                .frame(maxHeight: controlsHeight)
             }
             .mapScope(mapScope)
                 .navigationTitle(
