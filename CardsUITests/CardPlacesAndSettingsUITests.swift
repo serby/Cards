@@ -165,6 +165,7 @@ class CardPlacesAndSettingsUITests: CardsUITestCase {
         app.tabBars.buttons["Settings"].tap()
         let picker = app.buttons["distanceUnitsPicker"]
         XCTAssertTrue(waitForElement(picker))
+        XCTAssertTrue(app.reveal(picker), "The Distances menu is not clear of the tab bar")
         picker.tap()
         let option = startingWith
             ? app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", distanceUnits)).firstMatch
