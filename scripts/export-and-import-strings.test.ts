@@ -45,7 +45,7 @@ describe("export-strings and import-strings", () => {
         }
     });
 
-    test("export once and import to both a string in the app's and the widget's catalogues, which check needs to agree", () => {
+    test("check-strings fails on a string translated differently in the app's and the widget's catalogues, and one import fixes both", () => {
         const root = projectWithWidget();
         const widgetPath = join(root, "CardsWidget", "Localizable.xcstrings");
         const exported = join(root, "ja.json");

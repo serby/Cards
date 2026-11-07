@@ -9,6 +9,9 @@
 //   drop-placeholders       always drop placeholders
 //   fail                    exit 1
 // FAKE_AI_LOG, if set, is a file each prompt is appended to.
+//
+// Usage: L10N_AI_COMMAND="node scripts/fixtures/string-catalogues/fake-ai.ts", as
+// test-project.ts sets it for the scripts it runs.
 
 import { appendFileSync, readFileSync } from "node:fs";
 
