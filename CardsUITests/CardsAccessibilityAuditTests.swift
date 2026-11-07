@@ -185,6 +185,26 @@ class AccessibilityAuditCase: XCTestCase {
         }
     }
 
+    /// Text on a tile that runs on under the tab bar, the last row on screen,
+    /// which the Dynamic Type check calls "partially unsupported" on iOS 27
+    /// at the default size: Green Leaf Pharmacy's "0.96 mi" and Nordic Nest's
+    /// "0.87 mi" on the third row (y 755, the bar at 791), and at the list's
+    /// end Boulder Barn Climbing's name and distance, its tile 4 pt under the
+    /// bar. The same views on the rows above pass, nothing on the tile has a
+    /// fixed size, and the right-to-left audit at the largest size shows
+    /// every tile's name and distance grown. As the check enlarges the text
+    /// the grid goes to one column, so these tiles move off the screen and it
+    /// cannot see them grow.
+    @MainActor
+    private static func isOnTileUnderTheTabBar(_ frame: CGRect, in app: XCUIApplication) -> Bool {
+        let tabBar = app.tabBars.firstMatch
+        guard tabBar.exists else { return false }
+        let tiles = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH %@", "cardRow_")).allElementsBoundByIndex
+        return tiles.contains { tile in
+            tile.frame.insetBy(dx: -1, dy: -1).contains(frame) && tile.frame.maxY > tabBar.frame.minY
+        }
+    }
+
     /// Text the contrast check measures through iOS 26's scroll edge effect,
     /// which fades what scrolls under the bars.
     @MainActor
@@ -236,6 +256,7 @@ class AccessibilityAuditCase: XCTestCase {
             return bars.contains { $0.frame.contains(frame) }
                 || growsInFull.contains(element.identifier)
                 || isInside(frame, anyOf: growsInFull.union([locationRow]), in: app)
+                || isOnTileUnderTheTabBar(frame, in: app)
         case .contrast:
             // A disabled control, such as Import with nothing pasted: WCAG 1.4.3
             // exempts inactive controls.
