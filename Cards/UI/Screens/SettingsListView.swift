@@ -138,6 +138,7 @@ public struct SettingsListView: View {
                 )
                 .font(.caption)
                 .foregroundStyle(Color.secondaryText)
+                .accessibilityIdentifier("distanceUnitsFooter")
             } header: {
                 Text("Locations", comment: "Settings section heading for the switches about arrival notifications and the card for where you are.")
                     .foregroundStyle(Color.secondaryText)

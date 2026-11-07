@@ -97,12 +97,14 @@ class CardsAccessibilityAuditTests: XCTestCase {
             // identifier and frame, which the test report does not show.
             let element = issue.element
             let frame = element.map { $0.exists ? $0.frame : .zero } ?? .zero
-            print(
-                "AUDIT[\(self.name)] \(issue.auditType.rawValue) | \(issue.compactDescription) | "
-                    + "id=\(element?.identifier ?? "-") label=\(element?.label ?? "-") frame=\(frame)"
-            )
             // true means the issue is a known false positive and is ignored.
-            return Self.isKnownFalsePositive(issue, in: app)
+            let ignored = Self.isKnownFalsePositive(issue, in: app)
+            print(
+                "AUDIT[\(self.name)] \(ignored ? "ignored" : "FAILED") \(issue.auditType.rawValue) | \(issue.compactDescription) | "
+                    + "id=\(element?.identifier ?? "-") label=\(element?.label ?? "-") frame=\(frame)"
+                    + " bars=\((app.navigationBars.allElementsBoundByIndex + app.tabBars.allElementsBoundByIndex).map(\.frame))"
+            )
+            return ignored
         }
     }
 
@@ -150,8 +152,23 @@ class CardsAccessibilityAuditTests: XCTestCase {
         // The Distances menu's title, reported "partially unsupported" at the
         // default size; the largest-size run does not report it, and its
         // screenshot shows it grown with the rest of the row.
-        "distanceUnitsLabel"
+        "distanceUnitsLabel",
+        // Since the tests run on iOS 26 and 27, at the default size: the
+        // footer under the Distances menu ("partially unsupported"), the edit
+        // form's last row, Delete Card, and, on iOS 26 only, the add form's
+        // Locations heading ("unsupported"). At the largest size the footer
+        // wraps on six lines and Locations is grown and whole (`make
+        // capture-l10n` on iOS 26.5), and the right-to-left audit's screenshot
+        // shows Delete Card grown and whole.
+        "distanceUnitsFooter", "deleteCardButton", "locationsSectionHeader"
     ]
+
+    /// Text the clipping check says may be cut off at larger sizes, since the
+    /// tests run on iOS 26 and 27, which the largest-size screenshots show
+    /// grown and whole (`growsInFull`): Delete Card and Created by, the last
+    /// rows of a screen scrolled to its end, and the add form's Locations
+    /// heading, on iOS 26 only.
+    private static let wholeAtTheLargestSize: Set<String> = ["deleteCardButton", "authorLink", "locationsSectionHeader"]
 
     /// A place's row in the card form. The check reports its name and radius
     /// by their text, with no identifier, as the row speaks for both
@@ -201,6 +218,25 @@ class CardsAccessibilityAuditTests: XCTestCase {
         }
     }
 
+    /// Text the contrast check measures through iOS 26's scroll edge effect,
+    /// which fades what scrolls under the bars.
+    @MainActor
+    private static func isInScrollEdgeEffect(_ frame: CGRect, bars: [XCUIElement]) -> Bool {
+        // Text partly above the top of the screen, scrolled up under the status
+        // bar: Barcode Type at y −5.5 on the edit form, the Brightness Boost
+        // switch's subtitle at −45 in Settings.
+        if frame.minY < 0 { return true }
+        // On iOS 26 only, text within the effect under the navigation bar and
+        // above the floating tab bar: the add form's Code and its prompt 13 pt
+        // below the bar and its Locations footer just above the tab bar, and
+        // Delete Card 20 pt above it. The audit's own screenshots measure Code
+        // #020202 on white (20.8:1), the prompt #646467 (5.9:1), the footer
+        // #626265 on #F2F2F7 (5.5:1) and Delete Card #D60116 on white (5.4:1);
+        // iOS 27 reports none of them.
+        return ProcessInfo.processInfo.operatingSystemVersion.majorVersion == 26
+            && bars.contains { $0.frame.insetBy(dx: 0, dy: -24).intersects(frame) }
+    }
+
     /// Issues the audit raises that are not the app's to fix. Each case says
     /// why it was confirmed as a false positive, from the audit's screenshots
     /// in both runs.
@@ -231,6 +267,7 @@ class CardsAccessibilityAuditTests: XCTestCase {
             if !element.isEnabled { return true }
             if shortHeadings.contains(element.identifier) { return true }
             if isTileDistance(element, in: app) { return true }
+            if isInScrollEdgeEffect(frame, bars: bars) { return true }
             // Text in or partly under a translucent bar is measured against the
             // bar's blur of whatever is scrolled beneath it: the camera view under
             // Add Card's bar, cards and headings under the tab bar. Pixels taken
@@ -245,6 +282,7 @@ class CardsAccessibilityAuditTests: XCTestCase {
             // show it whole in every language.
             if element.identifier == "wrappingPrompt" { return true }
             if isInside(frame, anyOf: [locationRow], in: app) { return true }
+            if isInside(frame, anyOf: wholeAtTheLargestSize, in: app) { return true }
             // The Cards tab's search field is UIKit's own, in the navigation
             // bar, which iOS sizes and collapses as the list scrolls. The
             // audit's screenshots of the report catch it part collapsed, 31 pt
