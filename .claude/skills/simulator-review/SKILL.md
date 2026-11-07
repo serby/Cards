@@ -1,6 +1,6 @@
 ---
 name: simulator-review
-description: The standard way to show Paul a change to Card Barcodes in the iOS simulator (rule 11). Use it when a feature, screen or look needs his review, when asked to run, launch or screenshot the app, or to "launch it in the iPhone SE for testing". It builds, validates, installs and launches the app with the seeded cards and a fixed location, and takes review screenshots into /tmp. It never refreshes the committed App Store screenshots.
+description: The standard way to show Paul a change to Card Barcodes in the iOS simulator (rule 11). Use it when a feature, screen or look needs his review, when asked to run, launch or screenshot the app, or to "launch it in the iPhone 17" or "the iPhone SE for testing". It builds, validates, installs and launches the app with the seeded cards and a fixed location, and takes review screenshots into /tmp. It never refreshes the committed App Store screenshots.
 ---
 
 # Simulator review: show Paul a change
@@ -19,19 +19,26 @@ Run the loop: `swiftlint lint`, `make build`, `make test` (plus `make check-rele
 
 ## 2. Launch
 
-Paul tests on the **iPhone SE (3rd generation), iOS 27.0** unless he names another device. Find its UDID with `xcrun simctl list devices available | grep "iPhone SE"`.
+Paul's test devices are listed once, in `scripts/lib/test-devices.ts` (`docs/DEVELOPMENT.md` section 6, "Test devices"):
+
+- **iPhone 17 simulator**, on the newest installed iOS 27: the default. Use it unless Paul names another device. On this Mac it is "iPhone 17 (Default)".
+- **iPhone SE (3rd generation) simulator**, on iOS 27.0: for the small screen, when a layout might not fit or Paul asks for the SE (`DEVICE=se`).
+- **Paul's iPhone (2)**: his main phone for checks on a device, with `make device`, when something needs real hardware (the camera, notifications, sync). It falls back to the first connected iPhone, and says so.
+
+These are not the automated tests' simulator (`SIMULATOR_DEVICE`, the iPhone 16 Pro on iOS 18.1); never pass those variables to `make sim`.
 
 ```bash
-U=<udid>
+U=$(node scripts/run-in-simulator.ts --dry-run)   # add --device se for the SE; prints the UDID, boots nothing
+make sim >| /tmp/cards-sim.log 2>&1; tail -2 /tmp/cards-sim.log   # or make sim DEVICE=se
 xcrun simctl privacy $U grant location net.serby.Cards
 xcrun simctl location $U set 51.5091,-0.1963   # Notting Hill Gate, where the seeded cards are seen from
-make sim SIMULATOR_DEVICE="iPhone SE (3rd generation)" SIMULATOR_VERSION=27.0 >| /tmp/cards-sim.log 2>&1; tail -2 /tmp/cards-sim.log
+xcrun simctl launch --terminate-running-process $U net.serby.Cards
 ```
 
-`make sim` builds, boots the simulator, opens Device Hub (Xcode 27 has no Simulator.app) and installs and launches the app.
+`make sim` builds, boots the simulator, opens Device Hub (Xcode 27 has no Simulator.app) and installs and launches the app. If the simulator does not exist yet, it creates it and says so, and the dry run prints no UDID: run `make sim` first, then the dry run again.
 
 - **Seeding:** `-screenshotSeed` adds the six made-up cards from `Cards/Development/ScreenshotSeed.swift` every time it is passed, so pass it once on a fresh install (`xcrun simctl launch --terminate-running-process $U net.serby.Cards -screenshotSeed`) and launch without it afterwards, or the list fills with duplicates. It also fixes the location and hides Apple Maps' businesses.
-- **Keep Paul's cards.** He adds his own cards to this simulator while testing. Don't uninstall the app or erase the simulator unless he asks; a reinstall over the running app keeps the store.
+- **Keep Paul's cards.** He adds his own cards to these simulators while testing. Don't uninstall the app or erase the simulator unless he asks; a reinstall over the running app keeps the store.
 - **Stale binary:** if the screen doesn't show the change, terminate the app and install again; `simctl install` over a running app can keep the old one.
 - **Other launch options:** `-uiTesting` gives an in-memory store and hides the Development tab (what the UI tests see). Deep links such as `cards://cards/card/<code>` and `cards://cards/new` open screens directly (`xcrun simctl openurl $U <url>`, which shows a confirmation prompt first).
 

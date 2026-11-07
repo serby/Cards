@@ -1,62 +1,82 @@
-// Builds the app, boots a simulator, opens Device Hub to show it, then installs
-// and launches the app there. Xcode 27 has no Simulator.app; Device Hub shows
-// the simulator's screen.
+// Builds the app and runs it in one of Paul's test simulators
+// (scripts/lib/test-devices.ts): the iPhone 17 unless --device names another,
+// such as `se` for the iPhone SE. It finds that simulator on the runtime the
+// list gives, and creates it, saying so, when there is none. Then it boots it,
+// opens Device Hub to show it (Xcode 27 has no Simulator.app), and installs
+// and launches the app. --dry-run only says which simulator it would use, and
+// prints its UDID, if it has one, on standard output; it creates, boots and
+// builds nothing.
 //
-// Usage: node scripts/run-in-simulator.ts [--device "iPhone 16 Pro"] [--os 18.1]
+// The automated tests use another simulator, the Makefile's SIMULATOR_DEVICE
+// on an older iOS; this script never does.
+//
+// Usage: node scripts/run-in-simulator.ts [--device iphone-17|se] [--dry-run]
 
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { parseArgs } from "node:util";
-import { builtProductsDir, capture, developerDir, projectArgs, run } from "./lib/xcode.ts";
+import { logger, runScript } from "./lib/command-line.ts";
+import { createTestSimulator, findTestSimulator } from "./lib/simulator.ts";
+import { defaultTestSimulator, describeTestSimulator, testSimulator, testSimulators } from "./lib/test-devices.ts";
+import { builtProductsDir, developerDir, projectArgs, run } from "./lib/xcode.ts";
 
-const { values } = parseArgs({
-    options: {
-        device: { type: "string", default: "iPhone 16 Pro" },
-        os: { type: "string", default: "18.1" },
-    },
-});
-const device = values.device;
-const os = values.os;
-const destination = `platform=iOS Simulator,name=${device},OS=${os}`;
+const usage = `Usage: node scripts/run-in-simulator.ts [--device <key>] [--dry-run]
 
-interface Simulator {
-    udid: string;
-    name: string;
-    state: string;
-    isAvailable: boolean;
-}
+Builds the app and runs it in a test simulator, ${defaultTestSimulator.key} unless --device names another.
 
-/// The simulator to use: one named `device` on iOS `os`, a booted one first.
-function findSimulator(): Simulator | undefined {
-    const list = JSON.parse(capture("xcrun", ["simctl", "list", "devices", "available", "-j"])) as { devices: Record<string, Simulator[]> };
-    const runtime = `iOS-${os.replaceAll(".", "-")}`;
-    const matches = Object.entries(list.devices)
-        .filter(([identifier]) => identifier.endsWith(runtime))
-        .flatMap(([, simulators]) => simulators)
-        .filter((simulator) => simulator.isAvailable && simulator.name === device);
-    return matches.find((simulator) => simulator.state === "Booted") ?? matches[0];
-}
+Options:
+  --device <key>   ${testSimulators.map((simulator) => `${simulator.key}: ${describeTestSimulator(simulator)}`).join("\n                   ")}
+  --dry-run        Say which simulator it would use and print its UDID, and create, boot and build nothing`;
 
-try {
-    const simulator = findSimulator();
-    if (!simulator) throw new Error(`No ${device} simulator on iOS ${os} available`);
+const log = logger("run-in-simulator");
+
+function main(argv: string[]): number {
+    const { values } = parseArgs({
+        args: argv,
+        options: {
+            device: { type: "string" },
+            "dry-run": { type: "boolean", default: false },
+            help: { type: "boolean", short: "h", default: false },
+        },
+    });
+    if (values.help) {
+        console.log(usage);
+        return 0;
+    }
+
+    const choice = testSimulator(values.device);
+    const pick = findTestSimulator(choice);
+    const where = `${pick.name}, iOS ${pick.version}`;
+    if (values["dry-run"]) {
+        if (pick.udid) {
+            log(`Would run on ${where} (${pick.udid})${pick.booted ? ", which is booted" : ""}.`);
+            console.log(pick.udid);
+        } else {
+            log(`Would create a simulator called ${pick.name} on iOS ${pick.version}, as none exists, and run on it.`);
+        }
+        return 0;
+    }
+
+    let udid = pick.udid;
+    if (!udid) {
+        udid = createTestSimulator(pick);
+        log(`Created a simulator called ${pick.name} on iOS ${pick.version} (${udid}), as none existed.`);
+    }
+    log(`Running on ${where} (${udid}).`);
+
     const deviceHub = join(developerDir(), "..", "Applications", "DeviceHub.app");
     if (!existsSync(deviceHub)) throw new Error(`Device Hub not found at ${deviceHub}`);
-
+    const destination = `platform=iOS Simulator,id=${udid}`;
     run("xcodebuild", [...projectArgs, "build", "-destination", destination]);
-    try {
-        run("xcrun", ["simctl", "boot", simulator.udid], { stdio: "ignore" });
-    } catch {
-        // Already booted.
-    }
-    run("xcrun", ["simctl", "bootstatus", simulator.udid, "-b"]);
+    // -b boots it first if it is not booted yet.
+    run("xcrun", ["simctl", "bootstatus", udid, "-b"]);
     run("open", [deviceHub]);
 
     const app = join(builtProductsDir(destination), "Cards.app");
     if (!existsSync(app)) throw new Error(`No Cards.app in ${app}`);
-    run("xcrun", ["simctl", "install", simulator.udid, app]);
-    run("xcrun", ["simctl", "launch", "--terminate-running-process", simulator.udid, "net.serby.Cards"]);
-} catch (error) {
-    console.error(`error: ${error instanceof Error ? error.message : String(error)}`);
-    process.exit(1);
+    run("xcrun", ["simctl", "install", udid, app]);
+    run("xcrun", ["simctl", "launch", "--terminate-running-process", udid, "net.serby.Cards"]);
+    return 0;
 }
+
+if (import.meta.main) runScript("run-in-simulator", main);

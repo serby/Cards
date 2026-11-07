@@ -90,11 +90,12 @@ export function finished(child: ChildProcess, name: string): Promise<void> {
 /// The project, scheme and DerivedData every build of the app uses.
 export const projectArgs = ["-project", "Cards.xcodeproj", "-scheme", "Cards", "-derivedDataPath", "build/dd"];
 
-/// Where xcodebuild puts the products for `destination`. Never assume
-/// build/dd/Build/Products: Xcode honours a per-user custom build location,
-/// which overrides -derivedDataPath, so ask it.
-export function builtProductsDir(destination: string): string {
-    const settings = capture("xcodebuild", [...projectArgs, "-destination", destination, "-showBuildSettings"]);
+/// Where xcodebuild puts the products for `destination`, built with the same
+/// `extraArgs`, such as a -configuration. Never assume build/dd/Build/Products:
+/// Xcode honours a per-user custom build location, which overrides
+/// -derivedDataPath, so ask it.
+export function builtProductsDir(destination: string, extraArgs: string[] = []): string {
+    const settings = capture("xcodebuild", [...projectArgs, ...extraArgs, "-destination", destination, "-showBuildSettings"]);
     const match = /^\s*BUILT_PRODUCTS_DIR = (.+)$/m.exec(settings);
     if (!match?.[1]) throw new Error(`xcodebuild did not report BUILT_PRODUCTS_DIR for ${destination}`);
     return match[1].trim();

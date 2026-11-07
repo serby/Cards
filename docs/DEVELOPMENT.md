@@ -66,9 +66,8 @@ Run these in order after every change, and fix what fails before moving on:
 | `make coverage-report` | The report from the last coverage run, without testing again |
 | `make check` | The quick checks: metadata, changelog, raw screenshots, store images and translations |
 | `make check-release` | Build Release and fail if any development code reached it ([rule 1](#rule-1-development-code-never-ships)) |
-| `make sim` | Build, boot the simulator, show it in Device Hub, install and launch |
-| `make device` | Build and install on a connected iPhone |
-| `make capture-screenshots` | Capture the raw screenshots on iPhone, iPad and iPhone Duo in every store locale (the folders in `metadata/`) |
+| `make sim` | Build, boot the iPhone 17 test simulator, show it in Device Hub, install and launch; `make sim DEVICE=se` uses the iPhone SE ([test devices](#test-devices)) |
+| `make device` | Build, install and launch on Paul's iPhone (2), or the first connected iPhone if it is not connected || `make capture-screenshots` | Capture the raw screenshots on iPhone, iPad and iPhone Duo in every store locale (the folders in `metadata/`) |
 | `make store-screenshots` | Compose the App Store images and the creative asset from the raw screenshots, their captions and `creative-asset.json` |
 | `make check-screenshots` | Check the raw captures and that every store image is present |
 | `make upload-build` | Archive, export and upload a build to App Store Connect |
@@ -78,7 +77,7 @@ Run these in order after every change, and fix what fails before moving on:
 | `make test-scripts` | The scripts' own tests (`node --test scripts/*.test.ts`) |
 | `make capture-l10n` | Screenshot every screen in every language at the default and largest text sizes, for checking translations by eye ([recipe](#check-every-language)) |
 
-Override `SIMULATOR_DEVICE` and `SIMULATOR_VERSION` on the command line to target another simulator.
+The automated tests and `make build` run on `SIMULATOR_DEVICE` with `SIMULATOR_VERSION`, the iPhone 16 Pro on iOS 18.1 unless overridden on the command line, so they test close to the iOS 18.0 deployment target. They are separate from the devices Paul tests on by hand, which `make sim` and `make device` use ([test devices](#test-devices)).
 
 Xcode on this project writes build products to `fastlane/derived_data/Build/Products` (a custom build location preference), not to `-derivedDataPath`. Never guess the path; ask: `xcodebuild -project Cards.xcodeproj -scheme Cards -showBuildSettings | sed -n 's/^ *BUILT_PRODUCTS_DIR = //p'`.
 
@@ -402,6 +401,24 @@ Everything on the App Store product page lives in the repository, so it can be c
 
 ## 6. Running and driving the simulator
 
+### Test devices
+
+Paul tests by hand on three devices, listed once in `scripts/lib/test-devices.ts`, which `make sim` and `make device` read. The list holds names, not UDIDs, which differ from Mac to Mac, so the scripts look each device up when they run.
+
+| Device | Runs on | Used by |
+|--------|---------|---------|
+| iPhone 17 simulator | The newest installed iOS 27 runtime that runs it | `make sim`, the default |
+| iPhone SE (3rd generation) simulator | iOS 27.0 | `make sim DEVICE=se`, for the small screen |
+| Paul's iPhone (2) | Paul's main phone for checks on a device, paired with this Mac | `make device`, which uses the first connected iPhone instead when it is not connected, and says so |
+
+- **Which simulator:** one of the device type named exactly as the model, or as the model followed by " (Default)", as Xcode names its own ("iPhone 17 (Default)"), a booted one first. Other projects' simulators of the same type, such as `aiw-27 iPhone 17`, are never used. When there is none, the script creates one named as the model and says so.
+- **Names** match whether they are written with a straight or a curly apostrophe; devicectl spells the phone "Paul’s iPhone (2)".
+- **Check without running:** `node scripts/run-in-simulator.ts --device se --dry-run` says which simulator it would use and prints its UDID, and creates, boots and builds nothing; `node scripts/run-on-device.ts --dry-run` says which phone it would use.
+- **Not the automated tests' simulator:** `make build` and `make test` run on `SIMULATOR_DEVICE` with `SIMULATOR_VERSION`, the iPhone 16 Pro on iOS 18.1, to test close to the oldest iOS the app supports ([section 2](#the-loop)). Change the list for the devices Paul tests on, and those variables for the automated tests.
+- **Keep Paul's data.** He adds his own cards to the test simulators and the phone while testing, so don't erase them or uninstall the app unless he asks.
+
+### Driving the simulator
+
 Xcode 27 has no Simulator.app; `make sim` opens Device Hub to show the screen, and every `simctl` command works headless.
 
 - **Launch arguments:** `-uiTesting` gives an in-memory store and hides the Development tab; `-screenshotSeed` adds the six screenshot cards; `-initializeCloudKitSchema` creates the CloudKit schema in the Development environment ([section 8](#8-releasing)). The environment variables `CARDS_UI_TESTING=1` and `CARDS_SCREENSHOT_SEED=1` do the same as the first two. All of them are ignored in release builds.
@@ -411,7 +428,7 @@ Xcode 27 has no Simulator.app; `make sim` opens Device Hub to show the screen, a
 - **Arrival notifications:** Settings > Arrival Notifications (the `arrivalNotifications` user default, on unless turned off) decides whether any are scheduled; turning it off cancels them all. To try one, give a card a location, send the app to the background, set the simulated location away and then back inside the circle; SpringBoard logs `Location trigger fired` when it delivers. To see a card's notification without moving, use **Development > Test Notification** in a debug build launched without `-uiTesting`: tapping a card sends its arrival notification five seconds later.
 - **The review prompt:** the app asks for a rating on coming back from a card to the list, once cards have been opened on three days in the version (PLAT-8). Development > Review Prompt shows the counts and can ask now, make it due on the next return, or start again; a debug build shows Apple's prompt on every request. UI tests and screenshot runs never ask (`DevelopmentHooks.asksForReviews`).
 - **Reinstalling:** uninstall before installing. `simctl install` over a running copy can keep the old binary, and you end up debugging a build you are not running.
-- **On an iPhone:** build with `xcodebuild … -destination 'id=<udid>' -allowProvisioningUpdates build`, install with `xcrun devicectl device install app --device <udid> <path to Cards.app>`, and run with `DEVICECTL_CHILD_OS_ACTIVITY_DT_MODE=enable xcrun devicectl device process launch --console --terminate-existing --device <udid> net.serby.Cards`. `OS_ACTIVITY_DT_MODE` copies the app's system log into the console, as Xcode does. Put app arguments after `--` (`… net.serby.Cards -- -initializeCloudKitSchema`), or devicectl reads them as its own options. The phone must be unlocked.
+- **On an iPhone:** `make device` builds, installs and launches on the test phone (`scripts/lib/phone.ts`). By hand, build with `xcodebuild … -destination 'id=<udid>' -allowProvisioningUpdates build`, install with `xcrun devicectl device install app --device <udid> <path to Cards.app>`, and run with `DEVICECTL_CHILD_OS_ACTIVITY_DT_MODE=enable xcrun devicectl device process launch --console --terminate-existing --device <udid> net.serby.Cards`. `OS_ACTIVITY_DT_MODE` copies the app's system log into the console, as Xcode does. Put app arguments after `--` (`… net.serby.Cards -- -initializeCloudKitSchema`), or devicectl reads them as its own options. The phone must be unlocked.
 
 ## 7. Signing, teams and iCloud
 

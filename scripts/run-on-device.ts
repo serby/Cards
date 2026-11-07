@@ -1,45 +1,49 @@
-// Builds the app for a device, then installs and launches it on the first
-// connected iPhone. Signing uses the paid team and automatic provisioning, so
-// Xcode registers the phone and creates the development profile if it must
-// (docs/DEVELOPMENT.md, "Signing, teams and iCloud").
+// Builds the Debug app for a device, then installs and launches it on Paul's
+// test phone (scripts/lib/test-devices.ts) when it is connected, or else on the
+// first connected iPhone, and says which it chose (scripts/lib/phone.ts).
+// Signing uses the paid team and automatic provisioning, so Xcode registers the
+// phone and creates the development profile if it must (docs/DEVELOPMENT.md,
+// "Signing, teams and iCloud"). --dry-run only says which phone it would use.
 //
-// Usage: node scripts/run-on-device.ts
+// Usage: node scripts/run-on-device.ts [--dry-run]
 
-import { existsSync, mkdtempSync, readFileSync } from "node:fs";
-import { tmpdir } from "node:os";
-import { join } from "node:path";
-import { builtProductsDir, projectArgs, run } from "./lib/xcode.ts";
+import { parseArgs } from "node:util";
+import { logger, runScript } from "./lib/command-line.ts";
+import { buildForPhone, choosePhone, describePhoneChoice, installOnPhone, launchOnPhone } from "./lib/phone.ts";
+import { testPhone } from "./lib/test-devices.ts";
 
-const destination = "generic/platform=iOS";
+const usage = `Usage: node scripts/run-on-device.ts [--dry-run]
 
-interface Device {
-    identifier: string;
-    hardwareProperties?: { marketingName?: string; reality?: string };
-    connectionProperties?: { tunnelState?: string };
-}
+Builds the Debug app and runs it on ${testPhone.name} when it is connected, or else on the first connected iPhone.
 
-/// The first physical iPhone that is connected now. devicectl lists booted
-/// simulators as connected too, so they are left out.
-function connectedIPhone(): Device | undefined {
-    const output = join(mkdtempSync(join(tmpdir(), "cards-devices-")), "devices.json");
-    run("xcrun", ["devicectl", "list", "devices", "--json-output", output], { stdio: "ignore" });
-    const devices = (JSON.parse(readFileSync(output, "utf8")) as { result: { devices: Device[] } }).result.devices;
-    return devices.find((device) =>
-        device.hardwareProperties?.reality === "physical"
-        && (device.hardwareProperties.marketingName ?? "").includes("iPhone")
-        && device.connectionProperties?.tunnelState === "connected");
-}
+Options:
+  --dry-run   Say which phone it would use, and build and install nothing`;
 
-try {
+const log = logger("run-on-device");
+
+function main(argv: string[]): number {
+    const { values } = parseArgs({
+        args: argv,
+        options: {
+            "dry-run": { type: "boolean", default: false },
+            help: { type: "boolean", short: "h", default: false },
+        },
+    });
+    if (values.help) {
+        console.log(usage);
+        return 0;
+    }
+
     // Before the build, so a missing phone fails at once.
-    const phone = connectedIPhone();
-    if (!phone) throw new Error("No iPhone connected");
-    run("xcodebuild", [...projectArgs, "build", "-destination", destination, "-allowProvisioningUpdates"]);
-    const app = join(builtProductsDir(destination), "Cards.app");
-    if (!existsSync(app)) throw new Error(`No Cards.app in ${app}`);
-    run("xcrun", ["devicectl", "device", "install", "app", "--device", phone.identifier, app]);
-    run("xcrun", ["devicectl", "device", "process", "launch", "--device", phone.identifier, "net.serby.Cards"]);
-} catch (error) {
-    console.error(`error: ${error instanceof Error ? error.message : String(error)}`);
-    process.exit(1);
+    const phone = choosePhone();
+    if (!phone) throw new Error(`No iPhone connected. Connect ${testPhone.name}, or another iPhone, and unlock it`);
+    log(describePhoneChoice(phone));
+    if (values["dry-run"]) return 0;
+
+    const app = buildForPhone();
+    installOnPhone(phone, app);
+    launchOnPhone(phone);
+    return 0;
 }
+
+if (import.meta.main) runScript("run-on-device", main);

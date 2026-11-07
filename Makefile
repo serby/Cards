@@ -9,6 +9,9 @@ $(error No Xcode selected: see the error above)
 endif
 export DEVELOPER_DIR
 
+# The automated tests' simulator, on the oldest iOS the app supports. The
+# devices Paul tests on by hand (`make sim`, `make device`) are a separate list,
+# in scripts/lib/test-devices.ts.
 SIMULATOR_DEVICE ?= iPhone 16 Pro
 SIMULATOR_VERSION ?= 18.1
 DESTINATION := platform=iOS Simulator,name=$(SIMULATOR_DEVICE),OS=$(SIMULATOR_VERSION)
@@ -52,11 +55,13 @@ test-coverage:
 coverage-report:
 	node scripts/report-test-coverage.ts --report-only --open
 
-# Builds, boots the simulator, shows it in Device Hub, installs and launches.
+# Builds, boots a test simulator, shows it in Device Hub, installs and launches:
+# the iPhone 17 unless DEVICE names another test simulator (DEVICE=se for the
+# iPhone SE).
 sim:
-	node scripts/run-in-simulator.ts --device "$(SIMULATOR_DEVICE)" --os $(SIMULATOR_VERSION)
+	node scripts/run-in-simulator.ts --device "$(DEVICE)"
 
-# Builds and runs on a connected iPhone.
+# Builds and runs on Paul's iPhone (2), or else the first connected iPhone.
 device:
 	node scripts/run-on-device.ts
 

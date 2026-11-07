@@ -15,7 +15,8 @@ Built with SwiftUI, SwiftData and CloudKit as a plain Xcode project, for iOS 18 
 open Cards.xcodeproj   # or:
 make build             # build for the simulator
 make test              # unit and UI tests
-make sim               # build, boot a simulator, install and launch
+make sim               # build and run in the iPhone 17 simulator (DEVICE=se for the iPhone SE)
+make device            # build and run on Paul's iPhone (2), or the first connected iPhone
 ```
 
 Needs Xcode 27.1, the version pinned in `.xcode-version` that CI also uses, SwiftLint, and Node 24 for the release check.

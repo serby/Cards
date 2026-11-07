@@ -7,9 +7,10 @@
 //
 // It also sets a simulator's own language and region, which is what iOS
 // draws outside the app in (the Home Screen, the widget gallery, system
-// prompts), and puts them back afterwards.
+// prompts), and puts them back afterwards, and finds the simulators Paul tests
+// on by hand (lib/test-devices.ts), creating one when it is missing.
 //
-// Usage: import { bootSimulator, setSystemLanguage, systemLanguage } from "./lib/simulator.ts";
+// Usage: import { bootSimulator, createTestSimulator, findTestSimulator, setSystemLanguage, systemLanguage } from "./lib/simulator.ts";
 //
 // Reusing one named simulator per device and runtime means repeat runs skip
 // creating it. The wait after `simctl bootstatus` works round a GitHub macOS
@@ -18,6 +19,7 @@
 // wait the run logs "Supported platforms ... is empty", sticks launching for
 // 150 seconds and is interrupted.
 
+import { sameName, type TestSimulator } from "./test-devices.ts";
 import { capture, run, start } from "./xcode.ts";
 
 /// A booted simulator.
@@ -56,6 +58,8 @@ interface Device {
     name: string;
     udid: string;
     isAvailable?: boolean;
+    state?: string;
+    deviceTypeIdentifier?: string;
 }
 
 /// Seconds to wait after the simulator has booted, for CoreSimulatorService to settle.
@@ -148,6 +152,83 @@ function compareVersions(a: number[], b: number[]): number {
         if (difference !== 0) return difference;
     }
     return a.length - b.length;
+}
+
+/// One of Paul's test simulators (lib/test-devices.ts) as found on this Mac,
+/// or as it would be created.
+export interface TestSimulatorPick {
+    /// The simulator's name, such as "iPhone 17 (Default)".
+    name: string;
+    /// The runtime's major and minor version, such as "27.0".
+    version: string;
+    /// The runtime's identifier, to create it on.
+    runtime: string;
+    /// The device type's identifier, to create it from.
+    deviceType: string;
+    /// Its UDID, or undefined when there is none yet and it must be created.
+    udid?: string;
+    booted: boolean;
+}
+
+/// What `simctl list -j devicetypes runtimes devices` prints, in part.
+export interface SimulatorList {
+    devicetypes: DeviceType[];
+    runtimes: Runtime[];
+    devices: Record<string, Device[]>;
+}
+
+/// Where the test simulator `choice` is in `list`: on the runtime it asks for
+/// (the newest that runs its model and that the SDK can build for, when it
+/// gives a major version only), the available one of its type named as its
+/// model, or that followed by " (Default)". A booted one comes first, then the
+/// plain name. Another project's simulators, such as "aiw-27 iPhone 17", never
+/// match. With none, the pick has no UDID, for createTestSimulator.
+export function pickTestSimulator(choice: TestSimulator, list: SimulatorList, sdkVersion: string): TestSimulatorPick {
+    const type = list.devicetypes.find((deviceType) => deviceType.name === choice.model);
+    if (!type) throw new Error(`This Xcode has no ${choice.model} simulator`);
+
+    const wanted = versionParts(choice.os);
+    const sdk = versionParts(sdkVersion);
+    const runtime = list.runtimes
+        .filter((candidate) => {
+            const version = versionParts(candidate.version);
+            return candidate.isAvailable === true
+                && candidate.platform === "iOS"
+                && compareVersions(version.slice(0, wanted.length), wanted) === 0
+                && compareVersions(version.slice(0, sdk.length), sdk) <= 0
+                && (candidate.supportedDeviceTypes ?? []).some((supported) => supported.identifier === type.identifier);
+        })
+        .sort((a, b) => compareVersions(versionParts(b.version), versionParts(a.version)))[0];
+    if (!runtime) {
+        throw new Error(`No installed iOS ${choice.os} runtime runs the ${choice.model}. Add one in Xcode > Settings > Components`);
+    }
+    const version = runtime.version.split(".").slice(0, 2).join(".");
+
+    const defaultName = `${choice.model} (Default)`;
+    const rank = (simulator: Device): number => (simulator.state === "Booted" ? 0 : 2) + (sameName(simulator.name, choice.model) ? 0 : 1);
+    const found = (list.devices[runtime.identifier] ?? [])
+        .filter((simulator) => simulator.isAvailable !== false
+            && (simulator.deviceTypeIdentifier ?? type.identifier) === type.identifier
+            && (sameName(simulator.name, choice.model) || sameName(simulator.name, defaultName)))
+        .sort((a, b) => rank(a) - rank(b))[0];
+
+    const pick = { version, runtime: runtime.identifier, deviceType: type.identifier };
+    return found
+        ? { ...pick, name: found.name, udid: found.udid, booted: found.state === "Booted" }
+        : { ...pick, name: choice.model, booted: false };
+}
+
+/// Finds the test simulator `choice` on this Mac. It creates nothing: a pick
+/// with no UDID goes to createTestSimulator.
+export function findTestSimulator(choice: TestSimulator): TestSimulatorPick {
+    const sdkVersion = capture("xcrun", ["--sdk", "iphonesimulator", "--show-sdk-version"]).trim();
+    const list = JSON.parse(capture("xcrun", ["simctl", "list", "-j", "devicetypes", "runtimes", "devices"])) as SimulatorList;
+    return pickTestSimulator(choice, list, sdkVersion);
+}
+
+/// Creates the simulator a pick found missing, and returns its UDID.
+export function createTestSimulator(pick: TestSimulatorPick): string {
+    return capture("xcrun", ["simctl", "create", pick.name, pick.deviceType, pick.runtime]).trim();
 }
 
 interface XcrunOptions {
