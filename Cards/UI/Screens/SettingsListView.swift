@@ -115,20 +115,7 @@ public struct SettingsListView: View {
                     isOn: $showsCardWhereYouAre,
                     identifier: "showsCardWhereYouAreToggle"
                 )
-                Picker(selection: $distanceUnits) {
-                    ForEach(DistanceUnits.allCases) { units in
-                        Text(units.title(for: locale))
-                            .tag(units)
-                    }
-                } label: {
-                    Text(
-                        "Distances",
-                        comment: "Settings menu for the units distances and radii are shown in: Automatic, Kilometres or Miles."
-                    )
-                    .accessibilityIdentifier("distanceUnitsLabel")
-                }
-                .tint(.accent)
-                .accessibilityIdentifier("distanceUnitsPicker")
+                distanceUnitsMenu
                 Text(
                     "Automatic follows the measurement system in Language & Region in the Settings app.",
                     comment: """
@@ -312,6 +299,46 @@ private extension SettingsListView {
         dynamicTypeSize.isAccessibilitySize
             ? AnyLayout(VStackLayout(alignment: .leading, spacing: 4))
             : AnyLayout(HStackLayout())
+    }
+
+    /// The Distances menu: its title and the units side by side, or the units
+    /// under the title at accessibility sizes, wrapping. The system's menu
+    /// picker cut its value off there ("Auto…Miles)" on iOS 26.5), so this is
+    /// a menu of the same choices with a label of its own. VoiceOver reads it
+    /// as it read the picker: the title, then the units as its value.
+    var distanceUnitsMenu: some View {
+        let title = Text(
+            "Distances",
+            comment: "Settings menu for the units distances and radii are shown in: Automatic, Kilometres or Miles."
+        )
+        let value = Text(distanceUnits.title(for: locale))
+        return Menu {
+            Picker(selection: $distanceUnits) {
+                ForEach(DistanceUnits.allCases) { units in
+                    Text(units.title(for: locale))
+                        .tag(units)
+                }
+            } label: {
+                title
+            }
+        } label: {
+            rowLayout {
+                title
+                    .foregroundStyle(Color.primaryText)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                HStack(spacing: 4) {
+                    value
+                        .multilineTextAlignment(.leading)
+                    Image(systemName: "chevron.up.chevron.down")
+                        .imageScale(.small)
+                }
+                .foregroundStyle(Color.accent)
+            }
+        }
+        .tint(.accent)
+        .accessibilityLabel(title)
+        .accessibilityValue(value)
+        .accessibilityIdentifier("distanceUnitsPicker")
     }
 
     /// A switch with a line or two under its title saying what it does. Side by

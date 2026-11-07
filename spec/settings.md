@@ -54,6 +54,7 @@ As a card holder, I want the card for the place I am in shown in full above my o
 As a card holder, I want distances in the units I think in, so that I can tell at a glance how far away a place is.
 
 - Settings > Locations has a "Distances" menu, below Show Card Where I Am, with the caption "Automatic follows the measurement system in Language & Region in the Settings app."
+- At the accessibility text sizes the choice sits under "Distances" and wraps onto as many lines as it needs, so "Automatic (Miles)" is never cut off. VoiceOver reads the menu as "Distances" with the choice as its value.
 - It has three choices:
   - "Automatic", the default, listed with what it means on this device: "Automatic (Kilometres)" when the measurement system in Settings > General > Language & Region is Metric, and "Automatic (Miles)" when it is UK or US. Distances are then written as iOS writes road distances for that system, as they were before there was a choice: kilometres and metres for Metric, miles and yards for UK, and miles and feet for US.
   - "Kilometres": kilometres and metres, whatever the measurement system.

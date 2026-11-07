@@ -149,10 +149,11 @@ class CardsAccessibilityAuditTests: XCTestCase {
     private static let growsInFull: Set<String> = [
         "importJSONButton", "deleteAllCardsButton", "dataSectionHeader", "locationsFooter",
         "versionRow", "authorLink", "notifyOnArrivalToggle", "codeLabel", "wrappingPrompt", "colourSectionHeader",
-        // The Distances menu's title, reported "partially unsupported" at the
-        // default size; the largest-size run does not report it, and its
-        // screenshot shows it grown with the rest of the row.
-        "distanceUnitsLabel",
+        // The Distances menu's title and the units chosen, reported "partially
+        // unsupported" at the default size; the largest-size run does not
+        // report them, and its screenshot and `make capture-l10n` at AX5 on
+        // iOS 26.5 show both grown, the units wrapped under the title.
+        "distanceUnitsPicker",
         // Since the tests run on iOS 26 and 27, at the default size: the
         // footer under the Distances menu ("partially unsupported"), the edit
         // form's last row, Delete Card, and, on iOS 26 only, the add form's
