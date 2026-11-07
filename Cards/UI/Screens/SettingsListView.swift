@@ -125,6 +125,7 @@ public struct SettingsListView: View {
                         "Distances",
                         comment: "Settings menu for the units distances and radii are shown in: Automatic, Kilometres or Miles."
                     )
+                    .accessibilityIdentifier("distanceUnitsLabel")
                 }
                 .tint(.accent)
                 .accessibilityIdentifier("distanceUnitsPicker")

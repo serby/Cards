@@ -146,7 +146,11 @@ class CardsAccessibilityAuditTests: XCTestCase {
     /// inside one of these counts too (`isInside`).
     private static let growsInFull: Set<String> = [
         "importJSONButton", "deleteAllCardsButton", "dataSectionHeader", "locationsFooter",
-        "versionRow", "authorLink", "notifyOnArrivalToggle", "codeLabel", "wrappingPrompt", "colourSectionHeader"
+        "versionRow", "authorLink", "notifyOnArrivalToggle", "codeLabel", "wrappingPrompt", "colourSectionHeader",
+        // The Distances menu's title, reported "partially unsupported" at the
+        // default size; the largest-size run does not report it, and its
+        // screenshot shows it grown with the rest of the row.
+        "distanceUnitsLabel"
     ]
 
     /// A place's row in the card form. The check reports its name and radius
