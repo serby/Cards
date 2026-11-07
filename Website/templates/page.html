@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="{{lang}}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{title}}</title>
+  <meta name="description" content="{{description}}">
+  <link rel="canonical" href="{{url}}">
+{{{alternates}}}
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="{{title}}">
+  <meta property="og:description" content="{{description}}">
+  <meta property="og:url" content="{{url}}">
+  <meta property="og:image" content="{{origin}}/icon.png">
+  <meta property="og:locale" content="{{ogLocale}}">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="apple-touch-icon" href="/icon.png">
+</head>
+<body>
+  <header>
+    <nav>
+      <a href="{{home}}" class="logo">{{appName}}</a>
+      <ul>
+        <li><a href="{{home}}#whats-new">{{whatsNew}}</a></li>
+        <li><a href="{{privacyPath}}"{{{privacyHreflang}}}>{{privacy}}</a></li>
+      </ul>
+    </nav>
+{{{languageNav}}}
+  </header>
+
+  <main>
+{{{content}}}
+  </main>
+
+  <footer>
+    <ul>
+      <li><a href="{{privacyPath}}"{{{privacyHreflang}}}>{{privacyPolicy}}</a></li>
+      <li><a href="mailto:{{supportEmail}}">{{contact}}</a></li>
+    </ul>
+    <p>&copy; {{copyright}}</p>
+  </footer>
+</body>
+</html>

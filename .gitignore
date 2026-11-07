@@ -56,3 +56,6 @@ coverage-html/
 # Claude Code: worktrees and personal settings stay local; .claude/settings.json and .claude/skills are shared.
 .claude/worktrees/
 .claude/settings.local.json
+
+# The website, built by scripts/build-website.ts from the sources it lists.
+Website/dist/

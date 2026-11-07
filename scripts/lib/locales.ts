@@ -3,15 +3,19 @@
 // the folders in metadata/ (en-GB, en-US, es-MX, ja and so on), so a listing is
 // added by adding its folder. The app's languages are the project's
 // knownRegions less en and Base (scripts/add-language.ts adds them), read as
-// scripts/lib/string-catalogues.ts reads them.
+// scripts/lib/string-catalogues.ts reads them. British English is the source
+// of every text, and en-GB is its listing.
 //
-// Usage: import { storeLocales, languageOf, regionOf, appLanguages } from "./lib/locales.ts";
+// Usage: import { sourceLocale, storeLocales, languageOf, regionOf, appLanguages } from "./lib/locales.ts";
 
 import { readdirSync } from "node:fs";
 import { join } from "node:path";
 import { languagesOf, projectAt } from "./string-catalogues.ts";
 
 const root = join(import.meta.dirname, "..", "..");
+
+/// The store locale of British English, the language every text is written in first.
+export const sourceLocale = "en-GB";
 
 /// The listing's locales: the folders in metadata/, sorted.
 export function storeLocales(rootDir: string = root): string[] {

@@ -36,5 +36,5 @@ The rule people most often trip over: development code (the Storybook, previews,
 | `screenshots/`, `metadata/` | App Store screenshots (also the UI test references) and store listing |
 | `scripts/` | Build, release, screenshot, icon and release-check scripts |
 | `DesignAssets/` | App icon master (`Icon.svg`) |
-| `Website/` | The marketing site |
+| `Website/` | The website, built from the listing, the changelog and the app by `scripts/build-website.ts` |
 | `docs/` | Development guide, CI and deployment set-up |

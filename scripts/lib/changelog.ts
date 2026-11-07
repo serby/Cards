@@ -28,14 +28,14 @@
 
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { appLanguages, languageOf, storeLocales } from "./locales.ts";
+import { appLanguages, languageOf, sourceLocale, storeLocales } from "./locales.ts";
 
 const root = join(import.meta.dirname, "..", "..");
 const types = ["new", "improved", "fixed"] as const;
 type ChangeType = (typeof types)[number];
 const headings: Record<ChangeType, string> = { new: "New", improved: "Improved", fixed: "Fixed" };
 /// The store locale whose text is `text` itself, so it never has a key of its own.
-const textLocale = "en-GB";
+const textLocale = sourceLocale;
 
 export interface Change {
     type: ChangeType;

@@ -64,7 +64,7 @@ Run these in order after every change, and fix what fails before moving on:
 | `make test-tsan` | Unit tests under the thread sanitiser |
 | `make test-coverage` | Tests on iPhone and iPad plus an HTML coverage report in `coverage-html/` |
 | `make coverage-report` | The report from the last coverage run, without testing again |
-| `make check` | The quick checks: metadata, changelog, raw screenshots, store images and translations |
+| `make check` | The quick checks: metadata, changelog, raw screenshots, store images, translations and the website build |
 | `make check-release` | Build Release and fail if any development code reached it ([rule 1](#rule-1-development-code-never-ships)) |
 | `make sim` | Build, boot the iPhone 17 test simulator, show it in Device Hub, install and launch; `make sim DEVICE=se` uses the iPhone SE ([test devices](#test-devices)) |
 | `make device` | Build, install and launch on Paul's iPhone (2), or the first connected iPhone if it is not connected |
@@ -78,6 +78,7 @@ Run these in order after every change, and fix what fails before moving on:
 | `make add-language CODE=<code>` | Add a language and translate everything into it ([recipe](#add-a-language)) |
 | `make test-scripts` | The scripts' own tests (`node --test scripts/*.test.ts`) |
 | `make capture-l10n` | Screenshot every screen in every language at the default and largest text sizes, for checking translations by eye ([recipe](#check-every-language)) |
+| `make build-website`, `make serve-website` | Build the website into `Website/dist` from the listing, the changelog and the app, and serve it at http://127.0.0.1:8788 to look at ([recipe](#change-the-website)) |
 
 The automated tests and `make build` run on `SIMULATOR_DEVICE` with `SIMULATOR_VERSION`, the iPhone 16 Pro on iOS 18.1 unless overridden on the command line, so they test close to the iOS 18.0 deployment target. They are separate from the devices Paul tests on by hand, which `make sim` and `make device` use ([test devices](#test-devices)).
 
@@ -111,6 +112,7 @@ Cards/
 CardsWidget/     The Home Screen widget extension: timeline, configuration intents, WidgetLocation
 CardsTests/      Unit tests (Swift Testing)
 CardsUITests/    UI and screenshot tests (XCTest)
+Website/         cards.serby.net: templates/ and site.json, built with static/ into dist/ (Change the website)
 ```
 
 The widget cannot open the SwiftData store, so the list screen writes every card to a JSON file in the App Group container (`WidgetSnapshot`) and the widget reads that. Settings the widget follows, such as the distance units, are copied the same way by `CardsApp` (`WidgetSettings`). The widget compiles a short list of files from `Cards/` (models, `BarcodeImage`, `CardWidgetView`, the palette); the list is the "Exceptions for \"Cards\" folder in \"CardsWidget\" target" set in the project, which is what Xcode's Target Membership box edits. A shared file may only use what is on that list, so keep it to Foundation, SwiftUI and other shared files.
@@ -373,6 +375,31 @@ The string scripts share `scripts/lib/string-catalogues.ts`, which reads, checks
 
 Edit `DesignAssets/Icon.svg`, run `node scripts/generate-app-icons.ts`, and commit the SVG with the regenerated PNGs.
 
+### Change the website
+
+The website, https://cards.serby.net, is built from the app's own sources, so it never says anything the app or its App Store listing does not. `node scripts/build-website.ts` (`make build-website`) renders it into `Website/dist/`, which git ignores; the logic is in `scripts/lib/website.ts`, and its tests in `scripts/website.test.ts`. Change a fact where it lives, not in the site:
+
+| On the site | Comes from |
+|---|---|
+| The name, subtitle, description and promise | `metadata/<locale>/`. The description's first paragraph is a sentence on what the app does, then the promise (free, with no ads, no in-app purchases and no limit on cards, and it always will be), which the site shows on its own; each later paragraph is a feature, a heading line and then its text. The build fails if a description loses that shape |
+| The App Store images | `screenshots/store/<locale>/`: the iPhone image for each entry in `captions.json`, shrunk to 440 pixels wide (`scripts/lib/png.ts`), with the caption's title and subtitle as its alt text |
+| The languages | British English and the project's `knownRegions`, each named in itself and in English, and each linking to its page |
+| What's New and every version | `changelog.json`: the newest version with a date is current and the older ones sit under Earlier versions; a version in preparation is left out until the release skill dates it. A change with no text in a page's language shows its British English, as in the app |
+| "What's New", "Version 1.3", "New:", "Improved:", "Fixed:" | The app's own words for its What's New screen, from `Cards/Localizable.xcstrings` |
+| The oldest iOS it runs on | `IPHONEOS_DEPLOYMENT_TARGET` in the project |
+| The colours | `Cards/UI/Theme/Colors.swift`, and iOS's system colours for backgrounds and text, in light, dark and Increase Contrast (`prefers-contrast: more`); the tests check every text colour meets WCAG AA on every surface ([rule 5](#rule-5-follow-the-visual-style-guide)) |
+| The third-party code on the privacy page | `Package.resolved`, with what each package does in `Website/site.json`; the build fails for a package it does not describe |
+| The site's own words, the App Store link and the email addresses | `Website/site.json`, each word in every app language with a comment for the translator |
+| The pages' structure | `Website/templates/`: `page.html` (the head, header and footer), `home.html`, `privacy.html` and `style.css`. `{{name}}` is filled with text, escaped; `{{{name}}}` with markup the build made |
+| Everything else, copied as it is | `Website/static/`: `add.html` (the share link page, SHARE-1), `demo.html` (the sample codes App Review's notes link to), `_headers`, `.well-known/apple-app-site-association` (the universal link file, [section 7](#7-signing-teams-and-icloud)) and `icon.png` |
+
+- **Pages:** British English at `/`, from en-GB, and each other app language at `/<language>/`, from the listing of its main region: `/es/` from es-ES, `/de/` from de-DE and `/ja/` from ja. The site has one page per language, as the app has one Spanish and one English, so es-MX and en-US read `/es/` and `/`. The pages link to each other with `hreflang`, and each has a language switcher. The privacy policy is British English only, at the path of the listings' privacy URL (`/privacy.html`), and says exactly what leaves the device (PLAT-4, PLAT-5): a change to that updates `Website/templates/privacy.html` and its date in the same commit.
+- **A new language** gets its page when it is in `knownRegions` and has a listing ([Add a language](#add-a-language)); the build fails until `Website/site.json` has its words.
+- **Missing App Store images stop the build**, so a site that would show the wrong pictures is never deployed. To look at the site before the screenshots are refreshed, `node scripts/build-website.ts --allow-missing-images` leaves them out.
+- **Look at it:** `node scripts/serve-website.ts` (`make serve-website`) serves `Website/dist` at http://127.0.0.1:8788, to this Mac only, as Cloudflare Pages serves it: `/add` is `add.html`, a folder is its `index.html`, and `_headers` applies. Check it wide and narrow, in light and dark, and without JavaScript: nothing on it needs any, except reading a shared card's name on `add.html`.
+- **Words** follow [LANGUAGE.md](LANGUAGE.md), and the store images, like every example, show only made-up businesses.
+- **Deploying** happens on a push to `main` that changes any of these sources ([section 8](#8-releasing)); never run `scripts/deploy-website.ts` by hand.
+
 ### Mark a change
 
 Ask for the release skill ("mark the changes"), or follow [.claude/skills/release/SKILL.md](../.claude/skills/release/SKILL.md) by hand: add the entries to `changelog.json`, update `spec/`, then run `node scripts/generate-changelog.ts` and `node scripts/check-changelog.ts`. The first change after a release starts the next version, which means bumping `MARKETING_VERSION` too.
@@ -442,7 +469,7 @@ Xcode 27 has no Simulator.app; `make sim` opens Device Hub to show the screen, a
 - CI keeps no provisioning profiles. `.github/actions/install-signing` imports the distribution certificate (`scripts/install-signing-certificate.ts`) and runs `scripts/install-signing-profiles.ts`, which installs an App Store profile per bundle ID named `Cards CI App Store <bundle ID>`, creating it, or replacing it when Apple has invalidated it after a capability change. `scripts/build-ipa.ts` signs with those names.
 - Never sign this app with a company team you happen to belong to.
 - Debug builds use `Cards/Cards.Debug.entitlements`, which points at the **Development** CloudKit environment, and Release builds use `Cards/Cards.entitlements`, which points at **Production**. A debug build on your own iPhone therefore syncs a separate set of cards from the App Store app, and can never damage the live data.
-- Share links (SHARE-1) are universal links: both entitlements files claim `applinks:cards.serby.net`, and the website serves `Website/src/.well-known/apple-app-site-association` for team `ZMBFPG86J4`, app `net.serby.Cards`, path `/add` (with a `_headers` rule so Cloudflare Pages serves it as JSON). The App ID needs the Associated Domains capability before a device build or CI signing works; `make device` signed in to the paid team turns it on, or tick it on the App ID in the developer portal. CI then replaces the invalidated profile on its next run. Simulator builds need neither, and `cards://cards/add#…` opens the same sheet without them.
+- Share links (SHARE-1) are universal links: both entitlements files claim `applinks:cards.serby.net`, and the website serves `Website/static/.well-known/apple-app-site-association` for team `ZMBFPG86J4`, app `net.serby.Cards`, path `/add` (with a `_headers` rule so Cloudflare Pages serves it as JSON). The App ID needs the Associated Domains capability before a device build or CI signing works; `make device` signed in to the paid team turns it on, or tick it on the App ID in the developer portal. CI then replaces the invalidated profile on its next run. Simulator builds need neither, and `cards://cards/add#…` opens the same sheet without them.
 - CloudKit change pushes are not enabled yet: the app has neither the `remote-notification` background mode nor the Push Notifications capability, so other devices' changes arrive when the app is opened rather than straight away (CloudKit logs "BUG IN CLIENT OF CLOUDKIT: … require the 'remote-notification' background mode"). Enabling it changes the App ID; add the capability with a device build, and CI replaces the invalidated profile on its next run.
 - `scripts/build-ipa.ts` passes `DEVELOPMENT_TEAM` (default `ZMBFPG86J4`) itself, so archives do not depend on the project's team setting.
 
@@ -455,8 +482,9 @@ Xcode 27 has no Simulator.app; `make sim` opens Device Hub to show the screen, a
    3. Use **Deploy Schema Changes** to copy the Development schema to Production, after checking the changes it lists. This is Paul's step; no script touches Production.
 3. `make upload-build` archives with `scripts/build-ipa.ts` and uploads with an App Store Connect API key (`ASC_KEY_ID`, `ASC_ISSUER_ID`, `ASC_KEY_CONTENT`). In CI, `release.yml` builds, uploads and submits to the App Store on `v*` tags. There is no TestFlight upload in CI; run `make upload-build` to put a build on TestFlight by hand.
 4. The **App Store listing** workflow pushes the listing text from `metadata/` and the store images from `screenshots/store/` ([section 5](#update-the-app-store-listing)).
+5. The website redeploys itself: `website.yml` builds it and deploys it to Cloudflare Pages on any push to `main` that changes what it is built from: the listing, the changelog, the store images, the app's catalogue, colours or project, the website's own files or its scripts ([Change the website](#change-the-website)). The build stops, deploying nothing, while a source is broken or an App Store image is missing, so the site changes with the push that releases a version, with that version's screenshots.
 
-`.github/workflows/ci.yml`, `release.yml` and `app-store-listing.yml` are the source of truth for the pipelines; `docs/CICD_SETUP.md` and `docs/DEPLOYMENT.md` cover the one-off account and secrets setup.
+`.github/workflows/ci.yml`, `release.yml`, `app-store-listing.yml` and `website.yml` are the source of truth for the pipelines; `docs/CICD_SETUP.md` and `docs/DEPLOYMENT.md` cover the one-off account and secrets setup.
 
 ## 9. Troubleshooting
 

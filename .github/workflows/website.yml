@@ -1,23 +1,48 @@
 name: Deploy Website
 
+# The site is built from the app's own sources (scripts/lib/website.ts lists
+# them), so a change to any of them redeploys it. The build stops, deploying
+# nothing, if a source is broken or an App Store image is missing.
+
 on:
   push:
     branches:
       - main
     paths:
-      - 'Website/src/**'
+      - 'Website/**'
+      - 'metadata/**'
+      - 'changelog.json'
+      - 'screenshots/store/**'
+      - 'Cards/Localizable.xcstrings'
+      - 'Cards/UI/Theme/Colors.swift'
+      - 'Cards.xcodeproj/project.pbxproj'
+      - 'Cards.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved'
+      - 'scripts/build-website.ts'
+      - 'scripts/deploy-website.ts'
+      - 'scripts/check-metadata.ts'
+      - 'scripts/lib/**'
+      - '.github/workflows/website.yml'
   workflow_dispatch:
+
+# One deploy at a time, in the order of the pushes, so an older site never
+# replaces a newer one.
+concurrency:
+  group: website
+  cancel-in-progress: false
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
 
     - uses: actions/setup-node@v4
       with:
         node-version: 24
+
+    - name: Build the website
+      run: node scripts/build-website.ts
 
     - name: Deploy to Cloudflare Pages
       env:

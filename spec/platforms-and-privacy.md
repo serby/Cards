@@ -1,6 +1,6 @@
 # Platforms and privacy
 
-The devices and systems Card Barcodes runs on, the language it speaks, what it does and doesn't do with your data, and when it asks for a rating.
+The devices and systems Card Barcodes runs on, the language it speaks, what it does and doesn't do with your data, when it asks for a rating, and where people read about it: the App Store listing and the website.
 
 ### PLAT-1: Use the app on my iPhone
 
@@ -49,7 +49,7 @@ As a card holder, I want an app that doesn't watch me, so that I can trust it wi
 - The app declares that it uses no non-exempt encryption.
 
 **Since:** 1.0
-**Where:** `Cards/Core/Services/PerformanceTracker.swift`, `Cards.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved`, `Info.plist`, `Website/src/privacy.html`
+**Where:** `Cards/Core/Services/PerformanceTracker.swift`, `Cards.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved`, `Info.plist`, `Website/templates/privacy.html`
 
 ### PLAT-5: Keep my location on my device
 
@@ -61,7 +61,7 @@ As a card holder, I want my location to stay on my phone, so that nobody learns 
 - The map and the place search use Apple's map services, which receive the area shown or the text searched for (PLACE-2). In preparation for 1.4 naming a place sends Apple Maps the point under the pin, or where you are when the sheet opens (PLACE-10).
 
 **Since:** 1.3
-**Where:** `Cards/Core/Services/LocationService.swift`, `CardsWidget/WidgetLocation.swift`, `Cards/Core/Services/PlaceSearch+MapKit.swift`, `Cards/Features/ArrivalScheduler.swift`, `Cards/Core/Services/NotificationClient.swift`, `Website/src/privacy.html`
+**Where:** `Cards/Core/Services/LocationService.swift`, `CardsWidget/WidgetLocation.swift`, `Cards/Core/Services/PlaceSearch+MapKit.swift`, `Cards/Features/ArrivalScheduler.swift`, `Cards/Core/Services/NotificationClient.swift`, `Website/templates/privacy.html`
 
 ### PLAT-6: Know the camera is only used to scan
 
@@ -118,3 +118,19 @@ As someone looking for a card wallet, I want the App Store listing in my languag
 
 **Since:** In preparation for 1.4
 **Where:** `metadata/<locale>/`, `screenshots/store/<locale>/captions.json`, `screenshots/store/<locale>/creative-asset.json`, `scripts/check-metadata.ts`, `scripts/check-store-images.ts`, `scripts/upload-metadata.ts`, `scripts/upload-screenshots.ts`
+
+### PLAT-10: Read about the app on its website
+
+As someone deciding whether to get the app, I want a website that says what it does, in my language, so that I can find out before I open the App Store.
+
+- https://cards.serby.net is built from the App Store listing, the changelog and the app, so it says what they say: the listing's name, subtitle and description, the promise that the app is free, with no ads, no in-app purchases and no limit on cards, and always will be, the store images with their captions read as their descriptions, and a link to the App Store.
+- It lists the languages the app speaks, each named in its own language and in English (PLAT-7), and which iOS it needs (PLAT-1).
+- What's New shows the current version and, under Earlier versions, every one before it, with the app's own words for What's New, the version and each kind of change (SET-2). A change with no translation shows in British English, as in the app. A version still in preparation is not shown.
+- It has a page in British English at `/` and one in each of the app's other languages, `/es/`, `/de/` and `/ja/`, made from the Spain, Germany and Japan listings, linked to each other for search engines and by a language switcher. American English and Mexican Spanish read the British English and Spanish pages, as they read the app.
+- The privacy policy, in British English at `/privacy.html`, the listings' privacy URL, says what leaves the device (PLAT-4, PLAT-5) and names the third-party code from the app's package pins.
+- The share link page (`/add`, SHARE-1), App Review's sample codes (`/demo.html`) and the universal link file are served as they are.
+- The pages need no JavaScript, follow light and dark appearance and Increase Contrast, use the app's pink, and keep every text at WCAG AA contrast.
+- The site is deployed only once every page's store images are present, so it never shows another version's pictures.
+
+**Since:** In preparation for 1.4
+**Where:** `scripts/build-website.ts`, `scripts/lib/website.ts`, `Website/site.json`, `Website/templates/`, `Website/static/`, `.github/workflows/website.yml`, `scripts/website.test.ts`

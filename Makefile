@@ -20,7 +20,7 @@ XCODEBUILD := xcodebuild -project Cards.xcodeproj -scheme Cards -derivedDataPath
 .PHONY: build clean test test-unit test-e2e test-a11y test-tsan test-coverage coverage-report sim device initialize-cloudkit-schema \
 	check check-release check-metadata check-changelog check-screenshots \
 	capture-screenshots store-screenshots upload-build upload-metadata upload-screenshots upload-creative-assets \
-	report-strings check-strings translate-strings add-language test-scripts capture-l10n
+	report-strings check-strings translate-strings add-language test-scripts capture-l10n build-website serve-website
 
 build:
 	$(XCODEBUILD) build -destination '$(DESTINATION)'
@@ -71,7 +71,7 @@ initialize-cloudkit-schema:
 	node scripts/initialize-cloudkit-schema.ts
 
 # The quick checks CI runs, plus the raw screenshot check CI leaves to you.
-check: check-metadata check-changelog check-screenshots check-strings
+check: check-metadata check-changelog check-screenshots check-strings build-website
 
 # Builds Release and fails if anything from Cards/Development reached it.
 check-release:
@@ -149,3 +149,14 @@ L10N_QA_OUT ?= /tmp/cards-l10n-qa
 capture-l10n:
 	node scripts/capture-l10n.ts --device "$(SIMULATOR_DEVICE)" --os $(SIMULATOR_VERSION) --out "$(L10N_QA_OUT)" \
 		--lang "$(LANGS)" --size "$(SIZES)"
+
+# The website, built into Website/dist from the store listing, the changelog and
+# the app (scripts/build-website.ts). It stops while an App Store image is
+# missing; node scripts/build-website.ts --allow-missing-images leaves them out,
+# to preview it before the screenshots are refreshed.
+build-website:
+	node scripts/build-website.ts
+
+# Serves Website/dist at http://127.0.0.1:8788, as Cloudflare Pages would.
+serve-website:
+	node scripts/serve-website.ts
