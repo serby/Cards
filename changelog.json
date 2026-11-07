@@ -105,6 +105,13 @@
           "es": "Abrir una tarjeta ya no produce una respuesta háptica, algo que solo ocurría la primera vez.",
           "de": "Beim Öffnen einer Karte gibt es kein haptisches Feedback mehr, das es nur beim ersten Mal gab.",
           "ja": "カードを開いたときに触覚フィードバックが発生しなくなりました。以前は最初の1回だけ発生していました。"
+        },
+        {
+          "type": "fixed",
+          "text": "Dragging cards that all fit on the screen no longer hides the bar at the top and brings it back.",
+          "es": "Al arrastrar las tarjetas cuando todas caben en la pantalla, la barra superior ya no se oculta para volver a aparecer.",
+          "de": "Wenn alle Karten auf den Bildschirm passen und du sie ziehst, verschwindet die obere Leiste nicht mehr kurz.",
+          "ja": "すべてのカードが画面に収まっているときにドラッグしても、上部のバーが消えて再び表示されることがなくなりました。"
         }
       ]
     },

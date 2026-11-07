@@ -25,6 +25,7 @@ Every version of Card Barcodes and what it changed, newest first. This file is g
 ### Fixed
 
 - Opening a card no longer plays a haptic, which it only did the first time.
+- Dragging cards that all fit on the screen no longer hides the bar at the top and brings it back.
 
 ## 1.3 (5 November 2026)
 

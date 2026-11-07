@@ -53,11 +53,15 @@ public struct CardListView: View {
         // Kept while searching, so the search field does not scroll away under you.
         .toolbar(toolbarVisible || searchPresented || isSearching ? .visible : .hidden, for: .navigationBar)
         .toolbar { toolbarItems }
-        .onScrollGeometryChange(for: CGFloat.self) { geometry in
-            geometry.contentOffset.y
-        } action: { _, newValue in
+        // Hidden once the cards are scrolled down, and only when they are
+        // taller than the screen: a drag on a list that fits only bounces it,
+        // and hid the bar and brought it back, moving everything under it.
+        .onScrollGeometryChange(for: Bool.self) { geometry in
+            let insets = geometry.contentInsets.top + geometry.contentInsets.bottom
+            return geometry.contentOffset.y > 0 && geometry.contentSize.height + insets > geometry.containerSize.height
+        } action: { _, isScrolledDown in
             withAnimation(.easeInOut(duration: 0.3)) {
-                toolbarVisible = newValue <= 0
+                toolbarVisible = !isScrolledDown
             }
         }
     }

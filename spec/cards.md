@@ -10,7 +10,7 @@ As a card holder, I want all my cards in one list, so that I can find the one I 
 - Each row shows the card's name, filled with the card's colour (COL-4), and the distance to the nearest of its places when the card has places and the app knows where you are (PLACE-6).
 - Tapping a row opens the card (CARD-4) with a heavy haptic tap.
 - In preparation for 1.4: the list becomes a grid of tiles (CARD-10), with search and a choice of order (CARD-11), and opening a card plays no haptic (A11Y-5).
-- The navigation bar, with its add button, hides when the list scrolls down from the top, and comes back when the list is at the top again. In preparation for 1.4: the grid does the same, and the bar stays while you search (CARD-11).
+- The navigation bar, with its add button, hides when the list scrolls down from the top, and comes back when the list is at the top again. In preparation for 1.4: the grid does the same, and the bar stays while you search (CARD-11), and while the cards all fit on the screen, where a drag only bounces them.
 - With no cards, the list shows "No Cards Yet", "Scan the barcode on a loyalty card to add it." and an "Add Card" button that opens the add form (1.3).
 - At the accessibility text sizes, a row stacks the name above the distance (A11Y-3). In preparation for 1.4: the grid has half as many columns instead (CARD-10).
 

@@ -11,3 +11,4 @@ Importiere Karten aus einer JSON-Datei, nicht nur durch Einsetzen.
 Die Kamera stellt auf eine nah gehaltene Karte scharf. Tippe zum Scharfstellen, oder schalte bei wenig Licht die Taschenlampe ein.
 Deine Karten erscheinen in einem Raster, zwei nebeneinander auf dem iPhone und vier auf dem iPad. Halte eine Karte gedrückt, um sie zu bearbeiten oder zu löschen, oder lösche sie beim Bearbeiten.
 Beim Öffnen einer Karte gibt es kein haptisches Feedback mehr, das es nur beim ersten Mal gab.
+Wenn alle Karten auf den Bildschirm passen und du sie ziehst, verschwindet die obere Leiste nicht mehr kurz.
