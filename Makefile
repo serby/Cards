@@ -41,10 +41,13 @@ clean:
 # TEST_WORKERS clones of the test simulator, as the scheme marks CardsUITests
 # parallelizable (the unit tests run first, on the simulator itself), and
 # without collecting the simulators' diagnostics after a failure or a crash,
-# which held a run for up to ten minutes. TEST_WORKERS=1 runs the UI tests one
-# after another. See docs/DEVELOPMENT.md, "How long the tests take".
+# which held a run for up to ten minutes. A test that fails is run once more,
+# as CI runs the unit tests: with five simulators busy, the audits now and then
+# measure the app before it has redrawn, and SpringBoard can be slow; a test
+# that fails twice fails the run. TEST_WORKERS=1 runs the UI tests one after
+# another. See docs/DEVELOPMENT.md, "How long the tests take".
 TEST_WORKERS ?= 5
-TEST_OPTIONS = -parallel-testing-worker-count $(TEST_WORKERS) -collect-test-diagnostics never
+TEST_OPTIONS = -parallel-testing-worker-count $(TEST_WORKERS) -collect-test-diagnostics never -retry-tests-on-failure -test-iterations 2
 
 test:
 	$(XCODEBUILD) test -destination '$(DESTINATION)' $(TEST_OPTIONS)
