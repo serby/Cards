@@ -193,6 +193,14 @@ class AccessibilityAuditCase: XCTestCase {
         // bar: Barcode Type at y −5.5 on the edit form, the Brightness Boost
         // switch's subtitle at −45 in Settings.
         if frame.minY < 0 { return true }
+        // Text scrolled up between the top of the screen and the navigation
+        // bar, which the bar's background covers as it reaches up behind the
+        // status bar, although the bar's frame starts below it: on iOS 18.1 the
+        // edit form at its end leaves Barcode Type at y 29 to 49, above a bar
+        // at y 54, and the audit's own screenshot of it shows the status bar's
+        // clock. It was measured only once the audit stopped measuring
+        // contrast while it changed the text size, which had moved the form.
+        if bars.contains(where: { $0.elementType == .navigationBar && frame.maxY <= $0.frame.minY }) { return true }
         // On iOS 26 only, text within the effect under the navigation bar and
         // above the floating tab bar: the add form's Code and its prompt 13 pt
         // below the bar and its Locations footer just above the tab bar, and
