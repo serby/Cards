@@ -331,7 +331,7 @@ class CardsAccessibilityAuditTests: AccessibilityAuditCase {
     /// on the barcode's plate.
     @MainActor
     func testCardDetailWithFailedBarcode() throws {
-        let app = launch()
+        let app = XCUIApplication.launchForTesting(arguments: Self.variantArguments + SeededCard.cardThatCannotDraw)
         app.openCardWithFailedBarcode()
         try audit(app)
     }

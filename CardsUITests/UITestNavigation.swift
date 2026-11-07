@@ -13,6 +13,12 @@ enum SeededCard {
     static let honeycomb = "cardRow_9988776655443"
     /// The last card, Nordic Nest Home, below the fold at large text sizes.
     static let nordicNest = "cardRow_2093847561024"
+    /// Ladbroke Library, whose code EAN-13 cannot draw, first in the list when
+    /// the app is launched with `cardThatCannotDraw`.
+    static let ladbrokeLibrary = "cardRow_50123456789012"
+    /// The launch arguments that add Ladbroke Library first in the list, with
+    /// the card for where you are off, so its tile is the first thing there.
+    static let cardThatCannotDraw = ["-cardThatCannotDraw", "-cardSortOrder", "custom", "-showsCardWhereYouAre", "NO"]
 
     /// Every row, in list order.
     static let all = [joesMarket, localRoast, greenLeaf, boulderBarn, honeycomb, nordicNest]
@@ -63,26 +69,11 @@ extension XCUIApplication {
         XCTAssertTrue(name.appears(within: 5), "The card's screen did not open")
     }
 
-    /// Opens Local Roast Coffee's screen with a code its format, EAN-13, cannot draw, so
-    /// the screen shows the failure message on the barcode's plate. Every
-    /// seeded code draws, so it adds a digit to Local Roast Coffee's: fourteen digits are
-    /// too many for EAN-13. The form opens with the keyboard down (CARD-5),
-    /// so it taps the name, waits for it to take focus, which iOS 18 gives a
-    /// moment after the tap, and lets Return move on to the code. Waiting
-    /// three seconds first for the form to give the name focus itself ran out
-    /// every time, and on iOS 18.1 typing straight after the tap found no focus.
+    /// Opens the screen of Ladbroke Library, whose code EAN-13 cannot draw, so
+    /// the screen shows the failure message on the barcode's plate. Launch the
+    /// app with `SeededCard.cardThatCannotDraw` to have the card.
     func openCardWithFailedBarcode() {
-        openCard(SeededCard.localRoast)
-        buttons["editCardButton"].tap()
-        let name = textFields["nameTextField"]
-        XCTAssertTrue(name.appears(within: 5), "The card's form did not open")
-        name.tap()
-        XCTAssertTrue(Self.gainsFocus(name, within: 3), "The name did not take focus")
-        name.typeText("\n")
-        XCTAssertTrue(Self.gainsFocus(textFields["codeTextField"], within: 2), "Return did not move on to the code")
-        typeText("0")
-        buttons["saveCardButton"].tap()
-        XCTAssertTrue(staticTexts["cardNameText"].appears(within: 5), "The card's screen did not open")
+        openCard(SeededCard.ladbrokeLibrary)
     }
 
     /// Whether `element` has keyboard focus within `timeout` seconds.

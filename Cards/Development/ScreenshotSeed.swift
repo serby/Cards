@@ -67,4 +67,18 @@ enum ScreenshotSeed {
         cards.forEach(context.insert)
         try context.save()
     }
+
+    /// The code of the card `insertCardThatCannotDraw` adds, fourteen digits,
+    /// one too many for EAN-13, so its screen shows the failure message.
+    static let codeThatCannotDraw = "50123456789012"
+
+    /// Adds Ladbroke Library, a card whose barcode cannot be drawn, first in the
+    /// list, for the UI tests that look at that screen
+    /// (`-cardThatCannotDraw`). Typing a bad code into the edit form instead
+    /// needs the keyboard, which XCUITest on iOS 18.1 did not get.
+    @MainActor
+    static func insertCardThatCannotDraw(into context: ModelContext) throws {
+        context.insert(CardItem(timestamp: added, code: codeThatCannotDraw, name: "Ladbroke Library", barcodeType: .ean13, order: -1, color: .orange))
+        try context.save()
+    }
 }

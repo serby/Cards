@@ -67,7 +67,7 @@ final class CardsLocalisationScreenshotTests: XCTestCase {
     /// on the barcode's plate.
     @MainActor
     func testCardDetailWithFailedBarcode() {
-        let app = launch()
+        let app = XCUIApplication.launchForTesting(arguments: Self.launchArguments + SeededCard.cardThatCannotDraw)
         app.openCardWithFailedBarcode()
         capturePages(app, "05-detail-failed-barcode")
     }
