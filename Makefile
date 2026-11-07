@@ -37,21 +37,32 @@ clean:
 	$(XCODEBUILD) clean
 	rm -rf build/release build/cov coverage-html
 
+# How the tests run: the UI tests in parallel, a class at a time, on
+# TEST_WORKERS clones of the test simulator, as the scheme marks CardsUITests
+# parallelizable (the unit tests run first, on the simulator itself), and
+# without collecting the simulators' diagnostics after a failure or a crash,
+# which held a run for up to ten minutes. TEST_WORKERS=1 runs the UI tests one
+# after another. See docs/DEVELOPMENT.md, "How long the tests take".
+TEST_WORKERS ?= 5
+TEST_OPTIONS = -parallel-testing-worker-count $(TEST_WORKERS) -collect-test-diagnostics never
+
 test:
-	$(XCODEBUILD) test -destination '$(DESTINATION)'
+	$(XCODEBUILD) test -destination '$(DESTINATION)' $(TEST_OPTIONS)
 
 test-unit:
 	$(XCODEBUILD) test -destination '$(DESTINATION)' -only-testing:CardsTests
 
 test-e2e:
-	$(XCODEBUILD) test -destination '$(DESTINATION)' -only-testing:CardsUITests
+	$(XCODEBUILD) test -destination '$(DESTINATION)' -only-testing:CardsUITests $(TEST_OPTIONS)
 
 # Xcode's accessibility audit on every screen, in English and in Arabic at the
 # largest text size. Part of `make test` too.
 test-a11y:
-	$(XCODEBUILD) test -destination '$(DESTINATION)' \
+	$(XCODEBUILD) test -destination '$(DESTINATION)' $(TEST_OPTIONS) \
 		-only-testing:CardsUITests/CardsAccessibilityAuditTests \
-		-only-testing:CardsUITests/CardsRightToLeftLargeTextAuditTests
+		-only-testing:CardsUITests/CardsRightToLeftLargeTextAuditTests \
+		-only-testing:CardsUITests/CardFormAccessibilityAuditTests \
+		-only-testing:CardsUITests/CardFormRightToLeftLargeTextAuditTests
 
 test-tsan:
 	$(XCODEBUILD) test -destination '$(DESTINATION)' -only-testing:CardsTests -enableThreadSanitizer YES

@@ -57,7 +57,7 @@ As a card holder, I want the app to ask before it sends notifications, and only 
 - Arrivals also need location permission (PLACE-7).
 
 **Since:** 1.3
-**Where:** `Cards/Features/ArrivalScheduler.swift:27-40`, `CardsUITests/CardsUITests.swift` (`dismissNotificationPrompt`), `CardsTests/ArrivalSchedulerTests.swift` (`asksForPermissionOnlyWhenThereIsSomethingToSchedule`, `addsNothingWithoutPermission`)
+**Where:** `Cards/Features/ArrivalScheduler.swift:27-40`, `CardsTests/ArrivalSchedulerTests.swift` (`asksForPermissionOnlyWhenThereIsSomethingToSchedule`, `addsNothingWithoutPermission`)
 
 ### ARR-5: Turn arrival notifications off and on
 
@@ -72,7 +72,7 @@ As a card holder, I want a switch for arrival notifications, so that I can stop 
 - That check runs again each time the app comes back to the foreground.
 
 **Since:** 1.3
-**Where:** `Cards/UI/Screens/SettingsListView.swift`, `Cards/Features/SettingsScreen.swift`, `Cards/Features/CardListScreen.swift`, `Cards/Features/ArrivalScheduler.swift:42-46`, `CardsUITests/CardsUITests.swift` (`testArrivalNotificationsSwitch`), `CardsTests/ArrivalSchedulerTests.swift` (`blockedInSettingsFollowsTheAuthorisationStatus`)
+**Where:** `Cards/UI/Screens/SettingsListView.swift`, `Cards/Features/SettingsScreen.swift`, `Cards/Features/CardListScreen.swift`, `Cards/Features/ArrivalScheduler.swift:42-46`, `CardsUITests/CardPlacesAndSettingsUITests.swift` (`testArrivalNotificationsSwitch`), `CardsTests/ArrivalSchedulerTests.swift` (`blockedInSettingsFollowsTheAuthorisationStatus`)
 **Notes:** The message only shows once notifications have been refused. Before the app has asked, there is nothing to show.
 
 ### ARR-6: Stop one card reminding me

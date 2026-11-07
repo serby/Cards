@@ -1,98 +1,44 @@
 import XCTest
 
 /// Xcode's accessibility audit on every screen: contrast, Dynamic Type,
-/// clipped text, hit regions, labels and traits. The base class runs in
-/// English at the default text size; `CardsRightToLeftLargeTextAuditTests`
-/// runs every test again right to left at the largest accessibility size. Elements are found by identifier, so both pass in
-/// any language. A screen taller than the display is audited, scrolled to
-/// its end, a second time. The screens are reached through the shared
-/// helpers in `UITestNavigation.swift`.
-class CardsAccessibilityAuditTests: XCTestCase {
+/// clipped text, hit regions, labels and traits, in English at the default
+/// text size, and again right to left at the largest accessibility size.
+/// Elements are found by identifier, so both pass in any language. A screen
+/// taller than the display is audited, scrolled to its end, a second time.
+/// The screens are reached through the shared helpers in
+/// `UITestNavigation.swift`. They are split between two classes, each with
+/// its right-to-left twin, so a parallel run spreads the audits over four
+/// simulators: `CardsAccessibilityAuditTests` for the list, a card's screen,
+/// Settings and the import sheet, and `CardFormAccessibilityAuditTests` for
+/// the forms and the map. This class holds what they share, and no tests.
+class AccessibilityAuditCase: XCTestCase {
     /// Launch arguments for a variant of the whole suite.
     class var variantArguments: [String] { [] }
+
+    /// Right to left at the largest accessibility text size. No right-to-left
+    /// language ships yet (Arabic is held back, l10n/context.md), so the
+    /// direction is forced in English, as a right-to-left language sets it
+    /// (`CardsRightToLeftUITests.testLaysOutRightToLeft` checks it does).
+    static let rightToLeftAtTheLargestSize = [
+        "-AppleTextDirection", "YES", "-NSForceRightToLeftWritingDirection", "YES",
+        "-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL"
+    ]
 
     override func setUpWithError() throws {
         // Collect every issue on a screen rather than stopping at the first.
         continueAfterFailure = true
     }
 
-    @MainActor
-    func testCardList() throws {
-        let app = launch()
-        try audit(app)
-        try audit(app, scrolledTo: app.buttons[SeededCard.nordicNest])
-    }
-
-    @MainActor
-    func testCardDetail() throws {
-        let app = launch()
-        app.openCard(SeededCard.localRoast)
-        try audit(app)
-        try audit(app, scrolledTo: app.staticTexts["cardTimestampText"])
-    }
-
-    /// A code its format cannot draw, so the screen shows the failure message
-    /// on the barcode's plate.
-    @MainActor
-    func testCardDetailWithFailedBarcode() throws {
-        let app = launch()
-        app.openCardWithFailedBarcode()
-        try audit(app)
-    }
-
-    @MainActor
-    func testAddCard() throws {
-        let app = launch()
-        app.openAddCard()
-        try audit(app)
-        try audit(app, scrolledTo: app.buttons["addLocationRowButton"])
-    }
-
-    @MainActor
-    func testEditCard() throws {
-        let app = launch()
-        // The helper puts the keyboard away, so this audits the form, not the
-        // system keyboard.
-        app.openEditCard(SeededCard.localRoast)
-        try audit(app)
-        // Local Roast Coffee has a place, so this reaches a place's row and the footer.
-        try audit(app, scrolledTo: app.buttons["addLocationRowButton"])
-    }
-
-    @MainActor
-    func testLocationPicker() throws {
-        let app = launch()
-        // The seeded cards are seen from a fixed place, so no location prompt
-        // comes up over the map.
-        app.openLocationPicker()
-        try audit(app)
-    }
-
-    @MainActor
-    func testSettings() throws {
-        let app = launch()
-        app.openSettings()
-        try audit(app)
-        try audit(app, scrolledTo: app.buttons["deleteAllCardsButton"])
-    }
-
-    @MainActor
-    func testImportSheet() throws {
-        let app = launch()
-        app.openImportSheet()
-        try audit(app)
-    }
-
     // MARK: - Helpers
 
     @MainActor
-    private func launch() -> XCUIApplication {
+    func launch() -> XCUIApplication {
         XCUIApplication.launchForTesting(arguments: Self.variantArguments)
     }
 
     /// The checks that change the text size as they run: Dynamic Type, and
     /// clipped text, which tries the larger sizes.
-    private static let textSizeChecks: XCUIAccessibilityAuditType = [.dynamicType, .textClipped]
+    static let textSizeChecks: XCUIAccessibilityAuditType = [.dynamicType, .textClipped]
 
     /// Every check, with the ones that change the text size last and on their
     /// own. As the text shrinks and grows a screen scrolled to its end moves
@@ -102,7 +48,7 @@ class CardsAccessibilityAuditTests: XCTestCase {
     /// the distance, measured under the bar, where `isInScrollEdgeEffect`
     /// excuses it, but reported at the top of the screen, where it is not.
     @MainActor
-    private func audit(_ app: XCUIApplication) throws {
+    func audit(_ app: XCUIApplication) throws {
         attachScreenshot(of: app)
         try app.performAccessibilityAudit(for: XCUIAccessibilityAuditType.all.subtracting(Self.textSizeChecks)) { issue in
             self.report(issue, in: app)
@@ -133,7 +79,7 @@ class CardsAccessibilityAuditTests: XCTestCase {
     /// because it already showed, left whatever follows it under the tab bar
     /// unaudited: the Locations footer below Add Location.
     @MainActor
-    private func audit(_ app: XCUIApplication, scrolledTo element: XCUIElement) throws {
+    func audit(_ app: XCUIApplication, scrolledTo element: XCUIElement) throws {
         let start = app.layoutSignature
         if !app.isOnScreen(element) {
             XCTAssertTrue(app.reveal(element), "Could not scroll to \(element)")
@@ -335,15 +281,87 @@ class CardsAccessibilityAuditTests: XCTestCase {
     }
 }
 
-/// Every test again right to left at the largest accessibility text size.
-/// No right-to-left language ships yet (Arabic is held back, l10n/context.md),
-/// so the direction is forced in English, as a right-to-left language sets
-/// it (`CardsRightToLeftUITests.testLaysOutRightToLeft` checks it does).
-final class CardsRightToLeftLargeTextAuditTests: CardsAccessibilityAuditTests {
-    override static var variantArguments: [String] {
-        [
-            "-AppleTextDirection", "YES", "-NSForceRightToLeftWritingDirection", "YES",
-            "-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL"
-        ]
+/// The card list, a card's screen, Settings and the import sheet.
+class CardsAccessibilityAuditTests: AccessibilityAuditCase {
+    @MainActor
+    func testCardList() throws {
+        let app = launch()
+        try audit(app)
+        try audit(app, scrolledTo: app.buttons[SeededCard.nordicNest])
     }
+
+    @MainActor
+    func testCardDetail() throws {
+        let app = launch()
+        app.openCard(SeededCard.localRoast)
+        try audit(app)
+        try audit(app, scrolledTo: app.staticTexts["cardTimestampText"])
+    }
+
+    /// A code its format cannot draw, so the screen shows the failure message
+    /// on the barcode's plate.
+    @MainActor
+    func testCardDetailWithFailedBarcode() throws {
+        let app = launch()
+        app.openCardWithFailedBarcode()
+        try audit(app)
+    }
+
+    @MainActor
+    func testSettings() throws {
+        let app = launch()
+        app.openSettings()
+        try audit(app)
+        try audit(app, scrolledTo: app.buttons["deleteAllCardsButton"])
+    }
+
+    @MainActor
+    func testImportSheet() throws {
+        let app = launch()
+        app.openImportSheet()
+        try audit(app)
+    }
+}
+
+/// `CardsAccessibilityAuditTests` again right to left at the largest
+/// accessibility text size.
+final class CardsRightToLeftLargeTextAuditTests: CardsAccessibilityAuditTests {
+    override static var variantArguments: [String] { rightToLeftAtTheLargestSize }
+}
+
+/// The Add Card and edit forms, and the Add Location map.
+class CardFormAccessibilityAuditTests: AccessibilityAuditCase {
+    @MainActor
+    func testAddCard() throws {
+        let app = launch()
+        app.openAddCard()
+        try audit(app)
+        try audit(app, scrolledTo: app.buttons["addLocationRowButton"])
+    }
+
+    @MainActor
+    func testEditCard() throws {
+        let app = launch()
+        // The helper puts the keyboard away, so this audits the form, not the
+        // system keyboard.
+        app.openEditCard(SeededCard.localRoast)
+        try audit(app)
+        // Local Roast Coffee has a place, so this reaches a place's row and the footer.
+        try audit(app, scrolledTo: app.buttons["addLocationRowButton"])
+    }
+
+    @MainActor
+    func testLocationPicker() throws {
+        let app = launch()
+        // The seeded cards are seen from a fixed place, so no location prompt
+        // comes up over the map.
+        app.openLocationPicker()
+        try audit(app)
+    }
+}
+
+/// `CardFormAccessibilityAuditTests` again right to left at the largest
+/// accessibility text size.
+final class CardFormRightToLeftLargeTextAuditTests: CardFormAccessibilityAuditTests {
+    override static var variantArguments: [String] { rightToLeftAtTheLargestSize }
 }

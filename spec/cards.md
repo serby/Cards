@@ -97,7 +97,7 @@ As a card holder, I want to open a card and see its barcode and number, so that 
 - In preparation for 1.4: opening a card records when it was last viewed, for the Last viewed order (CARD-11). Coming back to the card from its edit form counts as opening it again.
 
 **Since:** 1.0
-**Where:** `Cards/UI/Screens/CardDetailView.swift`, `Cards/Features/CardDetailScreen.swift`, `Cards/UI/Actions/CardActions.swift`, `CardsUITests/CardsUITests.swift` (`testAdd`, `testCopyCardCode`), `CardsUITests/CardsScreenshotTests.swift`
+**Where:** `Cards/UI/Screens/CardDetailView.swift`, `Cards/Features/CardDetailScreen.swift`, `Cards/UI/Actions/CardActions.swift`, `CardsUITests/CardsUITests.swift` (`testAdd`), `CardsUITests/CardPlacesAndSettingsUITests.swift` (`testCopyCardCode`), `CardsUITests/CardsScreenshotTests.swift`
 
 ### CARD-5: Edit a card
 

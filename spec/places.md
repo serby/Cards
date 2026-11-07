@@ -37,7 +37,7 @@ As a card holder, I want to search for a shop, an address, a street, a town or a
 - Searching for empty or blank text does nothing.
 
 **Since:** 1.3
-**Where:** `Cards/UI/Screens/LocationPickerView.swift`, `Cards/UI/Components/PlaceSearchResults.swift`, `Cards/UI/ViewState/PlaceSearchStatus.swift`, `Cards/Core/Services/PlaceSearch.swift`, `Cards/Core/Services/PlaceSearch+MapKit.swift`, `CardsTests/PlaceSearchTests.swift`, `CardsUITests/CardsUITests.swift` (`testFindAPlaceBySearch`)
+**Where:** `Cards/UI/Screens/LocationPickerView.swift`, `Cards/UI/Components/PlaceSearchResults.swift`, `Cards/UI/ViewState/PlaceSearchStatus.swift`, `Cards/Core/Services/PlaceSearch.swift`, `Cards/Core/Services/PlaceSearch+MapKit.swift`, `CardsTests/PlaceSearchTests.swift`, `CardsUITests/CardPlacesAndSettingsUITests.swift` (`testFindAPlaceBySearch`)
 **Notes:** Each suggestion is looked up again when chosen, as Apple Maps' suggestions cannot be kept, so a suggestion Apple Maps has since dropped is found by its title and subtitle instead. Choosing a suggestion for an area can find a point of interest in it, such as "Wembley Park" finding Wembley Park Station.
 
 ### PLACE-3: Set how far round a place counts as there
@@ -66,7 +66,7 @@ As a card holder, I want to save the place I am at from the card itself, so that
 - The button also shows when the app doesn't know where you are.
 
 **Since:** 1.3
-**Where:** `Cards/UI/Screens/CardDetailView.swift`, `Cards/UI/Screens/CardDetailView.swift`, `Cards/Features/CardDetailScreen.swift`, `CardsUITests/CardsUITests.swift` (`testAddCurrentLocationFromCard`)
+**Where:** `Cards/UI/Screens/CardDetailView.swift`, `Cards/UI/Screens/CardDetailView.swift`, `Cards/Features/CardDetailScreen.swift`, `CardsUITests/CardPlacesAndSettingsUITests.swift` (`testAddCurrentLocationFromCard`)
 
 ### PLACE-5: Remove a place
 
@@ -121,7 +121,7 @@ As a card holder, I want to change a place I added, so that I can fix its name, 
 - Swiping a place to remove it still works as before (PLACE-5).
 
 **Since:** In preparation for 1.4
-**Where:** `Cards/UI/Screens/CardEditView.swift`, `Cards/UI/Screens/LocationPickerView.swift` (`init(editing:search:onAppear:onSave:)`), `Cards/UI/ViewState/CardViewState.swift` (`CardDraft.update(_:)`), `CardsTests/CardLocationTests.swift` (`changingAPlaceInTheFormKeepsItsSpotAndId`, `aPlaceRemovedMeanwhileIsNotBroughtBack`), `CardsUITests/CardsUITests.swift` (`testEditAPlace`)
+**Where:** `Cards/UI/Screens/CardEditView.swift`, `Cards/UI/Screens/LocationPickerView.swift` (`init(editing:search:onAppear:onSave:)`), `Cards/UI/ViewState/CardViewState.swift` (`CardDraft.update(_:)`), `CardsTests/CardLocationTests.swift` (`changingAPlaceInTheFormKeepsItsSpotAndId`, `aPlaceRemovedMeanwhileIsNotBroughtBack`), `CardsUITests/CardPlacesAndSettingsUITests.swift` (`testEditAPlace`)
 
 ### PLACE-9: See a card's nearest places
 
@@ -160,5 +160,5 @@ As a card holder, I want a place to be named for what is there, so that I don't 
 - When changing a place (PLACE-8), its name counts as your own and stays when you move it, unless it is "Pinned location", which Apple Maps may replace.
 
 **Since:** In preparation for 1.4
-**Where:** `Cards/UI/ViewState/PlaceNameDraft.swift`, `Cards/Core/Models/PlaceFields.swift`, `Cards/Core/Services/PlaceSearch+MapKit.swift`, `Cards/UI/Screens/LocationPickerView.swift`, `CardsTests/PlaceNameDraftTests.swift`, `CardsTests/PlaceSearchTests.swift`, `CardsUITests/CardsUITests.swift` (`testAddCurrentLocationFromCard`, `testFindAPlaceBySearch`)
+**Where:** `Cards/UI/ViewState/PlaceNameDraft.swift`, `Cards/Core/Models/PlaceFields.swift`, `Cards/Core/Services/PlaceSearch+MapKit.swift`, `Cards/UI/Screens/LocationPickerView.swift`, `CardsTests/PlaceNameDraftTests.swift`, `CardsTests/PlaceSearchTests.swift`, `CardsUITests/CardPlacesAndSettingsUITests.swift` (`testAddCurrentLocationFromCard`, `testFindAPlaceBySearch`)
 **Notes:** In London, Apple Maps' area is the borough, so names can be long, such as "Vicarage Gate, Kensington and Chelsea". Debug builds launched for UI tests search made-up places instead of Apple Maps (`DevelopmentHooks.placeSearch`).

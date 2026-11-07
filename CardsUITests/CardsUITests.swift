@@ -7,11 +7,11 @@
 
 import XCTest
 
-/// Adds, finds, opens, edits and deletes cards. The branch's tests find
-/// elements by identifier, never by their English text; some of 1.4's still
-/// read English labels, so the suite runs in English. `CardsRightToLeftUITests`
-/// runs it again right to left.
-class CardsUITests: XCTestCase {
+/// What the UI test classes share: the variant they run in, and helpers for
+/// reading the grid and waiting on labels. No tests of its own. The tests are
+/// split between `CardsUITests` and `CardPlacesAndSettingsUITests`, each with
+/// a right-to-left twin, so a parallel run spreads them over four simulators.
+class CardsUITestCase: XCTestCase {
     /// Launch arguments for a variant of the suite, such as another language.
     class var variantArguments: [String] { [] }
     /// Whether the variant lays the app out right to left.
@@ -37,6 +37,19 @@ class CardsUITests: XCTestCase {
         element.matches(NSPredicate(format: "label == %@", label), within: timeout)
     }
 
+    /// The launch arguments for right to left. No right-to-left language ships
+    /// yet (Arabic is held back, l10n/context.md), so the run forces the
+    /// direction in English, as a right-to-left language would set it;
+    /// `CardsRightToLeftUITests.testLaysOutRightToLeft` fails if the forcing
+    /// stops working.
+    static let rightToLeft = ["-AppleTextDirection", "YES", "-NSForceRightToLeftWritingDirection", "YES"]
+}
+
+/// Adds, finds, reorders and deletes cards on the Cards tab. The branch's
+/// tests find elements by identifier, never by their English text; some of
+/// 1.4's still read English labels, so the suite runs in English.
+/// `CardsRightToLeftUITests` runs it again right to left.
+class CardsUITests: CardsUITestCase {
     @MainActor
     func testAdd() throws {
         let app = XCUIApplication.forTesting(Self.variantArguments)
@@ -115,123 +128,6 @@ class CardsUITests: XCTestCase {
         XCTAssertTrue(waitForElement(app.descendants(matching: .any)["editCardForm"].firstMatch))
         XCTAssertFalse(app.buttons["choosePhotoButton"].exists, "Editing a card should not offer Choose Photo")
         XCTAssertFalse(app.buttons["chooseBarcodeFileButton"].exists, "Editing a card should not offer Choose File")
-    }
-
-    /// Adding where you are from the card screen saves it to the card, named
-    /// for the place under the pin, and the card then reads as "here" and stops
-    /// offering to add it again (PLACE-4, PLACE-10).
-    @MainActor
-    func testAddCurrentLocationFromCard() throws {
-        let app = launchWithSeededCards()
-
-        // Honeycomb Rewards has no locations; the seed puts the user at Notting Hill Gate.
-        let honeycomb = tile(app, "Honeycomb Rewards")
-        XCTAssertTrue(waitForElement(honeycomb))
-        honeycomb.tap()
-
-        let addHere = app.buttons["addCurrentLocationButton"]
-        XCTAssertTrue(waitForElement(addHere))
-        addHere.tap()
-        XCTAssertTrue(waitForElement(app.descendants(matching: .any)["locationPickerMap"].firstMatch))
-        // UI tests search the made-up places, which put Joe's Market beside the seed's location.
-        XCTAssertTrue(waitForValue(app.textFields["locationNameField"], "Joe's Market Notting Hill", timeout: 10))
-        app.buttons["addLocationButton"].tap()
-
-        XCTAssertTrue(waitForElement(app.descendants(matching: .any)["cardProximityText"].firstMatch))
-        XCTAssertTrue(addHere.disappears(within: 3))
-    }
-
-    @MainActor
-    func testCopyCardCode() throws {
-        let app = launchWithSeededCards()
-
-        let honeycomb = tile(app, "Honeycomb Rewards")
-        XCTAssertTrue(waitForElement(honeycomb))
-        honeycomb.tap()
-
-        // The clipboard itself is not read: that asks for permission to paste.
-        let copy = app.buttons["copyCodeButton"]
-        XCTAssertTrue(waitForElement(copy))
-        XCTAssertEqual(copy.label, "Copy card code")
-        copy.tap()
-        XCTAssertTrue(waitForLabel(copy, "Copied", timeout: 2))
-        XCTAssertTrue(waitForLabel(copy, "Copy card code", timeout: 4))
-    }
-
-    @MainActor
-    func testArrivalNotificationsSwitch() throws {
-        let app = XCUIApplication.forTesting()
-        app.launch()
-        app.tabBars.buttons["Settings"].tap()
-
-        let toggle = app.switches["arrivalNotificationsToggle"]
-        XCTAssertTrue(waitForElement(toggle))
-        let before = toggle.value as? String
-        toggle.switches.firstMatch.tap()
-        XCTAssertNotEqual(toggle.value as? String, before)
-        // The setting outlives the app, so put it back for the next test.
-        toggle.switches.firstMatch.tap()
-        XCTAssertEqual(toggle.value as? String, before)
-    }
-
-    @MainActor
-    func testShowCardWhereIAmSwitch() throws {
-        let app = XCUIApplication.forTesting()
-        app.launch()
-        app.tabBars.buttons["Settings"].tap()
-
-        let toggle = app.switches["showsCardWhereYouAreToggle"]
-        XCTAssertTrue(waitForElement(toggle))
-        let before = toggle.value as? String
-        toggle.switches.firstMatch.tap()
-        XCTAssertNotEqual(toggle.value as? String, before)
-        // The setting outlives the app, so put it back for the next test.
-        toggle.switches.firstMatch.tap()
-        XCTAssertEqual(toggle.value as? String, before)
-    }
-
-    /// The Distances choice in Settings decides the units the tiles read their
-    /// distances in (SET-4). The choice is kept, so the test ends on Automatic.
-    @MainActor
-    func testDistancesFollowTheSetting() throws {
-        // Not pinned, as launchWithSeededCards does, so the picker can change it.
-        let app = XCUIApplication.forTesting(["-screenshotSeed", "-cardSortOrder", "custom", "-showsCardWhereYouAre", "NO"])
-        app.launch()
-        let localRoast = tile(app, "Local Roast Coffee")
-        XCTAssertTrue(waitForElement(localRoast))
-
-        choose(app, distanceUnits: "Miles")
-        app.tabBars.buttons["Cards"].tap()
-        XCTAssertTrue(waitForLabel(localRoast, containing: " yards from Local Roast Portobello"), localRoast.label)
-
-        choose(app, distanceUnits: "Kilometres")
-        app.tabBars.buttons["Cards"].tap()
-        XCTAssertTrue(waitForLabel(localRoast, containing: " metres from Local Roast Portobello"), localRoast.label)
-
-        choose(app, distanceUnits: "Automatic", startingWith: true)
-    }
-
-    /// Picks `distanceUnits` in Settings > Distances. Automatic is listed with
-    /// what it means, as "Automatic (Miles)", so it is found by how it starts.
-    @MainActor
-    private func choose(_ app: XCUIApplication, distanceUnits: String, startingWith: Bool = false) {
-        app.tabBars.buttons["Settings"].tap()
-        let picker = app.buttons["distanceUnitsPicker"]
-        XCTAssertTrue(waitForElement(picker))
-        picker.tap()
-        let option = startingWith
-            ? app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", distanceUnits)).firstMatch
-            : app.buttons[distanceUnits]
-        XCTAssertTrue(waitForElement(option))
-        option.tap()
-        // The row shows the choice as its value, or in its label.
-        let chosen = NSPredicate(format: "label CONTAINS %@ OR value BEGINSWITH %@", distanceUnits, distanceUnits)
-        XCTAssertTrue(picker.matches(chosen))
-    }
-
-    @MainActor
-    private func waitForLabel(_ element: XCUIElement, containing text: String, timeout: TimeInterval = 5) -> Bool {
-        element.matches(NSPredicate(format: "label CONTAINS %@", text), within: timeout)
     }
 
     /// Typing in the search field narrows the grid to the names that match (CARD-11).
@@ -339,15 +235,10 @@ class CardsUITests: XCTestCase {
     }
 }
 
-/// Every test again right to left, as the tests must not depend on the
-/// direction. No right-to-left language ships yet (Arabic is held back,
-/// l10n/context.md), so the run forces the direction in English, as a
-/// right-to-left language would set it; `testLaysOutRightToLeft` fails if
-/// the forcing stops working.
+/// Every test again right to left (`CardsUITestCase.rightToLeft`), as the
+/// tests must not depend on the direction.
 final class CardsRightToLeftUITests: CardsUITests {
-    override static var variantArguments: [String] {
-        ["-AppleTextDirection", "YES", "-NSForceRightToLeftWritingDirection", "YES"]
-    }
+    override static var variantArguments: [String] { rightToLeft }
     override static var isRightToLeft: Bool { true }
 
     /// The first tab, Cards, is drawn on the right.

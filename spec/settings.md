@@ -47,7 +47,7 @@ As a card holder, I want the card for the place I am in shown in full above my o
 - The card still appears in the grid as well.
 
 **Since:** In preparation for 1.4
-**Where:** `Cards/UI/Screens/SettingsListView.swift`, `Cards/Features/SettingsScreen.swift`, `Cards/UI/Screens/CardListView.swift`, `Cards/Features/CardListScreen.swift`, `CardsUITests/CardsUITests.swift` (`testShowCardWhereIAmSwitch`), `Cards/Core/Models/CardArrangement.swift`, `Cards/Core/Models/DeviceSettings.swift`, `CardsTests/CardArrangementTests.swift`, `CardsUITests/CardsUITests.swift` (`testCardWhereYouAre`)
+**Where:** `Cards/UI/Screens/SettingsListView.swift`, `Cards/Features/SettingsScreen.swift`, `Cards/UI/Screens/CardListView.swift`, `Cards/Features/CardListScreen.swift`, `CardsUITests/CardPlacesAndSettingsUITests.swift` (`testShowCardWhereIAmSwitch`), `Cards/Core/Models/CardArrangement.swift`, `Cards/Core/Models/DeviceSettings.swift`, `CardsTests/CardArrangementTests.swift`, `CardsUITests/CardsUITests.swift` (`testCardWhereYouAre`)
 
 ### SET-4: Choose the units distances are shown in
 
@@ -66,5 +66,5 @@ As a card holder, I want distances in the units I think in, so that I can tell a
 - The choice is kept on the device under `distanceUnits` and doesn't sync, so each device has its own (DATA-1). The app copies it for the widget (WID-7).
 
 **Since:** In preparation for 1.4
-**Where:** `Cards/UI/Screens/SettingsListView.swift`, `Cards/Features/SettingsScreen.swift`, `Cards/App/CardsApp.swift`, `Cards/Core/Models/DistanceUnits.swift`, `Cards/Core/Models/DistanceFormat.swift`, `Cards/Core/Models/DeviceSettings.swift`, `Cards/UI/Environment/DistanceUnitsEnvironment.swift`, `CardsTests/DistanceFormatTests.swift`, `CardsUITests/CardsUITests.swift` (`testDistancesFollowTheSetting`)
+**Where:** `Cards/UI/Screens/SettingsListView.swift`, `Cards/Features/SettingsScreen.swift`, `Cards/App/CardsApp.swift`, `Cards/Core/Models/DistanceUnits.swift`, `Cards/Core/Models/DistanceFormat.swift`, `Cards/Core/Models/DeviceSettings.swift`, `Cards/UI/Environment/DistanceUnitsEnvironment.swift`, `CardsTests/DistanceFormatTests.swift`, `CardsUITests/CardPlacesAndSettingsUITests.swift` (`testDistancesFollowTheSetting`)
 **Notes:** iOS always has a measurement system, so Automatic always means Kilometres or Miles. In the US, Automatic keeps feet below half a mile, as iOS writes road distances there, while Miles always uses yards; the radius is in yards either way.
