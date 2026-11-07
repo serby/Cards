@@ -90,23 +90,42 @@ class CardsAccessibilityAuditTests: XCTestCase {
         XCUIApplication.launchForTesting(arguments: Self.variantArguments)
     }
 
+    /// The checks that change the text size as they run: Dynamic Type, and
+    /// clipped text, which tries the larger sizes.
+    private static let textSizeChecks: XCUIAccessibilityAuditType = [.dynamicType, .textClipped]
+
+    /// Every check, with the ones that change the text size last and on their
+    /// own. As the text shrinks and grows a screen scrolled to its end moves
+    /// back to its top, so a check in the same audit judged what had been on
+    /// screen by where things had moved to: in parallel runs the
+    /// right-to-left audit of a card's screen at its end failed contrast on
+    /// the distance, measured under the bar, where `isInScrollEdgeEffect`
+    /// excuses it, but reported at the top of the screen, where it is not.
     @MainActor
     private func audit(_ app: XCUIApplication) throws {
         attachScreenshot(of: app)
-        try app.performAccessibilityAudit(for: .all) { issue in
-            // Every issue, ignored or not, goes to the log with the element's
-            // identifier and frame, which the test report does not show.
-            let element = issue.element
-            let frame = element.map { $0.exists ? $0.frame : .zero } ?? .zero
-            // true means the issue is a known false positive and is ignored.
-            let ignored = Self.isKnownFalsePositive(issue, in: app)
-            print(
-                "AUDIT[\(self.name)] \(ignored ? "ignored" : "FAILED") \(issue.auditType.rawValue) | \(issue.compactDescription) | "
-                    + "id=\(element?.identifier ?? "-") label=\(element?.label ?? "-") frame=\(frame)"
-                    + " bars=\((app.navigationBars.allElementsBoundByIndex + app.tabBars.allElementsBoundByIndex).map(\.frame))"
-            )
-            return ignored
+        try app.performAccessibilityAudit(for: XCUIAccessibilityAuditType.all.subtracting(Self.textSizeChecks)) { issue in
+            self.report(issue, in: app)
         }
+        try app.performAccessibilityAudit(for: Self.textSizeChecks) { issue in
+            self.report(issue, in: app)
+        }
+    }
+
+    /// Logs `issue`, ignored or not, with the element's identifier and frame,
+    /// which the test report does not show, and says whether it is a known
+    /// false positive, which the audit then ignores.
+    @MainActor
+    private func report(_ issue: XCUIAccessibilityAuditIssue, in app: XCUIApplication) -> Bool {
+        let element = issue.element
+        let frame = element.map { $0.exists ? $0.frame : .zero } ?? .zero
+        let ignored = Self.isKnownFalsePositive(issue, in: app)
+        print(
+            "AUDIT[\(name)] \(ignored ? "ignored" : "FAILED") \(issue.auditType.rawValue) | \(issue.compactDescription) | "
+                + "id=\(element?.identifier ?? "-") label=\(element?.label ?? "-") frame=\(frame)"
+                + " bars=\((app.navigationBars.allElementsBoundByIndex + app.tabBars.allElementsBoundByIndex).map(\.frame))"
+        )
+        return ignored
     }
 
     /// Audits again at the screen's end, `element` included, if the screen
