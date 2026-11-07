@@ -15,8 +15,7 @@ struct ImportFileTests {
 
     /// An empty in-memory store, or one holding `existing`.
     private func store(_ existing: [CardItem] = []) throws -> ModelContainer {
-        let configuration = ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none)
-        let container = try ModelContainer(for: CardItem.self, configurations: configuration)
+        let container = try ModelContainer(for: CardStore.schema, configurations: [CardStore.configuration(inMemory: true)])
         existing.forEach(container.mainContext.insert)
         try container.mainContext.save()
         return container

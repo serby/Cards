@@ -10,9 +10,7 @@ struct NavigationTests {
 
     init() throws {
         navigationManager = NavigationManager()
-        let schema = Schema([CardItem.self])
-        let configuration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
-        modelContainer = try ModelContainer(for: schema, configurations: [configuration])
+        modelContainer = try ModelContainer(for: CardStore.schema, configurations: [CardStore.configuration(inMemory: true)])
         modelContext = ModelContext(modelContainer)
     }
 

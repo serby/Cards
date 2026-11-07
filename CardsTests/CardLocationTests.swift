@@ -38,8 +38,7 @@ struct CardLocationTests {
     }
 
     @Test @MainActor func locationsPersistThroughSwiftData() throws {
-        let configuration = ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none)
-        let container = try ModelContainer(for: CardItem.self, configurations: configuration)
+        let container = try ModelContainer(for: CardStore.schema, configurations: [CardStore.configuration(inMemory: true)])
         container.mainContext.insert(CardItem(code: "42", name: "Local Roast Coffee", locations: [boulderBarn]))
         try container.mainContext.save()
 

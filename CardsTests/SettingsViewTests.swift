@@ -11,8 +11,7 @@ import Testing
 struct SettingsViewTests {
 
     @Test func deleteAllCardsButtonIsDisabledWhenNoCards() throws {
-        let config = ModelConfiguration(isStoredInMemoryOnly: true)
-        let container = try ModelContainer(for: CardItem.self, configurations: config)
+        let container = try ModelContainer(for: CardStore.schema, configurations: [CardStore.configuration(inMemory: true)])
         let context = ModelContext(container)
 
         let cards = try context.fetch(FetchDescriptor<CardItem>())
@@ -20,8 +19,7 @@ struct SettingsViewTests {
     }
 
     @Test func deleteAllCardsButtonIsEnabledWhenCardsExist() throws {
-        let config = ModelConfiguration(isStoredInMemoryOnly: true)
-        let container = try ModelContainer(for: CardItem.self, configurations: config)
+        let container = try ModelContainer(for: CardStore.schema, configurations: [CardStore.configuration(inMemory: true)])
         let context = ModelContext(container)
 
         context.insert(CardItem(timestamp: Date(), code: "123", name: "Test"))
