@@ -24,6 +24,7 @@ import { cpSync, existsSync, mkdirSync, openSync, readdirSync, readFileSync, rmS
 import { basename, dirname, join } from "node:path";
 import { parseArgs } from "node:util";
 import { appLanguages } from "./lib/locales.ts";
+import { setSystemLanguage } from "./lib/simulator.ts";
 import { root, xcodeEnv } from "./lib/xcode.ts";
 
 /// The Xcode in .xcode-version, as every script uses it.
@@ -108,16 +109,6 @@ function simulator(deviceType: string, os: string): string {
 function boot(udid: string): void {
     spawnSync("xcrun", ["simctl", "boot", udid], { env, stdio: "ignore" });
     run("xcrun", ["simctl", "bootstatus", udid, "-b"]);
-}
-
-/// Sets the simulator's own language and region, and restarts it so they
-/// take: what iOS draws outside the app, the location prompt with the app's
-/// reason for asking among it, follows the system's language, not the app's.
-function setSystemLanguage(udid: string, language: string, region: string): void {
-    run("xcrun", ["simctl", "spawn", udid, "defaults", "write", "-g", "AppleLanguages", "-array", language]);
-    run("xcrun", ["simctl", "spawn", udid, "defaults", "write", "-g", "AppleLocale", "-string", appleLocale(language, region)]);
-    run("xcrun", ["simctl", "shutdown", udid]);
-    boot(udid);
 }
 
 /// Builds the app and its tests, and copies the products with their
@@ -282,7 +273,9 @@ export function main(argv: string[]): number {
 
     const failures: string[] = [];
     for (const language of languages) {
-        setSystemLanguage(udid, language, regionFor(language));
+        // What iOS draws outside the app, the location prompt with the app's
+        // reason for asking among it, follows the system's language, not the app's.
+        setSystemLanguage(udid, { languages: [language], locale: appleLocale(language, regionFor(language)) });
         for (const size of chosenSizes) {
             const started = Date.now();
             const { saved, passed } = capture({ udid, testRun, language, size, out, logs });
