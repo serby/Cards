@@ -78,13 +78,12 @@ final class CardsScreenshotTests: XCTestCase {
     /// (`DevelopmentHooks.notifications`), so no prompt covers the captures.
     @MainActor
     private func launchSeeded() -> XCUIApplication {
-        let app = XCUIApplication()
         // The cards in custom order, without the card for where you are and with
         // distances in the locale's own units, whatever the simulator's own
         // settings say, so every capture shows the same grid.
-        app.launchArguments += [
-            "-uiTesting", "-screenshotSeed", "-cardSortOrder", "custom", "-showsCardWhereYouAre", "NO", "-distanceUnits", "automatic"
-        ]
+        let app = XCUIApplication.forTesting([
+            "-screenshotSeed", "-cardSortOrder", "custom", "-showsCardWhereYouAre", "NO", "-distanceUnits", "automatic"
+        ])
         app.launchEnvironment["CARDS_UI_TESTING"] = "1"
         app.launchEnvironment["CARDS_SCREENSHOT_SEED"] = "1"
         app.launch()

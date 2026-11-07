@@ -24,6 +24,16 @@ enum SeededCard {
 /// direction.
 @MainActor
 extension XCUIApplication {
+    /// The app as every UI test launches it, not yet launched: `-uiTesting`,
+    /// for an in-memory store and the shipping UI, `-disableAnimations`, so
+    /// XCUITest never waits for an animation to end
+    /// (`DevelopmentHooks.disableAnimationsIfRequested`), then `arguments`.
+    static func forTesting(_ arguments: [String] = []) -> XCUIApplication {
+        let app = XCUIApplication()
+        app.launchArguments += ["-uiTesting", "-disableAnimations"] + arguments
+        return app
+    }
+
     /// Launches with an in-memory store, and with the six screenshot cards
     /// unless `seeded` is false, then waits for the list. The seeded cards are
     /// seen from a fixed place (`ScreenshotSeed.location`), so the app never
@@ -31,8 +41,7 @@ extension XCUIApplication {
     /// no arrival reminders (`DevelopmentHooks.notifications`), so it never
     /// asks to send notifications either.
     static func launchForTesting(seeded: Bool = true, arguments: [String] = []) -> XCUIApplication {
-        let app = XCUIApplication()
-        app.launchArguments += ["-uiTesting"] + (seeded ? ["-screenshotSeed"] : []) + arguments
+        let app = forTesting((seeded ? ["-screenshotSeed"] : []) + arguments)
         if seeded {
             app.launchEnvironment["CARDS_SCREENSHOT_SEED"] = "1"
         }

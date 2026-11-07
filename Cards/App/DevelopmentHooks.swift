@@ -20,6 +20,23 @@ enum DevelopmentHooks {
         #endif
     }
 
+    /// Turns UIKit's animations off when launched with `-disableAnimations`, as
+    /// every UI test launches the app, so XCUITest never waits for one to end.
+    /// It waits for the app to go idle before each query and tap, and on iOS
+    /// 26 and 27 a tile's long-press menu leaves an animation running that
+    /// never ends, from the drag that lifts the tile under the menu: every step
+    /// with the menu up waited 60 s and gave up. Sheets, pushes and menus still
+    /// open and close, at once. Not part of `-uiTesting`, so a run in the
+    /// simulator for shaping a feature keeps its animations. Does nothing in
+    /// release.
+    static func disableAnimationsIfRequested() {
+        #if DEBUG
+        if CommandLine.arguments.contains("-disableAnimations") {
+            UIView.setAnimationsEnabled(false)
+        }
+        #endif
+    }
+
     /// Creates the CloudKit schema in the Development environment when launched
     /// with `-initializeCloudKitSchema`. A failure is logged, not thrown, so
     /// the app still starts. Does nothing in release.

@@ -237,7 +237,7 @@ The target builds in Swift 6 language mode with strict concurrency, `SWIFT_TREAT
 
 - Unit tests use Swift Testing (`@Test`, parameterised with `arguments:`); UI and screenshot tests use XCTest.
 - Test pure logic directly (distances, the arrival plan, palette contrast), stateful services through stand-in clients (`ArrivalSchedulerTests`), and persistence through a real in-memory container.
-- UI tests launch with `-uiTesting` for an in-memory store and the shipping UI; the screenshot test adds `-screenshotSeed`.
+- UI tests launch through `XCUIApplication.forTesting`, with `-uiTesting` for an in-memory store and the shipping UI and `-disableAnimations` so XCUITest never waits for an animation; the screenshot tests add `-screenshotSeed`.
 - A UI change that shows up in the App Store screenshots must be pushed with refreshed references, or CI fails. Refresh them when the change is agreed to ship, not while it is still being shaped ([section 2](#shape-features-in-the-simulator-before-they-ship)).
 
 ### Rule 10: Commits tell a story, straight on `main`
@@ -452,7 +452,7 @@ Paul tests by hand on three devices, and the automated tests run on a fourth, al
 
 Xcode 27 has no Simulator.app; `make sim` opens Device Hub to show the screen, and every `simctl` command works headless.
 
-- **Launch arguments:** `-uiTesting` gives an in-memory store, hides the Development tab and schedules no arrival reminders, so the app never asks to send notifications (`DevelopmentHooks.notifications`); `-screenshotSeed` adds the six screenshot cards; `-initializeCloudKitSchema` creates the CloudKit schema in the Development environment ([section 8](#8-releasing)). The environment variables `CARDS_UI_TESTING=1` and `CARDS_SCREENSHOT_SEED=1` do the same as the first two. All of them are ignored in release builds.
+- **Launch arguments:** `-uiTesting` gives an in-memory store, hides the Development tab and schedules no arrival reminders, so the app never asks to send notifications (`DevelopmentHooks.notifications`); `-disableAnimations` turns UIKit's animations off, as every UI test launches the app (`XCUIApplication.forTesting`), so XCUITest never waits for one to end, while `make sim` and a run for shaping a feature keep them; `-screenshotSeed` adds the six screenshot cards; `-initializeCloudKitSchema` creates the CloudKit schema in the Development environment ([section 8](#8-releasing)). The environment variables `CARDS_UI_TESTING=1` and `CARDS_SCREENSHOT_SEED=1` do the same as `-uiTesting` and `-screenshotSeed`. All of them are ignored in release builds.
 - **Deep links:** `cards://cards/card/<code>`, `cards://cards/card/<code>/edit` and `cards://cards/new`, with the code percent-encoded (`NavigationRoute.url` builds them), and `cards://cards/add#<payload>` for a shared card, the app-scheme twin of the `https://cards.serby.net/add#<payload>` share link (`SharedCardLink.appURL` builds it). `xcrun simctl openurl` shows a confirmation prompt first.
 - **The widget:** open the app once so it writes the snapshot, then long-press the Home Screen, tap **Edit > Add Widget**, find Card Barcodes and add the medium size. Long-press the widget and choose **Edit Widget** to pick a card instead of the nearest one. Its views are also in the Storybook (`CardWidgetView`), which is quicker for layout work.
 - **Location:** `xcrun simctl privacy <udid> grant location net.serby.Cards`, then `xcrun simctl location <udid> set 51.5203,-0.2094`.

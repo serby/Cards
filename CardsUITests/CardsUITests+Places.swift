@@ -7,8 +7,7 @@ extension CardsUITests {
     /// puts the change in the form (PLACE-8).
     @MainActor
     func testEditAPlace() throws {
-        let app = XCUIApplication()
-        app.launchArguments += ["-uiTesting", "-screenshotSeed"]
+        let app = XCUIApplication.forTesting(["-screenshotSeed"])
         app.launch()
 
         let joesMarket = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Joe's Market")).firstMatch

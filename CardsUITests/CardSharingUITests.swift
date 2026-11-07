@@ -94,8 +94,7 @@ final class CardSharingUITests: XCTestCase {
 
     @MainActor
     private func launch() -> XCUIApplication {
-        let app = XCUIApplication()
-        app.launchArguments += ["-uiTesting", "-screenshotSeed"]
+        let app = XCUIApplication.forTesting(["-screenshotSeed"])
         app.launch()
         return app
     }

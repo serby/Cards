@@ -24,8 +24,7 @@ final class CardsWidgetScreenshotTests: XCTestCase {
     @MainActor
     func testCaptureWidgetScreenshot() throws {
         // The list screen writes the widget's snapshot of the seeded cards.
-        let app = XCUIApplication()
-        app.launchArguments += ["-uiTesting", "-screenshotSeed"]
+        let app = XCUIApplication.forTesting(["-screenshotSeed"])
         app.launch()
         XCTAssertTrue(app.buttons["addCardButton"].waitForExistence(timeout: 5))
         Thread.sleep(forTimeInterval: 1)

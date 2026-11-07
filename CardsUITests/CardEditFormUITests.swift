@@ -58,8 +58,7 @@ final class CardEditFormUITests: XCTestCase {
     /// form opens again (CARD-12).
     @MainActor
     func testChooseAnIcon() throws {
-        let app = XCUIApplication()
-        app.launchArguments += ["-uiTesting", "-screenshotSeed"]
+        let app = XCUIApplication.forTesting(["-screenshotSeed"])
         app.launch()
 
         let honeycomb = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Honeycomb Rewards")).firstMatch
@@ -91,8 +90,7 @@ final class CardEditFormUITests: XCTestCase {
     /// The grid opens at the card's icon, even one in its last group (CARD-12).
     @MainActor
     func testTheIconGridOpensAtTheChosenIcon() throws {
-        let app = XCUIApplication()
-        app.launchArguments += ["-uiTesting", "-screenshotSeed"]
+        let app = XCUIApplication.forTesting(["-screenshotSeed"])
         app.launch()
 
         let honeycomb = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Honeycomb Rewards")).firstMatch

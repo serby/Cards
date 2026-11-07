@@ -56,7 +56,7 @@ function developmentDeclarations(): Map<string, string> {
 }
 
 /// Plain strings that only development code uses.
-const forbiddenStrings = ["CARDS_UI_TESTING", "CARDS_SCREENSHOT_SEED"];
+const forbiddenStrings = ["CARDS_UI_TESTING", "CARDS_SCREENSHOT_SEED", "-disableAnimations"];
 
 if (!process.argv.includes("--no-build")) {
     console.log("==> Building Release");

@@ -15,6 +15,7 @@ struct CardsApp: App {
     private let arrivalRouter: ArrivalNotificationRouter
 
     init() {
+        DevelopmentHooks.disableAnimationsIfRequested()
         let navigationManager = NavigationManager()
         _navigationManager = State(initialValue: navigationManager)
         // Set before launch finishes so a tap that launched the app is not missed.

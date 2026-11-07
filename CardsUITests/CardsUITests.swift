@@ -40,8 +40,7 @@ class CardsUITests: XCTestCase {
 
     @MainActor
     func testAdd() throws {
-        let app = XCUIApplication()
-        app.launchArguments += ["-uiTesting"] + Self.variantArguments
+        let app = XCUIApplication.forTesting(Self.variantArguments)
         app.launch()
 
         // The store starts empty, so the list shows its own Add Card button.
@@ -172,8 +171,7 @@ class CardsUITests: XCTestCase {
 
     @MainActor
     func testArrivalNotificationsSwitch() throws {
-        let app = XCUIApplication()
-        app.launchArguments.append("-uiTesting")
+        let app = XCUIApplication.forTesting()
         app.launch()
         app.tabBars.buttons["Settings"].tap()
 
@@ -189,8 +187,7 @@ class CardsUITests: XCTestCase {
 
     @MainActor
     func testShowCardWhereIAmSwitch() throws {
-        let app = XCUIApplication()
-        app.launchArguments.append("-uiTesting")
+        let app = XCUIApplication.forTesting()
         app.launch()
         app.tabBars.buttons["Settings"].tap()
 
@@ -208,9 +205,8 @@ class CardsUITests: XCTestCase {
     /// distances in (SET-4). The choice is kept, so the test ends on Automatic.
     @MainActor
     func testDistancesFollowTheSetting() throws {
-        let app = XCUIApplication()
         // Not pinned, as launchWithSeededCards does, so the picker can change it.
-        app.launchArguments += ["-uiTesting", "-screenshotSeed", "-cardSortOrder", "custom", "-showsCardWhereYouAre", "NO"]
+        let app = XCUIApplication.forTesting(["-screenshotSeed", "-cardSortOrder", "custom", "-showsCardWhereYouAre", "NO"])
         app.launch()
         let localRoast = tile(app, "Local Roast Coffee")
         XCTAssertTrue(waitForElement(localRoast))
@@ -310,9 +306,8 @@ class CardsUITests: XCTestCase {
     /// the test ends on custom order.
     @MainActor
     func testSortMenuChangesTheOrder() throws {
-        let app = XCUIApplication()
         // Not pinned, as launchWithSeededCards does, so the menu can change it.
-        app.launchArguments += ["-uiTesting", "-screenshotSeed", "-showsCardWhereYouAre", "NO"]
+        let app = XCUIApplication.forTesting(["-screenshotSeed", "-showsCardWhereYouAre", "NO"])
         app.launch()
         let honeycomb = tile(app, "Honeycomb Rewards")
         let nordicNest = tile(app, "Nordic Nest Home")
@@ -333,8 +328,7 @@ class CardsUITests: XCTestCase {
     /// full above the grid, and opens when tapped (SET-3).
     @MainActor
     func testCardWhereYouAre() throws {
-        let app = XCUIApplication()
-        app.launchArguments += ["-uiTesting", "-screenshotSeed", "-cardSortOrder", "custom", "-showsCardWhereYouAre", "YES"]
+        let app = XCUIApplication.forTesting(["-screenshotSeed", "-cardSortOrder", "custom", "-showsCardWhereYouAre", "YES"])
         app.launch()
 
         // The seed puts the user inside Joe's Market Notting Hill.

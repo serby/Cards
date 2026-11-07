@@ -19,11 +19,10 @@ extension XCTestCase {
     /// left, where it has one.
     @MainActor
     func launchWithSeededCards() -> XCUIApplication {
-        let app = XCUIApplication()
         let variant = (self as? CardsUITests).map { type(of: $0).variantArguments } ?? []
-        app.launchArguments += [
-            "-uiTesting", "-screenshotSeed", "-cardSortOrder", "custom", "-showsCardWhereYouAre", "NO", "-distanceUnits", "automatic"
-        ] + variant
+        let app = XCUIApplication.forTesting([
+            "-screenshotSeed", "-cardSortOrder", "custom", "-showsCardWhereYouAre", "NO", "-distanceUnits", "automatic"
+        ] + variant)
         app.launch()
         return app
     }
