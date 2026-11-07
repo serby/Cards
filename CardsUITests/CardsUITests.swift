@@ -256,6 +256,11 @@ class CardsUITests: XCTestCase {
     func testSearchFiltersCards() throws {
         let app = launchWithSeededCards()
         let search = app.searchFields.firstMatch
+        // iOS 27 keeps the field out of sight until the grid is pulled down, so
+        // pull it down as a person would.
+        if !search.waitForExistence(timeout: 3) {
+            app.scrollViews.firstMatch.swipeDown()
+        }
         XCTAssertTrue(waitForElement(search))
         search.tap()
         search.typeText("hon")
