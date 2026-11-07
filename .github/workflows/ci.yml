@@ -52,9 +52,9 @@ jobs:
       run: node scripts/check-changelog.ts
 
     # Every language in knownRegions is complete in every catalogue, with
-    # matching placeholders and plural forms (scripts/l10n.ts).
+    # matching placeholders and plural forms.
     - name: Check translations are complete
-      run: node scripts/l10n.ts check
+      run: node scripts/check-strings.ts
 
     - name: Test the scripts
       run: node --test scripts/*.test.ts

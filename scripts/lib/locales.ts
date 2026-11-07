@@ -2,12 +2,14 @@
 // generate, check, capture or upload anything per locale. The store locales are
 // the folders in metadata/ (en-GB, en-US, es-MX, ja and so on), so a listing is
 // added by adding its folder. The app's languages are the project's
-// knownRegions less en and Base (scripts/l10n.ts adds them).
+// knownRegions less en and Base (scripts/add-language.ts adds them), read as
+// scripts/lib/string-catalogues.ts reads them.
 //
 // Usage: import { storeLocales, languageOf, regionOf, appLanguages } from "./lib/locales.ts";
 
-import { readdirSync, readFileSync } from "node:fs";
+import { readdirSync } from "node:fs";
 import { join } from "node:path";
+import { languagesOf, projectAt } from "./string-catalogues.ts";
 
 const root = join(import.meta.dirname, "..", "..");
 
@@ -36,8 +38,5 @@ export function regionOf(code: string): string {
 
 /// The app's languages: the project's knownRegions less en and Base.
 export function appLanguages(rootDir: string = root): string[] {
-    const project = readFileSync(join(rootDir, "Cards.xcodeproj", "project.pbxproj"), "utf8");
-    const lists = [...project.matchAll(/knownRegions = \(([^)]*)\);/g)].map((match) => match[1] ?? "");
-    const regions = lists.flatMap((list) => list.split(",").map((item) => item.trim().replace(/^"(.*)"$/, "$1")));
-    return [...new Set(regions)].filter((region) => region !== "" && region !== "en" && region !== "Base");
+    return languagesOf(projectAt(rootDir));
 }

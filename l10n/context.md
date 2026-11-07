@@ -90,7 +90,7 @@ The app ships in British English (the source, `en`) and the languages in the pro
 
 French (`fr`), Italian (`it`), Arabic (`ar`), Traditional Chinese (`zh-Hant`), Brazilian Portuguese (`pt-BR`), Korean (`ko`) and Simplified Chinese (`zh-Hans`) were translated and reviewed, then held back so the app ships in waves: French and Italian next, then Arabic, Traditional Chinese and Brazilian Portuguese; Korean and Simplified Chinese are on hold. Their style guides stay in `l10n/languages/`. Their last translations are in commit 279189d, before 1.4's new strings were translated. To bring one back:
 
-1. `node scripts/l10n.ts add-language <code> --from 279189d` adds it to `knownRegions`, restores every translation whose English has not changed since, and translates the rest with the style guide.
+1. `node scripts/add-language.ts <code> --from 279189d` adds it to `knownRegions`, restores every translation whose English has not changed since, and translates the rest with the style guide.
 2. Review the new translations as for any change of copy (docs/DEVELOPMENT.md, "Add or change copy"), and capture its screens (`make capture-l10n LANGS=<code>`).
 3. Add its store listing (`metadata/<locale>/`), captions (`screenshots/store/<locale>/captions.json`) and changelog texts, then refresh the screenshots at release.
 4. For Arabic, the first right-to-left language, run the UI tests in it too: `CardsRightToLeftUITests` and `CardsRightToLeftLargeTextAuditTests` force right to left in English until then.

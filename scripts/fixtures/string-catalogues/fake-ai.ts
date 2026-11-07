@@ -1,4 +1,4 @@
-// Stands in for the AI command in scripts/l10n.test.ts. Reads the prompt on
+// Stands in for the AI command in the string scripts' tests. Reads the prompt on
 // stdin, takes the payload from its Input section and replies with
 // "[<lang>] <source>" for every unit, in the shape the payload asks for.
 //

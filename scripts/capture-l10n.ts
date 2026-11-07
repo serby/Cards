@@ -23,7 +23,7 @@ import { execFileSync, spawnSync } from "node:child_process";
 import { cpSync, existsSync, mkdirSync, openSync, readdirSync, readFileSync, rmSync, statSync } from "node:fs";
 import { basename, dirname, join } from "node:path";
 import { parseArgs } from "node:util";
-import { projectAt, projectLanguages } from "./l10n.ts";
+import { appLanguages } from "./lib/locales.ts";
 import { root, xcodeEnv } from "./lib/xcode.ts";
 
 /// The Xcode in .xcode-version, as every script uses it.
@@ -264,8 +264,7 @@ export function main(argv: string[]): number {
             "no-build": { type: "boolean", default: false },
         },
     });
-    const pbxproj = readFileSync(projectAt(root).pbxproj, "utf8");
-    const languages = list(values.lang).length ? list(values.lang) : ["en", ...projectLanguages(pbxproj)];
+    const languages = list(values.lang).length ? list(values.lang) : ["en", ...appLanguages()];
     const chosenSizes = list(values.size).length ? list(values.size) : ["large", "AX5"];
     const unknown = chosenSizes.filter((size) => !(size in sizes));
     if (unknown.length) {

@@ -17,7 +17,7 @@ XCODEBUILD := xcodebuild -project Cards.xcodeproj -scheme Cards -derivedDataPath
 .PHONY: build clean test test-unit test-e2e test-a11y test-tsan test-coverage coverage-report sim device \
 	check check-release check-metadata check-changelog check-screenshots \
 	capture-screenshots store-screenshots upload-build upload-metadata upload-screenshots upload-creative-assets \
-	l10n-status l10n-check l10n-translate l10n-add-language test-scripts capture-l10n
+	report-strings check-strings translate-strings add-language test-scripts capture-l10n
 
 build:
 	$(XCODEBUILD) build -destination '$(DESTINATION)'
@@ -61,7 +61,7 @@ device:
 	node scripts/run-on-device.ts
 
 # The quick checks CI runs, plus the raw screenshot check CI leaves to you.
-check: check-metadata check-changelog check-screenshots l10n-check
+check: check-metadata check-changelog check-screenshots check-strings
 
 # Builds Release and fails if anything from Cards/Development reached it.
 check-release:
@@ -106,23 +106,25 @@ upload-screenshots:
 # and search results image.
 upload-creative-assets:
 	node scripts/upload-creative-assets.ts
-# Localisation (scripts/l10n.ts). The languages are the project's knownRegions,
-# and the catalogues every *.xcstrings under Cards/ and CardsWidget/ outside
-# Cards/Development. LANGS takes codes separated by spaces ("de ja"); empty means
-# every language.
-l10n-status:
-	node scripts/l10n.ts status
+# The String Catalogues (scripts/report-strings.ts, check-strings.ts,
+# translate-strings.ts and add-language.ts; export-strings.ts, import-strings.ts,
+# remove-language.ts and normalise-strings.ts run by hand). The languages are the
+# project's knownRegions, and the catalogues every *.xcstrings under Cards/ and
+# CardsWidget/ outside Cards/Development. LANGS takes codes separated by spaces
+# ("de ja"); empty means every language.
+report-strings:
+	node scripts/report-strings.ts
 
-l10n-check:
-	node scripts/l10n.ts check
+check-strings:
+	node scripts/check-strings.ts
 
-l10n-translate:
-	node scripts/l10n.ts translate --lang "$(LANGS)"
+translate-strings:
+	node scripts/translate-strings.ts --lang "$(LANGS)"
 
 # Adds CODE (such as fr or pt-BR) to the project's languages and translates
 # everything into it.
-l10n-add-language:
-	node scripts/l10n.ts add-language $(CODE)
+add-language:
+	node scripts/add-language.ts $(CODE)
 
 # The scripts' own tests.
 test-scripts:

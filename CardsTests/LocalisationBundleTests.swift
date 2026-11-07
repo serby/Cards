@@ -4,7 +4,7 @@ import Testing
 /// Every translation in the String Catalogues reaches the built app and its
 /// widget: each language's `.lproj` in each bundle has every key, in
 /// `Localizable` (`.strings` or `.stringsdict`) and `InfoPlist`, and no empty
-/// value. `make l10n-check` checks the catalogues; this checks what the build
+/// value. `make check-strings` checks the catalogues; this checks what the build
 /// made of them, so a language that drops out of a bundle, or a folder that
 /// comes up short, fails here.
 ///
