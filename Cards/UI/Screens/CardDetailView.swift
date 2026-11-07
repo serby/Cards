@@ -229,9 +229,9 @@ public struct CardDetailView: View {
             .contentShape(.rect)
         }
         .buttonStyle(.borderless)
-        // The app's supporting text: the system's secondary grey is 3.4:1 on white.
+        // Supporting text (the system grey is 3.4:1 on white), below the card's 24 pt shadow, whose grey failed contrast.
         .foregroundStyle(Color.secondaryText)
-        .padding(.top, 12)
+        .padding(.top, 24)
         .accessibilityIdentifier("addCurrentLocationButton")
         .accessibilityHint(
             Text(

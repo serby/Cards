@@ -39,8 +39,8 @@ public struct BarcodeImportSection: View {
     public var body: some View {
         Section {
             PhotosPicker(selection: $photo, matching: .images) {
-                Label(
-                    LocalizedStringResource(
+                ImportRowLabel(
+                    title: Text(
                         "Choose Photo",
                         comment: "Button under the camera in the new card form that opens the photo library to read a barcode from a picture."
                     ),
@@ -57,8 +57,8 @@ public struct BarcodeImportSection: View {
             Button {
                 choosingFile = true
             } label: {
-                Label(
-                    LocalizedStringResource(
+                ImportRowLabel(
+                    title: Text(
                         "Choose File",
                         comment: "Button under the camera in the new card form that opens Files to read a barcode from an image or a PDF."
                     ),
@@ -195,6 +195,31 @@ extension BarcodeImportSection {
         status = .failed(reading)
         if let problem = reading.problem {
             announcer.announce(String(localized: problem))
+        }
+    }
+}
+
+/// A row's icon and title. Not a `Label`: in a list row, a Label gives its
+/// title the icon's frame for accessibility, and these icons are shorter
+/// than a line of text, so the accessibility audit found the title clipped
+/// (the add form's other rows have taller icons). The icons share a column
+/// that grows with the text, so both titles line up, as a Label's would,
+/// and the row's separator starts at the title.
+private struct ImportRowLabel: View {
+    let title: Text
+    let systemImage: String
+    /// The rows' icon column, as wide as the widest icon at the text size.
+    @ScaledMetric(relativeTo: .body) private var iconWidth = 28.0
+
+    var body: some View {
+        HStack(spacing: 16) {
+            Image(systemName: systemImage)
+                // The size a list row's Label draws its icon at.
+                .imageScale(.large)
+                .frame(width: iconWidth)
+                .accessibilityHidden(true)
+            title
+                .alignmentGuide(.listRowSeparatorLeading) { $0[.leading] }
         }
     }
 }
