@@ -5,7 +5,11 @@
 // simulator named CI-<device>-<version>, boots it, sets the status bar and
 // waits for it to settle.
 //
-// Usage: import { bootSimulator } from "./lib/simulator.ts";
+// It also sets a simulator's own language and region, which is what iOS
+// draws outside the app in (the Home Screen, the widget gallery, system
+// prompts), and puts them back afterwards.
+//
+// Usage: import { bootSimulator, setSystemLanguage, systemLanguage } from "./lib/simulator.ts";
 //
 // Reusing one named simulator per device and runtime means repeat runs skip
 // creating it. The wait after `simctl bootstatus` works round a GitHub macOS
@@ -14,7 +18,7 @@
 // wait the run logs "Supported platforms ... is empty", sticks launching for
 // 150 seconds and is interrupted.
 
-import { start } from "./xcode.ts";
+import { capture, run, start } from "./xcode.ts";
 
 /// A booted simulator.
 export interface Simulator {
@@ -176,4 +180,51 @@ function xcrun(args: string[], log: Log, options: XcrunOptions = {}): Promise<st
             else reject(new Error(`xcrun ${args.join(" ")} failed (${signal ?? `exit code ${code}`})`));
         });
     });
+}
+
+/// A simulator's own language and region, as `defaults` holds them in the
+/// global domain; undefined where it holds none, as on a new simulator.
+export interface SystemLanguage {
+    /// AppleLanguages, such as ["de"].
+    languages?: string[];
+    /// AppleLocale, such as "de_DE".
+    locale?: string;
+}
+
+/// The simulator's language and region now, to put back afterwards. It must be booted.
+export function systemLanguage(udid: string): SystemLanguage {
+    const read = (key: string): string | undefined => {
+        try {
+            return capture("xcrun", ["simctl", "spawn", udid, "defaults", "read", "-g", key]).trim();
+        } catch {
+            return undefined;
+        }
+    };
+    // defaults prints an array as ( "de", "en" ).
+    const languages = read("AppleLanguages")?.match(/"([^"]+)"|([A-Za-z][\w-]*)/g)?.map((item) => item.replaceAll('"', ""));
+    return { languages, locale: read("AppleLocale") };
+}
+
+/// Sets the simulator's own language and region, then restarts it so
+/// SpringBoard takes them, and waits until it has booted again. Undefined
+/// values are deleted, as on a new simulator.
+export function setSystemLanguage(udid: string, language: SystemLanguage): void {
+    const write = (key: string, value: string[] | string | undefined): void => {
+        if (value === undefined) {
+            try {
+                run("xcrun", ["simctl", "spawn", udid, "defaults", "delete", "-g", key], { stdio: "ignore" });
+            } catch {
+                // It was not set.
+            }
+        } else if (Array.isArray(value)) {
+            run("xcrun", ["simctl", "spawn", udid, "defaults", "write", "-g", key, "-array", ...value]);
+        } else {
+            run("xcrun", ["simctl", "spawn", udid, "defaults", "write", "-g", key, "-string", value]);
+        }
+    };
+    write("AppleLanguages", language.languages);
+    write("AppleLocale", language.locale);
+    run("xcrun", ["simctl", "shutdown", udid]);
+    run("xcrun", ["simctl", "boot", udid]);
+    run("xcrun", ["simctl", "bootstatus", udid, "-b"], { stdio: "ignore" });
 }

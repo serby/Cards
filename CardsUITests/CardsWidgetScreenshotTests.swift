@@ -3,8 +3,15 @@ import XCTest
 /// Captures the Home Screen widget for the App Store by adding it the way a
 /// person would: long-press the Home Screen, Edit, Add Widget, Card Barcodes.
 /// Run via scripts/capture-screenshots.ts, which uninstalls the app first so no
-/// earlier widget is left on the Home Screen.
+/// earlier widget is left on the Home Screen, and puts the simulator in the
+/// store locale's language, so the Home Screen is in it too. SpringBoard's
+/// buttons have no identifiers, so they are found by their words in that
+/// language (`SpringBoardWords`).
 final class CardsWidgetScreenshotTests: XCTestCase {
+    /// SpringBoard's words in the simulator's language, which the capture
+    /// script passes as TEST_RUNNER_SYSTEM_LANGUAGE.
+    private let words = SpringBoardWords(language: ProcessInfo.processInfo.environment["SYSTEM_LANGUAGE"] ?? "en")
+
     override func setUpWithError() throws {
         continueAfterFailure = false
     }
@@ -78,8 +85,8 @@ final class CardsWidgetScreenshotTests: XCTestCase {
         // depends on the device, and a press that lands on an icon opens its menu,
         // whose Edit Home Screen item does the same job.
         // iPhone Duo's outer display lists Edit twice, in its side rail.
-        let edit = springboard.buttons["Edit"].firstMatch
-        let editHomeScreen = springboard.buttons["Edit Home Screen"].firstMatch
+        let edit = springboard.buttons[words.edit].firstMatch
+        let editHomeScreen = springboard.buttons[words.editHomeScreen].firstMatch
         for point in [CGVector(dx: 0.5, dy: 0.62), CGVector(dx: 0.5, dy: 0.8), CGVector(dx: 0.2, dy: 0.7)] where !edit.exists {
             springboard.coordinate(withNormalizedOffset: point).press(forDuration: 1.5)
             if editHomeScreen.waitForExistence(timeout: 2) {
@@ -87,26 +94,21 @@ final class CardsWidgetScreenshotTests: XCTestCase {
             }
             _ = edit.waitForExistence(timeout: 3)
         }
-        if !edit.exists {
-            let tree = XCTAttachment(string: springboard.debugDescription)
-            tree.name = "springboard_without_edit"
-            tree.lifetime = .keepAlways
-            add(tree)
-            let screen = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
-            screen.name = "screen_without_edit"
-            screen.lifetime = .keepAlways
-            add(screen)
-        }
+        if !edit.exists { attachSpringBoard("without_edit") }
         XCTAssertTrue(edit.exists, "No Edit button on the Home Screen")
         edit.tap()
-        let addWidget = springboard.buttons["Add Widget"].firstMatch
-        XCTAssertTrue(addWidget.waitForExistence(timeout: 5), "No Add Widget item")
+        let addWidget = springboard.buttons[words.addWidget].firstMatch
+        if !addWidget.waitForExistence(timeout: 5) { attachSpringBoard("without_add_widget") }
+        XCTAssertTrue(addWidget.exists, "No Add Widget item")
         addWidget.tap()
 
-        let search = springboard.descendants(matching: .any)
-            .matching(NSPredicate(format: "label == %@ OR placeholderValue == %@", "Search Widgets", "Search Widgets"))
+        // The gallery's search field, whatever it is called in the language: not
+        // the App Library's, which SpringBoard keeps off screen to the right.
+        let search = springboard.searchFields
+            .matching(NSPredicate(format: "identifier != %@", "dewey-search-field"))
             .firstMatch
-        XCTAssertTrue(search.waitForExistence(timeout: 5), "No widget search field")
+        if !search.waitForExistence(timeout: 5) { attachSpringBoard("without_search") }
+        XCTAssertTrue(search.exists, "No widget search field")
         search.tap()
         search.typeText("Card Barcodes")
 
@@ -119,13 +121,49 @@ final class CardsWidgetScreenshotTests: XCTestCase {
         result?.tap()
 
         // The gallery shows the medium size, the only one, with its own Add Widget button.
-        let add = springboard.buttons.matching(NSPredicate(format: "label CONTAINS[c] %@", "Add Widget")).firstMatch
-        XCTAssertTrue(add.waitForExistence(timeout: 5), "No Add Widget button for Card Barcodes")
+        let add = springboard.buttons.matching(NSPredicate(format: "label CONTAINS[c] %@", words.addWidget)).firstMatch
+        if !add.waitForExistence(timeout: 5) { attachSpringBoard("without_gallery_add") }
+        XCTAssertTrue(add.exists, "No Add Widget button for Card Barcodes")
         add.tap()
 
-        let done = springboard.buttons["Done"].firstMatch
+        let done = springboard.buttons[words.done].firstMatch
         if done.waitForExistence(timeout: 5) {
             done.tap()
+        }
+    }
+
+    /// SpringBoard's element tree and the screen, for when a step finds nothing.
+    @MainActor
+    private func attachSpringBoard(_ step: String) {
+        let tree = XCTAttachment(string: springboard.debugDescription)
+        tree.name = "springboard_\(step)"
+        tree.lifetime = .keepAlways
+        add(tree)
+        let screen = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
+        screen.name = "screen_\(step)"
+        screen.lifetime = .keepAlways
+        add(screen)
+    }
+}
+
+/// The words on SpringBoard's buttons that adding a widget goes through, in
+/// each language a store locale captures in.
+private struct SpringBoardWords {
+    let edit: String
+    let editHomeScreen: String
+    let addWidget: String
+    let done: String
+
+    init(language: String) {
+        switch language {
+        case "de":
+            (edit, editHomeScreen, addWidget, done) = ("Bearbeiten", "Home-Bildschirm bearbeiten", "Widget hinzufügen", "Fertig")
+        case "es":
+            (edit, editHomeScreen, addWidget, done) = ("Editar", "Editar pantalla de inicio", "Añadir widget", "OK")
+        case "ja":
+            (edit, editHomeScreen, addWidget, done) = ("編集", "ホーム画面を編集", "ウィジェットを追加", "完了")
+        default:
+            (edit, editHomeScreen, addWidget, done) = ("Edit", "Edit Home Screen", "Add Widget", "Done")
         }
     }
 }

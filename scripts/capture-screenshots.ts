@@ -7,7 +7,10 @@
 // folders in metadata/), which takes about a quarter of an hour a locale; with a
 // device, one device in one locale (en-US unless given). Each locale runs in its
 // language and region, filling in the likely region where the locale names
-// none (ja runs in Japanese in Japan). The app is uninstalled first, so the
+// none (ja runs in Japanese in Japan). The simulator itself is put in that
+// language and region for the run, and back afterwards, so what iOS draws
+// outside the app, the Home Screen and widget gallery the widget is captured
+// on among it, is in the locale's language too. The app is uninstalled first, so the
 // widget test adds the only widget to a clean Home Screen, and the status bar
 // shows 9:41 with full signal and battery.
 // Once every capture is done it runs check-screenshots.ts over the whole set:
@@ -24,7 +27,7 @@ import { execFileSync } from "node:child_process";
 import { copyFileSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { languageOf, regionOf, storeLocales } from "./lib/locales.ts";
-import { bootSimulator } from "./lib/simulator.ts";
+import { bootSimulator, setSystemLanguage, type Simulator, systemLanguage } from "./lib/simulator.ts";
 import { root, run } from "./lib/xcode.ts";
 
 const devices = ["iPhone 17 Pro Max", "iPad Pro 13-inch (M4)", "iPhone Duo"];
@@ -92,6 +95,30 @@ async function capture(device: string, locale: string): Promise<void> {
     } catch {
         // It was not installed.
     }
+    const original = systemLanguage(simulator.udid);
+    console.log(`==> Setting the simulator to ${language}, ${region}`);
+    setSystemLanguage(simulator.udid, { languages: [language], locale: `${language}_${region}` });
+    try {
+        runTests(simulator, set, language, region);
+    } finally {
+        console.log("==> Setting the simulator back to its own language and region");
+        setSystemLanguage(simulator.udid, original);
+    }
+
+    console.log("==> Extracting attachments");
+    run("xcrun", ["xcresulttool", "export", "attachments", "--path", resultBundle, "--output-path", exportFolder]);
+    mkdirSync(outFolder, { recursive: true });
+    copyAttachments(outFolder, set.names);
+
+    console.log(`\n==> Screenshots in ${outFolder}:`);
+    for (const name of readdirSync(outFolder).filter((file) => file.endsWith(".png")).sort()) {
+        console.log(`  ${name}  ${statSync(join(outFolder, name)).size.toLocaleString("en-GB")} bytes`);
+    }
+}
+
+/// Runs the screenshot tests on the simulator, which is already in the locale's
+/// language and region, with the status bar at 9:41.
+function runTests(simulator: Simulator, set: CaptureSet, language: string, region: string): void {
     run("xcrun", [
         "simctl", "status_bar", simulator.udid, "override",
         "--time", "9:41",
@@ -123,18 +150,9 @@ async function capture(device: string, locale: string): Promise<void> {
             "-collect-test-diagnostics", "never",
             "-resultBundlePath", resultBundle,
         ],
-        { env: { TEST_RUNNER_SCREENSHOT_SUFFIX: set.testSuffix } },
+        // The widget test finds SpringBoard's buttons by their words in this language.
+        { env: { TEST_RUNNER_SCREENSHOT_SUFFIX: set.testSuffix, TEST_RUNNER_SYSTEM_LANGUAGE: language } },
     );
-
-    console.log("==> Extracting attachments");
-    run("xcrun", ["xcresulttool", "export", "attachments", "--path", resultBundle, "--output-path", exportFolder]);
-    mkdirSync(outFolder, { recursive: true });
-    copyAttachments(outFolder, set.names);
-
-    console.log(`\n==> Screenshots in ${outFolder}:`);
-    for (const name of readdirSync(outFolder).filter((file) => file.endsWith(".png")).sort()) {
-        console.log(`  ${name}  ${statSync(join(outFolder, name)).size.toLocaleString("en-GB")} bytes`);
-    }
 }
 
 const args = process.argv.slice(2);
