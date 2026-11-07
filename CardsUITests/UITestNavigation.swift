@@ -106,8 +106,9 @@ extension XCUIApplication {
         dismissKeyboard()
     }
 
-    /// Opens the Add Location map from the Add Card form. The system may ask
-    /// for location access as it opens; see `dismissLocationPrompt()`.
+    /// Opens the Add Location map from the Add Card form. Without the seeded
+    /// cards' fixed place the system asks for location access as it opens
+    /// (`locationPrompt()`); with them it never does.
     func openLocationPicker() {
         openAddCard()
         let addLocation = buttons["addLocationRowButton"]
@@ -139,10 +140,13 @@ extension XCUIApplication {
     }
 
     /// Long-presses `row` until its menu shows `item`. A press while the list
-    /// is still settling, after launch or a move, can miss, so it tries again.
+    /// is still settling, after launch or a move, can miss, so it lets the
+    /// list settle and tries again. The first press goes at once.
     func openMenu(on row: XCUIElement, showing item: XCUIElement) -> Bool {
-        for _ in 0..<3 {
-            RunLoop.current.run(until: Date().addingTimeInterval(0.5))
+        for attempt in 0..<3 {
+            if attempt > 0 {
+                RunLoop.current.run(until: Date().addingTimeInterval(0.5))
+            }
             row.press(forDuration: 1.2)
             if item.appears(within: 3) { return true }
         }
@@ -195,7 +199,7 @@ extension XCUIApplication {
         for _ in 0..<3 where keyboard.exists {
             typeText("\n")
         }
-        XCTAssertFalse(keyboard.appears(within: 1), "The keyboard stayed up")
+        XCTAssertTrue(keyboard.disappears(within: 1), "The keyboard stayed up")
     }
 
     /// A prompt SpringBoard shows over the app, such as for location access or
@@ -209,12 +213,5 @@ extension XCUIApplication {
     /// time it opens without the seeded cards' fixed place.
     static func locationPrompt(timeout: TimeInterval = 3) -> XCUIElement? {
         systemPrompt(timeout: timeout)
-    }
-
-    /// The Add Location map asks for location access when it first opens. Any
-    /// answer will do; the prompt is the system's, not the app's.
-    static func dismissLocationPrompt() {
-        guard let alert = locationPrompt() else { return }
-        alert.buttons.element(boundBy: alert.buttons.count - 1).tap()
     }
 }

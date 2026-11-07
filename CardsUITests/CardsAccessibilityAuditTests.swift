@@ -62,8 +62,9 @@ class CardsAccessibilityAuditTests: XCTestCase {
     @MainActor
     func testLocationPicker() throws {
         let app = launch()
+        // The seeded cards are seen from a fixed place, so no location prompt
+        // comes up over the map.
         app.openLocationPicker()
-        XCUIApplication.dismissLocationPrompt()
         try audit(app)
     }
 
