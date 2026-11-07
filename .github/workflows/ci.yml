@@ -56,6 +56,12 @@ jobs:
     - name: Check translations are complete
       run: node scripts/check-strings.ts
 
+    # The website is built from the listing, the changelog, the store images and
+    # the app, so a source that breaks it fails here, before website.yml would
+    # deploy it. Built only, never deployed.
+    - name: Build the website
+      run: node scripts/build-website.ts
+
     - name: Test the scripts
       run: node --test scripts/*.test.ts
 
