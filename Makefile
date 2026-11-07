@@ -17,7 +17,7 @@ SIMULATOR_VERSION ?= 18.1
 DESTINATION := platform=iOS Simulator,name=$(SIMULATOR_DEVICE),OS=$(SIMULATOR_VERSION)
 XCODEBUILD := xcodebuild -project Cards.xcodeproj -scheme Cards -derivedDataPath build/dd
 
-.PHONY: build clean test test-unit test-e2e test-a11y test-tsan test-coverage coverage-report sim device \
+.PHONY: build clean test test-unit test-e2e test-a11y test-tsan test-coverage coverage-report sim device initialize-cloudkit-schema \
 	check check-release check-metadata check-changelog check-screenshots \
 	capture-screenshots store-screenshots upload-build upload-metadata upload-screenshots upload-creative-assets \
 	report-strings check-strings translate-strings add-language test-scripts capture-l10n
@@ -64,6 +64,11 @@ sim:
 # Builds and runs on Paul's iPhone (2), or else the first connected iPhone.
 device:
 	node scripts/run-on-device.ts
+
+# Creates the CloudKit schema in the Development environment from the phone
+# `make device` uses, then says how to deploy it to Production.
+initialize-cloudkit-schema:
+	node scripts/initialize-cloudkit-schema.ts
 
 # The quick checks CI runs, plus the raw screenshot check CI leaves to you.
 check: check-metadata check-changelog check-screenshots check-strings

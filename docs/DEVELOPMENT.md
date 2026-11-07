@@ -67,7 +67,9 @@ Run these in order after every change, and fix what fails before moving on:
 | `make check` | The quick checks: metadata, changelog, raw screenshots, store images and translations |
 | `make check-release` | Build Release and fail if any development code reached it ([rule 1](#rule-1-development-code-never-ships)) |
 | `make sim` | Build, boot the iPhone 17 test simulator, show it in Device Hub, install and launch; `make sim DEVICE=se` uses the iPhone SE ([test devices](#test-devices)) |
-| `make device` | Build, install and launch on Paul's iPhone (2), or the first connected iPhone if it is not connected || `make capture-screenshots` | Capture the raw screenshots on iPhone, iPad and iPhone Duo in every store locale (the folders in `metadata/`) |
+| `make device` | Build, install and launch on Paul's iPhone (2), or the first connected iPhone if it is not connected |
+| `make initialize-cloudkit-schema` | Create the CloudKit schema in the Development environment from the phone `make device` uses ([section 8](#8-releasing)) |
+| `make capture-screenshots` | Capture the raw screenshots on iPhone, iPad and iPhone Duo in every store locale (the folders in `metadata/`) |
 | `make store-screenshots` | Compose the App Store images and the creative asset from the raw screenshots, their captions and `creative-asset.json` |
 | `make check-screenshots` | Check the raw captures and that every store image is present |
 | `make upload-build` | Archive, export and upload a build to App Store Connect |
@@ -403,13 +405,13 @@ Everything on the App Store product page lives in the repository, so it can be c
 
 ### Test devices
 
-Paul tests by hand on three devices, listed once in `scripts/lib/test-devices.ts`, which `make sim` and `make device` read. The list holds names, not UDIDs, which differ from Mac to Mac, so the scripts look each device up when they run.
+Paul tests by hand on three devices, listed once in `scripts/lib/test-devices.ts`, which `make sim`, `make device` and `make initialize-cloudkit-schema` read. The list holds names, not UDIDs, which differ from Mac to Mac, so the scripts look each device up when they run.
 
 | Device | Runs on | Used by |
 |--------|---------|---------|
 | iPhone 17 simulator | The newest installed iOS 27 runtime that runs it | `make sim`, the default |
 | iPhone SE (3rd generation) simulator | iOS 27.0 | `make sim DEVICE=se`, for the small screen |
-| Paul's iPhone (2) | Paul's main phone for checks on a device, paired with this Mac | `make device`, which uses the first connected iPhone instead when it is not connected, and says so |
+| Paul's iPhone (2) | Paul's main phone for checks on a device, paired with this Mac | `make device` and `make initialize-cloudkit-schema`, which use the first connected iPhone instead when it is not connected, and say so |
 
 - **Which simulator:** one of the device type named exactly as the model, or as the model followed by " (Default)", as Xcode names its own ("iPhone 17 (Default)"), a booted one first. Other projects' simulators of the same type, such as `aiw-27 iPhone 17`, are never used. When there is none, the script creates one named as the model and says so.
 - **Names** match whether they are written with a straight or a curly apostrophe; devicectl spells the phone "Paul’s iPhone (2)".
@@ -447,7 +449,10 @@ Xcode 27 has no Simulator.app; `make sim` opens Device Hub to show the screen, a
 ## 8. Releasing
 
 1. Push to `main` (rule 10). CI runs the build and the unit tests, the release check, and the metadata, changelog and store image checks, in parallel. It does not capture screenshots or run UI tests or SwiftLint, so the local loop is the real check. Nothing is uploaded on a push.
-2. If the build adds stored fields, deploy the CloudKit schema first; Production rejects records whose type or fields it does not have, with "Cannot create new type … in production schema" or "Cannot create or modify field …". Launch a Debug build once with `-initializeCloudKitSchema`, on a device or simulator signed in to iCloud, and wait for the log line "CloudKit schema initialised in the Development environment". Then open the [CloudKit Console](https://icloud.developer.apple.com/dashboard/), choose `iCloud.net.serby.Cards`, and use **Deploy Schema Changes** to copy the Development schema to Production.
+2. If the build adds stored fields, deploy the CloudKit schema first; Production rejects records whose type or fields it does not have, with "Cannot create new type … in production schema" or "Cannot create or modify field …".
+   1. Connect Paul's iPhone (2), unlocked and signed in to iCloud, and run `make initialize-cloudkit-schema` (`scripts/initialize-cloudkit-schema.ts`). It builds the Debug app, installs it on the phone `make device` uses ([test devices](#test-devices)), launches it with `-initializeCloudKitSchema`, and watches the app's log for the hook's result: "CloudKit schema initialised in the Development environment", or "CloudKit schema initialisation failed" with the error. It closes the app once it knows, keeps the whole log in `build/initialize-cloudkit-schema.log`, and exits non-zero on a failure, a timeout (`--timeout`, 180 seconds by default) or a locked phone. Debug builds only reach the Development environment, so this never changes Production. Lines about an import "cancelled because the store was removed from the coordinator" are expected: the hook uses a throwaway store and removes it when it is done.
+   2. Open the [CloudKit Console](https://icloud.developer.apple.com/dashboard/), choose `iCloud.net.serby.Cards` and the Development environment, and check that the record type `CD_CardItem` has a `CD_<name>` field for every stored property of `CardItem`, including the new ones.
+   3. Use **Deploy Schema Changes** to copy the Development schema to Production, after checking the changes it lists. This is Paul's step; no script touches Production.
 3. `make upload-build` archives with `scripts/build-ipa.ts` and uploads with an App Store Connect API key (`ASC_KEY_ID`, `ASC_ISSUER_ID`, `ASC_KEY_CONTENT`). In CI, `release.yml` builds, uploads and submits to the App Store on `v*` tags. There is no TestFlight upload in CI; run `make upload-build` to put a build on TestFlight by hand.
 4. The **App Store listing** workflow pushes the listing text from `metadata/` and the store images from `screenshots/store/` ([section 5](#update-the-app-store-listing)).
 

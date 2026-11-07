@@ -6,13 +6,14 @@
 // profile if it must (docs/DEVELOPMENT.md, section 7). The phone must be
 // unlocked for the app to launch.
 //
-// Usage: import { buildForPhone, choosePhone, describePhoneChoice, installOnPhone, launchOnPhone } from "./lib/phone.ts";
+// Usage: import { buildForPhone, choosePhone, describePhoneChoice, installOnPhone, launchOnPhone, startOnPhoneWithConsole } from "./lib/phone.ts";
 
+import type { ChildProcess } from "node:child_process";
 import { existsSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { sameName, testPhone } from "./test-devices.ts";
-import { builtProductsDir, projectArgs, run } from "./xcode.ts";
+import { builtProductsDir, projectArgs, run, start } from "./xcode.ts";
 
 const bundleIdentifier = "net.serby.Cards";
 
@@ -104,4 +105,17 @@ export function installOnPhone(phone: Phone, app: string): void {
 /// Launches the app on the phone and returns once it has started.
 export function launchOnPhone(phone: Phone): void {
     run("xcrun", ["devicectl", "device", "process", "launch", "--device", phone.identifier, bundleIdentifier]);
+}
+
+/// Launches the app on the phone with `args`, ending any copy already running,
+/// and returns devicectl's process, whose output pipes carry the app's
+/// standard output and error. OS_ACTIVITY_DT_MODE copies the app's system log
+/// there too, as Xcode's console shows it. devicectl runs until the app exits,
+/// and passes the signals it gets on to the app.
+export function startOnPhoneWithConsole(phone: Phone, args: string[]): ChildProcess {
+    return start(
+        "xcrun",
+        ["devicectl", "device", "process", "launch", "--console", "--terminate-existing", "--device", phone.identifier, bundleIdentifier, "--", ...args],
+        { env: { DEVICECTL_CHILD_OS_ACTIVITY_DT_MODE: "enable" }, stdio: ["ignore", "pipe", "pipe"] },
+    );
 }

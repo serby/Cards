@@ -1,8 +1,9 @@
 // The devices Paul tests the app on by hand, in one place: the iPhone 17
 // simulator, which `make sim` uses unless told otherwise, the iPhone SE (3rd
 // generation) simulator for the small screen, and his own iPhone for checks on
-// a device. run-in-simulator.ts and run-on-device.ts read it, through
-// lib/simulator.ts and lib/phone.ts.
+// a device. run-in-simulator.ts, run-on-device.ts and
+// initialize-cloudkit-schema.ts read it, through lib/simulator.ts and
+// lib/phone.ts.
 //
 // The automated tests run elsewhere: `make build` and `make test` use the
 // Makefile's SIMULATOR_DEVICE on SIMULATOR_VERSION, an older iOS, so they test

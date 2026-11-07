@@ -34,7 +34,8 @@ Ask Paul before submitting: it publishes to the App Store and cannot be taken ba
 4. **Settle the spec:** change any "In preparation for <version>" stories to "Since: <version>".
 5. **Screenshots:** if any screen the App Store shows has changed, run `make capture-screenshots`, then `make store-screenshots`, and look at every changed image. The capture takes six screens on each device, including the card with its share menu open (`06_ShareCard`, shown by `05_Share`), and `make check-screenshots` must pass with nothing reported as not captured yet. `make store-screenshots` also composes each locale's universal creative asset (`screenshots/store/<locale>/CreativeAsset.png`, 5244 × 2950) from its `creative-asset.json` and the new card screen capture: look at it whole, and check the line and the barcode sit inside the safe area that the Storybook's StoreCreativeAsset story outlines. If a caption or the asset's line changed, check every locale's translation fits.
 6. **Validate:** run the loop in `docs/DEVELOPMENT.md` section 2, plus `node scripts/check-changelog.ts` and `node scripts/check-metadata.ts`. Commit, push, and wait for CI to pass.
-7. **Prepare the listing:** run the App Store listing workflow. Do a dry run first, then for real:
+7. **CloudKit schema:** if the version adds or changes a stored property of a model (`git diff v<last version>..HEAD -- Cards/Core/Models`), the Production schema needs it before any build of the version reaches TestFlight or the App Store, or sync fails with "Cannot create or modify field …" (`docs/DEVELOPMENT.md` section 8). With Paul's iPhone (2) connected, unlocked and signed in to iCloud, run `make initialize-cloudkit-schema`. It builds and installs the Debug app, launches it with `-initializeCloudKitSchema` and reports the result from the app's log; if the phone is locked, ask Paul to unlock it and run it once more rather than looping. On success, hand Paul its next steps: in the [CloudKit Console](https://icloud.developer.apple.com/dashboard/), choose `iCloud.net.serby.Cards` and the Development environment, check `CD_CardItem` has a `CD_<name>` field for each new property, and use **Deploy Schema Changes** to deploy them to Production. That step is his: never deploy to Production yourself. Wait for him to confirm it is done before tagging.
+8. **Prepare the listing:** run the App Store listing workflow. Do a dry run first, then for real:
 
    ```bash
    gh workflow run app-store-listing.yml -f version=<version> -f prepare-version=true -f dry-run=true
@@ -42,7 +43,7 @@ Ask Paul before submitting: it publishes to the App Store and cannot be taken ba
    ```
 
    The dry run must report every age rating question answered, and for each locale the creative asset's specification and the header and search results placements it would make. After the real run, open the version in App Store Connect and check the header and search results in its preview, on iPhone and iPad in both orientations, with the line and the barcode in view.
-8. **Tag and submit:**
+9. **Tag and submit:**
 
    ```bash
    git tag -a v<version> -F <(node scripts/print-release-notes.ts <version>)
