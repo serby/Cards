@@ -15,12 +15,17 @@ public final class LocationService: NSObject {
 
     /// With `fixedLocation`, the service reports that place and never uses
     /// location services, so what it shows does not depend on where the device is.
+    /// Otherwise the permission starts as not determined and arrives in
+    /// `locationManagerDidChangeAuthorization`, which iOS calls as soon as the
+    /// delegate is set. Reading `authorizationStatus` here asked location
+    /// services on the main thread and waited for the answer, during launch:
+    /// on a freshly booted simulator that held the first launch for four minutes.
     public init(fixedLocation: CLLocation? = nil) {
         let manager = CLLocationManager()
         self.manager = manager
         self.fixedLocation = fixedLocation
         current = fixedLocation
-        authorization = fixedLocation == nil ? manager.authorizationStatus : .authorizedWhenInUse
+        authorization = fixedLocation == nil ? .notDetermined : .authorizedWhenInUse
         super.init()
         manager.delegate = self
         manager.desiredAccuracy = kCLLocationAccuracyHundredMeters
