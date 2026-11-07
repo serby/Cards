@@ -26,7 +26,7 @@ final class CardsWidgetScreenshotTests: XCTestCase {
         // The list screen writes the widget's snapshot of the seeded cards.
         let app = XCUIApplication.forTesting(["-screenshotSeed"])
         app.launch()
-        XCTAssertTrue(app.buttons["addCardButton"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["addCardButton"].appears(within: 5))
         Thread.sleep(forTimeInterval: 1)
 
         // The snapshot is written, so the app can go. Pressing Home does not leave
@@ -42,7 +42,7 @@ final class CardsWidgetScreenshotTests: XCTestCase {
         Thread.sleep(forTimeInterval: 4)
         let widgets = springboard.icons
             .matching(NSPredicate(format: "identifier == %@ AND value == %@", "Card Barcodes", "Widget"))
-        XCTAssertTrue(widgets.firstMatch.waitForExistence(timeout: 5), "The widget is not on the Home Screen")
+        XCTAssertTrue(widgets.firstMatch.appears(within: 5), "The widget is not on the Home Screen")
 
         // A crop of the Home Screen round the widget, which leaves out the other
         // icons, the test runner's among them.
@@ -84,16 +84,16 @@ final class CardsWidgetScreenshotTests: XCTestCase {
         let editHomeScreen = springboard.buttons[words.editHomeScreen].firstMatch
         for point in [CGVector(dx: 0.5, dy: 0.62), CGVector(dx: 0.5, dy: 0.8), CGVector(dx: 0.2, dy: 0.7)] where !edit.exists {
             springboard.coordinate(withNormalizedOffset: point).press(forDuration: 1.5)
-            if editHomeScreen.waitForExistence(timeout: 2) {
+            if editHomeScreen.appears(within: 2) {
                 editHomeScreen.tap()
             }
-            _ = edit.waitForExistence(timeout: 3)
+            _ = edit.appears(within: 3)
         }
         if !edit.exists { attachSpringBoard("without_edit") }
         XCTAssertTrue(edit.exists, "No Edit button on the Home Screen")
         edit.tap()
         let addWidget = springboard.buttons[words.addWidget].firstMatch
-        if !addWidget.waitForExistence(timeout: 5) { attachSpringBoard("without_add_widget") }
+        if !addWidget.appears(within: 5) { attachSpringBoard("without_add_widget") }
         XCTAssertTrue(addWidget.exists, "No Add Widget item")
         addWidget.tap()
 
@@ -102,14 +102,14 @@ final class CardsWidgetScreenshotTests: XCTestCase {
         let search = springboard.searchFields
             .matching(NSPredicate(format: "identifier != %@", "dewey-search-field"))
             .firstMatch
-        if !search.waitForExistence(timeout: 5) { attachSpringBoard("without_search") }
+        if !search.appears(within: 5) { attachSpringBoard("without_search") }
         XCTAssertTrue(search.exists, "No widget search field")
         search.tap()
         search.typeText("Card Barcodes")
 
         // The search field holds the same text, so take the match below it: the app's row.
         let matches = springboard.descendants(matching: .any).matching(NSPredicate(format: "label == %@", "Card Barcodes"))
-        XCTAssertTrue(matches.firstMatch.waitForExistence(timeout: 5), "Card Barcodes is not in the widget gallery")
+        XCTAssertTrue(matches.firstMatch.appears(within: 5), "Card Barcodes is not in the widget gallery")
         let searchBottom = search.frame.maxY
         let result = matches.allElementsBoundByIndex.first { $0.frame.minY > searchBottom && $0.isHittable }
         XCTAssertNotNil(result, "No Card Barcodes row below the search field")
@@ -117,12 +117,12 @@ final class CardsWidgetScreenshotTests: XCTestCase {
 
         // The gallery shows the medium size, the only one, with its own Add Widget button.
         let add = springboard.buttons.matching(NSPredicate(format: "label CONTAINS[c] %@", words.addWidget)).firstMatch
-        if !add.waitForExistence(timeout: 5) { attachSpringBoard("without_gallery_add") }
+        if !add.appears(within: 5) { attachSpringBoard("without_gallery_add") }
         XCTAssertTrue(add.exists, "No Add Widget button for Card Barcodes")
         add.tap()
 
         let done = springboard.buttons[words.done].firstMatch
-        if done.waitForExistence(timeout: 5) {
+        if done.appears(within: 5) {
             done.tap()
         }
     }

@@ -23,7 +23,7 @@ final class CardEditFormUITests: XCTestCase {
         let nameField = app.textFields["nameTextField"]
         XCTAssertTrue(waitForElement(nameField))
         XCTAssertEqual(nameField.value as? String, "Honeycomb Rewards")
-        XCTAssertFalse(app.keyboards.firstMatch.waitForExistence(timeout: 2), "The form should open with the keyboard down")
+        XCTAssertFalse(app.keyboards.firstMatch.appears(within: 2), "The form should open with the keyboard down")
 
         app.navigationBars.buttons.element(boundBy: 0).tap()
         XCTAssertTrue(waitForElement(app.buttons["editCardButton"]), "Back should go to the card's screen")
@@ -50,7 +50,7 @@ final class CardEditFormUITests: XCTestCase {
         confirm.tap()
 
         XCTAssertTrue(waitForElement(app.buttons["addCardButton"]))
-        XCTAssertTrue(tile(app, "Honeycomb Rewards").waitForNonExistence(timeout: 3))
+        XCTAssertTrue(tile(app, "Honeycomb Rewards").disappears(within: 3))
         XCTAssertTrue(tile(app, "Nordic Nest Home").exists)
     }
 
@@ -75,7 +75,7 @@ final class CardEditFormUITests: XCTestCase {
         let basket = app.buttons["cardIcon_basket.fill"]
         XCTAssertTrue(waitForElement(basket))
         basket.tap()
-        XCTAssertTrue(basket.waitForNonExistence(timeout: 3), "Choosing an icon closes the grid")
+        XCTAssertTrue(basket.disappears(within: 3), "Choosing an icon closes the grid")
         XCTAssertEqual(iconRow.value as? String, "Basket")
 
         app.buttons["saveCardButton"].tap()
@@ -111,7 +111,7 @@ final class CardEditFormUITests: XCTestCase {
             low.press(forDuration: 0.05, thenDragTo: high)
         }
         pushchair.tap()
-        XCTAssertTrue(pushchair.waitForNonExistence(timeout: 3), "Choosing an icon closes the grid")
+        XCTAssertTrue(pushchair.disappears(within: 3), "Choosing an icon closes the grid")
         XCTAssertEqual(iconRow.value as? String, "Pushchair")
 
         iconRow.tap()

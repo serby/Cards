@@ -120,11 +120,10 @@ final class CardsLocalisationScreenshotTests: XCTestCase {
         capture("09-location-picker")
 
         let add = app.buttons["addLocationButton"]
-        let enabled = expectation(for: NSPredicate(format: "isEnabled == true"), evaluatedWith: add)
-        wait(for: [enabled], timeout: 10)
+        XCTAssertTrue(eventually(within: 10) { add.isEnabled }, "Add stayed disabled")
         add.tap()
         let addLocation = app.buttons["addLocationRowButton"]
-        XCTAssertTrue(addLocation.waitForExistence(timeout: 5), "The form did not come back")
+        XCTAssertTrue(addLocation.appears(within: 5), "The form did not come back")
         XCTAssertTrue(app.reveal(addLocation), "Could not scroll to the new place")
         capture("10-add-with-location")
     }
@@ -135,10 +134,10 @@ final class CardsLocalisationScreenshotTests: XCTestCase {
         let app = launch()
         app.openLocationPicker()
         let search = app.textFields["placeSearchField"]
-        XCTAssertTrue(search.waitForExistence(timeout: 5), "The place search did not appear")
+        XCTAssertTrue(search.appears(within: 5), "The place search did not appear")
         search.tap()
         search.typeText("Local Roast")
-        XCTAssertTrue(app.buttons["placeSuggestion_Local Roast Notting Hill"].waitForExistence(timeout: 5), "No results")
+        XCTAssertTrue(app.buttons["placeSuggestion_Local Roast Notting Hill"].appears(within: 5), "No results")
         capture("09-place-search")
     }
 
@@ -156,7 +155,7 @@ final class CardsLocalisationScreenshotTests: XCTestCase {
         let deleteAll = app.buttons["deleteAllCardsButton"]
         XCTAssertTrue(app.reveal(deleteAll), "Could not scroll to Delete All Cards")
         deleteAll.tap()
-        XCTAssertTrue(app.buttons["confirmDeleteAllButton"].waitForExistence(timeout: 5), "The confirmation did not appear")
+        XCTAssertTrue(app.buttons["confirmDeleteAllButton"].appears(within: 5), "The confirmation did not appear")
         capture("12-delete-confirmation")
     }
 

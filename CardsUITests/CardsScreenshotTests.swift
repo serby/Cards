@@ -22,18 +22,18 @@ final class CardsScreenshotTests: XCTestCase {
         defer { app.terminate() }
 
         for row in SeededCard.all {
-            XCTAssertTrue(app.buttons[row].waitForExistence(timeout: 3), "Missing seeded card: \(row)")
+            XCTAssertTrue(app.buttons[row].appears(within: 3), "Missing seeded card: \(row)")
         }
         attach(app, name: "01_CardList\(suffix)")
 
         app.buttons[SeededCard.joesMarket].tap()
-        XCTAssertTrue(app.descendants(matching: .any)["barcodeView"].firstMatch.waitForExistence(timeout: 5))
-        XCTAssertTrue(app.descendants(matching: .any)["cardProximityText"].firstMatch.waitForExistence(timeout: 3))
+        XCTAssertTrue(app.descendants(matching: .any)["barcodeView"].firstMatch.appears(within: 5))
+        XCTAssertTrue(app.descendants(matching: .any)["cardProximityText"].firstMatch.appears(within: 3))
         attach(app, name: "02_CardDetail\(suffix)")
 
         app.buttons["editCardButton"].tap()
         let nameField = app.textFields["nameTextField"]
-        XCTAssertTrue(nameField.waitForExistence(timeout: 5))
+        XCTAssertTrue(nameField.appears(within: 5))
         // The form opens with the keyboard down (CARD-5).
         XCTAssertTrue(waitForKeyboardToGo(app, timeout: 3))
         attach(app, name: "03_EditCard\(suffix)")
@@ -44,7 +44,7 @@ final class CardsScreenshotTests: XCTestCase {
             app.descendants(matching: .any)["editCardForm"].firstMatch.swipeUp()
         }
         addLocation.tap()
-        XCTAssertTrue(app.descendants(matching: .any)["locationPickerMap"].firstMatch.waitForExistence(timeout: 5))
+        XCTAssertTrue(app.descendants(matching: .any)["locationPickerMap"].firstMatch.appears(within: 5))
         // Map tiles load from the network after the map appears.
         Thread.sleep(forTimeInterval: 4)
         attach(app, name: "04_LocationPicker\(suffix)")
@@ -59,13 +59,13 @@ final class CardsScreenshotTests: XCTestCase {
         defer { app.terminate() }
 
         let card = app.buttons[SeededCard.honeycomb]
-        XCTAssertTrue(card.waitForExistence(timeout: 3))
+        XCTAssertTrue(card.appears(within: 3))
         card.tap()
-        XCTAssertTrue(app.descendants(matching: .any)["barcodeView"].firstMatch.waitForExistence(timeout: 5))
+        XCTAssertTrue(app.descendants(matching: .any)["barcodeView"].firstMatch.appears(within: 5))
         let share = app.buttons["shareCardButton"]
-        XCTAssertTrue(share.waitForExistence(timeout: 3))
+        XCTAssertTrue(share.appears(within: 3))
         share.tap()
-        XCTAssertTrue(app.buttons["shareLinkButton"].waitForExistence(timeout: 3))
+        XCTAssertTrue(app.buttons["shareLinkButton"].appears(within: 3))
         XCTAssertTrue(app.buttons["shareImageButton"].exists)
         // The menu grows out of its button; let it finish.
         Thread.sleep(forTimeInterval: 1)
@@ -88,7 +88,7 @@ final class CardsScreenshotTests: XCTestCase {
         app.launchEnvironment["CARDS_SCREENSHOT_SEED"] = "1"
         app.launch()
 
-        XCTAssertTrue(app.buttons["addCardButton"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["addCardButton"].appears(within: 5))
         return app
     }
 

@@ -14,18 +14,18 @@ final class CardSharingUITests: XCTestCase {
         openCard("Honeycomb Rewards", in: app)
 
         let share = app.buttons["shareCardButton"]
-        XCTAssertTrue(share.waitForExistence(timeout: 5))
+        XCTAssertTrue(share.appears(within: 5))
         XCTAssertEqual(share.label, "Share card")
         share.tap()
 
         let link = app.buttons["Share Link"]
         let image = app.buttons["Share Image"]
-        XCTAssertTrue(link.waitForExistence(timeout: 3))
+        XCTAssertTrue(link.appears(within: 3))
         XCTAssertTrue(image.exists)
 
         // The image is drawn when the share sheet asks for it, and the sheet opens.
         image.tap()
-        XCTAssertTrue(app.otherElements["ActivityListView"].waitForExistence(timeout: 10), "The share sheet did not open")
+        XCTAssertTrue(app.otherElements["ActivityListView"].appears(within: 10), "The share sheet did not open")
     }
 
     /// A share link shows the card, Add Card adds and opens it, and the same
@@ -40,22 +40,22 @@ final class CardSharingUITests: XCTestCase {
         )
         try open(link, in: app)
 
-        XCTAssertTrue(app.navigationBars["Add Card?"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.navigationBars["Add Card?"].appears(within: 10))
         XCTAssertEqual(app.staticTexts["cardNameText"].label, "Ladbroke Library")
         let place = app.descendants(matching: .any).matching(NSPredicate(format: "label BEGINSWITH %@", "Boulder Barn,")).firstMatch
         XCTAssertTrue(place.exists, "The sheet lists the card's place")
         app.buttons["addSharedCardButton"].tap()
 
         // The sheet closes on the new card's screen.
-        XCTAssertTrue(app.buttons["editCardButton"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["editCardButton"].appears(within: 5))
         XCTAssertFalse(app.navigationBars["Add Card?"].exists)
         XCTAssertEqual(app.staticTexts["cardNameText"].label, "Ladbroke Library")
 
         try open(link, in: app)
-        XCTAssertTrue(app.descendants(matching: .any)["sharedCardAlreadyAddedMessage"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.descendants(matching: .any)["sharedCardAlreadyAddedMessage"].appears(within: 10))
         XCTAssertFalse(app.buttons["addSharedCardButton"].exists)
         app.buttons["openSharedCardButton"].tap()
-        XCTAssertTrue(app.buttons["editCardButton"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["editCardButton"].appears(within: 5))
         XCTAssertEqual(app.staticTexts["cardNameText"].label, "Ladbroke Library")
     }
 
@@ -64,12 +64,12 @@ final class CardSharingUITests: XCTestCase {
     func testALinkWithoutACardSaysSo() throws {
         let app = launch()
         try open("cards://cards/add#not-a-card", in: app)
-        XCTAssertTrue(app.staticTexts["This link doesn't contain a card."].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.staticTexts["This link doesn't contain a card."].appears(within: 10))
         XCTAssertFalse(app.buttons["addSharedCardButton"].exists)
         let done = app.buttons["cancelSharedCardButton"]
         XCTAssertEqual(done.label, "Done")
         done.tap()
-        XCTAssertTrue(app.buttons["addCardButton"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["addCardButton"].appears(within: 5))
     }
 
     /// Opens `link` as another app would, accepting iOS's question about opening
@@ -79,7 +79,7 @@ final class CardSharingUITests: XCTestCase {
     private func open(_ link: String, in app: XCUIApplication) throws {
         XCUIDevice.shared.system.open(try XCTUnwrap(URL(string: link)))
         let openButton = XCUIApplication(bundleIdentifier: "com.apple.springboard").buttons["Open"]
-        if openButton.waitForExistence(timeout: 3) {
+        if openButton.appears(within: 3) {
             openButton.tap()
         }
     }
@@ -102,7 +102,7 @@ final class CardSharingUITests: XCTestCase {
     @MainActor
     private func openCard(_ name: String, in app: XCUIApplication) {
         let row = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", name)).firstMatch
-        XCTAssertTrue(row.waitForExistence(timeout: 5), "No card called \(name)")
+        XCTAssertTrue(row.appears(within: 5), "No card called \(name)")
         row.tap()
     }
 }

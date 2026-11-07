@@ -34,8 +34,7 @@ class CardsUITests: XCTestCase {
     /// Waits for a label to change. A predicate re-reads the element; `wait(for:toEqual:)` missed the change.
     @MainActor
     func waitForLabel(_ element: XCUIElement, _ label: String, timeout: TimeInterval) -> Bool {
-        let predicate = NSPredicate(format: "label == %@", label)
-        return XCTWaiter.wait(for: [expectation(for: predicate, evaluatedWith: element)], timeout: timeout) == .completed
+        element.matches(NSPredicate(format: "label == %@", label), within: timeout)
     }
 
     @MainActor
@@ -45,11 +44,11 @@ class CardsUITests: XCTestCase {
 
         // The store starts empty, so the list shows its own Add Card button.
         let addButton = app.buttons["addFirstCardButton"]
-        XCTAssertTrue(addButton.waitForExistence(timeout: 5), "addFirstCardButton did not appear")
+        XCTAssertTrue(addButton.appears(within: 5), "addFirstCardButton did not appear")
         addButton.tap()
 
         let nameField = app.textFields["nameTextField"]
-        XCTAssertTrue(nameField.waitForExistence(timeout: 5), "nameTextField did not appear")
+        XCTAssertTrue(nameField.appears(within: 5), "nameTextField did not appear")
         let codeField = app.textFields["codeTextField"]
 
         let testName = "Test Name"
@@ -62,7 +61,7 @@ class CardsUITests: XCTestCase {
         app.buttons["saveCardButton"].tap()
 
         let name = app.staticTexts["cardNameText"]
-        XCTAssertTrue(name.waitForExistence(timeout: 5), "The card's screen did not open")
+        XCTAssertTrue(name.appears(within: 5), "The card's screen did not open")
         XCTAssertTrue(name.label.contains(testName), "Name shows '\(name.label)'")
         let code = app.staticTexts["cardCodeText"]
         XCTAssertTrue(code.label.contains(testCode), "Code shows '\(code.label)'")
@@ -78,7 +77,7 @@ class CardsUITests: XCTestCase {
         // The first two seeded cards.
         let joesMarket = app.buttons[SeededCard.joesMarket]
         let localRoast = app.buttons[SeededCard.localRoast]
-        XCTAssertTrue(joesMarket.waitForExistence(timeout: 5))
+        XCTAssertTrue(joesMarket.appears(within: 5))
         // Side by side on the grid's first row.
         XCTAssertTrue(readsBefore(joesMarket, localRoast), "Joe's Market is not first")
 
@@ -86,23 +85,13 @@ class CardsUITests: XCTestCase {
         XCTAssertTrue(app.openMenu(on: joesMarket, showing: moveDown), "The card's menu did not open")
         XCTAssertFalse(app.buttons["moveCardUpMenuItem"].exists, "The first card offered to move up")
         moveDown.tap()
-        XCTAssertTrue(waitUntil { readsBefore(localRoast, joesMarket) }, "Joe's Market did not move after Local Roast Coffee")
+        XCTAssertTrue(eventually { readsBefore(localRoast, joesMarket) }, "Joe's Market did not move after Local Roast Coffee")
 
         let delete = app.buttons["deleteCardMenuItem"]
         XCTAssertTrue(app.openMenu(on: joesMarket, showing: delete), "The card's menu did not open")
         delete.tap()
-        XCTAssertTrue(waitUntil { !joesMarket.exists }, "Joe's Market was not deleted")
+        XCTAssertTrue(eventually { !joesMarket.exists }, "Joe's Market was not deleted")
         XCTAssertTrue(localRoast.exists)
-    }
-
-    @MainActor
-    private func waitUntil(timeout: TimeInterval = 5, _ condition: () -> Bool) -> Bool {
-        let deadline = Date().addingTimeInterval(timeout)
-        while Date() < deadline {
-            if condition() { return true }
-            RunLoop.current.run(until: Date().addingTimeInterval(0.2))
-        }
-        return condition()
     }
 
     /// Adding a card offers a photo or a file of its barcode under the camera;
@@ -149,7 +138,7 @@ class CardsUITests: XCTestCase {
         app.buttons["addLocationButton"].tap()
 
         XCTAssertTrue(waitForElement(app.descendants(matching: .any)["cardProximityText"].firstMatch))
-        XCTAssertTrue(addHere.waitForNonExistence(timeout: 3))
+        XCTAssertTrue(addHere.disappears(within: 3))
     }
 
     @MainActor
@@ -237,13 +226,12 @@ class CardsUITests: XCTestCase {
         option.tap()
         // The row shows the choice as its value, or in its label.
         let chosen = NSPredicate(format: "label CONTAINS %@ OR value BEGINSWITH %@", distanceUnits, distanceUnits)
-        XCTAssertEqual(XCTWaiter.wait(for: [expectation(for: chosen, evaluatedWith: picker)], timeout: 5), .completed)
+        XCTAssertTrue(picker.matches(chosen))
     }
 
     @MainActor
     private func waitForLabel(_ element: XCUIElement, containing text: String, timeout: TimeInterval = 5) -> Bool {
-        let predicate = NSPredicate(format: "label CONTAINS %@", text)
-        return XCTWaiter.wait(for: [expectation(for: predicate, evaluatedWith: element)], timeout: timeout) == .completed
+        element.matches(NSPredicate(format: "label CONTAINS %@", text), within: timeout)
     }
 
     /// Typing in the search field narrows the grid to the names that match (CARD-11).
@@ -253,14 +241,14 @@ class CardsUITests: XCTestCase {
         let search = app.searchFields.firstMatch
         // iOS 27 keeps the field out of sight until the grid is pulled down, so
         // pull it down as a person would.
-        if !search.waitForExistence(timeout: 3) {
+        if !search.appears(within: 3) {
             app.scrollViews.firstMatch.swipeDown()
         }
         XCTAssertTrue(waitForElement(search))
         search.tap()
         search.typeText("hon")
         XCTAssertTrue(waitForElement(tile(app, "Honeycomb Rewards")))
-        XCTAssertTrue(tile(app, "Joe's Market").waitForNonExistence(timeout: 3))
+        XCTAssertTrue(tile(app, "Joe's Market").disappears(within: 3))
 
         search.typeText("zzz")
         XCTAssertTrue(waitForElement(app.staticTexts["No Cards Match"]))
@@ -277,7 +265,7 @@ class CardsUITests: XCTestCase {
         let delete = app.buttons["Delete"]
         XCTAssertTrue(waitForElement(delete))
         delete.tap()
-        XCTAssertTrue(honeycomb.waitForNonExistence(timeout: 3))
+        XCTAssertTrue(honeycomb.disappears(within: 3))
         XCTAssertTrue(tile(app, "Nordic Nest Home").exists)
     }
 
@@ -296,7 +284,7 @@ class CardsUITests: XCTestCase {
 
         // Honeycomb Rewards is now first, and Joe's Market moved along beside it.
         XCTAssertTrue(
-            waitUntil { readsBefore(honeycomb, joesMarket) && abs(honeycomb.frame.minY - joesMarket.frame.minY) < 1 },
+            eventually { readsBefore(honeycomb, joesMarket) && abs(honeycomb.frame.minY - joesMarket.frame.minY) < 1 },
             "Honeycomb Rewards did not take Joe's Market's place"
         )
     }
@@ -314,14 +302,16 @@ class CardsUITests: XCTestCase {
         XCTAssertTrue(waitForElement(honeycomb))
 
         choose(app, sortOrder: "Location")
-        let honeycombLast = NSPredicate { _, _ in honeycomb.frame.minY > nordicNest.frame.minY || honeycomb.frame.minX > nordicNest.frame.minX }
-        XCTAssertEqual(XCTWaiter.wait(for: [expectation(for: honeycombLast, evaluatedWith: nil)], timeout: 5), .completed)
+        XCTAssertTrue(
+            eventually { honeycomb.frame.minY > nordicNest.frame.minY || honeycomb.frame.minX > nordicNest.frame.minX },
+            "Honeycomb Rewards did not move last"
+        )
 
         choose(app, sortOrder: "Custom Order")
-        let honeycombFirst = NSPredicate { _, _ in
-            abs(honeycomb.frame.minY - nordicNest.frame.minY) < 1 && honeycomb.frame.minX < nordicNest.frame.minX
-        }
-        XCTAssertEqual(XCTWaiter.wait(for: [expectation(for: honeycombFirst, evaluatedWith: nil)], timeout: 5), .completed)
+        XCTAssertTrue(
+            eventually { abs(honeycomb.frame.minY - nordicNest.frame.minY) < 1 && honeycomb.frame.minX < nordicNest.frame.minX },
+            "Honeycomb Rewards did not move back beside Nordic Nest Home"
+        )
     }
 
     /// With Show Card Where I Am on, the card for where you are is shown in

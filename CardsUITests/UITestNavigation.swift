@@ -47,7 +47,7 @@ extension XCUIApplication {
         }
         app.launch()
         let add = seeded ? app.buttons["addCardButton"] : app.buttons["addFirstCardButton"]
-        XCTAssertTrue(add.waitForExistence(timeout: 5), "The card list did not appear")
+        XCTAssertTrue(add.appears(within: 5), "The card list did not appear")
         return app
     }
 
@@ -57,10 +57,10 @@ extension XCUIApplication {
         let name = staticTexts["cardNameText"]
         for _ in 0..<3 {
             buttons[row].tap()
-            if name.waitForExistence(timeout: 3) { break }
+            if name.appears(within: 3) { break }
             guard buttons[row].exists, buttons[row].isHittable else { break }
         }
-        XCTAssertTrue(name.waitForExistence(timeout: 5), "The card's screen did not open")
+        XCTAssertTrue(name.appears(within: 5), "The card's screen did not open")
     }
 
     /// Opens Local Roast Coffee's screen with a code its format, EAN-13, cannot draw, so
@@ -73,7 +73,7 @@ extension XCUIApplication {
         openCard(SeededCard.localRoast)
         buttons["editCardButton"].tap()
         let name = textFields["nameTextField"]
-        XCTAssertTrue(name.waitForExistence(timeout: 5), "The card's form did not open")
+        XCTAssertTrue(name.appears(within: 5), "The card's form did not open")
         if !Self.gainsFocus(name, within: 3) {
             name.tap()
         }
@@ -81,13 +81,12 @@ extension XCUIApplication {
         XCTAssertTrue(Self.gainsFocus(textFields["codeTextField"], within: 2), "Return did not move on to the code")
         typeText("0")
         buttons["saveCardButton"].tap()
-        XCTAssertTrue(staticTexts["cardNameText"].waitForExistence(timeout: 5), "The card's screen did not open")
+        XCTAssertTrue(staticTexts["cardNameText"].appears(within: 5), "The card's screen did not open")
     }
 
     /// Whether `element` has keyboard focus within `timeout` seconds.
     static func gainsFocus(_ element: XCUIElement, within timeout: TimeInterval) -> Bool {
-        let focused = XCTNSPredicateExpectation(predicate: NSPredicate(format: "hasKeyboardFocus == true"), object: element)
-        return XCTWaiter.wait(for: [focused], timeout: timeout) == .completed
+        element.matches(NSPredicate(format: "hasKeyboardFocus == true"), within: timeout)
     }
 
     /// The list's toolbar button, or the empty list's own button when there are
@@ -95,7 +94,7 @@ extension XCUIApplication {
     func openAddCard() {
         let toolbarButton = buttons["addCardButton"]
         (toolbarButton.exists ? toolbarButton : buttons["addFirstCardButton"]).tap()
-        XCTAssertTrue(buttons["saveCardButton"].waitForExistence(timeout: 5), "The Add Card form did not open")
+        XCTAssertTrue(buttons["saveCardButton"].appears(within: 5), "The Add Card form did not open")
     }
 
     /// Opens the card's form with the keyboard down. The name field takes
@@ -103,7 +102,7 @@ extension XCUIApplication {
     func openEditCard(_ row: String) {
         openCard(row)
         buttons["editCardButton"].tap()
-        XCTAssertTrue(buttons["saveCardButton"].waitForExistence(timeout: 5), "The card's form did not open")
+        XCTAssertTrue(buttons["saveCardButton"].appears(within: 5), "The card's form did not open")
         dismissKeyboard()
     }
 
@@ -114,7 +113,7 @@ extension XCUIApplication {
         let addLocation = buttons["addLocationRowButton"]
         XCTAssertTrue(reveal(addLocation), "Could not scroll to Add Location")
         addLocation.tap()
-        XCTAssertTrue(buttons["addLocationButton"].waitForExistence(timeout: 5), "The Add Location map did not open")
+        XCTAssertTrue(buttons["addLocationButton"].appears(within: 5), "The Add Location map did not open")
     }
 
     /// The Settings tab. On iPhone it is the second button of the tab bar,
@@ -128,7 +127,7 @@ extension XCUIApplication {
 
     func openSettings() {
         settingsTab.tap()
-        XCTAssertTrue(switches["brightnessBoostToggle"].waitForExistence(timeout: 5), "Settings did not open")
+        XCTAssertTrue(switches["brightnessBoostToggle"].appears(within: 5), "Settings did not open")
     }
 
     func openImportSheet() {
@@ -136,7 +135,7 @@ extension XCUIApplication {
         let importButton = buttons["importJSONButton"]
         XCTAssertTrue(reveal(importButton), "Could not scroll to Import JSON")
         importButton.tap()
-        XCTAssertTrue(textViews["importTextEditor"].waitForExistence(timeout: 5), "The import sheet did not open")
+        XCTAssertTrue(textViews["importTextEditor"].appears(within: 5), "The import sheet did not open")
     }
 
     /// Long-presses `row` until its menu shows `item`. A press while the list
@@ -145,7 +144,7 @@ extension XCUIApplication {
         for _ in 0..<3 {
             RunLoop.current.run(until: Date().addingTimeInterval(0.5))
             row.press(forDuration: 1.2)
-            if item.waitForExistence(timeout: 3) { return true }
+            if item.appears(within: 3) { return true }
         }
         return false
     }
@@ -192,18 +191,18 @@ extension XCUIApplication {
     /// Return moves from the name to the code field and then ends editing.
     func dismissKeyboard() {
         let keyboard = keyboards.firstMatch
-        guard keyboard.waitForExistence(timeout: 2) else { return }
+        guard keyboard.appears(within: 2) else { return }
         for _ in 0..<3 where keyboard.exists {
             typeText("\n")
         }
-        XCTAssertFalse(keyboard.waitForExistence(timeout: 1), "The keyboard stayed up")
+        XCTAssertFalse(keyboard.appears(within: 1), "The keyboard stayed up")
     }
 
     /// A prompt SpringBoard shows over the app, such as for location access or
     /// notifications, if one is up within `timeout` seconds.
     static func systemPrompt(timeout: TimeInterval = 3) -> XCUIElement? {
         let alert = XCUIApplication(bundleIdentifier: "com.apple.springboard").alerts.firstMatch
-        return alert.waitForExistence(timeout: timeout) ? alert : nil
+        return alert.appears(within: timeout) ? alert : nil
     }
 
     /// The location access prompt, which the Add Location map raises the first
