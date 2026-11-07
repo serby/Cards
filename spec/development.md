@@ -7,8 +7,8 @@ What debug builds add for building and testing the app. None of it is in release
 As someone building the app, I want the development tools in one place, so that I can reach them without disturbing the app's own screens.
 
 - Debug builds have a third tab, "Development", with a hammer icon, after Cards and Settings. Release builds have no such tab.
-- The tab opens on a list titled "Development" with its tools under "Tools", each with a line saying what it does: Storybook, the story browser that used to be its own tab, Test Notification (DEV-2) and Review Prompt (DEV-3).
-- Storybook opens full screen over the tabs, with Done to close it, because its story list and stage are a split view that can't be pushed onto the tab's stack. Test Notification and Review Prompt are pushed, with Back to return.
+- The tab opens on a list titled "Development" with its tools under "Tools", each with a line saying what it does: Storybook, the story browser that used to be its own tab, Test Notification (DEV-2), Review Prompt (DEV-3) and Language (DEV-4).
+- Storybook opens full screen over the tabs, with Done to close it, because its story list and stage are a split view that can't be pushed onto the tab's stack. Test Notification, Review Prompt and Language are pushed, with Back to return.
 - The tab is hidden during UI tests (`-uiTesting` or `CARDS_UI_TESTING=1`), as the Storybook tab was.
 
 **Since:** In preparation for 1.4
@@ -41,3 +41,17 @@ As someone building the app, I want to see what the review prompt has counted an
 
 **Since:** In preparation for 1.4
 **Where:** `Cards/Development/Tools/ReviewPromptScreen.swift`, `Cards/Development/Tools/DevelopmentView.swift`, `Cards/Core/Models/ReviewPrompt.swift`
+
+### DEV-4: Open the app in another language
+
+As someone building the app, I want to open the app in any of its languages from the app itself, so that I can check a translation on the screen it is on without changing the iPhone's language or relaunching from Xcode.
+
+- Development > Language lists System first, then every language in the app bundle: today English, Deutsch, 日本語 and Español. Each is named in its own language, with its English name under it ("German"); English, whose two names are the same, has no second line, and System says "The iPhone's language". The one in effect is ticked, and VoiceOver reads it as selected.
+- Choosing another asks "Open in Deutsch?": "Card Barcodes closes so it can open in Deutsch. Open it again from the Home Screen." Close Card Barcodes sets the app's own language, the `AppleLanguages` default in its own domain, to that language and quits; Cancel changes nothing. Choosing the one already ticked does nothing.
+- System removes the app's own language, so it opens in the iPhone's language again.
+- Only the language changes. The region stays as it is, so distances on Automatic keep their units, and dates and times keep the region's clock and calendar. The footer says so.
+- The Home Screen widget stays in the iPhone's language, as it runs in a process of its own with its own defaults. The footer says so.
+
+**Since:** In preparation for 1.4
+**Where:** `Cards/Development/Tools/LanguageScreen.swift`, `Cards/Development/Tools/LanguageChoice.swift`, `Cards/Development/Tools/AppLanguageClient.swift`, `Cards/Development/Storybook/Catalogue/DevelopmentStories.swift`, `CardsTests/LanguageToolTests.swift`
+**Notes:** A language given at launch, by the scheme's App Language or `-AppleLanguages`, wins over the one chosen here while it is given, and the tool still ticks the one chosen here. The language list is the Storybook's (`StoryLanguage`), so a newly translated language appears in both with no code change. The bundle has one English, the British source, so there is no separate English (US): American wording in What's New follows the region, which this tool leaves alone.

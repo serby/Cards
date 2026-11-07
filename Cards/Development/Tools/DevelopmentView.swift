@@ -37,6 +37,17 @@ struct DevelopmentView: View {
                         )
                     }
                     .accessibilityIdentifier("reviewPromptTool")
+
+                    NavigationLink {
+                        LanguageScreen()
+                    } label: {
+                        ToolRow(
+                            title: "Language",
+                            detail: "The app in any of its languages, from its next launch.",
+                            systemImage: "globe"
+                        )
+                    }
+                    .accessibilityIdentifier("languageTool")
                 } header: {
                     Text(verbatim: "Tools")
                         .foregroundColor(.secondaryText)

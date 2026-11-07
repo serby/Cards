@@ -51,3 +51,26 @@ public extension BarcodeImportActions {
         return Self(readPhoto: { _ in await simulated() }, readFile: { _ in await simulated() })
     }
 }
+
+extension AppLanguageClient {
+    /// Keeps the override in `box` and never quits, so stories and previews
+    /// of the Language tool can choose a language without closing the app.
+    static func simulated(_ box: LanguageOverrideBox) -> Self {
+        Self(
+            override: { box.override },
+            setOverride: { box.override = $0 },
+            quit: {}
+        )
+    }
+}
+
+/// Observable holder for `AppLanguageClient.simulated`.
+@MainActor
+@Observable
+final class LanguageOverrideBox {
+    var override: [String]
+
+    init(override: [String] = []) {
+        self.override = override
+    }
+}

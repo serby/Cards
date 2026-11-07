@@ -2,7 +2,8 @@ import SwiftUI
 
 /// A language the Storybook can show a story in: one of the localisations
 /// compiled into the app bundle. The stage sets `\.locale` to it; see
-/// `DisplayOptions` for what follows that and what does not.
+/// `DisplayOptions` for what follows that and what does not. The Development
+/// tab's Language tool (`LanguageChoice`) offers the same languages.
 struct StoryLanguage: Identifiable, Hashable, Sendable {
     /// The localisation as the bundle names its folder: "de", "pt-BR", "zh-Hans".
     let id: String
