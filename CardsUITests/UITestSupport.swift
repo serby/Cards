@@ -25,7 +25,6 @@ extension XCTestCase {
             "-uiTesting", "-screenshotSeed", "-cardSortOrder", "custom", "-showsCardWhereYouAre", "NO", "-distanceUnits", "automatic"
         ] + variant
         app.launch()
-        dismissNotificationPrompt()
         return app
     }
 
@@ -34,15 +33,5 @@ extension XCTestCase {
     @MainActor
     func tile(_ app: XCUIApplication, _ name: String) -> XCUIElement {
         app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", name)).firstMatch
-    }
-
-    /// Cards with locations ask for notifications once; answer so the alert
-    /// does not cover the app.
-    @MainActor
-    func dismissNotificationPrompt() {
-        let alert = XCUIApplication(bundleIdentifier: "com.apple.springboard").alerts.firstMatch
-        if alert.waitForExistence(timeout: 5) {
-            alert.buttons.element(boundBy: 1).tap()
-        }
     }
 }

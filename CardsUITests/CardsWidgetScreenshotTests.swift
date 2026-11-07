@@ -28,10 +28,6 @@ final class CardsWidgetScreenshotTests: XCTestCase {
         app.launchArguments += ["-uiTesting", "-screenshotSeed"]
         app.launch()
         XCTAssertTrue(app.buttons["addCardButton"].waitForExistence(timeout: 5))
-        let permission = springboard.alerts.firstMatch
-        if permission.waitForExistence(timeout: 5) {
-            permission.buttons.element(boundBy: 1).tap()
-        }
         Thread.sleep(forTimeInterval: 1)
 
         // The snapshot is written, so the app can go. Pressing Home does not leave

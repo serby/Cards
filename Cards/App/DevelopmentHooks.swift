@@ -76,6 +76,19 @@ enum DevelopmentHooks {
         #endif
     }
 
+    /// The notifications the arrival reminders go through: iOS's, except in UI
+    /// tests, where nothing is scheduled and permission is never asked. Asked
+    /// on every fresh install, iOS's prompt covered the screen under test, and
+    /// every test that launched with the seeded cards, which have places,
+    /// waited up to five seconds for it to come up.
+    static var notifications: NotificationClient {
+        #if DEBUG
+        isUITesting ? .silent : .live
+        #else
+        .live
+        #endif
+    }
+
     /// Whether the app counts the days cards are shown on and asks for an App
     /// Store rating (PLAT-8): always, except in UI tests and the screenshots,
     /// where Apple's prompt would cover the screen under test.

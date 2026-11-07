@@ -7,7 +7,7 @@ struct CardsApp: App {
     @Environment(\.scenePhase) private var scenePhase
     @State private var navigationManager: NavigationManager
     @State private var locationService = LocationService(fixedLocation: DevelopmentHooks.screenshotLocation)
-    @State private var arrivalScheduler = ArrivalScheduler(notifications: .live)
+    @State private var arrivalScheduler = ArrivalScheduler(notifications: DevelopmentHooks.notifications)
     /// Set in Settings, and handed to every screen and the widget from here (SET-4).
     @AppStorage(DeviceSettings.distanceUnitsKey) private var distanceUnits = DistanceUnits.automatic
     private let widgetSettings = WidgetSettings.live

@@ -212,7 +212,6 @@ class CardsUITests: XCTestCase {
         // Not pinned, as launchWithSeededCards does, so the picker can change it.
         app.launchArguments += ["-uiTesting", "-screenshotSeed", "-cardSortOrder", "custom", "-showsCardWhereYouAre", "NO"]
         app.launch()
-        dismissNotificationPrompt()
         let localRoast = tile(app, "Local Roast Coffee")
         XCTAssertTrue(waitForElement(localRoast))
 
@@ -315,7 +314,6 @@ class CardsUITests: XCTestCase {
         // Not pinned, as launchWithSeededCards does, so the menu can change it.
         app.launchArguments += ["-uiTesting", "-screenshotSeed", "-showsCardWhereYouAre", "NO"]
         app.launch()
-        dismissNotificationPrompt()
         let honeycomb = tile(app, "Honeycomb Rewards")
         let nordicNest = tile(app, "Nordic Nest Home")
         XCTAssertTrue(waitForElement(honeycomb))
@@ -338,7 +336,6 @@ class CardsUITests: XCTestCase {
         let app = XCUIApplication()
         app.launchArguments += ["-uiTesting", "-screenshotSeed", "-cardSortOrder", "custom", "-showsCardWhereYouAre", "YES"]
         app.launch()
-        dismissNotificationPrompt()
 
         // The seed puts the user inside Joe's Market Notting Hill.
         let cardHere = app.buttons["cardWhereYouAre"]

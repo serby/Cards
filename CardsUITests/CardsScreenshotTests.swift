@@ -74,7 +74,8 @@ final class CardsScreenshotTests: XCTestCase {
 
     /// Launches with the screenshot cards in custom order and without the card
     /// for where you are, whatever the simulator's own settings say, so every
-    /// capture shows the same grid, and answers the notification question.
+    /// capture shows the same grid. UI tests never ask to send notifications
+    /// (`DevelopmentHooks.notifications`), so no prompt covers the captures.
     @MainActor
     private func launchSeeded() -> XCUIApplication {
         let app = XCUIApplication()
@@ -89,13 +90,6 @@ final class CardsScreenshotTests: XCTestCase {
         app.launch()
 
         XCTAssertTrue(app.buttons["addCardButton"].waitForExistence(timeout: 5))
-        // Cards with locations ask for notifications, for the arrival reminders.
-        let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
-        let permission = springboard.alerts.firstMatch
-        if permission.waitForExistence(timeout: 5) {
-            permission.buttons.element(boundBy: 1).tap()
-            XCTAssertTrue(permission.waitForNonExistence(timeout: 3))
-        }
         return app
     }
 

@@ -97,11 +97,6 @@ final class CardSharingUITests: XCTestCase {
         let app = XCUIApplication()
         app.launchArguments += ["-uiTesting", "-screenshotSeed"]
         app.launch()
-        // Cards with places ask for notifications once; answer so the alert does not cover the app.
-        let alert = XCUIApplication(bundleIdentifier: "com.apple.springboard").alerts.firstMatch
-        if alert.waitForExistence(timeout: 5) {
-            alert.buttons.element(boundBy: 1).tap()
-        }
         return app
     }
 

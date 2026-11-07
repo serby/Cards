@@ -61,7 +61,6 @@ final class CardEditFormUITests: XCTestCase {
         let app = XCUIApplication()
         app.launchArguments += ["-uiTesting", "-screenshotSeed"]
         app.launch()
-        dismissNotificationPrompt()
 
         let honeycomb = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Honeycomb Rewards")).firstMatch
         XCTAssertTrue(waitForElement(honeycomb))
@@ -95,7 +94,6 @@ final class CardEditFormUITests: XCTestCase {
         let app = XCUIApplication()
         app.launchArguments += ["-uiTesting", "-screenshotSeed"]
         app.launch()
-        dismissNotificationPrompt()
 
         let honeycomb = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Honeycomb Rewards")).firstMatch
         XCTAssertTrue(waitForElement(honeycomb))

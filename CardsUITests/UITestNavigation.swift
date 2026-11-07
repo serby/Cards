@@ -27,7 +27,9 @@ extension XCUIApplication {
     /// Launches with an in-memory store, and with the six screenshot cards
     /// unless `seeded` is false, then waits for the list. The seeded cards are
     /// seen from a fixed place (`ScreenshotSeed.location`), so the app never
-    /// asks for location access while they are in use.
+    /// asks for location access while they are in use, and UI tests schedule
+    /// no arrival reminders (`DevelopmentHooks.notifications`), so it never
+    /// asks to send notifications either.
     static func launchForTesting(seeded: Bool = true, arguments: [String] = []) -> XCUIApplication {
         let app = XCUIApplication()
         app.launchArguments += ["-uiTesting"] + (seeded ? ["-screenshotSeed"] : []) + arguments
@@ -37,25 +39,7 @@ extension XCUIApplication {
         app.launch()
         let add = seeded ? app.buttons["addCardButton"] : app.buttons["addFirstCardButton"]
         XCTAssertTrue(add.waitForExistence(timeout: 5), "The card list did not appear")
-        if seeded {
-            dismissNotificationPrompt()
-        }
         return app
-    }
-
-    /// Whether this test run has already waited for the notification prompt.
-    private static var hasAnsweredNotificationPrompt = false
-
-    /// The seeded cards have places, so the first launch after an install asks
-    /// to send arrival notifications. iOS remembers the answer until the app
-    /// is installed again, so only the first seeded launch of a run waits for
-    /// the prompt. Any answer will do; the prompt is the system's.
-    static func dismissNotificationPrompt() {
-        guard !hasAnsweredNotificationPrompt else { return }
-        hasAnsweredNotificationPrompt = true
-        guard let alert = systemPrompt(timeout: 5) else { return }
-        alert.buttons.element(boundBy: alert.buttons.count - 1).tap()
-        XCTAssertTrue(alert.waitForNonExistence(timeout: 3), "The notification prompt stayed up")
     }
 
     /// A tap while the list is still settling just after launch can miss, as

@@ -10,7 +10,6 @@ extension CardsUITests {
         let app = XCUIApplication()
         app.launchArguments += ["-uiTesting", "-screenshotSeed"]
         app.launch()
-        dismissNotificationPrompt()
 
         let joesMarket = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Joe's Market")).firstMatch
         XCTAssertTrue(waitForElement(joesMarket))
