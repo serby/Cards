@@ -122,8 +122,12 @@ final class CardsLocalisationScreenshotTests: XCTestCase {
         let add = app.buttons["addLocationButton"]
         XCTAssertTrue(eventually(within: 10) { add.isEnabled }, "Add stayed disabled")
         add.tap()
+        // The form is back once its Save button is. Not Add Location: at the
+        // largest sizes the new place's row and its Notify When I Arrive
+        // switch push it below the screen, where the form has not made its
+        // row yet, so it only exists once scrolled to.
+        XCTAssertTrue(app.buttons["saveCardButton"].appears(within: 5), "The form did not come back")
         let addLocation = app.buttons["addLocationRowButton"]
-        XCTAssertTrue(addLocation.appears(within: 5), "The form did not come back")
         XCTAssertTrue(app.reveal(addLocation), "Could not scroll to the new place")
         capture("10-add-with-location")
     }
