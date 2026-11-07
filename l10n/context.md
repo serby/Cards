@@ -92,5 +92,5 @@ French (`fr`), Italian (`it`), Arabic (`ar`), Traditional Chinese (`zh-Hant`), B
 
 1. `node scripts/add-language.ts <code> --from 279189d` adds it to `knownRegions`, restores every translation whose English has not changed since, and translates the rest with the style guide.
 2. Review the new translations as for any change of copy (docs/DEVELOPMENT.md, "Add or change copy"), and capture its screens (`make capture-l10n LANGS=<code>`).
-3. Add its store listing (`metadata/<locale>/`), captions (`screenshots/store/<locale>/captions.json`) and changelog texts, then refresh the screenshots at release.
+3. Add its store listing (`metadata/<locale>/`), captions (`screenshots/store/<locale>/captions.json`), changelog texts and the website's words (`Website/site.json`), then refresh the screenshots at release.
 4. For Arabic, the first right-to-left language, run the UI tests in it too: `CardsRightToLeftUITests` and `CardsRightToLeftLargeTextAuditTests` force right to left in English until then.
