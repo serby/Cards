@@ -102,7 +102,9 @@ final class CardsWidgetScreenshotTests: XCTestCase {
         let search = springboard.searchFields
             .matching(NSPredicate(format: "identifier != %@", "dewey-search-field"))
             .firstMatch
-        if !search.appears(within: 5) { attachSpringBoard("without_search") }
+        // The gallery loads every app's widgets first, which takes longer while
+        // other simulators are busy, as in a parallel run.
+        if !search.appears(within: 15) { attachSpringBoard("without_search") }
         XCTAssertTrue(search.exists, "No widget search field")
         search.tap()
         search.typeText("Card Barcodes")
