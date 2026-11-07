@@ -56,6 +56,7 @@ public struct CardIconPicker: View {
         .sensoryFeedback(.selection, trigger: selection)
         .accessibilityElement(children: .contain)
         .accessibilityLabel(Text("Card icon", comment: "VoiceOver label for the grid of icons in the card icon picker."))
+        .accessibilityIdentifier("cardIconGrid")
     }
 
     /// The first choice, for a card without an icon: shown in its circle and

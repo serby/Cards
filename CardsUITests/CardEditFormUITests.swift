@@ -103,13 +103,16 @@ final class CardEditFormUITests: XCTestCase {
             app.descendants(matching: .any)["editCardForm"].firstMatch.swipeUp()
         }
         iconRow.tap()
-        // Far below the sheet's first height: drag the sheet open and scroll to it.
+        // Far below the sheet's first height: swipe the sheet open and scroll to
+        // it. A press held before the drag tapped the icon under it on iOS 18.1,
+        // which chose it and closed the sheet.
         let pushchair = app.buttons["cardIcon_stroller.fill"]
-        let low = app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.85))
-        let high = app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.25))
+        let grid = app.scrollViews.containing(.any, identifier: "cardIconGrid").firstMatch
+        XCTAssertTrue(waitForElement(grid), "The icon grid did not open")
         for _ in 0..<10 where !(pushchair.exists && pushchair.isHittable) {
-            low.press(forDuration: 0.05, thenDragTo: high)
+            grid.swipeUp()
         }
+        XCTAssertTrue(grid.exists, "Scrolling the grid chose an icon, which closed it")
         pushchair.tap()
         XCTAssertTrue(pushchair.disappears(within: 3), "Choosing an icon closes the grid")
         XCTAssertEqual(iconRow.value as? String, "Pushchair")
