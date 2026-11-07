@@ -500,6 +500,7 @@ Xcode 27 has no Simulator.app; `make sim` opens Device Hub to show the screen, a
 | Upload fails because the extension's `CFBundleVersion` or `CFBundleShortVersionString` differs from the app's | A version was set on one target or in an Info.plist. Keep both in the project-level build settings, and pass build numbers as `BUILD_NUMBER` |
 | Cards are missing after an update | The store moved. Build the container with `CardStore.configuration` ([rule 6](#rule-6-models-stay-cloudkit--and-export-compatible)) |
 | The app behaves like an older build | `simctl install` kept the old binary; uninstall, then install |
+| The app crashes with `EXC_BAD_ACCESS` in SwiftUI's `initializeWithCopy` as a screen opens, just after an edit to one of `CardEditView`'s files | An incremental build left code built against the old layout of the generic view: with Xcode 27.1 on 7 November 2026, every incremental build after an edit to `CardEditView+Parts.swift` crashed as the icon sheet opened, and every clean build ran. `make clean` and build again before suspecting the change |
 | A build fails in `PrecompileModule` with "cannot find interface declaration" | Stale generated `*-Swift.h` headers after a type was deleted; `make clean` and rebuild |
 | "Cannot create new type CD_CardItem in production schema" in the log | The Production CloudKit schema is missing the model; deploy it ([section 8](#8-releasing)) |
 | The map picker freezes the app | Something updates `Map` content from `onMapCameraChange` ([rule 7](#rule-7-swift-6-no-warnings-clean-lint)) |

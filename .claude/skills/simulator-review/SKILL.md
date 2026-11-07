@@ -15,7 +15,7 @@ Rule 11 in `AGENTS.md`: anything Paul needs to see is built, tested and run in t
 
 ## 1. Validate
 
-Run the loop: `swiftlint lint`, `make build`, `make test` (plus `make check-release` when `Cards/Development` or `Cards/App/DevelopmentHooks.swift` changed). `make test` takes about 5 minutes. If a UI test times out after hours, the simulator stalled (often while the Mac slept): rerun it before suspecting the code.
+Run the loop: `swiftlint lint`, `make build`, `make test` (plus `make check-release` when `Cards/Development` or `Cards/App/DevelopmentHooks.swift` changed). `make test` takes about 35 minutes on iOS 26, most of it in the five long-press menu tests, where XCTest waits a minute at a time for the app to go idle. If a UI test times out after hours, the simulator stalled (often while the Mac slept): rerun it before suspecting the code.
 
 ## 2. Launch
 
