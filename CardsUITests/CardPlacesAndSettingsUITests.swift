@@ -54,12 +54,12 @@ class CardPlacesAndSettingsUITests: CardsUITestCase {
 
         let toggle = app.switches["arrivalNotificationsToggle"]
         XCTAssertTrue(waitForElement(toggle))
-        let before = toggle.value as? String
+        let before = try XCTUnwrap(toggle.value as? String)
         toggle.switches.firstMatch.tap()
-        XCTAssertNotEqual(toggle.value as? String, before)
+        XCTAssertTrue(toggle.matches(NSPredicate(format: "value != %@", before)), "The switch did not change")
         // The setting outlives the app, so put it back for the next test.
         toggle.switches.firstMatch.tap()
-        XCTAssertEqual(toggle.value as? String, before)
+        XCTAssertTrue(toggle.matches(NSPredicate(format: "value == %@", before)), "The switch did not change back")
     }
 
     @MainActor
@@ -70,12 +70,12 @@ class CardPlacesAndSettingsUITests: CardsUITestCase {
 
         let toggle = app.switches["showsCardWhereYouAreToggle"]
         XCTAssertTrue(waitForElement(toggle))
-        let before = toggle.value as? String
+        let before = try XCTUnwrap(toggle.value as? String)
         toggle.switches.firstMatch.tap()
-        XCTAssertNotEqual(toggle.value as? String, before)
+        XCTAssertTrue(toggle.matches(NSPredicate(format: "value != %@", before)), "The switch did not change")
         // The setting outlives the app, so put it back for the next test.
         toggle.switches.firstMatch.tap()
-        XCTAssertEqual(toggle.value as? String, before)
+        XCTAssertTrue(toggle.matches(NSPredicate(format: "value == %@", before)), "The switch did not change back")
     }
 
     /// The Distances choice in Settings decides the units the tiles read their
