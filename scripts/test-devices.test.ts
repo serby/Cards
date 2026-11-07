@@ -6,8 +6,8 @@ import assert from "node:assert/strict";
 import { describe, test } from "node:test";
 
 import { type ListedDevice, pickPhone } from "./lib/phone.ts";
-import { pickTestSimulator, type SimulatorList } from "./lib/simulator.ts";
-import { defaultTestSimulator, sameName, testSimulator } from "./lib/test-devices.ts";
+import { pickTestSimulator, runtimeToInstall, type SimulatorList } from "./lib/simulator.ts";
+import { automatedTestSimulator, automatedTestSimulatorWith, defaultTestSimulator, sameName, testSimulator } from "./lib/test-devices.ts";
 
 const iPhone17Type = { name: "iPhone 17", identifier: "com.apple.CoreSimulator.SimDeviceType.iPhone-17" };
 const seType = { name: "iPhone SE (3rd generation)", identifier: "com.apple.CoreSimulator.SimDeviceType.iPhone-SE-3rd-generation" };
@@ -112,6 +112,51 @@ describe("test simulators", () => {
         const list = thisMac();
         list.runtimes = list.runtimes.filter((candidate) => candidate.version !== "27.0");
         assert.throws(() => pickTestSimulator(defaultTestSimulator, list, "27.1"), /No installed iOS 27 runtime runs the iPhone 17/);
+    });
+});
+
+describe("the automated tests' simulator", () => {
+    test("is the iPhone 17 on the newest iOS 26, apart from Paul's on iOS 27", () => {
+        assert.equal(testSimulator("tests"), automatedTestSimulator);
+        const pick = pickTestSimulator(automatedTestSimulator, thisMac(), "27.1");
+        assert.equal(pick.udid, "OLD-17");
+        assert.equal(pick.version, "26.5");
+        assert.notEqual(pick.udid, pickTestSimulator(defaultTestSimulator, thisMac(), "27.1").udid);
+    });
+
+    test("is created on iOS 26 when there is none there", () => {
+        const list = thisMac();
+        list.devices["com.apple.CoreSimulator.SimRuntime.iOS-26-5"] = [];
+        const pick = pickTestSimulator(automatedTestSimulator, list, "27.1");
+        assert.equal(pick.udid, undefined);
+        assert.equal(pick.name, "iPhone 17");
+        assert.equal(pick.runtime, "com.apple.CoreSimulator.SimRuntime.iOS-26-5");
+    });
+
+    test("downloads its runtime only where no iOS 26 one is installed, as on CI", () => {
+        assert.equal(runtimeToInstall(automatedTestSimulator, thisMac(), "27.1"), undefined);
+        const ci = thisMac();
+        ci.runtimes = ci.runtimes.filter((candidate) => !candidate.version.startsWith("26."));
+        assert.equal(runtimeToInstall(automatedTestSimulator, ci, "27.1"), "26.5");
+        assert.throws(() => pickTestSimulator(automatedTestSimulator, ci, "27.1"), /xcodebuild -downloadPlatform iOS -buildVersion 26\.5/);
+    });
+
+    test("says what to add when a one-off iOS is missing, as it has nothing to download", () => {
+        const choice = automatedTestSimulatorWith({ os: "25" });
+        assert.equal(choice.download, undefined);
+        assert.throws(() => runtimeToInstall(choice, thisMac(), "27.1"), /No installed iOS 25 runtime runs the iPhone 17/);
+    });
+
+    test("takes another model or iOS for a one-off run, and keeps its own for empty values", () => {
+        assert.equal(automatedTestSimulatorWith({}), automatedTestSimulator);
+        assert.equal(automatedTestSimulatorWith({ model: " ", os: "" }), automatedTestSimulator);
+        const pro = automatedTestSimulatorWith({ model: "iPhone 17 Pro" });
+        assert.equal(pro.model, "iPhone 17 Pro");
+        assert.equal(pro.os, "26");
+        assert.equal(pro.download, automatedTestSimulator.download);
+        const newer = automatedTestSimulatorWith({ os: "27" });
+        assert.equal(newer.model, "iPhone 17");
+        assert.equal(pickTestSimulator(newer, thisMac(), "27.1").udid, "DEFAULT-17");
     });
 });
 

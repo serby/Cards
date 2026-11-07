@@ -9,12 +9,15 @@ $(error No Xcode selected: see the error above)
 endif
 export DEVELOPER_DIR
 
-# The automated tests' simulator, on the oldest iOS the app supports. The
-# devices Paul tests on by hand (`make sim`, `make device`) are a separate list,
-# in scripts/lib/test-devices.ts.
-SIMULATOR_DEVICE ?= iPhone 16 Pro
-SIMULATOR_VERSION ?= 18.1
-DESTINATION := platform=iOS Simulator,name=$(SIMULATOR_DEVICE),OS=$(SIMULATOR_VERSION)
+# The simulator the automated tests run on and `make build` builds for, the same
+# on CI: the iPhone 17 on iOS 26, the iOS most people have, from the list in
+# scripts/lib/test-devices.ts, which scripts/select-test-simulator.ts reads,
+# creating the simulator if it is missing. SIMULATOR_DEVICE and
+# SIMULATOR_VERSION ("27" or "27.0") pick another for a one-off run. Worked out
+# only when a target uses it.
+SIMULATOR_DEVICE ?=
+SIMULATOR_VERSION ?=
+DESTINATION = $(or $(shell node scripts/select-test-simulator.ts --model "$(SIMULATOR_DEVICE)" --os "$(SIMULATOR_VERSION)"),$(error No test simulator: see the error above))
 # No -derivedDataPath: these builds use Xcode's own DerivedData and build
 # location, so they and Xcode carry on from each other's builds.
 XCODEBUILD := xcodebuild -project Cards.xcodeproj -scheme Cards
@@ -55,7 +58,7 @@ test-tsan:
 
 # Tests on iPhone and iPad with coverage, merged into an HTML report in coverage-html/.
 test-coverage:
-	PHONE_SIM="$(SIMULATOR_DEVICE)" SIMULATOR_VERSION=$(SIMULATOR_VERSION) node scripts/report-test-coverage.ts --open
+	PHONE_SIM="$(SIMULATOR_DEVICE)" SIMULATOR_VERSION="$(SIMULATOR_VERSION)" node scripts/report-test-coverage.ts --open
 
 # The report from the last test-coverage run, without testing again.
 coverage-report:
@@ -153,7 +156,7 @@ L10N_QA_OUT ?= /tmp/cards-l10n-qa
 # $(L10N_QA_OUT)/<language>/<size>/<screen>.png. Not part of `make test`.
 # LANGS and SIZES ("large AX5") narrow it.
 capture-l10n:
-	node scripts/capture-l10n.ts --device "$(SIMULATOR_DEVICE)" --os $(SIMULATOR_VERSION) --out "$(L10N_QA_OUT)" \
+	node scripts/capture-l10n.ts --device "$(SIMULATOR_DEVICE)" --os "$(SIMULATOR_VERSION)" --out "$(L10N_QA_OUT)" \
 		--lang "$(LANGS)" --size "$(SIZES)"
 
 # The website, built into Website/dist from the store listing, the changelog and

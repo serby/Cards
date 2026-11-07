@@ -11,7 +11,7 @@ Cards ships with GitHub Actions driving plain `xcodebuild` and the scripts in `s
 | `app-store-listing.yml` (App Store listing) | By hand | Gives the editable version its number with **prepare version**, then uploads the text in `metadata/`, the images in `screenshots/store/` and each locale's creative asset (the product page header and search results image). It does not upload or attach builds |
 | `website.yml` (Deploy Website) | Pushes to `main` that change anything the site is built from (the listing, the changelog, the store images, the app's catalogue, colours or project, `Website/` or its scripts), or by hand | Builds the site into `Website/dist` (`scripts/build-website.ts`), which stops it while a source is broken or an App Store image is missing, then deploys it to Cloudflare Pages (`scripts/deploy-website.ts`). One deploy runs at a time, in push order |
 
-Both macOS workflows run on GitHub's `xcode-27` image and select the Xcode named in `.xcode-version` with `scripts/select-xcode.ts`, the same one local builds use. They stop if the image lacks it. CI's unit tests (`scripts/run-unit-tests.ts`) use the newest iOS runtime that Xcode's SDK supports (`scripts/lib/simulator.ts`).
+Both macOS workflows run on GitHub's `xcode-27` image and select the Xcode named in `.xcode-version` with `scripts/select-xcode.ts`, the same one local builds use. They stop if the image lacks it. CI's unit tests (`scripts/run-unit-tests.ts`) run on the same simulator as `make test`, the iPhone 17 on iOS 26 (`scripts/lib/test-devices.ts`). The image has only iOS 27 runtimes, so the script downloads iOS 26.5 from Apple (about 8.5 GB) and installs it while the app builds.
 
 There is no TestFlight workflow. To put a build on TestFlight, run `make upload-build` locally with an App Store Connect API key in the environment.
 
@@ -20,7 +20,7 @@ There is no TestFlight workflow. To put a build on TestFlight, run `make upload-
 Every script is TypeScript, run with `node scripts/<name>.ts` (`docs/DEVELOPMENT.md`, rule 14). Those the pipelines use:
 
 - `scripts/select-xcode.ts`: prints the Developer directory of the Xcode in `.xcode-version`, for `DEVELOPER_DIR`.
-- `scripts/run-unit-tests.ts`: boots a simulator while the app and tests build, then runs `CardsTests` on it.
+- `scripts/run-unit-tests.ts`: installs the tests' iOS runtime if it is missing and boots their simulator while the app and tests build, then runs `CardsTests` on it.
 - `scripts/check-release-build.ts`, `scripts/check-store-images.ts`, `scripts/check-metadata.ts` and `scripts/check-changelog.ts`: CI's checks.
 - `scripts/install-signing-certificate.ts` and `scripts/install-signing-profiles.ts` (run by `.github/actions/install-signing`): import the distribution certificate into a temporary keychain, and install an App Store profile for each bundle ID, creating it when it is missing or invalid. `install-signing-certificate.ts --remove` deletes the keychain afterwards.
 - `scripts/release-version.ts`: the release, from tag to submission, using `scripts/build-ipa.ts` (archive and export a signed `.ipa`, taking `BUILD_NUMBER`, `CARDS_APP_PROFILE` and `CARDS_WIDGET_PROFILE`), `scripts/upload-build.ts` (upload it with `xcrun altool`) and `scripts/submit-for-review.ts` (wait for processing, attach, set What's New and submit; `--dry-run` only reads).

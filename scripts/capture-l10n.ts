@@ -14,8 +14,10 @@
 //                     one value may hold several, separated by spaces ("de ja")
 //   --size <name>…    Text sizes: xs s m large xl xxl xxxl AX1…AX5 (default: large AX5),
 //                     several to a value as for --lang
-//   --device <type>   Simulator device type (default: iPhone 16 Pro); the script keeps its own
-//   --os <version>    Its iOS version (default: 18.1)
+//   --device <type>   Simulator device type (default: the automated tests' iPhone 17,
+//                     scripts/lib/test-devices.ts); the script keeps its own
+//   --os <version>    Its iOS: a version, such as "27.0", or a major version, such as
+//                     "27", for the newest installed (default: the automated tests' 26)
 //   --out <dir>       Where the PNGs go (default: /tmp/cards-l10n-qa)
 //   --no-build        Reuse the last build in <out>/.build
 
@@ -24,7 +26,8 @@ import { cpSync, existsSync, mkdirSync, openSync, readdirSync, readFileSync, rmS
 import { basename, dirname, join } from "node:path";
 import { parseArgs } from "node:util";
 import { appLanguages } from "./lib/locales.ts";
-import { setSystemLanguage } from "./lib/simulator.ts";
+import { findTestSimulator, setSystemLanguage } from "./lib/simulator.ts";
+import { automatedTestSimulatorWith } from "./lib/test-devices.ts";
 import { root, xcodeEnv } from "./lib/xcode.ts";
 
 /// The Xcode in .xcode-version, as every script uses it.
@@ -86,21 +89,17 @@ interface Device {
 }
 
 /// The script's own simulator of the device type `deviceType` on iOS `os`,
+/// on the runtime the automated tests' simulator would use (lib/simulator.ts),
 /// created if there is none, and booted. Its own, because each language
 /// changes the simulator's system language, which nobody else's should get.
 function simulator(deviceType: string, os: string): string {
     const name = `${deviceType} (Cards l10n QA)`;
-    const runtimeID = `com.apple.CoreSimulator.SimRuntime.iOS-${os.replace(".", "-")}`;
+    const { runtime, deviceType: typeID, version } = findTestSimulator(automatedTestSimulatorWith({ model: deviceType, os }));
     const list = JSON.parse(run("xcrun", ["simctl", "list", "-j", "devices"])) as { devices: Record<string, Device[]> };
-    let udid = (list.devices[runtimeID] ?? []).find((device) => device.isAvailable && device.name === name)?.udid;
+    let udid = (list.devices[runtime] ?? []).find((device) => device.isAvailable && device.name === name)?.udid;
     if (!udid) {
-        const types = JSON.parse(run("xcrun", ["simctl", "list", "-j", "devicetypes"])) as {
-            devicetypes: { name: string; identifier: string }[];
-        };
-        const type = types.devicetypes.find((candidate) => candidate.name === deviceType);
-        if (!type) throw new Error(`No simulator device type called "${deviceType}"`);
-        udid = run("xcrun", ["simctl", "create", name, type.identifier, runtimeID]).trim();
-        console.log(`Created ${name} (iOS ${os}): ${udid}`);
+        udid = run("xcrun", ["simctl", "create", name, typeID, runtime]).trim();
+        console.log(`Created ${name} (iOS ${version}): ${udid}`);
     }
     boot(udid);
     return udid;
@@ -248,8 +247,8 @@ export function main(argv: string[]): number {
         options: {
             lang: { type: "string", multiple: true },
             size: { type: "string", multiple: true },
-            device: { type: "string", default: "iPhone 16 Pro" },
-            os: { type: "string", default: "18.1" },
+            device: { type: "string" },
+            os: { type: "string" },
             out: { type: "string", default: "/tmp/cards-l10n-qa" },
             "no-build": { type: "boolean", default: false },
         },
@@ -265,7 +264,8 @@ export function main(argv: string[]): number {
     const out = values.out;
     const logs = join(out, ".logs");
     const buildDir = join(out, ".build");
-    const udid = simulator(values.device, values.os);
+    const destination = automatedTestSimulatorWith({ model: values.device, os: values.os });
+    const udid = simulator(destination.model, destination.os);
     const testRun = values["no-build"]
         ? join(buildDir, readdirSync(buildDir).find((name) => name.endsWith(".xctestrun") && !name.startsWith("run-")) ?? "")
         : buildForTesting(`platform=iOS Simulator,id=${udid}`, buildDir, logs);

@@ -6,14 +6,16 @@
 // It is kept apart from Xcode's build folder, which every other build shares,
 // even where Xcode is set to a custom build location, so a later `make build`
 // cannot replace the binaries the coverage was recorded against, and the
-// instrumented build never lands in Xcode's. If tests fail, the report is still written from the
-// coverage they recorded, and the script then exits with xcodebuild's status.
+// instrumented build never lands in Xcode's. If tests fail, the report is still
+// written from the coverage they recorded, and the script then exits with
+// xcodebuild's status.
 //
 // --report-only skips the tests and reports the last run's coverage again.
 // --open opens the report in the browser afterwards. Arguments after -- go to
-// xcodebuild test, such as -only-testing:CardsTests. The simulators are
-// $PHONE_SIM (default iPhone 16 Pro) and $IPAD_SIM (default iPad Pro 13-inch
-// (M4)) on iOS $SIMULATOR_VERSION (default 18.1).
+// xcodebuild test, such as -only-testing:CardsTests. The simulators are the
+// automated tests' iPhone 17 (scripts/lib/test-devices.ts) and an iPad Pro
+// 13-inch (M4), both on its iOS 26, created if they are missing; $PHONE_SIM,
+// $IPAD_SIM and $SIMULATOR_VERSION ("27" or "27.0") pick others.
 //
 // Usage: node scripts/report-test-coverage.ts [--report-only] [--open] [-- xcodebuild-args...]
 
@@ -21,15 +23,18 @@ import { execFileSync } from "node:child_process";
 import { existsSync, mkdtempSync, readdirSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { basename, join } from "node:path";
+import { findOrCreateTestSimulator } from "./lib/simulator.ts";
+import { automatedTestSimulatorWith } from "./lib/test-devices.ts";
 import { capture, developerDir, root, run } from "./lib/xcode.ts";
 
 const derivedData = join(root, "build", "cov");
 const profileDataDirectory = join(derivedData, "Build", "ProfileData");
 const resultBundle = join(derivedData, "Tests.xcresult");
 const reportDirectory = join(root, "coverage-html");
-const simulatorVersion = process.env.SIMULATOR_VERSION ?? "18.1";
-const simulators = [process.env.PHONE_SIM ?? "iPhone 16 Pro", process.env.IPAD_SIM ?? "iPad Pro 13-inch (M4)"];
-const destinations = simulators.map((name) => `platform=iOS Simulator,name=${name},OS=${simulatorVersion}`);
+const simulators = [
+    automatedTestSimulatorWith({ model: process.env.PHONE_SIM, os: process.env.SIMULATOR_VERSION }),
+    automatedTestSimulatorWith({ model: process.env.IPAD_SIM || "iPad Pro 13-inch (M4)", os: process.env.SIMULATOR_VERSION }),
+];
 
 /// Source paths left out of the report: the tests themselves, Swift packages and
 /// the code Xcode generates, such as GeneratedAssetSymbols.swift.
@@ -76,7 +81,9 @@ function parseArguments(args: string[]): Options {
 function runTests(extraArguments: string[]): number {
     rmSync(profileDataDirectory, { recursive: true, force: true });
     rmSync(resultBundle, { recursive: true, force: true });
-    console.error(`Running the tests on ${simulators.join(" and ")} (iOS ${simulatorVersion}) in ${derivedData}...`);
+    const found = simulators.map((simulator) => findOrCreateTestSimulator(simulator));
+    const destinations = found.map(({ udid }) => `platform=iOS Simulator,id=${udid}`);
+    console.error(`Running the tests on ${found.map(({ pick }) => `${pick.name} (iOS ${pick.version})`).join(" and ")} in ${derivedData}...`);
     try {
         run("xcodebuild", [
             "test",
@@ -102,7 +109,7 @@ function runTests(extraArguments: string[]): number {
 
 /// Where the build products are, asked of xcodebuild rather than assumed.
 function builtProductsDirectory(): string {
-    const output = capture("xcodebuild", [...projectArguments, "-destination", destinations[0] ?? "", "-showBuildSettings", "-json"]);
+    const output = capture("xcodebuild", [...projectArguments, "-destination", "generic/platform=iOS Simulator", "-showBuildSettings", "-json"]);
     const targets = JSON.parse(output) as { target: string; buildSettings: Record<string, string> }[];
     const settings = (targets.find((entry) => entry.target === "Cards") ?? targets[0])?.buildSettings;
     if (!settings?.BUILT_PRODUCTS_DIR) throw new Error("xcodebuild -showBuildSettings gave no BUILT_PRODUCTS_DIR");

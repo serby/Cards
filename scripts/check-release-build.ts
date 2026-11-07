@@ -2,7 +2,9 @@
 // in it.
 //
 // Builds Release for the simulator (unsigned) with the Xcode pinned in
-// .xcode-version, then looks in the binary for anything declared under
+// .xcode-version, for any simulator rather than the automated tests' one
+// (scripts/lib/test-devices.ts), as it runs nothing and so needs no simulator
+// or runtime: CI's release check downloads none. Then it looks in the binary for anything declared under
 // Cards/Development: its types, and the static members it adds to production
 // types (sample data, simulated effects). Also fails on SwiftUI preview
 // registrations and on the UI-testing launch keys. See docs/DEVELOPMENT.md,

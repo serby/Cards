@@ -7,10 +7,11 @@
 // prints its UDID, if it has one, on standard output; it creates, boots and
 // builds nothing.
 //
-// The automated tests use another simulator, the Makefile's SIMULATOR_DEVICE
-// on an older iOS; this script never does.
+// The automated tests' simulator, the iPhone 17 on iOS 26, is in the list too,
+// as `tests`, for a look at what they run on; the default stays Paul's iPhone 17
+// on iOS 27.
 //
-// Usage: node scripts/run-in-simulator.ts [--device iphone-17|se] [--dry-run]
+// Usage: node scripts/run-in-simulator.ts [--device iphone-17|se|tests] [--dry-run]
 
 import { existsSync } from "node:fs";
 import { join } from "node:path";

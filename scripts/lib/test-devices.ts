@@ -1,22 +1,23 @@
-// The devices Paul tests the app on by hand, in one place: the iPhone 17
-// simulator, which `make sim` uses unless told otherwise, the iPhone SE (3rd
-// generation) simulator for the small screen, and his own iPhone for checks on
-// a device. run-in-simulator.ts, run-on-device.ts and
-// initialize-cloudkit-schema.ts read it, through lib/simulator.ts and
-// lib/phone.ts.
-//
-// The automated tests run elsewhere: `make build` and `make test` use the
-// Makefile's SIMULATOR_DEVICE on SIMULATOR_VERSION, an older iOS, so they test
-// the oldest version the app supports. This list leaves them alone.
+// The devices the app is tested on, in one place. By hand, Paul uses the
+// iPhone 17 simulator, which `make sim` uses unless told otherwise, the iPhone
+// SE (3rd generation) simulator for the small screen, and his own iPhone for
+// checks on a device: run-in-simulator.ts, run-on-device.ts and
+// initialize-cloudkit-schema.ts read them, through lib/simulator.ts and
+// lib/phone.ts. The automated tests and every build for a simulator (`make
+// build`, `make test` and the rest through select-test-simulator.ts, CI's
+// run-unit-tests.ts, report-test-coverage.ts and capture-l10n.ts) run on one
+// more, the iPhone 17 on iOS 26, the iOS most people have, so local runs and
+// CI test the same device on the same iOS. The App Store screenshots are the
+// exception: capture-screenshots.ts keeps the sizes the store asks for.
 //
 // It holds names, never UDIDs, which differ from Mac to Mac: the scripts look
 // the devices up when they run.
 //
-// Usage: import { defaultTestSimulator, describeTestSimulator, sameName, testPhone, testSimulator, testSimulators } from "./lib/test-devices.ts";
+// Usage: import { automatedTestSimulator, automatedTestSimulatorWith, defaultTestSimulator, describeTestSimulator, sameName, testPhone, testSimulator, testSimulators } from "./lib/test-devices.ts";
 
 import { UsageError } from "./command-line.ts";
 
-/// A simulator Paul tests on.
+/// A simulator the app is tested on.
 export interface TestSimulator {
     /// What `make sim DEVICE=<key>` and run-in-simulator.ts's --device take.
     key: string;
@@ -30,6 +31,11 @@ export interface TestSimulator {
     os: string;
     /// What it is for, as the scripts and docs say it.
     purpose: string;
+    /// The runtime to download from Apple where no `os` runtime is installed,
+    /// such as "26.5", as on CI: GitHub's xcode-27 image has only iOS 27.
+    /// Keep it the newest release of `os`, which is what a Mac that has
+    /// `os` installed runs.
+    download?: string;
 }
 
 const iPhone17: TestSimulator = {
@@ -46,8 +52,34 @@ const iPhoneSE: TestSimulator = {
     purpose: "for the small screen",
 };
 
+/// Where the automated tests run, locally and on CI, and what `make build`
+/// builds for: iOS 26, the iOS on most devices (TelemetryDeck, 2 November 2026:
+/// iOS 26 on 55%, iOS 27 on 36%, iOS 18 on 7%).
+const automatedTests: TestSimulator = {
+    key: "tests",
+    model: "iPhone 17",
+    os: "26",
+    purpose: "for the automated tests and `make build`, on the iOS most people have",
+    download: "26.5",
+};
+
 /// The simulators, the default first.
-export const testSimulators: readonly TestSimulator[] = [iPhone17, iPhoneSE];
+export const testSimulators: readonly TestSimulator[] = [iPhone17, iPhoneSE, automatedTests];
+
+/// The simulator the automated tests run on, and `make build` builds for.
+export const automatedTestSimulator: TestSimulator = automatedTests;
+
+/// The automated tests' simulator with another model or iOS for a one-off run,
+/// as the Makefile's SIMULATOR_DEVICE and SIMULATOR_VERSION give them; an
+/// empty or missing value keeps the default's. On another iOS there is nothing
+/// to download.
+export function automatedTestSimulatorWith(overrides: { model?: string; os?: string }): TestSimulator {
+    const model = overrides.model?.trim() || automatedTests.model;
+    const os = overrides.os?.trim() || automatedTests.os;
+    if (model === automatedTests.model && os === automatedTests.os) return automatedTests;
+    const { download, ...rest } = automatedTests;
+    return { ...rest, key: "one-off", model, os, purpose: "a one-off run", ...(os === automatedTests.os && download ? { download } : {}) };
+}
 
 /// The simulator `make sim` uses when no DEVICE is given.
 export const defaultTestSimulator: TestSimulator = iPhone17;

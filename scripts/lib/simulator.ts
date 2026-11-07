@@ -1,16 +1,18 @@
-// Boots an iOS simulator for the unit tests and the screenshots. It picks the
-// newest iOS runtime that supports the requested device type and is no newer
-// than the selected Xcode's iPhone simulator SDK (a runner can carry runtimes
-// from a newer Xcode that this one cannot build for), creates or reuses a
-// simulator named CI-<device>-<version>, boots it, sets the status bar and
-// waits for it to settle.
+// Boots an iOS simulator for the screenshots. It picks the newest iOS runtime
+// that supports the requested device type and is no newer than the selected
+// Xcode's iPhone simulator SDK (a runner can carry runtimes from a newer Xcode
+// that this one cannot build for), creates or reuses a simulator named
+// CI-<device>-<version>, boots it, sets the status bar and waits for it to
+// settle.
 //
-// It also sets a simulator's own language and region, which is what iOS
-// draws outside the app in (the Home Screen, the widget gallery, system
-// prompts), and puts them back afterwards, and finds the simulators Paul tests
-// on by hand (lib/test-devices.ts), creating one when it is missing.
+// It also finds the simulators in lib/test-devices.ts, the ones Paul tests on
+// by hand and the automated tests' one, creating one when it is missing,
+// installs the automated tests' iOS runtime where it is missing (as on CI) and
+// boots that simulator the same way. And it sets a simulator's own language
+// and region, which is what iOS draws outside the app in (the Home Screen, the
+// widget gallery, system prompts), and puts them back afterwards.
 //
-// Usage: import { bootSimulator, createTestSimulator, findTestSimulator, setSystemLanguage, systemLanguage } from "./lib/simulator.ts";
+// Usage: import { bootSimulator, bootTestSimulator, createTestSimulator, findOrCreateTestSimulator, findTestSimulator, installTestRuntime, setSystemLanguage, systemLanguage } from "./lib/simulator.ts";
 //
 // Reusing one named simulator per device and runtime means repeat runs skip
 // creating it. The wait after `simctl bootstatus` works round a GitHub macOS
@@ -87,6 +89,24 @@ export async function bootSimulator(model?: string, options: BootOptions = {}): 
         log(`Created simulator ${device} (${udid})\n`);
     }
 
+    await bootForTests(udid, log);
+    return { device, version: pick.version, model: pick.model, udid };
+}
+
+/// Boots the automated tests' simulator, or another of lib/test-devices.ts,
+/// for tests as bootSimulator does, first installing its iOS runtime where it
+/// is missing and it names one to download (installTestRuntime).
+export async function bootTestSimulator(choice: TestSimulator, options: BootOptions = {}): Promise<Simulator> {
+    const log = options.log ?? ((text: string) => void process.stderr.write(text));
+    await installTestRuntime(choice, log);
+    const { pick, udid, created } = findOrCreateTestSimulator(choice);
+    log(`${created ? "Created" : "Using"} simulator ${pick.name} on iOS ${pick.version} (${udid})\n`);
+    await bootForTests(udid, log);
+    return { device: pick.name, version: pick.version, model: choice.model, udid };
+}
+
+/// Boots a simulator, sets its status bar and waits for it to settle.
+async function bootForTests(udid: string, log: Log): Promise<void> {
     // Booting fails when it is already booted, which is fine.
     await xcrun(["simctl", "boot", udid], log, { output: "log", errors: "discard", mayFail: true });
     await xcrun(["simctl", "bootstatus", udid, "-b"], log, { output: "log" });
@@ -97,8 +117,6 @@ export async function bootSimulator(model?: string, options: BootOptions = {}): 
     );
     await new Promise((resolve) => setTimeout(resolve, settleSeconds * 1000));
     await xcrun(["simctl", "list", "devices", "booted"], log, { output: "log" });
-
-    return { device, version: pick.version, model: pick.model, udid };
 }
 
 interface Pick {
@@ -187,20 +205,10 @@ export function pickTestSimulator(choice: TestSimulator, list: SimulatorList, sd
     const type = list.devicetypes.find((deviceType) => deviceType.name === choice.model);
     if (!type) throw new Error(`This Xcode has no ${choice.model} simulator`);
 
-    const wanted = versionParts(choice.os);
-    const sdk = versionParts(sdkVersion);
-    const runtime = list.runtimes
-        .filter((candidate) => {
-            const version = versionParts(candidate.version);
-            return candidate.isAvailable === true
-                && candidate.platform === "iOS"
-                && compareVersions(version.slice(0, wanted.length), wanted) === 0
-                && compareVersions(version.slice(0, sdk.length), sdk) <= 0
-                && (candidate.supportedDeviceTypes ?? []).some((supported) => supported.identifier === type.identifier);
-        })
-        .sort((a, b) => compareVersions(versionParts(b.version), versionParts(a.version)))[0];
+    const runtime = testRuntime(choice, list, sdkVersion);
     if (!runtime) {
-        throw new Error(`No installed iOS ${choice.os} runtime runs the ${choice.model}. Add one in Xcode > Settings > Components`);
+        const command = choice.download ? `, or with xcodebuild -downloadPlatform iOS -buildVersion ${choice.download}` : "";
+        throw new Error(`No installed iOS ${choice.os} runtime runs the ${choice.model}. Add one in Xcode > Settings > Components${command}`);
     }
     const version = runtime.version.split(".").slice(0, 2).join(".");
 
@@ -216,6 +224,69 @@ export function pickTestSimulator(choice: TestSimulator, list: SimulatorList, sd
     return found
         ? { ...pick, name: found.name, udid: found.udid, booted: found.state === "Booted" }
         : { ...pick, name: choice.model, booted: false };
+}
+
+/// The newest available iOS runtime that `choice` asks for, runs its model
+/// and the SDK can build for, if one is installed.
+function testRuntime(choice: TestSimulator, list: SimulatorList, sdkVersion: string): Runtime | undefined {
+    const type = list.devicetypes.find((deviceType) => deviceType.name === choice.model);
+    const wanted = versionParts(choice.os);
+    const sdk = versionParts(sdkVersion);
+    return list.runtimes
+        .filter((candidate) => {
+            const version = versionParts(candidate.version);
+            return candidate.isAvailable === true
+                && candidate.platform === "iOS"
+                && compareVersions(version.slice(0, wanted.length), wanted) === 0
+                && compareVersions(version.slice(0, sdk.length), sdk) <= 0
+                && (candidate.supportedDeviceTypes ?? []).some((supported) => supported.identifier === type?.identifier);
+        })
+        .sort((a, b) => compareVersions(versionParts(b.version), versionParts(a.version)))[0];
+}
+
+/// What runs `choice` where its iOS runtime is missing: nothing when one is
+/// installed; its download version, such as "26.5", when it names one; and
+/// otherwise an error saying to install one.
+export function runtimeToInstall(choice: TestSimulator, list: SimulatorList, sdkVersion: string): string | undefined {
+    if (testRuntime(choice, list, sdkVersion)) return undefined;
+    if (!choice.download) {
+        throw new Error(`No installed iOS ${choice.os} runtime runs the ${choice.model}, and it names none to download. Add one in Xcode > Settings > Components`);
+    }
+    return choice.download;
+}
+
+/// Installs the iOS runtime `choice` runs on when none is installed, as on CI,
+/// where GitHub's xcode-27 image has only iOS 27: xcodebuild -downloadPlatform
+/// downloads its download version from Apple (about 8.5 GB) and installs it.
+/// Does nothing when one is there.
+export async function installTestRuntime(choice: TestSimulator, log: Log): Promise<void> {
+    const list = async (): Promise<{ list: SimulatorList; sdkVersion: string }> => ({
+        sdkVersion: (await xcrun(["--sdk", "iphonesimulator", "--show-sdk-version"], log)).trim(),
+        list: JSON.parse(await xcrun(["simctl", "list", "-j", "devicetypes", "runtimes", "devices"], log)) as SimulatorList,
+    });
+    const before = await list();
+    const version = runtimeToInstall(choice, before.list, before.sdkVersion);
+    if (!version) return;
+
+    log(`No iOS ${choice.os} runtime is installed: downloading iOS ${version} from Apple\n`);
+    const started = Date.now();
+    const variant = process.arch === "arm64" ? "arm64" : "universal";
+    // Its progress is a line per update; only the lines that say what it did are kept.
+    const printed = await xcrun(["xcodebuild", "-downloadPlatform", "iOS", "-buildVersion", version, "-architectureVariant", variant], log);
+    for (const line of printed.split(/[\r\n]+/).filter((text) => text.trim() && !text.includes("%"))) log(`${line.trim()}\n`);
+
+    const after = await list();
+    if (runtimeToInstall(choice, after.list, after.sdkVersion)) {
+        throw new Error(`xcodebuild downloaded iOS ${version}, but no installed iOS ${choice.os} runtime runs the ${choice.model} yet`);
+    }
+    log(`Installed iOS ${version} in ${Math.round((Date.now() - started) / 1000)} seconds\n`);
+}
+
+/// Finds the test simulator `choice` on this Mac, creating it when there is
+/// none, and says whether it did.
+export function findOrCreateTestSimulator(choice: TestSimulator): { pick: TestSimulatorPick; udid: string; created: boolean } {
+    const pick = findTestSimulator(choice);
+    return pick.udid ? { pick, udid: pick.udid, created: false } : { pick, udid: createTestSimulator(pick), created: true };
 }
 
 /// Finds the test simulator `choice` on this Mac. It creates nothing: a pick

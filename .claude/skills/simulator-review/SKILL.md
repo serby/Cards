@@ -25,7 +25,7 @@ Paul's test devices are listed once, in `scripts/lib/test-devices.ts` (`docs/DEV
 - **iPhone SE (3rd generation) simulator**, on iOS 27.0: for the small screen, when a layout might not fit or Paul asks for the SE (`DEVICE=se`).
 - **Paul's iPhone (2)**: his main phone for checks on a device, with `make device`, when something needs real hardware (the camera, notifications, sync). It falls back to the first connected iPhone, and says so.
 
-These are not the automated tests' simulator (`SIMULATOR_DEVICE`, the iPhone 16 Pro on iOS 18.1); never pass those variables to `make sim`.
+These are not the automated tests' simulator, the iPhone 17 on iOS 26 (`tests` in the same list), which `make build` and `make test` use; review on Paul's devices, and never pass `SIMULATOR_DEVICE` or `SIMULATOR_VERSION` to `make sim`.
 
 ```bash
 U=$(node scripts/run-in-simulator.ts --dry-run)   # add --device se for the SE; prints the UDID, boots nothing

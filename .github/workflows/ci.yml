@@ -101,8 +101,13 @@ jobs:
         echo "DEVELOPER_DIR=$developer_dir" >> "$GITHUB_ENV"
         "$developer_dir/usr/bin/xcodebuild" -version
 
-    # The simulator boots in the background while the app and tests build, since
-    # each takes minutes on a fresh runner, then the unit tests run on it.
+    # The tests run on the same simulator as locally, the iPhone 17 on iOS 26
+    # (scripts/lib/test-devices.ts). This image has only iOS 27 simulators, so
+    # while the app and tests build the script downloads the iOS 26.5 runtime
+    # from Apple (about 8.5 GB) and installs it, then boots the simulator; the
+    # unit tests run on it once both are done. Not cached: the runtime would
+    # take most of the repository's 10 GB of Actions cache, which is cleared
+    # after a week unused, longer than CI often goes between pushes.
     - name: Build and run the unit tests
       run: node scripts/run-unit-tests.ts
 
