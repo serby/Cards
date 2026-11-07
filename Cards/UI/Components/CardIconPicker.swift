@@ -2,9 +2,9 @@ import SwiftUI
 
 /// The card icons as a grid of tappable swatches, None first and then each
 /// group under its heading. Each swatch is drawn on the card's colour in its
-/// ink, as the colour picker's are, so you choose the icon you will see. The
-/// swatches are scroll targets with their icon's name as the id, so a scroll
-/// view's `scrollPosition(id:)` can open at the chosen one.
+/// ink, as the colour picker's are, so you choose the icon you will see. Each
+/// swatch has its icon's name as its id, so a scroll view can go to the chosen
+/// one with `ScrollViewProxy.scrollTo`.
 public struct CardIconPicker: View {
     @Binding private var selection: String?
     private let color: CardColor
@@ -53,7 +53,6 @@ public struct CardIconPicker: View {
                 }
             }
         }
-        .scrollTargetLayout()
         .sensoryFeedback(.selection, trigger: selection)
         .accessibilityElement(children: .contain)
         .accessibilityLabel(Text("Card icon", comment: "VoiceOver label for the grid of icons in the card icon picker."))

@@ -21,8 +21,8 @@ public struct CardEditView<Scanner: View>: View {
     @FocusState private var focusedField: Field?
     @State private var showsLocationPicker = false
     @State var showsIconPicker = false
-    /// The icon the grid's scroll view is at: the card's icon as the sheet opens.
-    @State var iconPickerPosition: String?
+    /// Whether the icon grid has been scrolled by hand since the sheet opened.
+    @State var iconPickerScrolledByHand = false
     @State var confirmsDelete = false
     /// Counts deletes, so the delete haptic plays (A11Y-5).
     @State var deletes = 0

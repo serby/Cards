@@ -38,7 +38,7 @@ extension CardEditView {
     /// Shows the card's icon, or None, and opens the grid to choose one.
     var iconRow: some View {
         Button {
-            iconPickerPosition = nil
+            iconPickerScrolledByHand = false
             showsIconPicker = true
         } label: {
             // Side by side, or the value under its title at the accessibility
@@ -79,16 +79,28 @@ extension CardEditView {
     /// The icon grid in a sheet, open at the card's icon. Choosing one closes it.
     var iconPicker: some View {
         NavigationStack {
-            ScrollView {
-                CardIconPicker(selection: $draft.icon, color: draft.color) {
-                    showsIconPicker = false
+            ScrollViewReader { proxy in
+                ScrollView {
+                    CardIconPicker(selection: $draft.icon, color: draft.color) {
+                        showsIconPicker = false
+                    }
+                    .padding()
                 }
-                .padding()
+                .onScrollPhaseChange { _, phase in
+                    if phase == .interacting { iconPickerScrolledByHand = true }
+                }
+                // The card's icon can be far down the grid, below the sheet's
+                // first height. Scrolled to once the sheet has settled: iOS 26 and
+                // 27 put a sheet's scroll view back at the top as it finishes
+                // opening, losing a position given before. Not if the grid has
+                // been scrolled by hand by then.
+                .task {
+                    try? await Task.sleep(for: .seconds(0.6))
+                    if !iconPickerScrolledByHand, let icon = draft.icon {
+                        proxy.scrollTo(icon, anchor: .center)
+                    }
+                }
             }
-            // The card's icon can be far down the grid, below the sheet's first height.
-            // Set once the grid is there: a position given before the sheet opens is lost.
-            .scrollPosition(id: $iconPickerPosition, anchor: .center)
-            .onAppear { iconPickerPosition = draft.icon }
             .navigationTitle(iconLabel)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
