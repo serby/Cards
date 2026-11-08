@@ -22,7 +22,7 @@ DESTINATION = $(or $(shell node scripts/select-test-simulator.ts --model "$(SIMU
 # location, so they and Xcode carry on from each other's builds.
 XCODEBUILD := xcodebuild -project Cards.xcodeproj -scheme Cards
 
-.PHONY: build clean test test-unit test-e2e test-all test-a11y test-tsan test-coverage coverage-report sim device initialize-cloudkit-schema \
+.PHONY: build clean test test-unit test-e2e test-all test-a11y test-tsan test-coverage coverage-report sim device initialize-cloudkit-schema trace-performance \
 	check check-release check-metadata check-changelog check-screenshots \
 	capture-screenshots store-screenshots upload-build upload-metadata upload-screenshots upload-creative-assets \
 	report-strings check-strings translate-strings add-language test-scripts capture-l10n build-website serve-website
@@ -102,6 +102,15 @@ device:
 # `make device` uses, then says how to deploy it to Production.
 initialize-cloudkit-schema:
 	node scripts/initialize-cloudkit-schema.ts
+
+# Traces cold launches and deep links to a card in its own simulator, a
+# release build kept apart from Xcode's, and writes
+# build/performance/<date-time>/report.md for people and AI to review
+# (.claude/skills/performance-review). PERFORMANCE_OPTIONS passes options on,
+# such as --runs 10 or --baseline build/performance/<date-time>.
+PERFORMANCE_OPTIONS ?=
+trace-performance:
+	node scripts/trace-performance.ts $(PERFORMANCE_OPTIONS)
 
 # The quick checks CI runs, plus the raw screenshot check CI leaves to you.
 check: check-metadata check-changelog check-screenshots check-strings build-website
