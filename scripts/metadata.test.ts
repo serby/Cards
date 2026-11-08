@@ -79,6 +79,42 @@ describe("price words", () => {
         assert.equal(priceWord("free", "ja"), undefined, "each listing is checked for its own language's words");
     });
 
+    test("are every form of the word in French, and in Arabic also after the prefixes joined to it", () => {
+        assert.equal(priceWord("Une app gratuite", "fr-FR"), "gratuite");
+        assert.equal(priceWord("Cartes gratuites et illimitées", "fr-FR"), "gratuites");
+        assert.equal(priceWord("Gratuit pour toujours", "fr-CA"), "Gratuit");
+        assert.equal(priceWord("Téléchargez-la gratuitement", "fr-FR"), "gratuitement");
+        assert.equal(priceWord("Totalement gratis", "fr-FR"), "gratis");
+        assert.equal(priceWord("Cartes illimitées, sans pub", "fr-FR"), undefined);
+        assert.equal(priceWord("تطبيق مجاني", "ar-SA"), "مجاني");
+        assert.equal(priceWord("بطاقات مجانية بلا إعلانات", "ar-SA"), "مجانية");
+        assert.equal(priceWord("حمّله مجانًا", "ar-SA"), "مجانًا", "with a tanween");
+        assert.equal(priceWord("حمّله مجانا", "ar-SA"), "مجانا");
+        assert.equal(priceWord("تطبيق مجانى", "ar-SA"), "مجانى", "ending in alef maqsura, as it is often written");
+        assert.equal(priceWord("تطبيق مَجَّانِيّ", "ar-SA"), "مَجَّانِيّ", "with every short vowel written");
+        assert.equal(priceWord("التطبيق السهل والمجاني", "ar-SA"), "والمجاني", "joined to و and the article");
+        assert.equal(priceWord("احصل عليه بالمجان", "ar-SA"), "بالمجان");
+        assert.equal(priceWord("سريع وبالمجان", "ar-SA"), "وبالمجان");
+        assert.equal(priceWord("حكايات المجانين", "ar-SA"), undefined, "مجانين, madmen, is another word on the same letters");
+        assert.equal(priceWord("بلا حدود ولا إعلانات", "ar-SA"), undefined);
+        assert.equal(priceWord("مجاني", "fr-FR"), undefined, "each listing is checked for its own language's words");
+    });
+
+    test("in a French or Arabic name or subtitle are errors, and in the description are allowed", () => {
+        const files = {
+            "copyright.txt": "2026 Paul Serby",
+            ...listing("en-GB"),
+            ...listing("fr-FR", { subtitle: "Cartes gratuites, sans pub", description: "L’app est gratuite." }),
+            ...listing("ar-SA", { name: "Card Barcodes: بطاقات مجانية", description: "إنه مجاني." }),
+        };
+        withDir(files, (dir) => {
+            assert.deepEqual(errors(checkMetadata(dir).findings), [
+                'ar-SA name: has "مجانية"; App Store Review Guideline 2.3.7 keeps price words out of the name and subtitle',
+                'fr-FR subtitle: has "gratuites"; App Store Review Guideline 2.3.7 keeps price words out of the name and subtitle',
+            ]);
+        });
+    });
+
     test("in a name or subtitle are errors, and in the description or promotional text are allowed", () => {
         const files = {
             "copyright.txt": "2026 Paul Serby",

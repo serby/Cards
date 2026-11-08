@@ -1,0 +1,1 @@
+code,barre,portefeuille,magasin,adhérent,points,avantages,coupon,qr,scanner,widget,badge,sport,club

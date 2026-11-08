@@ -1,0 +1,25 @@
+Card Barcodes garde toutes vos cartes de fidélité et d’adhésion sur votre iPhone, prêtes à être scannées. L’app est gratuite, sans publicité, sans achats intégrés et sans limite de cartes, et le restera toujours.
+
+PRÊTE À LA CAISSE
+Ouvrez une carte et l’écran devient plus lumineux, pour que le lecteur la lise du premier coup. Le numéro figure sous le code-barres, au cas où il faudrait le saisir.
+
+LA BONNE CARTE À VOTRE ARRIVÉE
+Ajoutez les lieux où vous utilisez une carte, en plaçant une épingle sur le plan ou en recherchant un magasin, une rue ou un code postal. Quand vous y arrivez, une notification vous prévient, et il suffit de la toucher pour ouvrir la carte. Le widget de l’écran d’accueil affiche la carte du lieu où vous êtes, et une carte associée à plusieurs lieux indique les cinq plus proches.
+
+AJOUTEZ UNE CARTE EN QUELQUES SECONDES
+Pointez l’appareil photo vers le code-barres d’une carte, ou choisissez une photo ou un fichier qui le montre. Card Barcodes lit les codes QR, EAN-13, EAN-8, UPC-E, Code 128, Code 39, Code 93, Aztec et PDF417. Si une carte n’a pas de code-barres, saisissez son numéro.
+
+RECHERCHEZ ET PARTAGEZ
+Recherchez vos cartes et triez-les par dernière consultation, dans l’ordre de votre choix ou par lieu le plus proche. Partagez une carte sous forme de lien, qu’une autre personne pourra ajouter à son propre Card Barcodes, ou sous forme d’image.
+
+CHAQUE CARTE À SA COULEUR
+Choisissez parmi 23 couleurs ou la couleur de votre choix, et donnez une icône à chaque carte. Le texte reste lisible sur chacune d’elles.
+
+SUR VOTRE IPHONE ET VOTRE IPAD
+Vos cartes se synchronisent via votre propre compte iCloud, et vous les retrouvez sur votre iPhone, votre iPad et votre iPhone Duo. Vous n’avez aucun compte à créer.
+
+CONFIDENTIALITÉ
+Il n’y a ni publicité ni outil d’analyse, et rien ne suit vos activités. Votre position reste sur votre appareil, sauf quand Apple Plans est sollicité pour trouver et nommer les lieux que vous ajoutez. Exportez vos cartes dans un fichier quand vous le souhaitez.
+
+POUR TOUT LE MONDE
+Card Barcodes fonctionne avec VoiceOver, les tailles de texte plus grandes et le mode sombre.

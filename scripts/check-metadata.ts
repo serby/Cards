@@ -30,6 +30,31 @@ export const metadataDir = join(import.meta.dirname, "..", "metadata");
 /// App Store Connect takes review notes once per version, not per locale, so only this locale has them.
 export const reviewNotesLocale = "en-GB";
 
+/// What Arabic may write after a letter: short vowels, shadda, tanween and tatweel.
+const arabicMarks = "[\\u0640\\u064B-\\u065F\\u0670]*";
+
+/// Arabic letters as written, with any marks after each: "مجانًا" carries a
+/// tanween, "مَجَّانِيّ" every mark.
+function arabicLetters(letters: string): string {
+    return [...letters].map((letter) => letter + arabicMarks).join("");
+}
+
+/// مجاني, "free of charge", and its forms (مجانية, مجانًا, مجانى, بالمجان) as
+/// a whole word, after any prefix Arabic joins to it: و or ف ("and"), then ب,
+/// ل or ك, then the article ال, which ل joins as لل. So "والمجانية" counts,
+/// and "مجانين" ("madmen") does not.
+const arabicFree = new RegExp(
+    [
+        "(?<![\\p{L}\\p{N}])",
+        `(?:[وف]${arabicMarks})?`,
+        `(?:(?:[بك]${arabicMarks})?${arabicLetters("ال")}|${arabicLetters("لل")}|[بلك]${arabicMarks})?`,
+        arabicLetters("مجان"),
+        `(?:${["يين", "يون", "يات", "ية", "يه", "يا", "ي", "ى", "ا"].map(arabicLetters).join("|")})?`,
+        "(?![\\p{L}\\p{N}])",
+    ].join(""),
+    "u",
+);
+
 /// The word "free" in each listing language, which App Store Review Guideline
 /// 2.3.7 keeps out of the name, subtitle and screenshot captions. Add a
 /// language's words with its first listing.
@@ -37,6 +62,8 @@ const priceWords: Record<string, RegExp> = {
     en: /(?<![\p{L}\p{N}])free(?![\p{L}\p{N}])/iu,
     es: /(?<![\p{L}\p{N}])(gratis|gratuit[ao]s?)(?![\p{L}\p{N}])/iu,
     de: /(?<![\p{L}\p{N}])(kostenlos(e[mnrs]?)?|gratis|umsonst)(?![\p{L}\p{N}])/iu,
+    fr: /(?<![\p{L}\p{N}])(gratuit(e|es|s|é|ement)?|gratis)(?![\p{L}\p{N}])/iu,
+    ar: arabicFree,
     ja: /無料/u,
 };
 

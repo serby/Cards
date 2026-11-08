@@ -1,0 +1,14 @@
+Partagez une carte sous forme de lien, qu’une autre personne peut ajouter à son propre Card Barcodes, ou sous forme d’image.
+Recherchez parmi vos cartes et triez-les par dernière consultation, selon votre ordre personnalisé ou par lieu le plus proche.
+Donnez à chaque carte une icône, parmi 76 réparties en 16 groupes, affichée dans la liste et sur la carte.
+Ajoutez une carte à partir d’une photo, d’une capture d’écran ou d’un PDF de son code-barres, comme un billet électronique.
+Une carte associée à plusieurs lieux affiche les cinq plus proches et la distance de chacun. Touchez-en un pour l’ouvrir dans Plans.
+Affichez en entier la carte du lieu où vous êtes au-dessus de vos autres cartes, grâce à une nouvelle option dans Réglages.
+Affichez les distances en kilomètres ou en miles, ou selon les réglages de votre iPhone, grâce à un nouveau choix dans Réglages.
+Trouvez un lieu en recherchant un commerce, une rue, une ville ou un code postal. Les lieux sont nommés d’après le plan, et vous pouvez changer leur nom.
+Modifiez un lieu que vous avez ajouté à une carte.
+Importez des cartes depuis un fichier JSON, et plus seulement en les collant.
+L’appareil photo fait la mise au point sur une carte tenue près de l’objectif. Touchez pour faire la mise au point, ou allumez la lampe de poche en cas de faible luminosité.
+Vos cartes s’affichent en grille, deux par ligne sur iPhone et quatre sur iPad. Touchez une carte de manière prolongée pour la modifier ou la supprimer, ou supprimez-la depuis son écran de modification.
+L’ouverture d’une carte ne déclenche plus de retour haptique, ce qui ne se produisait que la première fois.
+Lorsque toutes les cartes tiennent à l’écran, les faire glisser ne masque plus la barre du haut pour la réafficher ensuite.
