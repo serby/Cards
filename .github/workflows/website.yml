@@ -55,7 +55,8 @@ jobs:
 
     - name: Say why nothing was deployed
       if: ${{ steps.images.outcome != 'success' }}
-      run: echo "::notice::Not deployed: some App Store images are missing (see the step above). The site deploys once they are committed."
+      run: |
+        echo "::notice::Not deployed, as some App Store images are missing (see the step above). The site deploys once they are committed."
 
     - name: Deploy to Cloudflare Pages
       if: ${{ steps.images.outcome == 'success' }}
