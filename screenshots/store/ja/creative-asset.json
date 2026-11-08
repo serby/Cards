@@ -1,6 +1,12 @@
 {
-  "file": "CreativeAsset",
-  "screen": "02_CardDetail",
-  "color": "graphite",
-  "title": "すぐにスキャンできるポイントカード"
+  "header": {
+    "file": "Header",
+    "color": "pink",
+    "title": "着いたら、すぐにカード"
+  },
+  "search": {
+    "file": "Search",
+    "color": "pink",
+    "title": "すぐにスキャンできるポイントカード"
+  }
 }

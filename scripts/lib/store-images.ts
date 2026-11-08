@@ -128,9 +128,23 @@ const number = (element, name, fallback) => element && element.dataset[name] !==
 const width = Number(svg.getAttribute("width"));
 const height = Number(svg.getAttribute("height"));
 
-// Words for Latin scripts; for text without spaces, such as Japanese, each character.
+// Words for text with spaces; for text without, such as Japanese, the phrases
+// that end at 、 or 。, so a line breaks there first.
 function pieces(text) {
-    return /\s/.test(text.trim()) || !/[　-鿿＀-￯]/.test(text) ? text.split(/\s+/).filter(Boolean) : Array.from(text);
+    if (/\s/.test(text.trim()) || !/[　-鿿＀-￯]/.test(text)) return text.split(/\s+/).filter(Boolean);
+    return text.match(/[^、。！？]+[、。！？]?|[、。！？]/g) || [text];
+}
+
+// A phrase too wide for a line, as characters, keeping punctuation, the long
+// vowel mark and small kana with the character before them, as Japanese
+// line breaking does.
+function characters(phrase) {
+    const out = [];
+    for (const character of Array.from(phrase)) {
+        if (out.length > 0 && /[、。！？ーぁぃぅぇぉっゃゅょゎァィゥェォッャュョヮ）」』]/.test(character)) out[out.length - 1] += character;
+        else out.push(character);
+    }
+    return out;
 }
 
 function wrap(element, text) {
@@ -147,10 +161,11 @@ function wrap(element, text) {
         const probe = document.createElementNS(NS, "tspan");
         element.appendChild(probe);
         const measure = (line) => { probe.textContent = line; return probe.getComputedTextLength(); };
+        const units = joiner ? words : words.flatMap((word) => measure(word) > maxWidth ? characters(word) : [word]);
         const breakAt = (limit) => {
             const lines = [];
             let line = "";
-            for (const word of words) {
+            for (const word of units) {
                 const next = line ? line + joiner + word : word;
                 if (line && measure(next) > limit) { lines.push(line); line = word; } else { line = next; }
             }
@@ -196,19 +211,23 @@ const title = document.getElementById("title");
 const subtitle = document.getElementById("subtitle");
 const chips = document.getElementById("chips");
 const chip = document.getElementById("chip");
-const padding = number(panel, "padding", 56);
-let y = Number(panel.getAttribute("y")) + padding;
+const device = document.getElementById("device");
 
-wrap(title, data.title);
-y = placeTop(title, y);
-if (data.subtitle) {
-    wrap(subtitle, data.subtitle);
-    y = placeTop(subtitle, y + number(subtitle, "gap", 24));
-} else {
-    subtitle.remove();
+// Every image a template takes from a capture: #screen the caption's own, and
+// any with data-capture another by name, such as a crop of a card.
+const screen = document.getElementById("screen");
+if (screen && data.screen) {
+    screen.setAttribute("href", data.screen);
+    screen.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", data.screen);
+}
+for (const image of document.querySelectorAll("image[data-capture]")) {
+    const source = data.captures[image.dataset.capture];
+    if (!source) throw new Error("no capture " + image.dataset.capture);
+    image.setAttribute("href", source);
+    image.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", source);
 }
 
-if (data.chips && data.chips.length > 0) {
+function makeChips() {
     chip.remove();
     const spacing = number(chips, "spacing", 16);
     const made = data.chips.map((text) => {
@@ -232,35 +251,62 @@ if (data.chips && data.chips.length > 0) {
         item.copy.setAttribute("transform", "translate(" + x + " 0)");
         x += item.width + spacing;
     }
-    y = placeTop(chips, y + number(chips, "gap", 24));
-} else {
-    chips.remove();
 }
 
-panel.setAttribute("height", String(y + padding - Number(panel.getAttribute("y"))));
+wrap(title, data.title);
+if (data.subtitle && subtitle) wrap(subtitle, data.subtitle); else if (subtitle) subtitle.remove();
+const hasChips = chips && data.chips && data.chips.length > 0;
+if (hasChips) makeChips(); else if (chips) chips.remove();
 
-const device = document.getElementById("device");
-const deviceWidth = number(device, "width", width);
-const deviceHeight = number(device, "height", height);
-const top = y + padding + number(device, "gap", 48);
-const room = height - number(device, "margin", 48) - top;
-const scale = Math.min(room / deviceHeight, (width * 0.86) / deviceWidth);
-device.setAttribute("transform", "translate(" + (width - deviceWidth * scale) / 2 + " " + top + ") scale(" + scale + ")");
-const screen = document.getElementById("screen");
-screen.setAttribute("href", data.screen);
-screen.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", data.screen);
+if (panel) {
+    // Stacked from the top of the panel, which grows round them, and the
+    // device scaled into the room left below.
+    const padding = number(panel, "padding", 56);
+    let y = placeTop(title, Number(panel.getAttribute("y")) + padding);
+    if (data.subtitle && subtitle) y = placeTop(subtitle, y + number(subtitle, "gap", 24));
+    if (hasChips) y = placeTop(chips, y + number(chips, "gap", 24));
+    panel.setAttribute("height", String(y + padding - Number(panel.getAttribute("y"))));
+    if (device) {
+        const deviceWidth = number(device, "width", width);
+        const deviceHeight = number(device, "height", height);
+        const top = y + padding + number(device, "gap", 48);
+        const room = height - number(device, "margin", 48) - top;
+        const scale = Math.min(room / deviceHeight, (width * 0.86) / deviceWidth);
+        device.setAttribute("transform", "translate(" + (width - deviceWidth * scale) / 2 + " " + top + ") scale(" + scale + ")");
+    }
+} else {
+    // No panel: the text block is centred on the title's data-middle, and the
+    // rest of the template stays where it is drawn.
+    const middle = number(title, "middle", NaN);
+    if (!Number.isNaN(middle)) {
+        const gap = number(subtitle, "gap", 24);
+        const titleBox = title.getBBox();
+        const subtitleBox = data.subtitle && subtitle ? subtitle.getBBox() : null;
+        const total = titleBox.height + (subtitleBox ? gap + subtitleBox.height : 0);
+        const end = placeTop(title, middle - total / 2);
+        if (subtitleBox) placeTop(subtitle, end + gap);
+    }
+}
 })();
 `;
 
 /// The page Chrome renders: the template, the data to fill it with, and the
 /// layout script. The SVG is the page, at its own size, with nothing round it.
-export function pageFor(template: string, caption: StoreImageCaption, variables: Record<string, string>, screenPNG: Uint8Array): string {
+export function pageFor(
+    template: string,
+    caption: Pick<StoreImageCaption, "title" | "subtitle" | "chips">,
+    variables: Record<string, string>,
+    screenPNG?: Uint8Array,
+    captures: Record<string, Uint8Array> = {},
+): string {
+    const dataURI = (png: Uint8Array) => `data:image/png;base64,${Buffer.from(png).toString("base64")}`;
     const data = {
         title: caption.title,
         subtitle: caption.subtitle ?? "",
         chips: caption.chips ?? [],
         variables,
-        screen: `data:image/png;base64,${Buffer.from(screenPNG).toString("base64")}`,
+        screen: screenPNG ? dataURI(screenPNG) : "",
+        captures: Object.fromEntries(Object.entries(captures).map(([name, png]) => [name, dataURI(png)])),
     };
     // "</" would end the script element early.
     const json = JSON.stringify(data).replaceAll("</", "<\\/");
@@ -335,4 +381,68 @@ export function composeStoreImage(caption: StoreImageCaption, device: StoreDevic
     const template = readFileSync(templatePath, "utf8");
     const page = pageFor(template, caption, variablesFor(caption.color, readCardColours(rootDir)), readFileSync(capturePath));
     return renderPage(page, device.width, device.height);
+}
+
+/// The creative assets iOS 27 shows: the product page header and the search
+/// result, each drawn from its own template at the size App Store Connect takes
+/// for it, with its own placement. The templates crop the iPhone Duo captures.
+export interface CreativeAssetKind {
+    key: "header" | "search";
+    width: number;
+    height: number;
+    template: string;
+    placementType: "PRODUCT_PAGE_HEADER_ASSET" | "APP_STORE_SEARCH_RESULTS_ASSET";
+}
+
+export const creativeAssetKinds: CreativeAssetKind[] = [
+    { key: "header", width: 3840, height: 1646, template: "Header.svg", placementType: "PRODUCT_PAGE_HEADER_ASSET" },
+    { key: "search", width: 3840, height: 2560, template: "Search.svg", placementType: "APP_STORE_SEARCH_RESULTS_ASSET" },
+];
+
+/// One creative asset, as a locale's creative-asset.json lists it.
+export interface CreativeAssetEntry {
+    /// The image's file name: "Header".
+    file: string;
+    /// The card colour its background takes.
+    color: string;
+    /// A short phrase, in the listing's language.
+    title: string;
+}
+
+/// A locale's creative-asset.json, checked: an entry for each kind of asset.
+export function parseCreativeAssets(json: string, where: string): Record<CreativeAssetKind["key"], CreativeAssetEntry> {
+    const value: unknown = JSON.parse(json);
+    if (typeof value !== "object" || value === null) throw new Error(`${where}: expected an object`);
+    const entries = value as Record<string, Record<string, unknown> | undefined>;
+    const read = (key: CreativeAssetKind["key"]): CreativeAssetEntry => {
+        const entry = entries[key];
+        if (typeof entry !== "object" || entry === null) throw new Error(`${where}: "${key}" must be an object with a file, a color and a title`);
+        for (const field of ["file", "color", "title"]) {
+            if (typeof entry[field] !== "string" || (entry[field] as string).trim() === "") throw new Error(`${where}: ${key}'s "${field}" must be a non-empty string`);
+        }
+        return { file: entry.file as string, color: entry.color as string, title: entry.title as string };
+    };
+    return { header: read("header"), search: read("search") };
+}
+
+export function readCreativeAssets(locale: string, rootDir: string = root): Record<CreativeAssetKind["key"], CreativeAssetEntry> | undefined {
+    const path = join(rootDir, "screenshots", "store", locale, "creative-asset.json");
+    return existsSync(path) ? parseCreativeAssets(readFileSync(path, "utf8"), path) : undefined;
+}
+
+/// The captures a template crops, by the names its images' data-capture give.
+export function capturesNamed(template: string): string[] {
+    return [...new Set([...template.matchAll(/data-capture="([^"]+)"/g)].map((match) => match[1]!))];
+}
+
+/// A creative asset for the locale, from its template and the locale's iPhone Duo captures.
+export function composeCreativeAsset(kind: CreativeAssetKind, entry: CreativeAssetEntry, locale: string, rootDir: string = root): Buffer {
+    const template = readFileSync(join(rootDir, "screenshots", "templates", kind.template), "utf8");
+    const captures = Object.fromEntries(capturesNamed(template).map((name) => {
+        const path = join(rootDir, "screenshots", locale, `${name}_Duo.png`);
+        if (!existsSync(path)) throw new Error(`Missing the raw capture ${path}: make capture-screenshots`);
+        return [name, readFileSync(path)];
+    }));
+    const page = pageFor(template, { title: entry.title }, variablesFor(entry.color, readCardColours(rootDir)), undefined, captures);
+    return renderPage(page, kind.width, kind.height);
 }

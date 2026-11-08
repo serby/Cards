@@ -1,6 +1,12 @@
 {
-  "file": "CreativeAsset",
-  "screen": "02_CardDetail",
-  "color": "graphite",
-  "title": "Deine Kundenkarten, bereit zum Scannen"
+  "header": {
+    "file": "Header",
+    "color": "pink",
+    "title": "Deine Karte, bereit bei Ankunft"
+  },
+  "search": {
+    "file": "Search",
+    "color": "pink",
+    "title": "Deine Kundenkarten, bereit zum Scannen"
+  }
 }

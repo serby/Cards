@@ -1,8 +1,8 @@
-// Uploads each locale's universal creative asset, screenshots/store/<locale>/
-// <file>.png as its creative-asset.json names it, to the app's asset library in
-// App Store Connect, and places it on the editable App Store version's
-// localisation as both the product page header and the search results asset,
-// which iOS 27 and iPadOS 27 show. App Store Connect API 4.5.1 added the asset
+// Uploads each locale's creative assets, the product page header and the search
+// result, screenshots/store/<locale>/<file>.png as its creative-asset.json names
+// them, to the app's asset library in App Store Connect, and places each on the
+// editable App Store version's localisation in its own place, which iOS 27 and
+// iPadOS 27 show. App Store Connect API 4.5.1 added the asset
 // library (https://developer.apple.com/documentation/appstoreconnectapi/uploading-and-managing-image-assets
 // and .../placing-assets-on-your-app-store-surfaces). The placements go to
 // App Review with the version.
@@ -10,8 +10,8 @@
 // An image is reserved, uploaded and committed once, then placed. Its reference
 // name carries a hash of its bytes, so a run after an unchanged asset uploads
 // nothing. Which placement groups take it comes from App Store Connect's
-// reference data: the groups mapped to the universal 5244 x 2950 image
-// specification. In each group a placement already showing this image is kept;
+// reference data: the groups mapped to the image specification its size meets
+// for its placement (3840 x 1646 for the header, 3840 x 2560 for the search result). In each group a placement already showing this image is kept;
 // any other is deleted, as a group holds one header asset, and a new one made.
 // Images cannot be changed once committed, so older ones stay in the library.
 //
@@ -24,17 +24,20 @@ import { createHash } from "node:crypto";
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { basename, join } from "node:path";
 import { AppStoreConnect, editableVersions, errorMessage, findApp, query, versionState, type Resource } from "./lib/app-store-connect.ts";
+import { creativeAssetKinds, parseCreativeAssets } from "./lib/store-images.ts";
 
 const root = join(import.meta.dirname, "..");
 const storeDir = join(root, "screenshots", "store");
 const bundleId = process.env.BUNDLE_ID ?? "net.serby.Cards";
-/// Where a universal asset goes: the product page header and the search results.
-const placementTypes = ["PRODUCT_PAGE_HEADER_ASSET", "APP_STORE_SEARCH_RESULTS_ASSET"];
+/// Where the assets go: the product page header and the search results.
+const placementTypes = creativeAssetKinds.map((kind) => kind.placementType);
 /// Image states in which an uploaded image can be placed, or already is.
 const usableStates = ["PREPARE_FOR_SUBMISSION", "COMPLETE", "READY_FOR_REVIEW", "WAITING_FOR_REVIEW", "IN_REVIEW", "ACCEPTED", "APPROVED"];
 
 interface CreativeAsset {
     locale: string;
+    /// Where it goes: the product page header or the search results.
+    placementType: string;
     path: string;
     bytes: Buffer<ArrayBuffer>;
     width: number;
@@ -92,20 +95,24 @@ function creativeAssets(): CreativeAsset[] {
     return locales.flatMap((locale): CreativeAsset[] => {
         const entryPath = join(storeDir, locale, "creative-asset.json");
         if (!existsSync(entryPath)) return [];
-        const { file } = JSON.parse(readFileSync(entryPath, "utf8")) as { file: string };
-        const path = join(storeDir, locale, `${file}.png`);
-        if (!existsSync(path)) throw new Error(`${locale}: ${file}.png is missing; run make store-screenshots`);
-        const bytes = readFileSync(path);
-        if (bytes.toString("latin1", 12, 16) !== "IHDR") throw new Error(`${path} is not a PNG`);
-        const hash = createHash("sha256").update(bytes).digest("hex").slice(0, 12);
-        return [{
-            locale,
-            path,
-            bytes,
-            width: bytes.readUInt32BE(16),
-            height: bytes.readUInt32BE(20),
-            referenceName: `Creative asset ${locale} ${hash}`,
-        }];
+        const entries = parseCreativeAssets(readFileSync(entryPath, "utf8"), entryPath);
+        return creativeAssetKinds.map((kind): CreativeAsset => {
+            const { file } = entries[kind.key];
+            const path = join(storeDir, locale, `${file}.png`);
+            if (!existsSync(path)) throw new Error(`${locale}: ${file}.png is missing; run make store-screenshots`);
+            const bytes = readFileSync(path);
+            if (bytes.toString("latin1", 12, 16) !== "IHDR") throw new Error(`${path} is not a PNG`);
+            const hash = createHash("sha256").update(bytes).digest("hex").slice(0, 12);
+            return {
+                locale,
+                placementType: kind.placementType,
+                path,
+                bytes,
+                width: bytes.readUInt32BE(16),
+                height: bytes.readUInt32BE(20),
+                referenceName: `Creative asset ${kind.key} ${locale} ${hash}`,
+            };
+        });
     });
 }
 
@@ -135,35 +142,33 @@ async function main(): Promise<void> {
             continue;
         }
         console.log(`==> ${asset.locale}: ${basename(asset.path)}`);
-        const spec = universalSpec(refData, asset);
+        const spec = specFor(refData, asset);
         const image = await libraryImage(asc, library.id, asset);
         const specId = image?.attributes.specId ?? spec.specId;
         if (image && specId !== spec.specId) {
-            console.log(`   !! App Store Connect matched it to ${specId}, not the universal ${spec.specId}`);
+            console.log(`   !! App Store Connect matched it to ${specId}, not ${spec.specId}`);
         }
-        for (const type of placementTypes) {
-            for (const group of placementGroups(refData, type, specId)) {
-                await place(asc, localization.id, type, group, image?.id);
-            }
+        for (const group of placementGroups(refData, asset.placementType, specId)) {
+            await place(asc, localization.id, asset.placementType, group, image?.id);
         }
     }
     console.log("Done. Check the version's product page in App Store Connect, and its preview of the header and search results.");
 }
 
-/// The universal image specification the asset matches, checked against its limits.
-function universalSpec(refData: RefData[], asset: CreativeAsset): ImageSpec {
+/// The image specification the asset matches for its placement, checked against
+/// its limits: one made for that placement before a universal one.
+function specFor(refData: RefData[], asset: CreativeAsset): ImageSpec {
     const specs = refData.flatMap((datum) => datum.imageSpecs ?? []);
     const fits = (spec: ImageSpec) => {
         const size = spec.dimensions ?? {};
         return asset.width >= (size.minWidth ?? 0) && asset.width <= (size.maxWidth ?? Infinity)
             && asset.height >= (size.minHeight ?? 0) && asset.height <= (size.maxHeight ?? Infinity);
     };
-    const spec = specs.find((candidate) =>
-        candidate.universalAsset === true && fits(candidate)
-        && placementTypes.every((type) => candidate.compatiblePlacementTypes?.includes(type)));
+    const matching = specs.filter((candidate) => fits(candidate) && candidate.compatiblePlacementTypes?.includes(asset.placementType));
+    const spec = matching.find((candidate) => candidate.universalAsset !== true) ?? matching[0];
     if (!spec) {
         const known = specs.map((candidate) => `${candidate.shortName ?? candidate.specId}${candidate.universalAsset ? " (universal)" : ""}`).join(", ");
-        throw new Error(`no universal image specification takes ${asset.width} x ${asset.height} for ${placementTypes.join(" and ")}; App Store Connect has: ${known || "none"}`);
+        throw new Error(`no image specification takes ${asset.width} x ${asset.height} for ${asset.placementType}; App Store Connect has: ${known || "none"}`);
     }
     if (spec.maxFileSize !== undefined && asset.bytes.length > spec.maxFileSize) {
         throw new Error(`${asset.path} is ${asset.bytes.length} bytes, over the ${spec.maxFileSize} the specification allows`);

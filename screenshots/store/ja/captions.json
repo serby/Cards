@@ -1,50 +1,51 @@
 [
   {
-    "file": "01_Cards",
-    "screen": "01_CardList",
+    "file": "01_Places",
+    "screen": "07_CardWhereYouAre",
     "color": "blue",
-    "layout": "screen",
-    "title": "ポイントカードをまとめて",
-    "subtitle": "何枚でも、広告なし"
+    "title": "着いたら、すぐにカード",
+    "subtitle": "カードを使う場所を追加すると、そこに着いたときに一番上に表示されます"
   },
   {
-    "file": "02_Scan",
-    "screen": "02_CardDetail",
-    "color": "graphite",
-    "layout": "screen",
-    "title": "レジですぐに",
-    "subtitle": "カードを開くと画面が明るくなります"
-  },
-  {
-    "file": "03_Widget",
-    "screen": "05_Widget",
+    "file": "02_Widget",
+    "screen": "05_HomeScreen",
     "color": "teal",
-    "layout": "band",
-    "title": "今いる場所のカード",
-    "subtitle": "ホーム画面にも、着いたときにも"
+    "title": "ホーム画面にも",
+    "subtitle": "ウィジェットに今いる場所のカードを表示"
   },
   {
-    "file": "04_Places",
-    "screen": "04_LocationPicker",
-    "color": "red",
-    "layout": "screen",
-    "title": "着いたらお知らせ",
-    "subtitle": "カードを使う場所を追加"
+    "file": "03_Privacy",
+    "screen": "08_Privacy",
+    "color": "graphite",
+    "title": "カードはあなたのもの",
+    "chips": ["アカウント不要", "トラッキングなし", "iCloud またはこのデバイス"]
+  },
+  {
+    "file": "04_NoAds",
+    "screen": "09_ManyCards",
+    "color": "green",
+    "title": "広告なし、制限なし",
+    "subtitle": "カードは何枚でも、追加の購入なし"
   },
   {
     "file": "05_Share",
     "screen": "06_ShareCard",
-    "color": "green",
-    "layout": "screen",
+    "color": "purple",
     "title": "カードを共有",
-    "subtitle": "リンクでも画像でも"
+    "subtitle": "リンクでも画像でも送れます"
   },
   {
-    "file": "06_Colours",
-    "screen": "03_EditCard",
-    "color": "purple",
-    "layout": "screen",
-    "title": "好きなカラーで",
-    "subtitle": "カードごとにアイコンも"
+    "file": "06_Till",
+    "screen": "02_CardDetail",
+    "color": "red",
+    "title": "レジですぐに",
+    "subtitle": "カードを開くと画面が明るくなり、スキャンしやすくなります"
+  },
+  {
+    "file": "07_Arrive",
+    "screen": "04_LocationPicker",
+    "color": "orange",
+    "title": "着いたらお知らせ",
+    "subtitle": "お店を検索するか、地図にピンを置くだけ"
   }
 ]

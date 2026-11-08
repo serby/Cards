@@ -287,7 +287,7 @@ describe("the build", () => {
         const out = join(root, "Website", "dist");
         assert.throws(() => buildWebsite({ root, out, log: () => undefined }), /these App Store images are missing[\s\S]*screenshots\/store\/en-GB\/01_Places_Duo\.png[\s\S]*--allow-missing-images/);
         const result = buildWebsite({ root, out, allowMissingImages: true, log: () => undefined });
-        assert.ok(result.skipped.includes("screenshots/store/ja/01_Cards_Duo.png"));
+        assert.ok(result.skipped.includes("screenshots/store/ja/01_Places_Duo.png"));
         assert.ok(!readFileSync(join(out, "ja/index.html"), "utf8").includes(`class="screenshots"`));
     });
 

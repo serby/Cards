@@ -1,6 +1,12 @@
 {
-  "file": "CreativeAsset",
-  "screen": "02_CardDetail",
-  "color": "graphite",
-  "title": "Tus tarjetas de lealtad, listas para escanear"
+  "header": {
+    "file": "Header",
+    "color": "pink",
+    "title": "Tu tarjeta, lista al llegar"
+  },
+  "search": {
+    "file": "Search",
+    "color": "pink",
+    "title": "Tus tarjetas de lealtad, listas para escanear"
+  }
 }

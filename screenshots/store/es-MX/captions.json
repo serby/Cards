@@ -1,50 +1,51 @@
 [
   {
-    "file": "01_Cards",
-    "screen": "01_CardList",
+    "file": "01_Places",
+    "screen": "07_CardWhereYouAre",
     "color": "blue",
-    "layout": "screen",
-    "title": "Todas tus tarjetas de lealtad",
-    "subtitle": "Todas las que quieras, sin anuncios"
+    "title": "Tu tarjeta, lista al llegar",
+    "subtitle": "Agrega los lugares donde la usas y será la primera cuando estés ahí"
   },
   {
-    "file": "02_Scan",
-    "screen": "02_CardDetail",
-    "color": "graphite",
-    "layout": "screen",
-    "title": "Lista en la caja",
-    "subtitle": "Abre una tarjeta y la pantalla se ilumina"
-  },
-  {
-    "file": "03_Widget",
-    "screen": "05_Widget",
+    "file": "02_Widget",
+    "screen": "05_HomeScreen",
     "color": "teal",
-    "layout": "band",
-    "title": "La tarjeta del lugar donde estás",
-    "subtitle": "En tu pantalla de inicio y al llegar"
+    "title": "En tu pantalla de inicio",
+    "subtitle": "El widget muestra la tarjeta del lugar donde estás"
   },
   {
-    "file": "04_Places",
-    "screen": "04_LocationPicker",
-    "color": "red",
-    "layout": "screen",
-    "title": "Un aviso al llegar",
-    "subtitle": "Agrega los lugares donde usas cada tarjeta"
+    "file": "03_Privacy",
+    "screen": "08_Privacy",
+    "color": "graphite",
+    "title": "Tus tarjetas son tuyas",
+    "chips": ["Sin cuenta", "Sin rastreo", "iCloud o este dispositivo"]
+  },
+  {
+    "file": "04_NoAds",
+    "screen": "09_ManyCards",
+    "color": "green",
+    "title": "Sin anuncios ni límites",
+    "subtitle": "Todas las tarjetas que quieras, sin nada que comprar"
   },
   {
     "file": "05_Share",
     "screen": "06_ShareCard",
-    "color": "green",
-    "layout": "screen",
+    "color": "purple",
     "title": "Comparte una tarjeta",
-    "subtitle": "Como enlace o como imagen"
+    "subtitle": "Envíala como enlace o como imagen"
   },
   {
-    "file": "06_Colours",
-    "screen": "03_EditCard",
-    "color": "purple",
-    "layout": "screen",
-    "title": "Del color que quieras",
-    "subtitle": "Y un ícono para cada tarjeta"
+    "file": "06_Till",
+    "screen": "02_CardDetail",
+    "color": "red",
+    "title": "Lista en la caja",
+    "subtitle": "Abre una tarjeta y la pantalla se ilumina para el escáner"
+  },
+  {
+    "file": "07_Arrive",
+    "screen": "04_LocationPicker",
+    "color": "orange",
+    "title": "Un aviso al llegar",
+    "subtitle": "Busca la tienda o mueve el marcador del mapa"
   }
 ]

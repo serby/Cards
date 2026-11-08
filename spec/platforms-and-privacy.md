@@ -111,9 +111,9 @@ As a card holder, I want the app to ask what I think only after it has worked fo
 As someone looking for a card wallet, I want the App Store listing in my language, so that I can tell what the app does before I download it.
 
 - The listing has British English (en-GB), American English (en-US), Spanish for Spain (es-ES), Spanish for Mexico (es-MX), German (de-DE) and Japanese (ja) versions, in preparation for 1.4. Each one says the same thing in its own words, with the wording people search for there: "Fidelización" in Spain, "Cartera" in Mexico, "Kundenkarten" in Germany, "ポイントカード管理" in Japan.
-- Every listing keeps the name "Card Barcodes" and localises the part after the colon, within 30 characters. Names, subtitles, screenshot captions and the creative asset's title never mention the price; the description and promotional text may say the app is free.
+- Every listing keeps the name "Card Barcodes" and localises the part after the colon, within 30 characters. Names, subtitles, screenshot captions and the creative assets' phrases never mention the price; the description and promotional text may say the app is free.
 - Each listing has its own keywords, within 100 bytes, with no word already in its name or subtitle and no competitor's name.
-- Each listing's What's New is that version's changelog in its language (SET-2), and its screenshots and creative asset (the product page header and search result on iOS 27) show the app in its language, with captions in it.
+- Each listing's What's New is that version's changelog in its language (SET-2), and its screenshots and creative assets (the product page header and search result on iOS 27) show the app in its language, with captions in it.
 - App Review's notes are written once, in British English.
 
 **Since:** In preparation for 1.4
@@ -167,7 +167,7 @@ As someone looking at the listing, I want its images to show what the app does f
   1. "Your card, ready when you arrive": the Cards tab with the card for where you are in full at the top (SET-3).
   2. "On your Home Screen": a Home Screen with the widget showing the card for where you are, and the app's icon, and nothing else (WID-1).
   3. "Your cards stay yours", with "No account", "No tracking" and "iCloud or this device": Settings at iCloud Sync, Data and Share Diagnostics (PLAT-4, DATA-8, PLAT-11).
-  4. "Free, with no ads": a grid full of cards, sixteen made-up ones (PLAT-4).
+  4. "No ads, no limits": a grid full of cards, sixteen made-up ones (PLAT-4). Captions never mention the price (PLAT-9), so not "free".
   5. "Share a card": the share menu with Share Link and Share Image (SHARE-1, SHARE-2).
   6. "Ready at the till": a card's screen (BAR-4, PLACE-9).
   7. "A reminder when you arrive": adding a place on the map (PLACE-1, ARR-1).
@@ -179,5 +179,7 @@ As someone looking at the listing, I want its images to show what the app does f
 - The images show only made-up businesses (LANGUAGE.md).
 
 **Since:** In preparation for 1.4
-**Where:** `screenshots/templates/`, `screenshots/store/<locale>/captions.json`, `scripts/compose-store-images.ts`, `scripts/lib/store-images.ts`, `scripts/store-images.test.ts`, `scripts/capture-screenshots.ts`, `CardsUITests/CardsScreenshotTests.swift`, `CardsUITests/CardsWidgetScreenshotTests.swift`, `Cards/Development/ScreenshotSeed.swift` (`insertMany`), `CardsTests/StoreImageColoursTests.swift`, `scripts/lib/website.ts` (`screenshotSuffix`)
-**Notes:** Only the iPhone Duo template and its British English images exist so far, for review. The iPhone and iPad templates and every other listing's captions follow once they are agreed. The creative asset is still drawn by `StoreCreativeAsset` in Swift.
+**Where:** `screenshots/templates/`, `screenshots/store/<locale>/captions.json`, `scripts/compose-store-images.ts`, `scripts/lib/store-images.ts`, `scripts/store-images.test.ts`, `scripts/capture-screenshots.ts`, `CardsUITests/CardsScreenshotTests.swift`, `CardsUITests/CardsWidgetScreenshotTests.swift`, `Cards/Development/ScreenshotSeed.swift` (`insertMany`), `CardsTests/StoreImageColoursTests.swift`, `scripts/lib/website.ts` (`screenshotSuffix`), `scripts/check-store-images.ts`, `scripts/upload-creative-assets.ts`
+- In preparation for 1.4 the creative assets are a product page header (3840 x 1646) and a search result asset (3840 x 2560) for each listing, each with one short phrase in its language on the brand pink: the header "Your card, ready when you arrive", beside the card for where you are with card tiles fanned round it, and the search result "Your loyalty cards, ready to scan", beside the iPhone Duo showing the Cards tab. The phrase and the app's screen stay inside Apple's art safe area for each, so nothing that matters is cropped or covered; the tiles round them may be.
+
+**Notes:** The templates are `iPhone.svg`, `iPad.svg` and `Duo.svg` for the screenshots and `Header.svg` and `Search.svg` for the creative assets. The creative assets crop the iPhone Duo captures.

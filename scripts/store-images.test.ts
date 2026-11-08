@@ -6,7 +6,7 @@ import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, test } from "node:test";
-import { pageFor, parseCaptions, readCardColours, root, storeDevices, templatesDir, variablesFor, withoutAlpha } from "./lib/store-images.ts";
+import { capturesNamed, creativeAssetKinds, pageFor, parseCaptions, parseCreativeAssets, readCardColours, root, storeDevices, templatesDir, variablesFor, withoutAlpha } from "./lib/store-images.ts";
 
 describe("parseCaptions", () => {
     test("reads an image with a subtitle, and one with chips", () => {
@@ -78,4 +78,31 @@ describe("templates", () => {
         const captions = parseCaptions(readFileSync(join(store, "en-GB", "captions.json"), "utf8"), "en-GB");
         for (const caption of captions) assert.ok(colours.cards[caption.color], `${caption.file}: ${caption.color}`);
     });
+});
+
+describe("parseCreativeAssets", () => {
+    test("reads the header and the search result", () => {
+        const assets = parseCreativeAssets(JSON.stringify({
+            header: { file: "Header", color: "pink", title: "Your card, ready when you arrive" },
+            search: { file: "Search", color: "pink", title: "Your loyalty cards, ready to scan" },
+        }), "creative-asset.json");
+        assert.equal(assets.header.file, "Header");
+        assert.equal(assets.search.title, "Your loyalty cards, ready to scan");
+    });
+
+    test("names what is missing", () => {
+        assert.throws(() => parseCreativeAssets(JSON.stringify({ header: { file: "Header", color: "pink", title: "T" } }), "ja/creative-asset.json"), /ja\/creative-asset.json: "search" must be an object/);
+        assert.throws(() => parseCreativeAssets(JSON.stringify({ header: { file: "Header", color: "pink" }, search: {} }), "x"), /header's "title"/);
+    });
+});
+
+describe("the creative asset templates", () => {
+    for (const kind of creativeAssetKinds) {
+        test(`${kind.template} is ${kind.width} x ${kind.height}, with a title and only the captures there are`, () => {
+            const svg = readFileSync(join(templatesDir, kind.template), "utf8");
+            assert.match(svg, new RegExp(`<svg[^>]* width="${kind.width}" height="${kind.height}"`));
+            assert.match(svg, /id="title"[^>]* data-middle="\d+"/);
+            for (const name of capturesNamed(svg)) assert.ok(existsSync(join(root, "screenshots", "en-GB", `${name}_Duo.png`)), `${kind.template} crops ${name}`);
+        });
+    }
 });
