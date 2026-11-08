@@ -6,7 +6,7 @@ The Settings tab: what the app is, the switches it keeps, the data actions, and 
 
 As a card holder, I want one screen for the app's settings and data, so that I know where to look.
 
-- The Settings tab shows a grouped list titled "Settings", white rows on the system's grouped grey, in this order (1.3):
+- The Settings tab shows a grouped list titled "Settings", white rows on the system's grouped grey, with room below the last section so it ends clear of the tab bar, in this order (1.3):
   - "What's New" on its own at the top (SET-2).
   - Display, with the Brightness Boost switch and its caption (BAR-4).
   - Locations, with the Arrival Notifications switch, its caption, and the message when notifications are off for the app (ARR-5), then the Show Card Where I Am switch and its caption (SET-3), then the Distances menu and its caption (SET-4) (in preparation for 1.4).

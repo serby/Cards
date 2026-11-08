@@ -238,8 +238,10 @@ public struct SettingsListView: View {
             }
         }
         // The system's grouped grey behind white rows, so each section stands
-        // apart and the long screen reads as groups.
+        // apart and the long screen reads as groups. Room below the last
+        // section keeps Version and Created by clear of the tab bar at the end.
         .listStyle(.insetGrouped)
+        .contentMargins(.bottom, 64, for: .scrollContent)
         .navigationTitle(Text("Settings", comment: "Title of the Settings screen."))
         .sheet(isPresented: $showImportSheet) {
             ImportCardsView(
