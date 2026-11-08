@@ -66,11 +66,11 @@ class AccessibilityAuditCase: XCTestCase {
         let element = issue.element
         let frame = element.map { $0.exists ? $0.frame : .zero } ?? .zero
         let ignored = Self.isKnownFalsePositive(issue, in: app)
-        print(
-            "AUDIT[\(name)] \(ignored ? "ignored" : "FAILED") \(issue.auditType.rawValue) | \(issue.compactDescription) | "
-                + "id=\(element?.identifier ?? "-") label=\(element?.label ?? "-") frame=\(frame)"
-                + " bars=\((app.navigationBars.allElementsBoundByIndex + app.tabBars.allElementsBoundByIndex).map(\.frame))"
-        )
+        let line = "AUDIT[\(name)] \(ignored ? "ignored" : "FAILED") \(Self.checkName(issue.auditType)) | \(issue.compactDescription) | "
+            + "id=\(element?.identifier ?? "-") label=\(element?.label ?? "-") frame=\(frame)"
+            + " bars=\((app.navigationBars.allElementsBoundByIndex + app.tabBars.allElementsBoundByIndex).map(\.frame))"
+        print(line)
+        if ignored { recordIgnored(issue, line: line) }
         return ignored
     }
 

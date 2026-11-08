@@ -11,7 +11,9 @@
 // installed (scripts/lib/simulator.ts), and a missing simulator created. The UI
 // tests run in parallel on clones of their simulator, a class at a time. A
 // failing test runs once more, and one that fails twice fails the run. Each
-// run's result bundle is kept, for CI to upload when it fails.
+// run's result bundle is kept, for CI to upload when it fails. The summary
+// lists the accessibility audit issues each UI run ignored as known false
+// positives, so every exception shows in every run (AGENTS.md rule 8).
 //
 // Usage: node scripts/run-tests.ts [--run <key>]... [--all] [--built <dir>] [--workers <n>] [--device <model>] [--os <version>] [--results <dir>]
 //   --run      a test run from lib/test-devices.ts, such as ui-ipad-26; repeat for more
@@ -26,6 +28,7 @@ import { existsSync, mkdirSync, readFileSync, rmSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { parseArgs } from "node:util";
 import { buildTests, testRunFile } from "./lib/built-tests.ts";
+import { ignoredAuditIssues } from "./lib/ignored-audit-issues.ts";
 import { bootTestSimulator, type Simulator } from "./lib/simulator.ts";
 import { everydayTestRuns, testRun, testRuns, xcodeVersionFor, type TestRun } from "./lib/test-devices.ts";
 import { finished, pinnedXcodeVersion, start, useXcodeVersion } from "./lib/xcode.ts";
@@ -152,6 +155,10 @@ for (const run of runs) {
     } catch (error) {
         failed = true;
         summary.push(`FAILED  ${run.key} on ${where} in ${Math.round((Date.now() - started) / 1000)} s: ${message(error)}. The result bundle is ${bundle}`);
+    }
+    if (run.suite === "ui") {
+        const ignored = ignoredAuditIssues(bundle);
+        if (ignored.length > 0) summary.push(`        ${run.key} ignored ${ignored.length} known audit false positives: ${ignored.join(", ")}`);
     }
 }
 console.log(`\n==> Summary\n${summary.join("\n")}`);
