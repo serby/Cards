@@ -29,7 +29,7 @@ If something here turns out to be wrong, fix the guide in the same change.
 
 Open the project with `open Cards.xcodeproj`. There is no generator step: the project is checked in, and the app target reads every file under `Cards/` through a file system synchronised group, so a new file or folder on disk is in the build with nothing to add.
 
-The deployment target is iOS 18.0. The app is built with the iOS 27 SDK, so anything newer than iOS 18 must sit behind `if #available` (see `tabBarMinimizeBehaviorIfAvailable()` for the pattern).
+The deployment target is iOS 18.0. The app is built with the iOS 27 SDK, so anything newer than iOS 18 must sit behind `if #available` (see `PlaceSearch.placeName(at:)`, MapKit's reverse geocoder on iOS 26 and Core Location's before it, for the pattern).
 
 ## 2. The everyday loop
 

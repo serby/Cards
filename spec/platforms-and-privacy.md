@@ -9,7 +9,7 @@ As a card holder, I want the app on my iPhone, so that my cards are in my pocket
 - The app runs on iOS 18.0 and later.
 - On iPhone it is portrait only.
 - It is called "Card Barcodes" on the Home Screen.
-- Features of iOS 26 and later are used only where available, such as the minimising tab bar (NAV-1).
+- Features of iOS 26 and later are used only where available, such as MapKit's naming of a place (PLACE-10).
 
 **Since:** 1.0
 **Where:** `Info.plist`, `Cards.xcodeproj/project.pbxproj` (`IPHONEOS_DEPLOYMENT_TARGET = 18.0`)

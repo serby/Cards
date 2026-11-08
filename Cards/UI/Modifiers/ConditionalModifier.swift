@@ -14,13 +14,4 @@ public extension View {
             self
         }
     }
-
-    @ViewBuilder
-    func tabBarMinimizeBehaviorIfAvailable() -> some View {
-        if #available(iOS 26.0, *) {
-            self.tabBarMinimizeBehavior(.onScrollUp)
-        } else {
-            self
-        }
-    }
 }

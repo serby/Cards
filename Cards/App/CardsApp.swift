@@ -106,7 +106,6 @@ struct CardsApp: App {
                 navigationManager.handleDeepLink(url)
             }
         }
-        .tabBarMinimizeBehaviorIfAvailable()
     }
 
     var body: some Scene {
