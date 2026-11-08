@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1320" height="2868" viewBox="0 0 1320 2868">
+  <!--
+    The App Store image for iPhone, the 6.9-inch display (iPhone 17 Pro Max), 1320 x 2868.
+    scripts/compose-store-images.ts fills it in for each entry in a locale's
+    captions.json, then lays it out:
+      #title, #subtitle   the caption, wrapped to data-width, at most data-max-lines,
+                          shrunk to fit; stacked from the top of #panel with data-gap
+      #chips              one pill per chip, the template's #chip copied and centred
+      #panel              grows to hold them, data-padding round them
+      #device             scaled to fit below the panel, data-gap under it and
+                          data-margin above the bottom; data-width and data-height
+                          are its size before scaling
+      #screen             the raw capture, clipped to the display
+    Colours are CSS variables the composer sets from card-colours.json, with
+    fallbacks so the template opens in any SVG editor as it will look.
+  -->
+  <style>
+    svg { --top: #2F6FD0; --bottom: #1B4E9E; --card-ink: #FFFFFF; --panel: #FFFFFF; --ink: #1C1C1E; --secondary-ink: rgba(28, 28, 30, 0.7); --accent: #D0185B; }
+    text { font-family: system-ui, -apple-system, "SF Pro Display", "Helvetica Neue", sans-serif; }
+  </style>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" style="stop-color: var(--top)"/>
+      <stop offset="1" style="stop-color: var(--bottom)"/>
+    </linearGradient>
+    <linearGradient id="metal" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#4A4D53"/>
+      <stop offset="0.45" stop-color="#26282C"/>
+      <stop offset="1" stop-color="#3C3F44"/>
+    </linearGradient>
+    <clipPath id="display"><path d="M228 42H1176A186 186 0 0 1 1362 228V2724A186 186 0 0 1 1176 2910H228A186 186 0 0 1 42 2724V228A186 186 0 0 1 228 42Z"/></clipPath>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="38" stdDeviation="47" flood-color="#000000" flood-opacity="0.32"/>
+    </filter>
+  </defs>
+
+  <rect id="background-fill" width="1320" height="2868" fill="url(#background)"/>
+
+  <rect id="panel" x="56" y="64" width="1208" height="380" rx="56" style="fill: var(--panel)" data-padding="64"/>
+  <text id="title" x="660" y="190" text-anchor="middle" font-size="96" font-weight="700" letter-spacing="-1"
+        style="fill: var(--ink)" data-width="1100" data-max-lines="2" data-line-height="1.08">The card for where you are</text>
+  <text id="subtitle" x="660" y="300" text-anchor="middle" font-size="52" font-weight="500"
+        style="fill: var(--secondary-ink)" data-width="1100" data-max-lines="2" data-line-height="1.22" data-gap="26">It's first in the list when you're there</text>
+  <g id="chips" data-gap="22" data-spacing="16" data-height="84">
+    <g id="chip">
+      <rect height="84" rx="42" style="fill: var(--accent)"/>
+      <text font-size="40" font-weight="600" fill="#FFFFFF" text-anchor="middle" data-padding="40">No account</text>
+    </g>
+  </g>
+
+  <g id="device" data-width="1404" data-height="2952" data-gap="64" data-margin="56" filter="url(#shadow)">
+    <path d="M228 0H1176A228 228 0 0 1 1404 228V2724A228 228 0 0 1 1176 2952H228A228 228 0 0 1 0 2724V228A228 228 0 0 1 228 0Z" fill="url(#metal)"/>
+    <path d="M228 0H1176A228 228 0 0 1 1404 228V2724A228 228 0 0 1 1176 2952H228A228 228 0 0 1 0 2724V228A228 228 0 0 1 228 0Z" fill="none" stroke="#FFFFFF" stroke-opacity="0.22" stroke-width="3"/>
+    <rect x="-8" y="560" width="12" height="120" rx="6" fill="#2E3035"/>
+    <rect x="-8" y="760" width="12" height="200" rx="6" fill="#2E3035"/>
+    <rect x="-8" y="1000" width="12" height="200" rx="6" fill="#2E3035"/>
+    <rect x="1400" y="820" width="12" height="300" rx="6" fill="#2E3035"/>
+    <rect x="1400" y="1760" width="12" height="220" rx="6" fill="#2E3035"/>
+    <path d="M228 16H1176A212 212 0 0 1 1388 228V2724A212 212 0 0 1 1176 2936H228A212 212 0 0 1 16 2724V228A212 212 0 0 1 228 16Z" fill="#050506"/>
+    <image id="screen" x="42" y="42" width="1320" height="2868" preserveAspectRatio="xMidYMid slice" clip-path="url(#display)" xlink:href="" href=""/>
+    <rect x="513" y="75" width="378" height="111" rx="55.5" fill="#000000"/>
+  </g>
+</svg>

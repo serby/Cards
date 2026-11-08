@@ -44,8 +44,17 @@ final class CardsWidgetScreenshotTests: XCTestCase {
             .matching(NSPredicate(format: "identifier == %@ AND value == %@", "Card Barcodes", words.widget))
         XCTAssertTrue(widgets.firstMatch.appears(within: 5), "The widget is not on the Home Screen")
 
-        // A crop of the Home Screen round the widget, which leaves out the other
-        // icons, the test runner's among them.
+        // The whole Home Screen page the widget went on, as it is on a phone
+        // (05_HomeScreen), once the test runner's icon is off it.
+        removeRunnerIcon()
+        Thread.sleep(forTimeInterval: 1.5)
+        let page = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
+        let pageSuffix = UIDevice.current.userInterfaceIdiom == .pad ? "_iPad" : ProcessInfo.processInfo.environment["SCREENSHOT_SUFFIX"] ?? ""
+        page.name = "05_HomeScreen\(pageSuffix)"
+        page.lifetime = .keepAlways
+        add(page)
+
+        // A crop of the Home Screen round the widget, which leaves out the other icons.
         let screenshot = XCUIScreen.main.screenshot().image
         let screen = CGRect(origin: .zero, size: screenshot.size)
         // The widget and its label with a margin of wallpaper round them. iPhone Duo
@@ -129,6 +138,38 @@ final class CardsWidgetScreenshotTests: XCTestCase {
         }
     }
 
+    /// Takes the test runner's icon off the Home Screen, leaving it installed in
+    /// the App Library, through its menu's Remove App and the alert's Remove
+    /// from Home Screen. The menu item has an identifier in every language; the
+    /// alert's buttons are found by their words, or else by position: Delete
+    /// App, Remove from Home Screen, Cancel.
+    @MainActor
+    private func removeRunnerIcon() {
+        let runner = springboard.icons.matching(NSPredicate(format: "label BEGINSWITH %@", "CardsUITests")).firstMatch
+        guard runner.exists else { return }
+        runner.press(forDuration: 1.5)
+        let remove = springboard.buttons["com.apple.springboardhome.application-shortcut-item.remove-app"]
+        guard remove.appears(within: 3) else {
+            attachSpringBoard("without_remove_app")
+            return
+        }
+        remove.tap()
+        let alert = springboard.alerts.firstMatch
+        guard alert.appears(within: 3) else {
+            attachSpringBoard("without_remove_alert")
+            return
+        }
+        let named = alert.buttons[words.removeFromHomeScreen]
+        let buttons = alert.buttons.allElementsBoundByIndex
+        if named.exists {
+            named.tap()
+        } else if buttons.count == 3 {
+            buttons[1].tap()
+        } else {
+            attachSpringBoard("unexpected_remove_alert")
+        }
+    }
+
     /// SpringBoard's element tree and the screen, for when a step finds nothing.
     @MainActor
     private func attachSpringBoard(_ step: String) {
@@ -157,6 +198,7 @@ private struct SpringBoardWords {
     /// differently from the menu item.
     let galleryAddWidget: String
     let done: String
+    let removeFromHomeScreen: String
     /// The accessibility value of a widget on the Home Screen.
     let widget: String
 
@@ -164,16 +206,22 @@ private struct SpringBoardWords {
         switch language {
         case "ar":
             (edit, editHomeScreen, addWidget, done) = ("تعديل", "تعديل الشاشة الرئيسية", "إضافة أداة", "تم")
+            removeFromHomeScreen = "إزالة من الشاشة الرئيسية"
         case "de":
             (edit, editHomeScreen, addWidget, done) = ("Bearbeiten", "Home-Bildschirm bearbeiten", "Widget hinzufügen", "Fertig")
+            removeFromHomeScreen = "Vom Home-Bildschirm entfernen"
         case "es":
             (edit, editHomeScreen, addWidget, done) = ("Editar", "Editar pantalla de inicio", "Añadir widget", "OK")
+            removeFromHomeScreen = "Eliminar de la pantalla de inicio"
         case "fr":
             (edit, editHomeScreen, addWidget, done) = ("Modifier", "Modifier l’écran d’accueil", "Ajouter un widget", "OK")
+            removeFromHomeScreen = "Retirer de l’écran d’accueil"
         case "ja":
             (edit, editHomeScreen, addWidget, done) = ("編集", "ホーム画面を編集", "ウィジェットを追加", "完了")
+            removeFromHomeScreen = "ホーム画面から取り除く"
         default:
             (edit, editHomeScreen, addWidget, done) = ("Edit", "Edit Home Screen", "Add Widget", "Done")
+            removeFromHomeScreen = "Remove from Home Screen"
         }
         galleryAddWidget = language == "fr" ? "Ajouter le widget" : addWidget
         widget = ["ar": "أداة", "ja": "ウィジェット"][language] ?? "Widget"

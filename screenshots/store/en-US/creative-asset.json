@@ -1,6 +1,12 @@
 {
-  "file": "CreativeAsset",
-  "screen": "02_CardDetail",
-  "color": "graphite",
-  "title": "Your loyalty cards, ready to scan"
+  "header": {
+    "file": "Header",
+    "color": "pink",
+    "title": "Your card, ready when you arrive"
+  },
+  "search": {
+    "file": "Search",
+    "color": "pink",
+    "title": "Your loyalty cards, ready to scan"
+  }
 }

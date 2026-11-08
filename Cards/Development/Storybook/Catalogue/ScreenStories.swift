@@ -118,12 +118,14 @@ private let cardDetailStory = Story(
         // Joe's Market's sample places, listed below the face from two (PLACE-9).
         // "Has location" also decides whether they have distances.
         .number("Places", 0, in: 0...Double(CardLocation.joesMarket.count), step: 1),
+        .text("Notes", ""), // Blank shows no notes panel (CARD-14).
         .toggle("Share menu", true)
     ] + ProximityKnobs.knobs(place: "Green Leaf Shepherd's Bush", distance: 320),
     gallery: [CardDetail.sample, .qr, .invalidCode].map { card in (name: card.name, view: cardDetailScreen(card)) } + [
         (name: "2 places", view: cardDetailScreen(.twoPlaces)),
         (name: "7 places", view: cardDetailScreen(.sevenPlaces)),
-        (name: "No location", view: cardDetailScreen(.placesWithoutLocation))
+        (name: "No location", view: cardDetailScreen(.placesWithoutLocation)),
+        (name: "Notes", view: cardDetailScreen(.withNotes))
     ]
 ) { knobs in
     let places = CardPlaces(
@@ -139,7 +141,8 @@ private let cardDetailStory = Story(
         color: .named(knobs.option("Colour")),
         places: places,
         proximity: knobs.proximity(),
-        icon: knobs.icon
+        icon: knobs.icon,
+        notes: knobs.string("Notes")
     )
     return pushed {
         CardDetailView(
@@ -177,6 +180,7 @@ private let cardEditStory = Story(
         IconKnob.knob(CardDraft.sample.icon),
         .number("Locations", 1, in: 0...Double(CardLocation.samples.count), step: 1),
         .toggle("Notify on arrival", true),
+        .text("Notes", CardDraft.sample.notes),
         .toggle("Arrival notifications on", true),
         .toggle("Code already used", false),
         .toggle("Shows scanner", false),
@@ -208,7 +212,8 @@ private let cardEditStory = Story(
                 color: .named(knobs.option("Colour")),
                 locations: Array(CardLocation.samples.prefix(knobs.integer("Locations"))),
                 notifiesOnArrival: knobs.bool("Notify on arrival"),
-                icon: knobs.icon
+                icon: knobs.icon,
+                notes: knobs.string("Notes")
             )
         },
         set: { (updated: CardDraft) in
@@ -219,6 +224,7 @@ private let cardEditStory = Story(
             knobs.iconBinding.wrappedValue = updated.icon
             knobs.set(Double(updated.locations.count), for: "Locations")
             knobs.set(updated.notifiesOnArrival, for: "Notify on arrival")
+            knobs.set(updated.notes, for: "Notes")
         }
     )
     return pushed {
@@ -319,10 +325,7 @@ private let settingsStory = Story(
             arrivalNotifications: knobs.boolBinding("Arrival notifications"),
             showsCardWhereYouAre: knobs.boolBinding("Show card where I am"),
             distanceUnits: knobs.distanceUnitsBinding,
-            mapsApp: Binding(
-                get: { MapsApp(rawValue: knobs.string("Maps app")) ?? .appleMaps },
-                set: { knobs.select($0.rawValue, for: "Maps app") }
-            ),
+            mapsApp: knobs.optionBinding("Maps app", default: MapsApp.appleMaps),
             syncsWithICloud: knobs.boolBinding("iCloud sync"),
             sharesDiagnostics: knobs.boolBinding("Share diagnostics"),
             message: message

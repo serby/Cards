@@ -17,7 +17,8 @@ struct SharingTests {
         locations: [CardLocation(name: "Joe's Market Notting Hill", latitude: 51.5090, longitude: -0.1960, radius: 150)],
         notifiesOnArrival: false,
         icon: "basket.fill",
-        lastViewed: Date(timeIntervalSince1970: 1_780_000_000)
+        lastViewed: Date(timeIntervalSince1970: 1_780_000_000),
+        notes: "Double points on Tuesdays."
     )
 
     // MARK: The payload
@@ -53,7 +54,7 @@ struct SharingTests {
         }
     }
 
-    /// The link carries the card, not the sharer's history with it.
+    /// The link carries the card, not the sharer's history with it or their notes (CARD-14).
     @Test func thePayloadLeavesOutWhatIsTheSharers() throws {
         let json = try #require(Data(base64Encoded: base64(fromURL: SharedCard(joesMarket).payload)))
         let decoded = try JSONSerialization.jsonObject(with: json)
@@ -235,6 +236,14 @@ struct SharingTests {
         if let folder = ProcessInfo.processInfo.environment["CARDS_SHARE_IMAGE_DIR"] {
             try png.write(to: URL(filePath: folder).appending(path: CardImage.fileName(for: CardDetail.sample.name)))
         }
+    }
+
+    /// The picture leaves the card's notes out, as the link does (CARD-14).
+    @Test @MainActor func theSharedImageLeavesOutTheNotes() throws {
+        let withoutNotes = try #require(CardShareImage.png(of: .twoPlaces).flatMap(UIImage.init(data:)))
+        let withNotes = try #require(CardShareImage.png(of: .withNotes).flatMap(UIImage.init(data:)))
+        #expect(withNotes.size == withoutNotes.size)
+        #expect(withNotes.pngData() == withoutNotes.pngData())
     }
 }
 

@@ -37,6 +37,7 @@ As a card holder, I want the card screen to look like the card, so that I know I
 - The name, the distance, the number and the date sit on white panels, inset 12 points from the card's edge and 12 points apart, with corners of 16 points so they nest inside the card's.
 - The barcode's frame lines up with the panels: a 6 point translucent grey frame round white with corners of 10 points.
 - In preparation for 1.4: on the card screen, a card with more than one place has one more white panel below the number's, the same width and with the same corners, listing its places (PLACE-9).
+- In preparation for 1.4: a card with notes has a last white panel below those, the same width and with the same corners, showing them (CARD-14).
 - Panel text is near-black (#1C1C1E). Supporting text, the distance and the date, is the same ink at 70%.
 - The panels and the barcode's white stay white in dark mode.
 - A Default card's face is a translucent grey over the screen's background.

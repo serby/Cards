@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="3840" height="1646" viewBox="0 0 3840 1646">
+  <!--
+    The product page header, 3840 x 1646 (21:9): the card for where you are, among the others.
+    Apple's art safe area, from its creative asset template, is the box
+    1097,493 1646 x 661 (#safe-area, never drawn): the title and the
+    app's own screen stay inside it; the cards round it may be cropped or covered.
+    scripts/compose-store-images.ts fills in #title from the locale's
+    creative-asset.json ("header"), wrapped to data-width and centred on
+    data-middle, and every image with data-capture from that capture.
+  -->
+  <style>
+    svg { --top: #2F6FD0; --bottom: #1B4E9E; --card-ink: #FFFFFF; --panel: #FFFFFF; --ink: #1C1C1E; --secondary-ink: rgba(28, 28, 30, 0.7); --accent: #D0185B; }
+    text { font-family: system-ui, -apple-system, "SF Pro Display", "Helvetica Neue", sans-serif; }
+  </style>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" style="stop-color: var(--top)"/>
+      <stop offset="1" style="stop-color: var(--bottom)"/>
+    </linearGradient>
+    <linearGradient id="metal" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#4A4D53"/>
+      <stop offset="0.45" stop-color="#26282C"/>
+      <stop offset="1" stop-color="#3C3F44"/>
+    </linearGradient>
+    <linearGradient id="spine" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#141518"/>
+      <stop offset="0.35" stop-color="#5A5E65"/>
+      <stop offset="0.6" stop-color="#2C2E33"/>
+      <stop offset="1" stop-color="#17181B"/>
+    </linearGradient>
+    <clipPath id="display"><path d="M102 34H1299A177 177 0 0 1 1476 211V1891A177 177 0 0 1 1299 2068H102A24 24 0 0 1 78 2044V58A24 24 0 0 1 102 34Z"/></clipPath>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="40" stdDeviation="50" flood-color="#000000" flood-opacity="0.32"/>
+    </filter>
+  
+    <filter id="card-shadow" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="24" stdDeviation="30" flood-color="#000000" flood-opacity="0.28"/></filter>
+  </defs>
+  <rect width="3840" height="1646" fill="url(#background)"/>
+  <rect id="safe-area" x="1097" y="493" width="1646" height="661" fill="none" visibility="hidden"/>
+  <g transform="translate(560 170) rotate(-8 225.45000000000002 159.3)" filter="url(#card-shadow)">
+    <clipPath id="tile0-clip"><rect width="450.90000000000003" height="318.6" rx="81"/></clipPath>
+    <g clip-path="url(#tile0-clip)">
+      <svg width="450.90000000000003" height="318.6" viewBox="594 273 501 354" preserveAspectRatio="none">
+        <image data-capture="09_ManyCards" width="1398" height="2034" href="" xlink:href=""/>
+      </svg>
+    </g>
+  </g>
+  <g transform="translate(90 760) rotate(6 225.45000000000002 159.3)" filter="url(#card-shadow)">
+    <clipPath id="tile1-clip"><rect width="450.90000000000003" height="318.6" rx="81"/></clipPath>
+    <g clip-path="url(#tile1-clip)">
+      <svg width="450.90000000000003" height="318.6" viewBox="51 1067 501 354" preserveAspectRatio="none">
+        <image data-capture="09_ManyCards" width="1398" height="2034" href="" xlink:href=""/>
+      </svg>
+    </g>
+  </g>
+  <g transform="translate(600 1120) rotate(-4 225.45000000000002 148.05)" filter="url(#card-shadow)">
+    <clipPath id="tile2-clip"><rect width="450.90000000000003" height="296.1" rx="81"/></clipPath>
+    <g clip-path="url(#tile2-clip)">
+      <svg width="450.90000000000003" height="296.1" viewBox="51 1464 501 329" preserveAspectRatio="none">
+        <image data-capture="09_ManyCards" width="1398" height="2034" href="" xlink:href=""/>
+      </svg>
+    </g>
+  </g>
+  <g transform="translate(2900 120) rotate(7 225.45000000000002 148.05)" filter="url(#card-shadow)">
+    <clipPath id="tile3-clip"><rect width="450.90000000000003" height="296.1" rx="81"/></clipPath>
+    <g clip-path="url(#tile3-clip)">
+      <svg width="450.90000000000003" height="296.1" viewBox="594 1464 501 329" preserveAspectRatio="none">
+        <image data-capture="09_ManyCards" width="1398" height="2034" href="" xlink:href=""/>
+      </svg>
+    </g>
+  </g>
+  <g transform="translate(3290 700) rotate(-6 225.45000000000002 159.3)" filter="url(#card-shadow)">
+    <clipPath id="tile4-clip"><rect width="450.90000000000003" height="318.6" rx="81"/></clipPath>
+    <g clip-path="url(#tile4-clip)">
+      <svg width="450.90000000000003" height="318.6" viewBox="594 1067 501 354" preserveAspectRatio="none">
+        <image data-capture="09_ManyCards" width="1398" height="2034" href="" xlink:href=""/>
+      </svg>
+    </g>
+  </g>
+  <g transform="translate(2880 1130) rotate(4 225.45000000000002 159.3)" filter="url(#card-shadow)">
+    <clipPath id="tile5-clip"><rect width="450.90000000000003" height="318.6" rx="81"/></clipPath>
+    <g clip-path="url(#tile5-clip)">
+      <svg width="450.90000000000003" height="318.6" viewBox="594 670 501 354" preserveAspectRatio="none">
+        <image data-capture="09_ManyCards" width="1398" height="2034" href="" xlink:href=""/>
+      </svg>
+    </g>
+  </g>
+  <g transform="translate(2099 503) rotate(0 320 318.1609195402299)" filter="url(#card-shadow)">
+    <clipPath id="hero-clip"><rect width="640" height="636.3218390804598" rx="56.398467432950184"/></clipPath>
+    <g clip-path="url(#hero-clip)">
+      <svg width="640" height="636.3218390804598" viewBox="51 273 1044 1038" preserveAspectRatio="none">
+        <image data-capture="07_CardWhereYouAre" width="1398" height="2034" href="" xlink:href=""/>
+      </svg>
+    </g>
+  </g>
+  <text id="title" x="1097" y="823" font-size="128" font-weight="700" letter-spacing="-1.5" style="fill: var(--card-ink)"
+        data-width="940" data-max-lines="3" data-line-height="1.06" data-middle="823">Your card, ready when you arrive</text>
+</svg>

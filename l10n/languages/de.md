@@ -20,6 +20,7 @@ Einstellungen, Sperrbildschirm, Ortungsdienste, Mitteilungen (not „Benachricht
 - Brightness Boost: „Volle Helligkeit“ everywhere; Voice Control alternative „Helligkeit“.
 - Map pin: Stecknadel. Pinned location: Markierter Ort.
 - icon: Symbol, as Apple says App-Symbol (not „Icon“); share: teilen; search: suchen; sort: sortieren; torch: Taschenlampe; What's New: „Neue Funktionen“, as the App Store says.
+- notes: Notizen, as in Kontakte; the empty field's placeholder: „Notiz hinzufügen“.
 - Colours: Standard, Rot, Orange, Gelb, Grün, Blaugrün (Teal), Blau, Indigo, Violett (Purple), Pink, Braun, Graphit.
 
 ## Punctuation and capitalisation

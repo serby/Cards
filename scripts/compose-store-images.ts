@@ -1,17 +1,19 @@
 // Composes the App Store images from the raw captures (make capture-screenshots),
 // each locale's captions.json and the vector templates in screenshots/templates/
 // (lib/store-images.ts), into screenshots/store/<locale>/<file><suffix>.png.
-// Devices without a template yet are left out and listed.
+// Devices without a template yet are left out and listed. Each locale's
+// creative-asset.json gives its product page header and search result assets,
+// Header.png and Search.png, which crop its iPhone Duo captures.
 //
 // Usage: node scripts/compose-store-images.ts [--device <name>]... [--locale <locale>]... [--out <dir>]
-//   --device   iPhone, iPad or Duo; repeat for more; every device with a template unless given
+//   --device   iPhone, iPad, Duo, or Creative for the header and search assets; repeat for more; all of them unless given
 //   --locale   a store locale; repeat for more; every locale with a captions.json unless given
 //   --out      where the images go instead of screenshots/store/<locale>/, as <out>/<locale>/
 
 import { existsSync, mkdirSync, readdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { parseArgs } from "node:util";
-import { composeStoreImage, readCaptions, root, storeDevices, templatesDir } from "./lib/store-images.ts";
+import { composeCreativeAsset, composeStoreImage, creativeAssetKinds, readCaptions, readCreativeAssets, root, storeDevices, templatesDir } from "./lib/store-images.ts";
 
 const usage = "Usage: node scripts/compose-store-images.ts [--device <name>]... [--locale <locale>]... [--out <dir>]";
 let options: { device?: string[]; locale?: string[]; out?: string };
@@ -28,9 +30,10 @@ try {
 const store = join(root, "screenshots", "store");
 const locales = options.locale ?? readdirSync(store).filter((locale) => existsSync(join(store, locale, "captions.json"))).sort();
 const chosen = options.device ? storeDevices.filter((device) => options.device!.includes(device.name)) : storeDevices;
-const unknown = (options.device ?? []).filter((name) => !storeDevices.some((device) => device.name === name));
+const creative = !options.device || options.device.includes("Creative");
+const unknown = (options.device ?? []).filter((name) => name !== "Creative" && !storeDevices.some((device) => device.name === name));
 if (unknown.length > 0) {
-    console.error(`Unknown device ${unknown.join(", ")}: one of ${storeDevices.map((device) => device.name).join(", ")}\n${usage}`);
+    console.error(`Unknown device ${unknown.join(", ")}: one of ${storeDevices.map((device) => device.name).join(", ")} or Creative\n${usage}`);
     process.exit(2);
 }
 const devices = chosen.filter((device) => existsSync(join(templatesDir, device.template)));
@@ -49,6 +52,14 @@ for (const locale of locales) {
             console.log(`${locale}/${name}  ${Date.now() - started} ms`);
             count++;
         }
+    }
+    const assets = creative ? readCreativeAssets(locale) : undefined;
+    for (const kind of assets ? creativeAssetKinds : []) {
+        const started = Date.now();
+        const entry = assets![kind.key];
+        writeFileSync(join(folder, `${entry.file}.png`), composeCreativeAsset(kind, entry, locale));
+        console.log(`${locale}/${entry.file}.png  ${Date.now() - started} ms`);
+        count++;
     }
 }
 console.log(`Composed ${count} images.`);

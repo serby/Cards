@@ -18,7 +18,7 @@ public struct CardEditView<Scanner: View>: View {
     /// neither, as when editing a card.
     private let barcodeImport: BarcodeImportActions?
 
-    @FocusState private var focusedField: Field?
+    @FocusState var focusedField: Field?
     @State private var showsLocationPicker = false
     @State var showsIconPicker = false
     /// Whether the icon grid has been scrolled by hand since the sheet opened.
@@ -32,8 +32,8 @@ public struct CardEditView<Scanner: View>: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.accessibilityAnnouncer) private var announcer
 
-    private enum Field {
-        case name, code
+    enum Field {
+        case name, code, notes
     }
 
     /// "Delete Joe's Market?", or "Delete this card?" while the name is blank.
@@ -301,6 +301,8 @@ public struct CardEditView<Scanner: View>: View {
                     .foregroundStyle(Color.secondaryText)
                     .accessibilityIdentifier("locationsFooter")
             }
+
+            notesSection
 
             if actions.delete != nil {
                 Section {

@@ -19,6 +19,7 @@ Ajustes (Settings), pantalla bloqueada (Lock Screen, lower case in sentences), L
 - Brightness Boost: Aumento de brillo (setting, button, announcements); Voice Control name: Brillo.
 - postcode: código postal; radius: radio ("Radio de %@").
 - icon: icono (never símbolo); share: compartir; search: buscar; sort: ordenar; torch: linterna; What's New: Novedades.
+- notes: notas, as in Contactos; the empty field's placeholder: "Añadir nota", with no article, like "Introducir nombre".
 - Colours use Apple's names: Morado, Grafito, Índigo, Verde azulado, Marrón.
 
 ## Punctuation and case

@@ -99,6 +99,12 @@ extension KnobValues {
     var distanceUnitsBinding: Binding<DistanceUnits> {
         Binding(get: { self.distanceUnits }, set: { self.select($0.knobName, for: DistanceKnobs.units) })
     }
+
+    /// An options knob of raw values as a binding to the value it names, or
+    /// `fallback` for one it doesn't.
+    func optionBinding<Value: RawRepresentable<String>>(_ name: String, default fallback: Value) -> Binding<Value> {
+        Binding(get: { Value(rawValue: self.string(name)) ?? fallback }, set: { self.select($0.rawValue, for: name) })
+    }
 }
 
 extension View {

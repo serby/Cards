@@ -127,16 +127,11 @@ class AccessibilityAuditCase: XCTestCase {
         // wraps on six lines and Locations is grown and whole (`make
         // capture-l10n` on iOS 26.5), and the right-to-left audit's screenshot
         // shows Delete Card grown and whole.
-        "distanceUnitsFooter", "deleteCardButton", "locationsSectionHeader"
+        "distanceUnitsFooter", "deleteCardButton", "locationsSectionHeader",
+        // The edit form's Notes caption, "unsupported" at the foot of the form
+        // as Delete Card is, and grown at the largest size. Paul agreed, 8 November 2026.
+        "notesFooter"
     ]).union(growsInFullInSettings)
-
-    /// Text the clipping check says may be cut off at larger sizes, since the
-    /// tests run on iOS 26 and 27, which the largest-size screenshots show
-    /// grown and whole (`growsInFull`): Delete Card and Created by, the last
-    /// rows of a screen scrolled to its end, and the add form's Locations
-    /// heading, on iOS 26 only.
-    private static let wholeAtTheLargestSize = Set(["deleteCardButton", "authorLink", "locationsSectionHeader"])
-        .union(wholeAtTheFootOfSettings)
 
     /// A place's row in the card form. The check reports its name and radius
     /// by their text, with no identifier, as the row speaks for both
@@ -326,7 +321,8 @@ class CardsAccessibilityAuditTests: AccessibilityAuditCase {
         let app = launch()
         app.openCard(SeededCard.localRoast)
         try audit(app)
-        try audit(app, scrolledTo: app.staticTexts["cardTimestampText"])
+        // Local Roast Coffee has notes, the last panel on its face (CARD-14).
+        try audit(app, scrolledTo: app.staticTexts["cardNotesText"])
     }
 
     /// A code its format cannot draw, so the screen shows the failure message
@@ -377,8 +373,9 @@ class CardFormAccessibilityAuditTests: AccessibilityAuditCase {
         // system keyboard.
         app.openEditCard(SeededCard.localRoast)
         try audit(app)
-        // Local Roast Coffee has a place, so this reaches a place's row and the footer.
-        try audit(app, scrolledTo: app.buttons["addLocationRowButton"])
+        // Local Roast Coffee has a place and notes, so this reaches a place's row,
+        // the footer and the notes field below them (CARD-14).
+        try audit(app, scrolledTo: app.textFields["notesTextField"])
     }
 
     @MainActor

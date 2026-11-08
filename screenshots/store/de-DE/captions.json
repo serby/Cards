@@ -1,50 +1,51 @@
 [
   {
-    "file": "01_Cards",
-    "screen": "01_CardList",
+    "file": "01_Places",
+    "screen": "07_CardWhereYouAre",
     "color": "blue",
-    "layout": "screen",
-    "title": "Alle deine Kundenkarten",
-    "subtitle": "So viele du willst, ohne Werbung"
+    "title": "Deine Karte, bereit bei Ankunft",
+    "subtitle": "Füge die Orte hinzu, an denen du sie nutzt, und dort steht sie ganz oben"
   },
   {
-    "file": "02_Scan",
-    "screen": "02_CardDetail",
-    "color": "graphite",
-    "layout": "screen",
-    "title": "Bereit an der Kasse",
-    "subtitle": "Karte öffnen, und der Bildschirm wird hell"
-  },
-  {
-    "file": "03_Widget",
-    "screen": "05_Widget",
+    "file": "02_Widget",
+    "screen": "05_HomeScreen",
     "color": "teal",
-    "layout": "band",
-    "title": "Die Karte für deinen Ort",
-    "subtitle": "Auf dem Home-Bildschirm und bei Ankunft"
+    "title": "Auf deinem Home-Bildschirm",
+    "subtitle": "Das Widget zeigt die Karte für deinen Ort"
   },
   {
-    "file": "04_Places",
-    "screen": "04_LocationPicker",
-    "color": "red",
-    "layout": "screen",
-    "title": "Erinnert dich bei Ankunft",
-    "subtitle": "Füge die Orte für jede Karte hinzu"
+    "file": "03_Privacy",
+    "screen": "08_Privacy",
+    "color": "graphite",
+    "title": "Deine Karten bleiben deine",
+    "chips": ["Kein Account", "Kein Tracking", "iCloud oder dieses Gerät"]
+  },
+  {
+    "file": "04_NoAds",
+    "screen": "09_ManyCards",
+    "color": "green",
+    "title": "Ohne Werbung, ohne Limit",
+    "subtitle": "So viele Karten, wie du willst, ganz ohne Käufe"
   },
   {
     "file": "05_Share",
     "screen": "06_ShareCard",
-    "color": "green",
-    "layout": "screen",
+    "color": "purple",
     "title": "Teile eine Karte",
     "subtitle": "Als Link oder als Bild"
   },
   {
-    "file": "06_Colours",
-    "screen": "03_EditCard",
-    "color": "purple",
-    "layout": "screen",
-    "title": "In jeder Farbe, die du magst",
-    "subtitle": "Und ein Symbol für jede Karte"
+    "file": "06_Till",
+    "screen": "02_CardDetail",
+    "color": "red",
+    "title": "Bereit an der Kasse",
+    "subtitle": "Karte öffnen, und der Bildschirm wird hell für den Scanner"
+  },
+  {
+    "file": "07_Arrive",
+    "screen": "04_LocationPicker",
+    "color": "orange",
+    "title": "Erinnert dich bei Ankunft",
+    "subtitle": "Suche das Geschäft oder setze die Stecknadel"
   }
 ]

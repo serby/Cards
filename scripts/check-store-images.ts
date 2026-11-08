@@ -1,7 +1,7 @@
 // Checks the App Store images the listing uploads, for every store locale (each
 // folder in metadata/): screenshots/store/<locale>/ has one image per caption in
 // its captions.json for each device (iPhone, iPad and iPhone Duo), and the
-// universal creative asset its creative-asset.json names. If any locale has a
+// product page header and search result assets its creative-asset.json names. If any locale has a
 // creative asset, every locale must, because Apple asks for one in every
 // language the listing has. The asset must be a 5244 x 2950 PNG with no alpha
 // channel, as App Store Connect requires. No caption's title or subtitle, and
@@ -16,12 +16,11 @@ import { closeSync, existsSync, openSync, readFileSync, readSync } from "node:fs
 import { join } from "node:path";
 import { priceWord } from "./check-metadata.ts";
 import { storeLocales } from "./lib/locales.ts";
+import { creativeAssetKinds, parseCreativeAssets, storeDevices } from "./lib/store-images.ts";
 
 const root = join(import.meta.dirname, "..");
-/// The file name suffix of each device's image, as StoreScreenshotTests writes them.
-const deviceSuffixes = ["", "_iPad", "_Duo"];
-/// The universal creative asset's size in pixels, as StoreCreativeAsset draws it.
-const creativeAssetSize = { width: 5244, height: 2950 };
+/// The file name suffix of each device's image, as compose-store-images.ts writes them.
+const deviceSuffixes = storeDevices.map((device) => device.suffix);
 /// PNG colour types with no alpha channel: greyscale and RGB.
 const opaqueColourTypes = new Set([0, 2]);
 
@@ -29,11 +28,6 @@ interface Caption {
     file: string;
     title?: string;
     subtitle?: string;
-}
-
-interface CreativeAsset {
-    file: string;
-    title?: string;
 }
 
 export interface StoreImagesReport {
@@ -97,22 +91,31 @@ export function checkStoreImages(rootDir: string = root): StoreImagesReport {
             }
             continue;
         }
-        const asset = JSON.parse(readFileSync(creativeAssetPath, "utf8")) as CreativeAsset;
-        checkPrice(report, `screenshots/store/${locale}/creative-asset.json`, "the title", asset.title, locale);
-        const path = join(folder, `${asset.file}.png`);
-        if (!existsSync(path)) {
-            report.missing.push(`screenshots/store/${locale}/${asset.file}.png`);
+        let assets;
+        try {
+            assets = parseCreativeAssets(readFileSync(creativeAssetPath, "utf8"), `screenshots/store/${locale}/creative-asset.json`);
+        } catch (error) {
+            report.problems.push(error instanceof Error ? error.message : String(error));
             continue;
         }
-        report.found += 1;
-        const header = pngHeader(path);
-        const name = `screenshots/store/${locale}/${asset.file}.png`;
-        if (!header) {
-            report.problems.push(`${name} is not a PNG`);
-        } else if (header.width !== creativeAssetSize.width || header.height !== creativeAssetSize.height) {
-            report.problems.push(`${name} is ${header.width} x ${header.height}, not ${creativeAssetSize.width} x ${creativeAssetSize.height}`);
-        } else if (!opaqueColourTypes.has(header.colourType)) {
-            report.problems.push(`${name} has an alpha channel (PNG colour type ${header.colourType})`);
+        for (const kind of creativeAssetKinds) {
+            const asset = assets[kind.key];
+            checkPrice(report, `screenshots/store/${locale}/creative-asset.json`, `the ${kind.key}'s title`, asset.title, locale);
+            const path = join(folder, `${asset.file}.png`);
+            const name = `screenshots/store/${locale}/${asset.file}.png`;
+            if (!existsSync(path)) {
+                report.missing.push(name);
+                continue;
+            }
+            report.found += 1;
+            const header = pngHeader(path);
+            if (!header) {
+                report.problems.push(`${name} is not a PNG`);
+            } else if (header.width !== kind.width || header.height !== kind.height) {
+                report.problems.push(`${name} is ${header.width} x ${header.height}, not ${kind.width} x ${kind.height}`);
+            } else if (!opaqueColourTypes.has(header.colourType)) {
+                report.problems.push(`${name} has an alpha channel (PNG colour type ${header.colourType})`);
+            }
         }
     }
     return report;

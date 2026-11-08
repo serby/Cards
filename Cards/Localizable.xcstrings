@@ -1102,6 +1102,29 @@
         }
       }
     },
+    "Add a note" : {
+      "comment" : "Placeholder in the empty notes field in the card form, where any text can be kept with the card.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notiz hinzufügen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Añadir nota"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "メモを追加"
+          }
+        }
+      }
+    },
     "Add a place to be reminded when you arrive there." : {
       "comment" : "Footer under the Locations section of the card form while the card has no places.",
       "localizations" : {
@@ -8426,6 +8449,52 @@
         }
       }
     },
+    "Notes" : {
+      "comment" : "Heading of a card's notes, on the card's screen and in the card form. A noun.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notizen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notas"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "メモ"
+          }
+        }
+      }
+    },
+    "Notes show on the card's screen. They are left out when you share the card." : {
+      "comment" : "Footer under the notes field in the card form. Sharing sends the card as a link or a picture.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notizen werden auf dem Bildschirm der Karte angezeigt. Beim Teilen der Karte werden sie weggelassen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Las notas se muestran en la pantalla de la tarjeta. No se incluyen al compartir la tarjeta."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "メモはカードの画面に表示されます。カードを共有するときは含まれません。"
+          }
+        }
+      }
+    },
     "Notifications are off for Card Barcodes. Turn them on in Settings." : {
       "comment" : "Button under the Arrival Notifications switch, shown when the switch is on but iOS has notifications turned off for the app. It opens the app's page in the Settings app. Card Barcodes is the app's name.",
       "localizations" : {
@@ -10563,6 +10632,29 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "検索中…"
+          }
+        }
+      }
+    },
+    "Sets notes shown on this card's screen" : {
+      "comment" : "VoiceOver hint for the notes field in the card form.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Legt Notizen fest, die auf dem Bildschirm dieser Karte angezeigt werden"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Define las notas que se muestran en la pantalla de esta tarjeta"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このカードの画面に表示されるメモを設定します"
           }
         }
       }

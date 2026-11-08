@@ -33,7 +33,10 @@ enum ScreenshotSeed {
                 barcodeType: .ean13,
                 order: 1,
                 color: .red,
-                locations: [CardLocation(name: "Local Roast Portobello", latitude: 51.5150, longitude: -0.2040, radius: 100)]
+                locations: [CardLocation(name: "Local Roast Portobello", latitude: 51.5150, longitude: -0.2040, radius: 100)],
+                // On a card the App Store screenshots never open, so the accessibility
+                // audit of a card's screen and form covers notes (CARD-14).
+                notes: "Every tenth coffee is free.\nAsk for a stamp at the till."
             ),
             CardItem(
                 timestamp: added,

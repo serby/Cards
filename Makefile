@@ -137,12 +137,11 @@ capture-screenshots:
 
 # Composes the App Store images in screenshots/store/<locale>/ from the raw
 # captures, each locale's captions.json and the vector templates in
-# screenshots/templates/ (scripts/compose-store-images.ts), and the universal
-# creative asset from its creative-asset.json, then checks them.
+# screenshots/templates/ (scripts/compose-store-images.ts): the screenshots for
+# each device, and the product page header and search result assets from its
+# creative-asset.json. Then checks them.
 store-screenshots:
 	node scripts/compose-store-images.ts
-	TEST_RUNNER_CARDS_STORE_SCREENSHOTS=1 $(XCODEBUILD) test -destination '$(DESTINATION)' \
-		-only-testing:CardsTests/StoreScreenshotTests
 	node scripts/check-screenshots.ts
 	node scripts/check-store-images.ts
 

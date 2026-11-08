@@ -42,7 +42,7 @@ As a card holder, I want to point the camera at a card's barcode, so that I don'
 
 As a card holder, I want to type a card's number in, so that I can keep a card the camera can't read.
 
-- The add form has a Name field ("Enter name"), a Code field ("Enter code"), a Barcode Type menu, a Colour section (COL-1) and a Locations section (PLACE-1). Colour and Locations are 1.3.
+- The add form has a Name field ("Enter name"), a Code field ("Enter code"), a Barcode Type menu, a Colour section (COL-1) and a Locations section (PLACE-1). Colour and Locations are 1.3. In preparation for 1.4 a Notes section follows Locations (CARD-14).
 - Both fields have autocorrection off. The Code field uses the standard keyboard, so codes can hold letters and symbols.
 - The barcode type defaults to Code 128.
 - Save is disabled until both the name and the code have something in them other than spaces, and while another card uses the code (CARD-9) (1.3).
@@ -88,6 +88,7 @@ As a card holder, I want to open a card and see its barcode and number, so that 
 - In preparation for 1.4: the card's icon, if it has one, sits beside the name in the top panel (CARD-12).
 - When the card has places and the app knows where you are, the top panel also says how far away the nearest is, as "At Boulder Barn" or "350 m · Boulder Barn" (PLACE-6) (1.3). In preparation for 1.4, tapping it opens the place in the maps app chosen in Settings (PLACE-6, SET-5).
 - In preparation for 1.4: when the card has more than one place, a panel at the foot of the card face lists the nearest five with their distances, and a place opens in the maps app chosen in Settings (PLACE-9, SET-5). The screen scrolls when the card is taller than it.
+- In preparation for 1.4: when the card has notes, a last panel at the foot of the card face shows them under "Notes", below its places (CARD-14).
 - The number is in a monospaced font, and it can be selected and copied (1.3).
 - A copy button beside the number puts it on the clipboard, for typing it into a website or another app. The icon turns into a tick for about a second and a half, and a success haptic plays. The number stays centred on its panel (1.3).
 - The date shows the abbreviated date and the time, such as "4 Nov 2026 at 09:41".
@@ -103,7 +104,7 @@ As a card holder, I want to open a card and see its barcode and number, so that 
 
 As a card holder, I want to change a card's details, so that I can fix a mistake or keep it up to date.
 
-- Edit on the card screen, or in preparation for 1.4 Edit in a tile's long-press menu (CARD-10), opens a form titled "Edit Card" with the card's name, code, barcode type, colour and places, and its Notify When I Arrive switch when it has places (ARR-6). There is no camera. In preparation for 1.4 the form also has the card's icon (CARD-12).
+- Edit on the card screen, or in preparation for 1.4 Edit in a tile's long-press menu (CARD-10), opens a form titled "Edit Card" with the card's name, code, barcode type, colour and places, and its Notify When I Arrive switch when it has places (ARR-6). There is no camera. In preparation for 1.4 the form also has the card's icon (CARD-12) and its notes (CARD-14).
 - The Name field takes the keyboard focus on its own after about 0.6 seconds, once. Coming back to the form from another tab leaves the keyboard down (1.3). In preparation for 1.4 no field takes the focus on its own: the form opens with the keyboard down, and tapping a field brings it up.
 - Scrolling the form puts the keyboard away (1.3).
 - Save follows the same rules as adding: it is disabled without a name and a code, or while another card uses the code, and it trims both (CARD-3, CARD-9) (1.3).
@@ -193,7 +194,7 @@ As a card holder, I want my cards laid out in a grid, so that I can see more of 
 
 As a card holder, I want to search my cards and choose their order, so that the card I need is always easy to reach.
 
-- The Cards tab has a search field, "Search", where iOS puts it: below the title on iPhone, which iOS 26 and later keep out of sight until you pull the grid down, and in the toolbar on iPad from iOS 26. Typing filters the grid to cards whose name contains the text, ignoring case and accents, spaces at either end, and whether apostrophes and quotes are curly, so "joe’s" finds "Joe's Market". Clearing or cancelling the search shows every card again.
+- The Cards tab has a search field, "Search", where iOS puts it: below the title on iPhone, which iOS 26 and later keep out of sight until you pull the grid down, and in the toolbar on iPad from iOS 26. Typing filters the grid to cards whose name contains the text, ignoring case and accents, spaces at either end, and whether apostrophes and quotes are curly, so "joe’s" finds "Joe's Market". A card whose notes contain the text, read the same way, is found too (CARD-14). Clearing or cancelling the search shows every card again.
 - When nothing matches, the grid gives way to "No Cards Match" and "Check the spelling, or try another name."
 - A sort menu, an up and down arrow labelled "Sort" beside the add button, offers three orders, with a tick by the chosen one:
   - **Last Viewed:** the card opened most recently comes first. Cards opened at the same moment, and then the cards never opened, follow in custom order.
@@ -241,3 +242,23 @@ As a card holder, I want each card to carry an icon, so that I can recognise it 
 **Since:** In preparation for 1.4
 **Where:** `Cards/Core/Models/CardIcon.swift`, `Cards/UI/Components/CardIconPicker.swift`, `Cards/UI/Screens/CardEditView.swift`, `Cards/Features/CardEditScreen.swift`, `Cards/UI/Components/CardFaceView.swift`, `Cards/Features/CardDetailScreen.swift`, `Cards/Core/Models/CardItem.swift`, `Cards/UI/Screens/CardListView.swift`, `CardsTests/CardIconTests.swift`, `CardsUITests/CardEditFormUITests.swift` (`testChooseAnIcon`, `testTheIconGridOpensAtTheChosenIcon`), `Cards/UI/Screens/CardDetailView.swift`, `Cards/UI/Components/CardTileView.swift`, `Cards/Features/CardListScreen.swift`
 **Notes:** Every icon is in SF Symbols 6, so iOS 18 draws it; `CardIconTests` checks each one on the oldest supported iOS. Stored names never change: an icon can move to another group, but is removed rather than renamed. An icon name the build doesn't list, such as one from a newer version, still shows on the card.
+
+### CARD-14: Keep notes with a card
+
+As a card holder, I want to keep a few notes with a card, so that what I need to remember about it is with its barcode.
+
+- A card can keep notes: free text of any length, such as what the card is for or when its points run out. Notes are optional, and a card has none until it is given some.
+- The add and edit forms have a Notes section below Locations, headed "Notes", with a field that reads "Add a note" while it is empty. The field is three lines tall to start with and grows with its text, and Return starts a new line. Under it: "Notes show on the card's screen. They are left out when you share the card."
+- Saving the form saves the notes with the card, like every other field (CARD-5); going back without saving keeps the old ones.
+- Notes keep their line breaks. Saving drops the spaces and new lines at either end, and notes that are only spaces and new lines are saved as none, so clearing the field removes them.
+- A card with notes shows them on its screen, on a white panel at the foot of the card face under the heading "Notes": below the number and the date, and below its places when it lists them (PLACE-9), so the barcode stays at the top (CARD-4). The panel is the width of the others, with the same corners. A card without notes shows no panel.
+- The notes wrap at every text size, and the screen scrolls when they make the card taller than it. They can be selected and copied. The heading is in the panel's lighter ink, or with Increase Contrast in the notes' full ink.
+- VoiceOver reads the heading as a heading, so the headings rotor reaches it, and then the notes. In the form, the field reads as "Notes", with the hint "Sets notes shown on this card's screen".
+- Notes show only on the card's own screen: not on its tile (CARD-10), on the card for where you are (SET-3), in the widget or in an arrival notification.
+- Searching the Cards tab finds a card by its notes as well as by its name (CARD-11), although its tile shows only the name.
+- Sharing a card leaves its notes out of both the link and the picture (SHARE-1, SHARE-2), so a card added from a link has none (SHARE-3).
+- The notes are stored with the card, so they sync (DATA-1), are exported, and are imported with the card (DATA-2, DATA-3). Older cards and older exports have none (DATA-4).
+
+**Since:** In preparation for 1.4
+**Where:** `Cards/Core/Models/CardNotes.swift`, `Cards/Core/Models/CardItem.swift`, `Cards/UI/ViewState/CardViewState.swift`, `Cards/UI/Screens/CardEditView+Parts.swift` (`notesSection`), `Cards/UI/Screens/CardEditView.swift`, `Cards/Features/CardDraft+CardItem.swift`, `Cards/Features/CardEditScreen.swift`, `Cards/UI/Screens/CardDetailView+Panels.swift` (`NotesPanel`), `Cards/UI/Screens/CardDetailView.swift`, `Cards/Features/CardDetail+CardItem.swift`, `CardsTests/CardNotesTests.swift`, `CardsTests/CardDraftTests.swift`, `CardsTests/SharingTests.swift` (`thePayloadLeavesOutWhatIsTheSharers`, `theSharedImageLeavesOutTheNotes`), `CardsUITests/CardEditFormUITests.swift` (`testWriteNotes`), `CardsUITests/CardsAccessibilityAuditTests.swift` (`testCardDetail`, `testEditCard`, on Local Roast Coffee, whose screenshot card has notes), `Cards/Core/Models/CardArrangement.swift`, `CardsTests/CardArrangementTests.swift` (`searchMatchesNotesToo`)
+**Notes:** Notes are left out of what is shared, as Paul decided on 8 November 2026: notes can be personal, and a card holder sharing a card may not mean to send them.

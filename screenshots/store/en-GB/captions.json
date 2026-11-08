@@ -21,10 +21,10 @@
     "chips": ["No account", "No tracking", "iCloud or this device"]
   },
   {
-    "file": "04_Free",
+    "file": "04_NoAds",
     "screen": "09_ManyCards",
     "color": "green",
-    "title": "Free, with no ads",
+    "title": "No ads, no limits",
     "subtitle": "As many cards as you like, with nothing to buy"
   },
   {

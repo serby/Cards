@@ -1,10 +1,11 @@
 import SwiftUI
 
 /// Draws the picture Share Image sends (SHARE-2): the card face on its own, with
-/// no copy button and no distance to the sharer's places, in light appearance,
-/// at three times screen scale so the barcode stays sharp enough to scan from
-/// another screen. The renderer starts from SwiftUI's defaults rather than the
-/// screen's, so the face is given the screen's language and direction: its date
+/// no copy button, no distance to the sharer's places and none of their notes
+/// (CARD-14), in light appearance, at three times screen scale so the barcode
+/// stays sharp enough to scan from another screen. The renderer starts from
+/// SwiftUI's defaults rather than the screen's, so the face is given the
+/// screen's language and direction: its date
 /// and layout then match the card the sharer sees, and the barcode never mirrors.
 @MainActor
 enum CardShareImage {
@@ -35,7 +36,7 @@ enum CardShareImage {
             .environment(\.displayScale, scale)
     }
 
-    /// `card` without where the sharer is, which is theirs to keep.
+    /// `card` without where the sharer is or their notes, which are theirs to keep.
     private static func shared(_ card: CardDetail) -> CardDetail {
         CardDetail(
             id: card.id,

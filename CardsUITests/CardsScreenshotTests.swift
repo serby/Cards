@@ -98,7 +98,7 @@ final class CardsScreenshotTests: XCTestCase {
         XCTAssertTrue(header.exists, "iCloud is not on screen")
         // Dragged, and held before letting go so it doesn't run on, until iCloud
         // is near the top and Data and Privacy follow it on screen.
-        let target = app.frame.height * 0.06
+        let target = app.frame.height * 0.11
         if header.frame.minY > target {
             let start = app.coordinate(withNormalizedOffset: CGVector(dx: 0.4, dy: 0.85))
             let end = start.withOffset(CGVector(dx: 0, dy: target - header.frame.minY))
@@ -124,8 +124,13 @@ final class CardsScreenshotTests: XCTestCase {
     /// notifications (`DevelopmentHooks.notifications`), so no prompt covers the captures.
     @MainActor
     private func launchSeeded(showsCardWhereYouAre: Bool = false, extra: [String] = []) -> XCUIApplication {
-        // Distances in the locale's own units, whatever the simulator's own settings say.
+        // In the listing's language and region, which the capture script runs
+        // in, rather than the British English UI tests pick when not told; and
+        // distances in the locale's own units, whatever the simulator's settings say.
+        let language = ProcessInfo.processInfo.environment["SYSTEM_LANGUAGE"] ?? "en"
+        let region = Locale.current.region?.identifier ?? "GB"
         let app = XCUIApplication.forTesting([
+            "-AppleLanguages", "(\(language))", "-AppleLocale", "\(language)_\(region)",
             "-screenshotSeed", "-cardSortOrder", "custom", "-showsCardWhereYouAre", showsCardWhereYouAre ? "YES" : "NO",
             "-distanceUnits", "automatic", "-mapsApp", "appleMaps"
         ] + extra)
