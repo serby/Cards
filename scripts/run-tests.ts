@@ -7,7 +7,9 @@
 // and installed (scripts/lib/simulator.ts), and a missing simulator created.
 // The UI tests run in parallel on clones of their simulator, a class at a
 // time. A failing test runs once more, and one that fails twice fails the
-// run. Each run's result bundle is kept, for CI to upload when it fails.
+// run. Each run's result bundle is kept, for CI to upload when it fails. Off
+// CI every run uses the pinned Xcode, so a run that differs from another only
+// in the Xcode CI gives it is skipped.
 //
 // Usage: node scripts/run-tests.ts [--run <key>]... [--all] [--workers <n>] [--device <model>] [--os <version>] [--results <dir>]
 //   --run      a test run from lib/test-devices.ts, such as ui-ipad-26; repeat for more
@@ -21,7 +23,7 @@ import { mkdirSync, rmSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { parseArgs } from "node:util";
 import { bootTestSimulator, type Simulator } from "./lib/simulator.ts";
-import { everydayTestRuns, testRun, testRuns, xcodeVersionFor, type TestRun } from "./lib/test-devices.ts";
+import { distinctRuns, everydayTestRuns, testRun, testRuns, xcodeVersionFor, type TestRun } from "./lib/test-devices.ts";
 import { finished, pinnedXcodeVersion, projectArgs as project, start, useXcodeVersion } from "./lib/xcode.ts";
 
 const usage = "Usage: node scripts/run-tests.ts [--run <key>]... [--all] [--workers <n>] [--device <model>] [--os <version>] [--results <dir>]";
@@ -73,6 +75,8 @@ function withOverrides(run: TestRun): TestRun {
     };
 }
 runs = runs.map(withOverrides);
+const distinct = distinctRuns(runs, pinned);
+runs = distinct.runs;
 
 function message(error: unknown): string {
     return error instanceof Error ? error.message : String(error);
@@ -104,7 +108,7 @@ if (problems.length > 0) {
 
 const resultsDir = resolve(options.results);
 mkdirSync(resultsDir, { recursive: true });
-const summary: string[] = [];
+const summary: string[] = distinct.skipped.map(({ run, sameAs }) => `skipped ${run.key}: the same as ${sameAs.key} here, as only CI runs it with Xcode ${run.ciXcode}`);
 let failed = false;
 for (const run of runs) {
     const simulator = await simulators.get(`${run.simulator.model}|${run.simulator.os}`)!;

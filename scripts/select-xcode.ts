@@ -3,7 +3,7 @@
 // Makefile and the GitHub workflows use it so they build with the same Xcode as
 // the TypeScript scripts (scripts/lib/xcode.ts). With --run, it is the Xcode
 // that test run uses here: on CI, a run's ciXcode where it names one
-// (lib/test-devices.ts), as the iOS 18 run does.
+// (lib/test-devices.ts), as the Xcode 26.3 runs do.
 //
 // Usage: node scripts/select-xcode.ts [--run <key>]
 

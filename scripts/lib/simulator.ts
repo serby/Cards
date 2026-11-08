@@ -199,15 +199,16 @@ export interface SimulatorList {
 
 /// Where the test simulator `choice` is in `list`: on the runtime it asks for
 /// (the newest that runs its model and that the SDK can build for, when it
-/// gives a major version only), the available one of its type named as its
+/// gives a major version only), or off CI its `localOs` one where that is
+/// missing, the available one of its type named as its
 /// model, or that followed by " (Default)". A booted one comes first, then the
 /// plain name. Another project's simulators, such as "aiw-27 iPhone 17", never
 /// match. With none, the pick has no UDID, for createTestSimulator.
-export function pickTestSimulator(choice: TestSimulator, list: SimulatorList, sdkVersion: string): TestSimulatorPick {
+export function pickTestSimulator(choice: TestSimulator, list: SimulatorList, sdkVersion: string, onCI = Boolean(process.env.CI)): TestSimulatorPick {
     const type = list.devicetypes.find((deviceType) => deviceType.name === choice.model);
     if (!type) throw new Error(`This Xcode has no ${choice.model} simulator`);
 
-    const runtime = testRuntime(choice, list, sdkVersion);
+    const runtime = testRuntime(choice, list, sdkVersion, onCI);
     if (!runtime) {
         const command = choice.download ? `, or with xcodebuild -downloadPlatform iOS -buildVersion ${choice.download}` : "";
         throw new Error(`No installed iOS ${choice.os} runtime runs the ${choice.model}. Add one in Xcode > Settings > Components${command}`);
@@ -228,29 +229,34 @@ export function pickTestSimulator(choice: TestSimulator, list: SimulatorList, sd
         : { ...pick, name: choice.model, booted: false };
 }
 
-/// The newest available iOS runtime that `choice` asks for, runs its model
-/// and the SDK can build for, if one is installed.
-function testRuntime(choice: TestSimulator, list: SimulatorList, sdkVersion: string): Runtime | undefined {
+/// The newest available iOS runtime that `choice` asks for and that runs its
+/// model, if one is installed: off CI, its `localOs` one where none is. A major
+/// version alone takes none newer than the SDK; a version such as "26.5" is
+/// taken as given, as Xcode 26.3 (SDK 26.2) runs iOS 26.5 on CI.
+function testRuntime(choice: TestSimulator, list: SimulatorList, sdkVersion: string, onCI = Boolean(process.env.CI)): Runtime | undefined {
     const type = list.devicetypes.find((deviceType) => deviceType.name === choice.model);
-    const wanted = versionParts(choice.os);
     const sdk = versionParts(sdkVersion);
-    return list.runtimes
-        .filter((candidate) => {
-            const version = versionParts(candidate.version);
-            return candidate.isAvailable === true
-                && candidate.platform === "iOS"
-                && compareVersions(version.slice(0, wanted.length), wanted) === 0
-                && compareVersions(version.slice(0, sdk.length), sdk) <= 0
-                && (candidate.supportedDeviceTypes ?? []).some((supported) => supported.identifier === type?.identifier);
-        })
-        .sort((a, b) => compareVersions(versionParts(b.version), versionParts(a.version)))[0];
+    const newest = (os: string) => {
+        const wanted = versionParts(os);
+        return list.runtimes
+            .filter((candidate) => {
+                const version = versionParts(candidate.version);
+                return candidate.isAvailable === true
+                    && candidate.platform === "iOS"
+                    && compareVersions(version.slice(0, wanted.length), wanted) === 0
+                    && (wanted.length > 1 || compareVersions(version.slice(0, sdk.length), sdk) <= 0)
+                    && (candidate.supportedDeviceTypes ?? []).some((supported) => supported.identifier === type?.identifier);
+            })
+            .sort((a, b) => compareVersions(versionParts(b.version), versionParts(a.version)))[0];
+    };
+    return newest(choice.os) ?? (!onCI && choice.localOs ? newest(choice.localOs) : undefined);
 }
 
 /// What runs `choice` where its iOS runtime is missing: nothing when one is
 /// installed; its download version, such as "26.5", when it names one; and
 /// otherwise an error saying to install one.
-export function runtimeToInstall(choice: TestSimulator, list: SimulatorList, sdkVersion: string): string | undefined {
-    if (testRuntime(choice, list, sdkVersion)) return undefined;
+export function runtimeToInstall(choice: TestSimulator, list: SimulatorList, sdkVersion: string, onCI = Boolean(process.env.CI)): string | undefined {
+    if (testRuntime(choice, list, sdkVersion, onCI)) return undefined;
     if (!choice.download) {
         throw new Error(`No installed iOS ${choice.os} runtime runs the ${choice.model}, and it names none to download. Add one in Xcode > Settings > Components`);
     }

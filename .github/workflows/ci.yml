@@ -4,9 +4,11 @@ name: CI
 # code passes SwiftLint, its strings are translated, the changelog it shows in
 # Settings > What's New is valid, and it builds and passes every test on each
 # device and iOS it supports. The devices and iOS versions are the test runs in
-# scripts/lib/test-devices.ts, the list `make test-all` uses: the unit tests on
-# the iPhone 17 on iOS 27.0, and the UI tests on the iPhone 17 on iOS 26.5, the
-# iPhone 16 on iOS 18.6 and the iPad mini on iOS 26.5, a job each.
+# scripts/lib/test-devices.ts, the list `make test-all` uses, a job each: with
+# Xcode 27.1, the unit tests on the iPhone 17 on iOS 27.0 and the UI tests on
+# the iPhone 17 and the iPad mini on iOS 26.5; with Xcode 26.3, the UI tests on
+# the iPhone 17 on iOS 26.5 (macOS 26 image) and the iPhone 16 on iOS 18.5
+# (macOS 15 image, the only one with iOS 18).
 #
 # Only changes to the app trigger it: its code, tests and project, the Xcode
 # and SwiftLint versions and rules, and the changelog it bundles. The scripts
@@ -107,8 +109,8 @@ jobs:
       with:
         node-version: 24
 
-    # The Xcode in .xcode-version, except where the run names another: iOS 18
-    # runs with Xcode 26.6 on the macOS 26 image, as Xcode 27 cannot download it.
+    # The Xcode in .xcode-version, except where the run names another: the
+    # Xcode 26.3 runs on the macOS 26 and macOS 15 images.
     - name: Select the Xcode for this run
       run: |
         developer_dir="$(node scripts/select-xcode.ts --run ${{ matrix.key }})"
@@ -116,8 +118,8 @@ jobs:
         "$developer_dir/usr/bin/xcodebuild" -version
 
     # Downloads the run's iOS runtime from Apple where the image lacks it
-    # (iOS 26.5 on the Xcode 27 image, iOS 18.6 on the macOS 26 one) while the
-    # app and tests build, then runs the tests on their simulator.
+    # (iOS 26.5 on the Xcode 27 image; the macOS 26 and 15 images have theirs)
+    # while the app and tests build, then runs the tests on their simulator.
     - name: Build and run the tests
       run: node scripts/run-tests.ts --run ${{ matrix.key }} --results "$RUNNER_TEMP/results"
 

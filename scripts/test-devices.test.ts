@@ -7,11 +7,12 @@ import { describe, test } from "node:test";
 
 import { type ListedDevice, pickPhone } from "./lib/phone.ts";
 import { pickTestSimulator, runtimeToInstall, type SimulatorList } from "./lib/simulator.ts";
-import { automatedTestSimulator, automatedTestSimulatorWith, defaultTestSimulator, sameName, testSimulator, everydayTestRuns, testRun, testRuns, xcodeVersionFor } from "./lib/test-devices.ts";
+import { automatedTestSimulator, automatedTestSimulatorWith, defaultTestSimulator, distinctRuns, sameName, testSimulator, everydayTestRuns, testRun, testRuns, xcodeVersionFor } from "./lib/test-devices.ts";
 
 const iPhone17Type = { name: "iPhone 17", identifier: "com.apple.CoreSimulator.SimDeviceType.iPhone-17" };
 const seType = { name: "iPhone SE (3rd generation)", identifier: "com.apple.CoreSimulator.SimDeviceType.iPhone-SE-3rd-generation" };
 const duoType = { name: "iPhone Duo", identifier: "com.apple.CoreSimulator.SimDeviceType.iPhone-Duo" };
+const iPhone16Type = { name: "iPhone 16", identifier: "com.apple.CoreSimulator.SimDeviceType.iPhone-16" };
 
 function runtime(version: string, types: { name: string; identifier: string }[]) {
     return {
@@ -93,10 +94,16 @@ describe("test simulators", () => {
         assert.equal(pick.runtime, "com.apple.CoreSimulator.SimRuntime.iOS-27-2");
     });
 
-    test("never pick a runtime newer than the SDK", () => {
+    test("never pick a runtime newer than the SDK for a major version", () => {
         const list = thisMac();
         list.runtimes.push(runtime("27.2", [iPhone17Type]));
         assert.equal(pickTestSimulator(defaultTestSimulator, list, "27.1").version, "27.0");
+    });
+
+    test("take a version as given, newer than the SDK too, as Xcode 26.3 runs iOS 26.5 on CI", () => {
+        const pick = pickTestSimulator(automatedTestSimulator, thisMac(), "26.2", true);
+        assert.equal(pick.version, "26.5");
+        assert.equal(runtimeToInstall(automatedTestSimulator, thisMac(), "26.2", true), undefined);
     });
 
     test("keep the SE on iOS 27.0", () => {
@@ -206,21 +213,62 @@ describe("the test runs", () => {
         for (const key of everydayTestRuns) assert.equal(testRun(key).key, key);
     });
 
-    test("run the unit tests on the newest iOS and the UI tests on iOS 26, 18 and an iPad", () => {
-        const described = testRuns.map((run) => `${run.suite} ${run.simulator.model} ${run.simulator.os}`);
-        assert.deepEqual(described, ["unit iPhone 17 27.0", "ui iPhone 17 26.5", "ui iPhone 16 18", "ui iPad mini (A17 Pro) 26.5"]);
-        for (const run of testRuns) assert.ok(run.simulator.download, `${run.key} names a runtime to download`);
+    test("run Xcode 27.1's tests on iOS 27 and 26, and Xcode 26.3's UI tests on iOS 26.5 and 18.5", () => {
+        const described = testRuns.map((run) => `${run.suite} ${run.simulator.model} ${run.simulator.os} ${run.image} ${xcodeVersionFor(run, "27.1", true)}`);
+        assert.deepEqual(described, [
+            "unit iPhone 17 27.0 xcode-27 27.1",
+            "ui iPhone 17 26.5 xcode-27 27.1",
+            "ui iPad mini (A17 Pro) 26.5 xcode-27 27.1",
+            "ui iPhone 17 26.5 macos-26 26.3",
+            "ui iPhone 16 18.5 macos-15 26.3",
+        ]);
     });
 
-    test("use the pinned Xcode, except iOS 18 on CI, which Xcode 27 cannot download", () => {
+    test("download only what the image lacks: iOS 26.5 on the xcode-27 image, and never iOS 18", () => {
+        for (const run of testRuns.filter((run) => run.image === "xcode-27")) assert.ok(run.simulator.download, `${run.key} names a runtime to download`);
+        assert.equal(testRun("ui-iphone-18").simulator.download, undefined);
+    });
+
+    test("use the pinned Xcode off CI", () => {
         for (const run of testRuns) assert.equal(xcodeVersionFor(run, "27.1", false), "27.1");
-        assert.equal(xcodeVersionFor(testRun("ui-iphone-18"), "27.1", true), "26.6");
-        assert.equal(xcodeVersionFor(testRun("ui-ipad-26"), "27.1", true), "27.1");
-        assert.equal(testRun("ui-iphone-18").image, "macos-26");
     });
 
     test("says which runs there are for an unknown one", () => {
-        assert.throws(() => testRun("ui-watch"), /The test runs are unit, ui-iphone-26, ui-iphone-18, ui-ipad-26/);
+        assert.throws(() => testRun("ui-watch"), /The test runs are unit, ui-iphone-26, ui-ipad-26, ui-iphone-26-xcode-26, ui-iphone-18/);
+    });
+});
+
+describe("the runs a Mac runs", () => {
+    test("skip the Xcode 26.3 run on iOS 26.5, the same as the Xcode 27.1 one off CI", () => {
+        const { runs, skipped } = distinctRuns(testRuns, "27.1", false);
+        assert.deepEqual(runs.map((run) => run.key), ["unit", "ui-iphone-26", "ui-ipad-26", "ui-iphone-18"]);
+        assert.deepEqual(skipped.map(({ run, sameAs }) => `${run.key} ${sameAs.key}`), ["ui-iphone-26-xcode-26 ui-iphone-26"]);
+    });
+
+    test("are every run on CI", () => {
+        assert.equal(distinctRuns(testRuns, "27.1", true).runs.length, testRuns.length);
+    });
+});
+
+describe("the iOS 18 run", () => {
+    function ciImage(): SimulatorList {
+        return {
+            devicetypes: [iPhone16Type],
+            runtimes: [runtime("18.5", [iPhone16Type]), runtime("18.6", [iPhone16Type])],
+            devices: { "com.apple.CoreSimulator.SimRuntime.iOS-18-5": [simulator("iPhone 16", "CI-16", iPhone16Type)] },
+        };
+    }
+
+    test("runs on iOS 18.5 on CI, though the image has 18.6 too", () => {
+        const pick = pickTestSimulator(testRun("ui-iphone-18").simulator, ciImage(), "26.2", true);
+        assert.equal(pick.version, "18.5");
+        assert.equal(pick.udid, "CI-16");
+    });
+
+    test("runs on the newest iOS 18 a Mac has, and on CI fails without 18.5", () => {
+        const mac: SimulatorList = { devicetypes: [iPhone16Type], runtimes: [runtime("18.1", [iPhone16Type])], devices: {} };
+        assert.equal(pickTestSimulator(testRun("ui-iphone-18").simulator, mac, "27.1", false).version, "18.1");
+        assert.throws(() => pickTestSimulator(testRun("ui-iphone-18").simulator, mac, "27.1", true), /No installed iOS 18\.5 runtime runs the iPhone 16/);
     });
 });
 
