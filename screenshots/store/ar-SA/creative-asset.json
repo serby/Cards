@@ -1,6 +1,12 @@
 {
-  "file": "CreativeAsset",
-  "screen": "02_CardDetail",
-  "color": "graphite",
-  "title": "بطاقات الولاء لديك، جاهزة للمسح الضوئي"
+  "header": {
+    "file": "Header",
+    "color": "pink",
+    "title": "بطاقتك جاهزة عند وصولك"
+  },
+  "search": {
+    "file": "Search",
+    "color": "pink",
+    "title": "بطاقات الولاء لديك، جاهزة للمسح الضوئي"
+  }
 }
