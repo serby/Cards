@@ -21,10 +21,12 @@
 // Each of the app's languages has a home page: British English at /, and each
 // other language at /<language>/, made from the store listing of its main
 // region (es-ES for Spanish, de-DE, ja), with hreflang links between them and
-// a language switcher. The privacy policy is British English only, at the
-// path of the listing's privacy URL. Versions show once released (they have a
-// date), newest first; a change with no text in a page's language shows its
-// British English, as the app shows it.
+// a language switcher. A page is laid out in its language's direction, right
+// to left for Arabic, and anything on it written the other way, such as a
+// version number or English, is marked with its own. The privacy policy is
+// British English only, at the path of the listing's privacy URL. Versions
+// show once released (they have a date), newest first; a change with no text
+// in a page's language shows its British English, as the app shows it.
 //
 // Usage: import { readSite, renderSite, screenshotSources } from "./lib/website.ts";
 
@@ -504,8 +506,33 @@ export function englishName(language: string): string {
     return new Intl.DisplayNames([sourceLocale], { type: "language" }).of(language) ?? language;
 }
 
+export type Direction = "ltr" | "rtl";
+
+/// The direction a language is written in, for its page's dir attribute:
+/// "rtl" for Arabic, "ltr" for English, French or Japanese.
+export function directionOf(language: string): Direction {
+    const locale = new Intl.Locale(language) as Intl.Locale & { getTextInfo?: () => { direction?: string } };
+    if (typeof locale.getTextInfo !== "function") throw new Error("this Node has no Intl.Locale getTextInfo(), which tells the site which way each language is written; run the scripts with Node 24");
+    return locale.getTextInfo().direction === "rtl" ? "rtl" : "ltr";
+}
+
+/// A dir attribute for something on `page` written in `direction`: none when
+/// that is the page's own, so only what runs the other way is marked.
+function dirAttribute(direction: Direction, page: Page): string {
+    return direction === directionOf(page.language) ? "" : ` dir="${direction}"`;
+}
+
+/// A version number, which reads left to right on every page as it does in
+/// the app, isolated from the words round it on a right-to-left page.
+function versionNumber(version: string, page: Page): string {
+    const attribute = dirAttribute("ltr", page);
+    return attribute ? `<span${attribute}>${escapeHTML(version)}</span>` : escapeHTML(version);
+}
+
+/// A release day in the page's locale, always in the Gregorian calendar its
+/// <time> element and the App Store use, whatever calendar the locale defaults to.
 function formatDate(date: string, locale: string): string {
-    return new Intl.DateTimeFormat(locale, { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }).format(new Date(`${date}T12:00:00Z`));
+    return new Intl.DateTimeFormat(locale, { calendar: "gregory", day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }).format(new Date(`${date}T12:00:00Z`));
 }
 
 /// The App Store images each page shows, with where they go in the site.
@@ -521,7 +548,7 @@ export function screenshotSources(site: Site, rootDir: string = root): Screensho
 function renderChange(site: Site, page: Page, change: Change): string {
     const [before, after] = around(appWord(site, page, change.type));
     const own = textFor(change, page.locale);
-    const text = own === undefined ? `<span lang="${sourceLocale}">${escapeHTML(change.text)}</span>` : escapeHTML(own);
+    const text = own === undefined ? `<span lang="${sourceLocale}"${dirAttribute(directionOf(sourceLocale), page)}>${escapeHTML(change.text)}</span>` : escapeHTML(own);
     return `          <li><strong>${escapeHTML(before)}</strong>${text}${escapeHTML(after)}</li>`;
 }
 
@@ -529,7 +556,7 @@ function renderVersion(site: Site, page: Page, version: Version, indent = ""): s
     const [before, after] = around(appWord(site, page, "version"));
     const lines = [
         `      <div class="version">`,
-        `        <h3>${escapeHTML(`${before}${version.version}${after}`)}</h3>`,
+        `        <h3>${escapeHTML(before)}${versionNumber(version.version, page)}${escapeHTML(after)}</h3>`,
         ...(version.date ? [`        <p class="date"><time datetime="${version.date}">${escapeHTML(formatDate(version.date, page.locale))}</time></p>`] : []),
         `        <ul class="changes">`,
         ...version.changes.map((change) => renderChange(site, page, change)),
@@ -578,12 +605,18 @@ function renderFeatures(description: Description): string {
     ].join("\n")).join("\n");
 }
 
+/// A link to another language's page, in that language and its direction.
+function languageLink(other: Page, page: Page, current = ""): string {
+    return `<a href="${other.path}" lang="${other.language}" hreflang="${other.language}"${dirAttribute(directionOf(other.language), page)}${current}>${escapeHTML(nativeName(other.language))}</a>`;
+}
+
 function renderLanguages(site: Site, page: Page): string {
+    const source = languageOf(sourceLocale);
     return site.pages.map((other) => {
-        const english = other.language === languageOf(sourceLocale)
+        const english = other.language === source
             ? ""
-            : `<span class="english-name"${page.language === languageOf(sourceLocale) ? "" : ` lang="${languageOf(sourceLocale)}"`}>${escapeHTML(englishName(other.language))}</span>`;
-        return `        <li><a href="${other.path}" lang="${other.language}" hreflang="${other.language}">${escapeHTML(nativeName(other.language))}</a>${english}</li>`;
+            : `<span class="english-name"${page.language === source ? "" : ` lang="${source}"`}${dirAttribute(directionOf(source), page)}>${escapeHTML(englishName(other.language))}</span>`;
+        return `        <li>${languageLink(other, page)}${english}</li>`;
     }).join("\n");
 }
 
@@ -591,7 +624,7 @@ function renderLanguageNav(site: Site, page: Page): string {
     return [
         `    <nav class="language" aria-label="${escapeHTML(siteWord(site, page, "language"))}">`,
         `      <ul>`,
-        ...site.pages.map((other) => `        <li><a href="${other.path}" lang="${other.language}" hreflang="${other.language}"${other === page ? ` aria-current="page"` : ""}>${escapeHTML(nativeName(other.language))}</a></li>`),
+        ...site.pages.map((other) => `        <li>${languageLink(other, page, other === page ? ` aria-current="page"` : "")}</li>`),
         `      </ul>`,
         `    </nav>`,
     ].join("\n");
@@ -613,6 +646,7 @@ function renderLayout(site: Site, layout: Layout): string {
     const name = site.listings.get(page.locale)?.name ?? "";
     return fill(site.templates.page, {
         lang: page.locale,
+        dir: directionOf(page.language),
         title: layout.title,
         description: layout.description,
         url: `${site.origin}${layout.path}`,

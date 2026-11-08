@@ -11,11 +11,13 @@ import { after, describe, test } from "node:test";
 
 import { buildWebsite } from "./build-website.ts";
 import type { Changelog } from "./lib/changelog.ts";
+import { storeLocales } from "./lib/locales.ts";
 import { writePNG } from "./lib/png.ts";
 import {
     appearances,
     appWordsFrom,
     contrast,
+    directionOf,
     englishName,
     escapeHTML,
     fill,
@@ -55,7 +57,7 @@ function copyOfSources(): string {
     const root = mkdtempSync(join(tmpdir(), "cards-website-"));
     temporary.push(root);
     for (const path of sources) cpSync(join(repository, path), join(root, path), { recursive: true });
-    for (const locale of ["de-DE", "en-GB", "en-US", "es-ES", "es-MX", "ja"]) {
+    for (const locale of storeLocales(repository)) {
         cpSync(join(repository, "screenshots/store", locale, "captions.json"), join(root, "screenshots/store", locale, "captions.json"));
     }
     return root;
@@ -84,12 +86,21 @@ describe("the pages", () => {
             { language: "ja", locale: "ja", path: "/ja/", file: "ja/index.html" },
         ]);
         assert.equal(pagesFor(["es"], ["es-MX"])[0]?.locale, "es-MX");
+        assert.deepEqual(pagesFor(["fr", "ar"], ["ar-SA", "fr-CA", "fr-FR"]), [
+            { language: "fr", locale: "fr-FR", path: "/fr/", file: "fr/index.html" },
+            { language: "ar", locale: "ar-SA", path: "/ar/", file: "ar/index.html" },
+        ]);
         assert.throws(() => pagesFor(["en", "fr"], ["en-GB"]), /fr is one of the app's languages but has no App Store listing/);
     });
 
     test("name each language in itself and in English", () => {
-        assert.deepEqual(["en", "es", "de", "ja"].map(nativeName), ["English", "Español", "Deutsch", "日本語"]);
-        assert.deepEqual(["es", "de", "ja"].map(englishName), ["Spanish", "German", "Japanese"]);
+        assert.deepEqual(["en", "es", "de", "ja", "fr", "ar"].map(nativeName), ["English", "Español", "Deutsch", "日本語", "Français", "العربية"]);
+        assert.deepEqual(["es", "de", "ja", "fr", "ar"].map(englishName), ["Spanish", "German", "Japanese", "French", "Arabic"]);
+    });
+
+    test("run right to left in Arabic and left to right in the other languages", () => {
+        assert.deepEqual(["ar", "ar-SA"].map(directionOf), ["rtl", "rtl"]);
+        assert.deepEqual(["en", "en-GB", "es", "de", "ja", "fr", "fr-FR"].map(directionOf), ["ltr", "ltr", "ltr", "ltr", "ltr", "ltr", "ltr"]);
     });
 });
 
@@ -164,10 +175,11 @@ describe("templates", () => {
 
     test("take What's New's words from the app's catalogue", () => {
         const problems: string[] = [];
-        const words = appWordsFrom(readFileSync(join(repository, "Cards/Localizable.xcstrings"), "utf8"), ["en", "de", "fr"], problems);
+        // Korean is on hold (l10n/context.md), so the catalogue has none of it.
+        const words = appWordsFrom(readFileSync(join(repository, "Cards/Localizable.xcstrings"), "utf8"), ["en", "de", "ko"], problems);
         assert.deepEqual(words.get("en"), { whatsNew: "What's New", version: "Version %@", new: "New: %@", improved: "Improved: %@", fixed: "Fixed: %@" });
         assert.equal(words.get("de")?.whatsNew, "Neue Funktionen");
-        assert.ok(problems.some((problem) => problem.includes(`no fr text for "What's New"`)), problems.join("\n"));
+        assert.ok(problems.some((problem) => problem.includes(`no ko text for "What's New"`)), problems.join("\n"));
     });
 });
 
@@ -177,10 +189,10 @@ describe("the site", () => {
     const page = (language: string) => site.pages.find((candidate) => candidate.language === language) ?? assert.fail(`no ${language} page`);
 
     test("has a home page per app language, linked to each other", () => {
-        assert.deepEqual(site.pages.map((candidate) => candidate.path), ["/", "/de/", "/es/", "/ja/"]);
+        assert.deepEqual(site.pages.map((candidate) => candidate.path), ["/", "/de/", "/es/", "/ja/", "/fr/", "/ar/"]);
         const html = renderHome(site, page("es"), []);
-        assert.match(html, /<html lang="es-ES">/);
-        for (const path of ["/", "/de/", "/es/", "/ja/"]) assert.match(html, new RegExp(`<link rel="alternate" hreflang="\\w+" href="https://cards\\.serby\\.net${path}">`));
+        assert.match(html, /<html lang="es-ES" dir="ltr">/);
+        for (const path of ["/", "/de/", "/es/", "/ja/", "/fr/", "/ar/"]) assert.match(html, new RegExp(`<link rel="alternate" hreflang="\\w+" href="https://cards\\.serby\\.net${path}">`));
         assert.match(html, /<link rel="alternate" hreflang="x-default" href="https:\/\/cards\.serby\.net\/">/);
         assert.match(html, /<a href="\/es\/" lang="es" hreflang="es" aria-current="page">Español<\/a>/);
         assert.match(html, /<a href="\/privacy\.html" hreflang="en">Privacidad<\/a>/);
@@ -212,6 +224,27 @@ describe("the site", () => {
         assert.ok(english.includes(`<time datetime="2026-12-01">1 December 2026</time>`));
     });
 
+    test("lays the Arabic page out right to left, with English, version numbers and the copyright left to right", () => {
+        const changelog: Changelog = {
+            versions: [{ version: "2.0", date: "2026-12-01", changes: [{ type: "new", text: "Translated.", ar: "مترجم." }, { type: "fixed", text: "In English only." }] }],
+        };
+        const arabic = renderHome({ ...site, changelog }, page("ar"), []);
+        assert.match(arabic, /<html lang="ar-SA" dir="rtl">/);
+        const [before = "", after = ""] = (site.appWords.get("ar")?.version ?? "").split("%@");
+        assert.ok(arabic.includes(`<h3>${escapeHTML(before)}<span dir="ltr">2.0</span>${escapeHTML(after)}</h3>`), "the version number reads left to right");
+        assert.ok(arabic.includes(`<time datetime="2026-12-01">١ ديسمبر ٢٠٢٦</time>`), "the date is Gregorian, in Saudi Arabic as the app shows it");
+        assert.ok(arabic.includes(`مترجم.</li>`));
+        assert.ok(arabic.includes(`<span lang="en-GB" dir="ltr">In English only.</span>`), "English keeps its full stop at its end");
+        assert.match(arabic, /<a href="\/fr\/" lang="fr" hreflang="fr" dir="ltr">Français<\/a><span class="english-name" lang="en" dir="ltr">French<\/span>/);
+        assert.match(arabic, /<a href="\/ar\/" lang="ar" hreflang="ar" aria-current="page">العربية<\/a>/);
+        assert.match(arabic, /<p dir="ltr">&copy; /);
+        const english = renderHome({ ...site, changelog }, page("en"), []);
+        assert.match(english, /<html lang="en-GB" dir="ltr">/);
+        assert.ok(english.includes("<h3>Version 2.0</h3>"), "nothing to isolate on a left-to-right page");
+        assert.match(english, /<a href="\/ar\/" lang="ar" hreflang="ar" dir="rtl">العربية<\/a><span class="english-name">Arabic<\/span>/);
+        assert.match(english, /<a href="\/fr\/" lang="fr" hreflang="fr">Français<\/a><span class="english-name">French<\/span>/);
+    });
+
     test("describes each App Store image with its caption", () => {
         const [shot] = screenshotSources(site, root).filter((source) => source.locale === "ja");
         const captions = JSON.parse(readFileSync(join(root, "screenshots/store/ja/captions.json"), "utf8")) as { file: string; title: string; subtitle: string }[];
@@ -230,6 +263,12 @@ describe("the site", () => {
         const css = renderStyle(site);
         assert.match(css, /--accent: #D0185B;/);
         assert.ok(!css.includes("{{"));
+    });
+
+    test("lay out by logical sides, so a right-to-left page mirrors", () => {
+        const css = renderStyle(site);
+        assert.deepEqual(css.match(/^\s*(?:margin|padding|border)-(?:left|right)\b.*$|^\s*(?:left|right|float):.*$|text-align: (?:left|right)/gm), null);
+        assert.match(css, /\.changes \{[^}]*padding-inline-start: 1\.25rem;/);
     });
 });
 
@@ -271,7 +310,7 @@ describe("the build", () => {
         const lines: string[] = [];
         const result = buildWebsite({ root, out, log: (line) => lines.push(line) });
         assert.deepEqual(result.skipped, []);
-        for (const file of ["index.html", "de/index.html", "es/index.html", "ja/index.html", "privacy.html", "style.css", "screenshots/en-GB/01_Cards.png"]) {
+        for (const file of ["index.html", "de/index.html", "es/index.html", "ja/index.html", "fr/index.html", "ar/index.html", "privacy.html", "style.css", "screenshots/en-GB/01_Cards.png"]) {
             assert.ok(result.files.includes(file), `${file} is built`);
         }
         for (const file of ["add.html", "demo.html", "_headers", ".well-known/apple-app-site-association", "icon.png"]) {
@@ -279,7 +318,8 @@ describe("the build", () => {
         }
         assert.ok(result.files.every((file) => !file.startsWith("screenshots/en-US/") && !file.startsWith("screenshots/es-MX/")), "only the pages' listings' images");
         assert.match(readFileSync(join(out, "index.html"), "utf8"), /<img src="\/screenshots\/en-GB\/01_Cards\.png" width="440" height="2"/);
-        assert.match(lines.join("\n"), /4 home pages \(\/ \/de\/ \/es\/ \/ja\/\)/);
+        assert.match(lines.join("\n"), /6 home pages \(\/ \/de\/ \/es\/ \/ja\/ \/fr\/ \/ar\/\)/);
+        assert.match(readFileSync(join(out, "ar/index.html"), "utf8"), /<html lang="ar-SA" dir="rtl">/);
     });
 
     test("stops while an App Store image is missing, unless told to leave it out", () => {

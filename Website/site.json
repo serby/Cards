@@ -15,91 +15,117 @@
       "en": "Download on the App Store",
       "es": "Descárgalo en el App Store",
       "de": "Laden im App Store",
-      "ja": "App Storeからダウンロード"
+      "ja": "App Storeからダウンロード",
+      "fr": "Télécharger dans l’App Store",
+      "ar": "حمّله من App Store"
     },
     "screenshots": {
       "comment": "Heading for the App Store images, read only by screen readers.",
       "en": "Screenshots",
       "es": "Capturas de pantalla",
       "de": "Bildschirmfotos",
-      "ja": "スクリーンショット"
+      "ja": "スクリーンショット",
+      "fr": "Captures d’écran",
+      "ar": "لقطات الشاشة"
     },
     "screenshotAlt": {
       "comment": "An App Store image's description for screen readers, made of its caption's title and subtitle as two sentences.",
       "en": "{title}. {subtitle}.",
       "es": "{title}. {subtitle}.",
       "de": "{title}. {subtitle}.",
-      "ja": "{title}。{subtitle}。"
+      "ja": "{title}。{subtitle}。",
+      "fr": "{title}. {subtitle}.",
+      "ar": "{title}. {subtitle}."
     },
     "features": {
       "comment": "Heading over the sections of the App Store description.",
       "en": "Features",
       "es": "Funciones",
       "de": "Funktionen",
-      "ja": "機能"
+      "ja": "機能",
+      "fr": "Fonctionnalités",
+      "ar": "الميزات"
     },
     "languages": {
       "comment": "Heading over the list of the languages the app is in.",
       "en": "Languages",
       "es": "Idiomas",
       "de": "Sprachen",
-      "ja": "対応言語"
+      "ja": "対応言語",
+      "fr": "Langues",
+      "ar": "اللغات"
     },
     "languagesIntro": {
       "comment": "Under the Languages heading: which of the languages the app shows.",
       "en": "The app follows the language of your iPhone or iPad when it is one of these, and is in British English otherwise.",
       "es": "La app usa el idioma de tu iPhone o iPad si es uno de estos y, si no, el inglés británico.",
       "de": "Die App verwendet die Sprache deines iPhone oder iPad, wenn sie dabei ist, und sonst britisches Englisch.",
-      "ja": "iPhoneやiPadの言語がこの中にあればその言語で、なければイギリス英語で表示されます。"
+      "ja": "iPhoneやiPadの言語がこの中にあればその言語で、なければイギリス英語で表示されます。",
+      "fr": "L’app utilise la langue de votre iPhone ou iPad si elle figure parmi celles-ci, et l’anglais britannique sinon.",
+      "ar": "يستخدم التطبيق لغة جهاز iPhone أو iPad إذا كانت إحدى هذه اللغات، وإلا فيظهر بالإنجليزية البريطانية."
     },
     "language": {
       "comment": "What screen readers call the row of links to the site in each language.",
       "en": "Language",
       "es": "Idioma",
       "de": "Sprache",
-      "ja": "言語"
+      "ja": "言語",
+      "fr": "Langue",
+      "ar": "اللغة"
     },
     "earlierVersions": {
       "comment": "Opens the list of every version before the current one, under What's New.",
       "en": "Earlier versions",
       "es": "Versiones anteriores",
       "de": "Frühere Versionen",
-      "ja": "以前のバージョン"
+      "ja": "以前のバージョン",
+      "fr": "Versions précédentes",
+      "ar": "الإصدارات السابقة"
     },
     "getApp": {
       "comment": "Heading of the last section, with the App Store button.",
       "en": "Get Card Barcodes",
       "es": "Consigue Card Barcodes",
       "de": "Card Barcodes laden",
-      "ja": "Card Barcodesを入手"
+      "ja": "Card Barcodesを入手",
+      "fr": "Obtenir Card Barcodes",
+      "ar": "احصل على Card Barcodes"
     },
     "requirements": {
       "comment": "The devices the app runs on. {version} is the oldest iOS it runs on, such as 18.",
       "en": "For iPhone and iPad with iOS {version} or later.",
       "es": "Para iPhone y iPad con iOS {version} o posterior.",
       "de": "Für iPhone und iPad mit iOS {version} oder neuer.",
-      "ja": "iOS {version}以降のiPhoneとiPadに対応しています。"
+      "ja": "iOS {version}以降のiPhoneとiPadに対応しています。",
+      "fr": "Pour iPhone et iPad sous iOS {version} ou version ultérieure.",
+      "ar": "لأجهزة iPhone وiPad التي تعمل بنظام iOS {version} أو أحدث."
     },
     "privacy": {
       "comment": "Link at the top of every page to the privacy policy, which is in English.",
       "en": "Privacy",
       "es": "Privacidad",
       "de": "Datenschutz",
-      "ja": "プライバシー"
+      "ja": "プライバシー",
+      "fr": "Confidentialité",
+      "ar": "الخصوصية"
     },
     "privacyPolicy": {
       "comment": "Link at the foot of every page to the privacy policy, which is in English.",
       "en": "Privacy Policy",
       "es": "Política de privacidad",
       "de": "Datenschutzerklärung",
-      "ja": "プライバシーポリシー"
+      "ja": "プライバシーポリシー",
+      "fr": "Politique de confidentialité",
+      "ar": "سياسة الخصوصية"
     },
     "contact": {
       "comment": "Link at the foot of every page that writes an email to the developer.",
       "en": "Contact",
       "es": "Contacto",
       "de": "Kontakt",
-      "ja": "お問い合わせ"
+      "ja": "お問い合わせ",
+      "fr": "Contact",
+      "ar": "اتصل بنا"
     }
   }
 }

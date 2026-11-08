@@ -1,7 +1,9 @@
 /* The website's styles, which add.html and demo.html share. scripts/build-website.ts
    fills in the colours from the app's own (Cards/UI/Theme/Colors.swift, and iOS's
    system colours for the rest), so the site and the app agree; its tests check
-   every pair of text and background meets WCAG AA (docs/STYLE.md). */
+   every pair of text and background meets WCAG AA (docs/STYLE.md). Sides are
+   logical (padding-inline-start, not padding-left), so a right-to-left page, the
+   Arabic one, mirrors its layout as the app does. */
 
 :root {
   color-scheme: light dark;
@@ -276,6 +278,11 @@ main h2 {
   color: var(--text-secondary);
 }
 
+/* Spacing letters apart breaks up Arabic, whose letters join. */
+.feature h3:lang(ar) {
+  letter-spacing: normal;
+}
+
 .feature p + p {
   margin-top: 0.75rem;
 }
@@ -333,7 +340,7 @@ details .version {
   display: grid;
   gap: 0.5rem;
   margin: 0;
-  padding-left: 1.25rem;
+  padding-inline-start: 1.25rem;
 }
 
 .changes strong {
@@ -400,7 +407,7 @@ summary {
 }
 
 .privacy ul {
-  padding-left: 1.5rem;
+  padding-inline-start: 1.5rem;
 }
 
 .privacy li {
