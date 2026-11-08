@@ -1,6 +1,6 @@
 # Card Barcodes language guide
 
-How Card Barcodes words things: the app's text, notifications, the App Store listing and its screenshots, the website, the changelog, and the examples in code, tests, the spec and these docs. How the app looks is in [STYLE.md](STYLE.md).
+How Card Barcodes words things: the app's text, notifications, the App Store listing and its screenshots, the website, the changelog, and the examples in code, tests, the spec and these docs. How the app looks is in [STYLE.md](STYLE.md), and what it is for and the promises its words must keep are in [BRAND.md](BRAND.md).
 
 ## Spelling
 
