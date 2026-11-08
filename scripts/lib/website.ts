@@ -37,10 +37,13 @@ import { parseCatalogue, textOf } from "./string-catalogues.ts";
 
 const root = join(import.meta.dirname, "..", "..");
 
-/// The width the site serves the App Store images at: a third of the
-/// iPhone images, three times the width a screenshot shows at, so it is sharp
-/// on a Retina display.
+/// The width the site serves the App Store images at, about a third of theirs,
+/// three times the width a screenshot shows at, so it is sharp on a Retina display.
 export const screenshotWidth = 440;
+
+/// The App Store images the site shows: the iPhone Duo's, which are nearer
+/// square than the iPhone's, so a row of them fits a page without scrolling.
+export const screenshotSuffix = "_Duo";
 
 /// The site's own words, each in every app language (Website/site.json).
 export const siteStringKeys = [
@@ -57,6 +60,10 @@ export const siteStringKeys = [
     "privacy",
     "privacyPolicy",
     "contact",
+    "consent",
+    "consentAccept",
+    "consentDecline",
+    "cookieSettings",
 ] as const;
 export type SiteStringKey = (typeof siteStringKeys)[number];
 
@@ -362,11 +369,13 @@ function readCaptions(rootDir: string, locale: string, problems: string[]): Capt
     }
     const captions = JSON.parse(readText(rootDir, path)) as Partial<Caption>[];
     return captions.flatMap((caption, index) => {
-        if (!caption.file || !caption.title?.trim() || !caption.subtitle?.trim()) {
-            problems.push(`${path}: caption ${index + 1} needs a file, a title and a subtitle`);
+        // An image with chips rather than a subtitle is described by its chips.
+        const subtitle = caption.subtitle?.trim() || (caption as { chips?: string[] }).chips?.join(", ");
+        if (!caption.file || !caption.title?.trim() || !subtitle) {
+            problems.push(`${path}: caption ${index + 1} needs a file, a title and a subtitle or chips`);
             return [];
         }
-        return [{ file: caption.file, title: caption.title, subtitle: caption.subtitle }];
+        return [{ file: caption.file, title: caption.title, subtitle }];
     });
 }
 
@@ -509,10 +518,10 @@ function formatDate(date: string, locale: string): string {
 }
 
 /// The App Store images each page shows, with where they go in the site.
-export function screenshotSources(site: Site, rootDir: string = root): ScreenshotSource[] {
+export function screenshotSources(site: Site, rootDir: string = root, imagesDir: string = join(rootDir, "screenshots", "store")): ScreenshotSource[] {
     return site.pages.flatMap((page) => (site.captions.get(page.locale) ?? []).map((caption): ScreenshotSource => ({
         locale: page.locale,
-        source: join(rootDir, "screenshots", "store", page.locale, `${caption.file}.png`),
+        source: join(imagesDir, page.locale, `${caption.file}${screenshotSuffix}.png`),
         file: `screenshots/${page.locale}/${caption.file}.png`,
         alt: format(siteWord(site, page, "screenshotAlt"), { title: caption.title, subtitle: caption.subtitle }),
     })));
@@ -629,6 +638,10 @@ function renderLayout(site: Site, layout: Layout): string {
         privacyPolicy: siteWord(site, page, "privacyPolicy"),
         supportEmail: site.config.supportEmail,
         contact: siteWord(site, page, "contact"),
+        consent: siteWord(site, page, "consent"),
+        consentAccept: siteWord(site, page, "consentAccept"),
+        consentDecline: siteWord(site, page, "consentDecline"),
+        cookieSettings: siteWord(site, page, "cookieSettings"),
         copyright: site.copyright,
         languageNav: layout.languageNav,
         content: layout.content,

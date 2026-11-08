@@ -38,17 +38,18 @@ jobs:
       with:
         node-version: 24
 
-    # The site shows the App Store images, which are composed when a version is
-    # ready to ship. Until they are all there it says so and deploys nothing,
-    # rather than failing every push in between.
-    - name: Check the App Store images are present
+    # The site shows the iPhone Duo's App Store images, which are composed when a
+    # version is ready to ship. Until the British English page's are all there it
+    # says so and deploys nothing, rather than failing every push in between.
+    # Another language's page leaves its images out until they are composed.
+    - name: Check the British English page's App Store images are present
       id: images
       continue-on-error: true
-      run: node scripts/check-store-images.ts
+      run: node scripts/build-website.ts --check-images
 
     - name: Build the website
       if: ${{ steps.images.outcome == 'success' }}
-      run: node scripts/build-website.ts
+      run: node scripts/build-website.ts --allow-missing-images
 
     - name: Say why nothing was deployed
       if: ${{ steps.images.outcome != 'success' }}

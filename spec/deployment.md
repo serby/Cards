@@ -54,7 +54,7 @@ As the app's maintainer, I want to update the App Store listing from the reposit
 As the app's maintainer, I want the website rebuilt from the app's own sources when they change, so that it always says what the App Store listing and the app say.
 
 - `website.yml` runs on a push to `main` that changes what the site is built from: `Website/`, `metadata/`, `changelog.json`, `screenshots/store/`, the app's string catalogue, colours or project file, or `website.yml`, or by hand. Changes to the scripts do not trigger it (DEPLOY-2).
-- While an App Store image is missing it deploys nothing and says so in a notice, without failing. Otherwise it builds the site (`scripts/build-website.ts`), which stops if a source is broken, and deploys it to Cloudflare Pages (`scripts/deploy-website.ts`). One deploy runs at a time, in push order.
+- While an App Store image the British English page shows is missing (`build-website.ts --check-images`; in preparation for 1.4 the iPhone Duo's, PLAT-10) it deploys nothing and says so in a notice, without failing. Another language's page leaves its images out until they are composed. Otherwise it builds the site (`scripts/build-website.ts`), which stops if a source is broken, and deploys it to Cloudflare Pages (`scripts/deploy-website.ts`). One deploy runs at a time, in push order.
 
 **Since:** In preparation for 1.4
 **Where:** `.github/workflows/website.yml`, `scripts/build-website.ts`, `scripts/deploy-website.ts`

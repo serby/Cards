@@ -11,23 +11,32 @@
 // scripts/deploy-website.ts deploys the result and scripts/serve-website.ts
 // serves it locally (docs/DEVELOPMENT.md, "Change the website").
 //
-// Usage: node scripts/build-website.ts [--allow-missing-images]
+// With --check-images it builds nothing and only says whether the British
+// English page's images are there, which website.yml asks before it deploys;
+// another language's page leaves out its images until they are composed, so
+// it never shows another language's or version's pictures.
+//
+// Usage: node scripts/build-website.ts [--allow-missing-images] [--check-images] [--images <dir>] [--out <dir>]
 
 import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
-import { dirname, join, relative } from "node:path";
+import { dirname, join, relative, resolve } from "node:path";
 import { parseArgs } from "node:util";
 import { runScript } from "./lib/command-line.ts";
+import { sourceLocale } from "./lib/locales.ts";
 import { readPNG, shrinkPNG, writePNG } from "./lib/png.ts";
 import { readSite, renderSite, type Screenshot, screenshotSources, screenshotWidth } from "./lib/website.ts";
 
 const repositoryRoot = join(import.meta.dirname, "..");
 
-const usage = `Usage: node scripts/build-website.ts [--allow-missing-images]
+const usage = `Usage: node scripts/build-website.ts [--allow-missing-images] [--check-images] [--images <dir>] [--out <dir>]
 
 Builds the website into Website/dist from the store listing, the changelog and the app.
 
 Options:
-  --allow-missing-images   Leave out App Store images that are not there yet, rather than stop`;
+  --allow-missing-images   Leave out App Store images that are not there yet, rather than stop
+  --check-images           Build nothing; fail, listing them, while an image the British English page shows is missing
+  --images <dir>           Take the App Store images from <dir>/<locale>/ rather than screenshots/store/, to preview new ones
+  --out <dir>              Build into <dir> rather than Website/dist`;
 
 export interface BuildOptions {
     /// The repository to build from.
@@ -35,7 +44,17 @@ export interface BuildOptions {
     /// Where to build it; emptied first.
     out?: string;
     allowMissingImages?: boolean;
+    /// Where the App Store images are, in a folder for each locale; screenshots/store/ unless given.
+    images?: string;
     log?: (line: string) => void;
+}
+
+/// The App Store images the British English page shows that are not there yet,
+/// relative to the repository. The site deploys once there are none.
+export function missingImages(site: ReturnType<typeof readSite>, root: string, images?: string): string[] {
+    return screenshotSources(site, root, images)
+        .filter((source) => source.locale === sourceLocale && !existsSync(source.source))
+        .map((source) => relative(root, source.source));
 }
 
 export interface BuildResult {
@@ -58,7 +77,7 @@ export function buildWebsite(options: BuildOptions = {}): BuildResult {
     const log = options.log ?? ((line: string): void => console.log(line));
     const site = readSite(root);
 
-    const sources = screenshotSources(site, root);
+    const sources = screenshotSources(site, root, options.images);
     const missing = sources.filter((source) => !existsSync(source.source));
     const skipped = missing.map((source) => relative(root, source.source));
     if (missing.length > 0 && !options.allowMissingImages) {
@@ -98,6 +117,9 @@ function main(argv: string[]): number {
         args: argv,
         options: {
             "allow-missing-images": { type: "boolean", default: false },
+            "check-images": { type: "boolean", default: false },
+            images: { type: "string" },
+            out: { type: "string" },
             help: { type: "boolean", short: "h", default: false },
         },
     });
@@ -105,7 +127,17 @@ function main(argv: string[]): number {
         console.log(usage);
         return 0;
     }
-    buildWebsite({ allowMissingImages: values["allow-missing-images"] });
+    if (values["check-images"]) {
+        const missing = missingImages(readSite(repositoryRoot), repositoryRoot, values.images ? resolve(values.images) : undefined);
+        for (const image of missing) console.error(`missing: ${image}`);
+        console.log(missing.length === 0 ? "Every App Store image the British English page shows is there." : `${missing.length} App Store images the British English page shows are missing.`);
+        return missing.length === 0 ? 0 : 1;
+    }
+    buildWebsite({
+        allowMissingImages: values["allow-missing-images"],
+        ...(values.images ? { images: resolve(values.images) } : {}),
+        ...(values.out ? { out: resolve(values.out) } : {}),
+    });
     return 0;
 }
 

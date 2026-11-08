@@ -227,13 +227,22 @@ header a:hover {
   padding-top: 3rem;
 }
 
+/* One row, scrolled sideways as the App Store shows them, so however many
+   images there are none is left on a row of its own. */
 .screenshots ul {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  display: flex;
   gap: var(--inset);
   margin: 0;
-  padding: 0;
+  padding: 0 0 var(--inset);
   list-style: none;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;
+}
+
+.screenshots li {
+  flex: 0 0 min(260px, 70vw);
+  scroll-snap-align: start;
 }
 
 .screenshots img {
@@ -440,4 +449,68 @@ footer a {
 
 footer a:hover {
   color: var(--accent);
+}
+
+/* Cookie Settings, at the foot of every page: a button that reads as a link. */
+footer button.link {
+  padding: 0.5rem 0;
+  border: 0;
+  background: none;
+  color: var(--text-secondary);
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+footer button.link:hover {
+  color: var(--accent);
+}
+
+/* The analytics banner, until the visitor chooses: on a panel, as the
+   site's other panels are, above the foot of the page. */
+.consent {
+  position: fixed;
+  left: 50%;
+  bottom: var(--inset);
+  transform: translateX(-50%);
+  width: min(640px, calc(100% - 2 * var(--inset)));
+  padding: 1.25rem 1.5rem;
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--text);
+  box-shadow: 0 12px 40px rgb(0 0 0 / 0.18);
+  border: 1px solid var(--line);
+  z-index: 10;
+}
+
+.consent[hidden] {
+  display: none;
+}
+
+.consent p {
+  margin: 0 0 1rem;
+}
+
+.consent-choices {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.consent button {
+  min-height: 44px;
+  padding: 0.6rem 1.4rem;
+  border: 0;
+  border-radius: 12px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.consent button.secondary {
+  background: var(--bg-alt);
+  color: var(--text);
 }

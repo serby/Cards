@@ -100,6 +100,34 @@
       "es": "Contacto",
       "de": "Kontakt",
       "ja": "お問い合わせ"
+    },
+    "consent": {
+      "comment": "The banner at the foot of the website asking to count the visit with Google Analytics, which uses cookies. Google Analytics is Google's product; keep its name. The app is Card Barcodes itself, which never tracks anyone.",
+      "en": "Can this website count your visit with Google Analytics? It uses cookies to do so. The app itself never tracks you.",
+      "es": "¿Puede esta web contar tu visita con Google Analytics? Para ello usa cookies. La app nunca te rastrea.",
+      "de": "Darf diese Website deinen Besuch mit Google Analytics zählen? Dafür verwendet sie Cookies. Die App selbst verfolgt dich nie.",
+      "ja": "このウェブサイトで、Google アナリティクスを使って訪問を記録してもよいですか？記録には Cookie を使います。アプリ自体があなたを追跡することはありません。"
+    },
+    "consentAccept": {
+      "comment": "Button in the website's analytics banner that allows Google Analytics.",
+      "en": "Allow",
+      "es": "Permitir",
+      "de": "Erlauben",
+      "ja": "許可"
+    },
+    "consentDecline": {
+      "comment": "Button in the website's analytics banner that turns Google Analytics down.",
+      "en": "No thanks",
+      "es": "No, gracias",
+      "de": "Nein danke",
+      "ja": "許可しない"
+    },
+    "cookieSettings": {
+      "comment": "Link at the foot of every page that opens the analytics banner again, to change the choice.",
+      "en": "Cookie Settings",
+      "es": "Configuración de cookies",
+      "de": "Cookie-Einstellungen",
+      "ja": "Cookie の設定"
     }
   }
 }
