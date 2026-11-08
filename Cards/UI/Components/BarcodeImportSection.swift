@@ -120,6 +120,7 @@ extension BarcodeImportSection {
             // The app's supporting text, as every footer in the form takes: the
             // system's footer grey is 3.2:1 on the form's background.
             .foregroundStyle(Color.secondaryText)
+            .accessibilityIdentifier("barcodeImportHint")
         }
     }
 

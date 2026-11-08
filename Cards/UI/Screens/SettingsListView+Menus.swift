@@ -40,8 +40,10 @@ extension SettingsListView {
     /// choice under the title at accessibility sizes, wrapping. The system's
     /// menu picker cut its value off there ("Auto…Miles)" on iOS 26.5), so this
     /// is a menu of the same choices with a label of its own. VoiceOver reads it
-    /// as it read the picker: the title, then the choice as its value.
-    func choiceMenu<Choice: Hashable>(
+    /// as it read the picker: the title, then the choice as its value. Each
+    /// choice is identified by `identifier` and its stored value, such as
+    /// `distanceUnitsPicker_miles`, so UI tests find it in any language.
+    func choiceMenu<Choice: Hashable & RawRepresentable<String>>(
         _ title: Text,
         selection: Binding<Choice>,
         choices: [Choice],
@@ -54,6 +56,7 @@ extension SettingsListView {
                 ForEach(choices, id: \.self) { choice in
                     label(choice)
                         .tag(choice)
+                        .accessibilityIdentifier("\(identifier)_\(choice.rawValue)")
                 }
             } label: {
                 title

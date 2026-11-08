@@ -10,12 +10,18 @@ import XCTest
 /// What the UI test classes share: the variant they run in, and helpers for
 /// reading the grid and waiting on labels. No tests of its own. The tests are
 /// split between `CardsUITests` and `CardPlacesAndSettingsUITests`, each with
-/// a right-to-left twin, so a parallel run spreads them over four simulators.
+/// a right-to-left twin in Arabic, so a parallel run spreads them over four
+/// simulators. Every launch passes `variantArguments`, so a twin runs every
+/// test in its language.
 class CardsUITestCase: XCTestCase {
     /// Launch arguments for a variant of the suite, such as another language.
     class var variantArguments: [String] { [] }
     /// Whether the variant lays the app out right to left.
     class var isRightToLeft: Bool { false }
+    /// Whether the app runs in British English, as it does unless the variant
+    /// chooses a language (`XCUIApplication.forTesting`). Only then may a test
+    /// check the app's wording, such as "metres" spelt the British way.
+    class var isEnglish: Bool { !variantArguments.contains("-AppleLanguages") }
 
     /// Whether the tile `first` comes before `second` in the grid: on an earlier
     /// row, or on the same row nearer its leading edge, the right right to left.
@@ -37,18 +43,20 @@ class CardsUITestCase: XCTestCase {
         element.matches(NSPredicate(format: "label == %@", label), within: timeout)
     }
 
-    /// The launch arguments for right to left. No right-to-left language ships
-    /// yet (Arabic is held back, l10n/context.md), so the run forces the
-    /// direction in English, as a right-to-left language would set it;
-    /// `CardsRightToLeftUITests.testLaysOutRightToLeft` fails if the forcing
-    /// stops working.
-    static let rightToLeft = ["-AppleTextDirection", "YES", "-NSForceRightToLeftWritingDirection", "YES"]
+    /// The launch arguments for right to left: Arabic, the app's right-to-left
+    /// language, in Saudi Arabia, as `make capture-l10n` runs it. Nothing forces
+    /// the direction, so it comes from the language, as it does for the people
+    /// who use the app in Arabic; `CardsRightToLeftUITests.testLaysOutRightToLeft`
+    /// checks it does.
+    static let rightToLeft = ["-AppleLanguages", "(ar)", "-AppleLocale", "ar_SA"]
 }
 
-/// Adds, finds, reorders and deletes cards on the Cards tab. The branch's
-/// tests find elements by identifier, never by their English text; some of
-/// 1.4's still read English labels, so the suite runs in English.
-/// `CardsRightToLeftUITests` runs it again right to left.
+/// Adds, finds, reorders and deletes cards on the Cards tab. The tests find
+/// elements by identifier, never by the app's own words, and type or compare
+/// only user content, such as the seeded cards' and places' names, which are
+/// never translated, so they pass in any language; the few checks of English
+/// wording run only in English (`isEnglish`). `CardsRightToLeftUITests` runs
+/// it again in Arabic, right to left.
 class CardsUITests: CardsUITestCase {
     @MainActor
     func testAdd() throws {
@@ -85,7 +93,9 @@ class CardsUITests: CardsUITestCase {
     /// Control users.
     @MainActor
     func testMoveAndDeleteFromTheMenu() throws {
-        let app = XCUIApplication.launchForTesting(arguments: Self.variantArguments)
+        // In custom order, whatever an earlier run left: only it can be rearranged,
+        // and in another order the menu offers no Move Up or Move Down.
+        let app = XCUIApplication.launchForTesting(arguments: ["-cardSortOrder", "custom"] + Self.variantArguments)
 
         // The first two seeded cards.
         let joesMarket = app.buttons[SeededCard.joesMarket]
@@ -118,10 +128,14 @@ class CardsUITests: CardsUITestCase {
 
         XCTAssertTrue(waitForElement(app.buttons["choosePhotoButton"]), "Choose Photo did not appear")
         XCTAssertTrue(app.buttons["chooseBarcodeFileButton"].exists, "Choose File did not appear")
-        XCTAssertTrue(app.staticTexts["Read the barcode in a screenshot, a photo or a PDF, such as an e-ticket."].exists)
+        let hint = app.staticTexts["barcodeImportHint"]
+        XCTAssertTrue(hint.exists, "The note on what Choose Photo and Choose File read did not appear")
+        if Self.isEnglish {
+            XCTAssertEqual(hint.label, "Read the barcode in a screenshot, a photo or a PDF, such as an e-ticket.")
+        }
 
         app.navigationBars.buttons.element(boundBy: 0).tap()
-        let honeycomb = tile(app, "Honeycomb Rewards")
+        let honeycomb = app.tile(SeededCard.honeycomb)
         XCTAssertTrue(waitForElement(honeycomb))
         honeycomb.tap()
         app.buttons["editCardButton"].tap()
@@ -136,42 +150,46 @@ class CardsUITests: CardsUITestCase {
         let app = launchWithSeededCards()
         let search = app.searchFields.firstMatch
         // iOS 27 keeps the field out of sight until the grid is pulled down, and
-        // iPadOS 26 behind a Search button at the top, so reach it as a person would.
+        // iPadOS 26 behind a Search button at the top, so reach it as a person
+        // would. That button is the system's, with a translated label and no
+        // identifier, so it is the bar's one button without one: the app's own,
+        // Sort and Add Card, have theirs.
         if !search.appears(within: 3) {
-            let button = app.buttons["Search"]
+            let button = app.navigationBars.buttons.matching(NSPredicate(format: "identifier == ''")).firstMatch
             if button.exists { button.tap() } else { app.scrollViews.firstMatch.swipeDown() }
         }
         XCTAssertTrue(waitForElement(search))
         search.tap()
+        // The names are the seeded cards' own, which are never translated.
         search.typeText("hon")
-        XCTAssertTrue(waitForElement(tile(app, "Honeycomb Rewards")))
-        XCTAssertTrue(tile(app, "Joe's Market").disappears(within: 3))
+        XCTAssertTrue(waitForElement(app.tile(SeededCard.honeycomb)))
+        XCTAssertTrue(app.tile(SeededCard.joesMarket).disappears(within: 3))
 
         search.typeText("zzz")
-        XCTAssertTrue(waitForElement(app.staticTexts["No Cards Match"]))
+        XCTAssertTrue(waitForElement(app.staticTexts["noCardsMatchTitle"]), "No Cards Match did not appear")
     }
 
     /// A long press on a tile offers Delete, which removes the card at once (CARD-6, CARD-10).
     @MainActor
     func testDeleteFromTheLongPressMenu() throws {
         let app = launchWithSeededCards()
-        let honeycomb = tile(app, "Honeycomb Rewards")
+        let honeycomb = app.tile(SeededCard.honeycomb)
         XCTAssertTrue(waitForElement(honeycomb))
         honeycomb.press(forDuration: 1)
 
-        let delete = app.buttons["Delete"]
+        let delete = app.buttons["deleteCardMenuItem"]
         XCTAssertTrue(waitForElement(delete))
         delete.tap()
         XCTAssertTrue(honeycomb.disappears(within: 3))
-        XCTAssertTrue(tile(app, "Nordic Nest Home").exists)
+        XCTAssertTrue(app.tile(SeededCard.nordicNest).exists)
     }
 
     /// In custom order, a tile dropped on another takes its place (CARD-7, CARD-10).
     @MainActor
     func testDragATileToReorder() throws {
         let app = launchWithSeededCards()
-        let honeycomb = tile(app, "Honeycomb Rewards")
-        let joesMarket = tile(app, "Joe's Market")
+        let honeycomb = app.tile(SeededCard.honeycomb)
+        let joesMarket = app.tile(SeededCard.joesMarket)
         XCTAssertTrue(waitForElement(honeycomb))
         // Moved as soon as the tile lifts, before its menu opens: the menu now
         // offers Move Up and Move Down too, opens in the drag's path, and after
@@ -192,21 +210,18 @@ class CardsUITests: CardsUITestCase {
     @MainActor
     func testSortMenuChangesTheOrder() throws {
         // Not pinned, as launchWithSeededCards does, so the menu can change it.
-        let app = XCUIApplication.forTesting(["-screenshotSeed", "-showsCardWhereYouAre", "NO"])
+        let app = XCUIApplication.forTesting(["-screenshotSeed", "-showsCardWhereYouAre", "NO"] + Self.variantArguments)
         app.launch()
-        let honeycomb = tile(app, "Honeycomb Rewards")
-        let nordicNest = tile(app, "Nordic Nest Home")
+        let honeycomb = app.tile(SeededCard.honeycomb)
+        let nordicNest = app.tile(SeededCard.nordicNest)
         XCTAssertTrue(waitForElement(honeycomb))
 
-        choose(app, sortOrder: "Location")
-        XCTAssertTrue(
-            eventually { honeycomb.frame.minY > nordicNest.frame.minY || honeycomb.frame.minX > nordicNest.frame.minX },
-            "Honeycomb Rewards did not move last"
-        )
+        choose(app, sortOrder: "location")
+        XCTAssertTrue(eventually { readsBefore(nordicNest, honeycomb) }, "Honeycomb Rewards did not move last")
 
-        choose(app, sortOrder: "Custom Order")
+        choose(app, sortOrder: "custom")
         XCTAssertTrue(
-            eventually { abs(honeycomb.frame.minY - nordicNest.frame.minY) < 1 && honeycomb.frame.minX < nordicNest.frame.minX },
+            eventually { abs(honeycomb.frame.minY - nordicNest.frame.minY) < 1 && readsBefore(honeycomb, nordicNest) },
             "Honeycomb Rewards did not move back beside Nordic Nest Home"
         )
     }
@@ -215,34 +230,44 @@ class CardsUITests: CardsUITestCase {
     /// full above the grid, and opens when tapped (SET-3).
     @MainActor
     func testCardWhereYouAre() throws {
-        let app = XCUIApplication.forTesting(["-screenshotSeed", "-cardSortOrder", "custom", "-showsCardWhereYouAre", "YES"])
+        let app = XCUIApplication.forTesting(
+            ["-screenshotSeed", "-cardSortOrder", "custom", "-showsCardWhereYouAre", "YES"] + Self.variantArguments
+        )
         app.launch()
 
         // The seed puts the user inside Joe's Market Notting Hill.
         let cardHere = app.buttons["cardWhereYouAre"]
         XCTAssertTrue(waitForElement(cardHere))
-        XCTAssertEqual(cardHere.label, "Joe's Market, You're at Joe's Market Notting Hill")
-        XCTAssertTrue(tile(app, "Local Roast Coffee").exists)
+        if Self.isEnglish {
+            XCTAssertEqual(cardHere.label, "Joe's Market, You're at Joe's Market Notting Hill")
+        } else {
+            // The card's and the place's names are user content, in any language.
+            XCTAssertTrue(cardHere.label.contains("Joe's Market Notting Hill"), cardHere.label)
+        }
+        XCTAssertTrue(app.tile(SeededCard.localRoast).exists)
         cardHere.tap()
         XCTAssertTrue(waitForLabel(app.staticTexts["cardNameText"], "Joe's Market", timeout: 5))
     }
 
+    /// Picks `sortOrder`, an order's stored value (`CardSortOrder`), from the
+    /// Sort menu, by its identifier.
     @MainActor
     private func choose(_ app: XCUIApplication, sortOrder: String) {
         app.buttons["sortMenu"].tap()
-        let option = app.buttons[sortOrder]
-        XCTAssertTrue(waitForElement(option))
+        let option = app.buttons["sortOrder_\(sortOrder)"]
+        XCTAssertTrue(waitForElement(option), "The Sort menu does not offer \(sortOrder)")
         option.tap()
     }
 }
 
-/// Every test again right to left (`CardsUITestCase.rightToLeft`), as the
-/// tests must not depend on the direction.
+/// Every test again in Arabic, right to left (`CardsUITestCase.rightToLeft`),
+/// as the tests must depend on neither the language nor the direction.
 final class CardsRightToLeftUITests: CardsUITests {
     override static var variantArguments: [String] { rightToLeft }
     override static var isRightToLeft: Bool { true }
 
-    /// The first tab, Cards, is drawn on the right.
+    /// The first tab, Cards, is drawn on the right, as Arabic sets it with
+    /// nothing forcing the direction.
     @MainActor
     func testLaysOutRightToLeft() {
         let app = XCUIApplication.launchForTesting(seeded: false, arguments: Self.variantArguments)

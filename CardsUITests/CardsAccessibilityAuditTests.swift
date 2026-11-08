@@ -2,7 +2,8 @@ import XCTest
 
 /// Xcode's accessibility audit on every screen: contrast, Dynamic Type,
 /// clipped text, hit regions, labels and traits, in English at the default
-/// text size, and again right to left at the largest accessibility size.
+/// text size, and again in Arabic, right to left, at the largest
+/// accessibility size.
 /// Elements are found by identifier, so both pass in any language. A screen
 /// taller than the display is audited, scrolled to its end, a second time.
 /// The screens are reached through the shared helpers in
@@ -15,12 +16,11 @@ class AccessibilityAuditCase: XCTestCase {
     /// Launch arguments for a variant of the whole suite.
     class var variantArguments: [String] { [] }
 
-    /// Right to left at the largest accessibility text size. No right-to-left
-    /// language ships yet (Arabic is held back, l10n/context.md), so the
-    /// direction is forced in English, as a right-to-left language sets it
-    /// (`CardsRightToLeftUITests.testLaysOutRightToLeft` checks it does).
-    static let rightToLeftAtTheLargestSize = [
-        "-AppleTextDirection", "YES", "-NSForceRightToLeftWritingDirection", "YES",
+    /// Right to left at the largest accessibility text size: Arabic, in Saudi
+    /// Arabia, with nothing forcing the direction, so it comes from the
+    /// language (`CardsUITestCase.rightToLeft`, which
+    /// `CardsRightToLeftUITests.testLaysOutRightToLeft` checks).
+    static let rightToLeftAtTheLargestSize = CardsUITestCase.rightToLeft + [
         "-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL"
     ]
 
@@ -353,8 +353,8 @@ class CardsAccessibilityAuditTests: AccessibilityAuditCase {
     }
 }
 
-/// `CardsAccessibilityAuditTests` again right to left at the largest
-/// accessibility text size.
+/// `CardsAccessibilityAuditTests` again in Arabic, right to left, at the
+/// largest accessibility text size.
 final class CardsRightToLeftLargeTextAuditTests: CardsAccessibilityAuditTests {
     override static var variantArguments: [String] { rightToLeftAtTheLargestSize }
 }
@@ -390,8 +390,8 @@ class CardFormAccessibilityAuditTests: AccessibilityAuditCase {
     }
 }
 
-/// `CardFormAccessibilityAuditTests` again right to left at the largest
-/// accessibility text size.
+/// `CardFormAccessibilityAuditTests` again in Arabic, right to left, at the
+/// largest accessibility text size.
 final class CardFormRightToLeftLargeTextAuditTests: CardFormAccessibilityAuditTests {
     override static var variantArguments: [String] { rightToLeftAtTheLargestSize }
 }

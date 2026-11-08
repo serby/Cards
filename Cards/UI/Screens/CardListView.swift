@@ -180,6 +180,7 @@ public struct CardListView: View {
                         LocalizedStringResource("No Cards Match", comment: "Title shown on the Cards tab when no card's name matches the search."),
                         systemImage: "magnifyingglass"
                     )
+                    .accessibilityIdentifier("noCardsMatchTitle")
                 } description: {
                     Text(
                         "Check the spelling, or try another name.",
@@ -213,6 +214,7 @@ public struct CardListView: View {
                     ForEach(CardSortOrder.allCases) { order in
                         Label(order.title, systemImage: order.systemImage)
                             .tag(order)
+                            .accessibilityIdentifier("sortOrder_\(order.rawValue)")
                     }
                 } label: {
                     Text("Sort By", comment: "Heading of the choices in the Cards tab's Sort menu, which sets the order of the cards.")

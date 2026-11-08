@@ -68,6 +68,13 @@ extension XCUIApplication {
         return app
     }
 
+    /// A card's tile by its row's identifier (`SeededCard`), so it is found in
+    /// any language, however a translation orders the tile's label. The first
+    /// match, as a tile that moves is briefly in the grid twice.
+    func tile(_ row: String) -> XCUIElement {
+        buttons.matching(identifier: row).firstMatch
+    }
+
     /// A tap while the list is still settling just after launch can miss, as
     /// a press can (`openMenu`), so it taps again while the row is still there.
     func openCard(_ row: String) {
