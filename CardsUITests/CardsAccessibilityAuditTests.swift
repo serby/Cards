@@ -256,6 +256,7 @@ class AccessibilityAuditCase: XCTestCase {
             return bars.contains { $0.frame.contains(frame) }
                 || growsInFull.contains(element.identifier)
                 || isInside(frame, anyOf: growsInFull.union([locationRow]), in: app)
+                || (isOnIOS18 && isInside(frame, anyOf: growsInFullOnIOS18, in: app))
                 || isOnTileUnderTheTabBar(frame, in: app)
         case .contrast:
             // A disabled control, such as Import with nothing pasted: WCAG 1.4.3

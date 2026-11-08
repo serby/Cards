@@ -18,11 +18,13 @@ public struct RadiusSlider: View {
         VStack(spacing: 6) {
             HStack {
                 label
+                    .accessibilityIdentifier("radiusLabel")
                 Spacer()
                 Text(distanceFormat.radius(radius))
                     .monospacedDigit()
                     // The app's supporting text: the system's secondary grey is 3.4:1 on the panel.
                     .foregroundStyle(Color.secondaryText)
+                    .accessibilityIdentifier("radiusValue")
             }
             .font(.subheadline)
             Slider(
