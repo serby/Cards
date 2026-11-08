@@ -109,14 +109,23 @@ extension XCUIApplication {
         XCTAssertTrue(buttons["addLocationButton"].appears(within: 5), "The Add Location map did not open")
     }
 
-    /// The Settings tab. On iPhone it is the second button of the tab bar,
-    /// found by position as tab titles are translated; the order of the
-    /// elements stays the same right to left, only the drawing flips. From
-    /// iPadOS 18 the tab bar floats at the top, outside any tab bar, and its
-    /// buttons take their symbols' names as identifiers.
-    var settingsTab: XCUIElement {
-        tabBars.firstMatch.exists ? tabBars.buttons.element(boundBy: 1) : buttons["gearshape"]
+    /// A tab. On iPhone it is a button of the tab bar, found by position as tab
+    /// titles are translated; the order of the elements stays the same right
+    /// to left, only the drawing flips. From iPadOS 18 the tabs float at the
+    /// top, outside any tab bar, as radio buttons that take their symbols'
+    /// names as identifiers, and iPadOS 26 lists a button by that name too, so
+    /// the radio button is the one to tap.
+    func tab(_ position: Int, symbol: String) -> XCUIElement {
+        if tabBars.firstMatch.exists { return tabBars.buttons.element(boundBy: position) }
+        let radio = radioButtons.matching(identifier: symbol).firstMatch
+        return radio.exists ? radio : buttons.matching(identifier: symbol).firstMatch
     }
+
+    /// The Cards tab, the first.
+    var cardsTab: XCUIElement { tab(0, symbol: "barcode") }
+
+    /// The Settings tab, the second.
+    var settingsTab: XCUIElement { tab(1, symbol: "gearshape") }
 
     func openSettings() {
         settingsTab.tap()

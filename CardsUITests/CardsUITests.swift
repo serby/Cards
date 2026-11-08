@@ -135,10 +135,11 @@ class CardsUITests: CardsUITestCase {
     func testSearchFiltersCards() throws {
         let app = launchWithSeededCards()
         let search = app.searchFields.firstMatch
-        // iOS 27 keeps the field out of sight until the grid is pulled down, so
-        // pull it down as a person would.
+        // iOS 27 keeps the field out of sight until the grid is pulled down, and
+        // iPadOS 26 behind a Search button at the top, so reach it as a person would.
         if !search.appears(within: 3) {
-            app.scrollViews.firstMatch.swipeDown()
+            let button = app.buttons["Search"]
+            if button.exists { button.tap() } else { app.scrollViews.firstMatch.swipeDown() }
         }
         XCTAssertTrue(waitForElement(search))
         search.tap()
@@ -245,10 +246,9 @@ final class CardsRightToLeftUITests: CardsUITests {
     @MainActor
     func testLaysOutRightToLeft() {
         let app = XCUIApplication.launchForTesting(seeded: false, arguments: Self.variantArguments)
-        let tabs = app.tabBars.buttons
         XCTAssertGreaterThan(
-            tabs.element(boundBy: 0).frame.minX,
-            tabs.element(boundBy: 1).frame.minX,
+            app.cardsTab.frame.minX,
+            app.settingsTab.frame.minX,
             "The right-to-left run is laid out left to right"
         )
     }

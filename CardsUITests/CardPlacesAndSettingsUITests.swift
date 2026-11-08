@@ -50,7 +50,7 @@ class CardPlacesAndSettingsUITests: CardsUITestCase {
     func testArrivalNotificationsSwitch() throws {
         let app = XCUIApplication.forTesting()
         app.launch()
-        app.tabBars.buttons["Settings"].tap()
+        app.settingsTab.tap()
 
         let toggle = app.switches["arrivalNotificationsToggle"]
         XCTAssertTrue(waitForElement(toggle))
@@ -66,7 +66,7 @@ class CardPlacesAndSettingsUITests: CardsUITestCase {
     func testShowCardWhereIAmSwitch() throws {
         let app = XCUIApplication.forTesting()
         app.launch()
-        app.tabBars.buttons["Settings"].tap()
+        app.settingsTab.tap()
 
         let toggle = app.switches["showsCardWhereYouAreToggle"]
         XCTAssertTrue(waitForElement(toggle))
@@ -89,11 +89,11 @@ class CardPlacesAndSettingsUITests: CardsUITestCase {
         XCTAssertTrue(waitForElement(localRoast))
 
         choose(app, distanceUnits: "Miles")
-        app.tabBars.buttons["Cards"].tap()
+        app.cardsTab.tap()
         XCTAssertTrue(waitForLabel(localRoast, containing: " yards from Local Roast Portobello"), localRoast.label)
 
         choose(app, distanceUnits: "Kilometres")
-        app.tabBars.buttons["Cards"].tap()
+        app.cardsTab.tap()
         XCTAssertTrue(waitForLabel(localRoast, containing: " metres from Local Roast Portobello"), localRoast.label)
 
         choose(app, distanceUnits: "Automatic", startingWith: true)
@@ -162,7 +162,7 @@ class CardPlacesAndSettingsUITests: CardsUITestCase {
     /// what it means, as "Automatic (Miles)", so it is found by how it starts.
     @MainActor
     private func choose(_ app: XCUIApplication, distanceUnits: String, startingWith: Bool = false) {
-        app.tabBars.buttons["Settings"].tap()
+        app.settingsTab.tap()
         let picker = app.buttons["distanceUnitsPicker"]
         XCTAssertTrue(waitForElement(picker))
         XCTAssertTrue(app.reveal(picker), "The Distances menu is not clear of the tab bar")
