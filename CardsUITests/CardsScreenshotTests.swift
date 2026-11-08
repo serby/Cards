@@ -72,18 +72,63 @@ final class CardsScreenshotTests: XCTestCase {
         attach(app, name: "06_ShareCard\(suffix)")
     }
 
-    /// Launches with the screenshot cards in custom order and without the card
-    /// for where you are, whatever the simulator's own settings say, so every
-    /// capture shows the same grid. UI tests never ask to send notifications
-    /// (`DevelopmentHooks.notifications`), so no prompt covers the captures.
+    /// The Cards tab with the card for where you are in full above the grid
+    /// (SET-3), which leads the App Store images: at the shop, its card is ready.
     @MainActor
-    private func launchSeeded() -> XCUIApplication {
-        // The cards in custom order, without the card for where you are and with
-        // distances in the locale's own units, whatever the simulator's own
-        // settings say, so every capture shows the same grid.
+    func testCaptureCardWhereYouAreScreenshot() throws {
+        let app = launchSeeded(showsCardWhereYouAre: true)
+        defer { app.terminate() }
+        XCTAssertTrue(app.descendants(matching: .any)["cardWhereYouAre"].firstMatch.appears(within: 5))
+        attach(app, name: "07_CardWhereYouAre\(suffix)")
+    }
+
+    /// Settings at iCloud, Data and Privacy: where the cards are kept, export,
+    /// and Share Diagnostics (DATA-8, DATA-2, PLAT-11).
+    @MainActor
+    func testCapturePrivacyScreenshot() throws {
+        let app = launchSeeded()
+        defer { app.terminate() }
+        app.settingsTab.tap()
+        XCTAssertTrue(app.collectionViews.firstMatch.appears(within: 5))
+        let header = app.descendants(matching: .any)["iCloudSectionHeader"].firstMatch
+        // The list only makes its rows as they come on screen.
+        for _ in 0..<8 where !header.exists {
+            app.swipeUp(velocity: .slow)
+        }
+        XCTAssertTrue(header.exists, "iCloud is not on screen")
+        // Dragged, and held before letting go so it doesn't run on, until iCloud
+        // is near the top and Data and Privacy follow it on screen.
+        let target = app.frame.height * 0.06
+        if header.frame.minY > target {
+            let start = app.coordinate(withNormalizedOffset: CGVector(dx: 0.4, dy: 0.85))
+            let end = start.withOffset(CGVector(dx: 0, dy: target - header.frame.minY))
+            start.press(forDuration: 0.1, thenDragTo: end, withVelocity: .slow, thenHoldForDuration: 0.6)
+        }
+        Thread.sleep(forTimeInterval: 1)
+        attach(app, name: "08_Privacy\(suffix)")
+    }
+
+    /// A grid full of cards, for "as many as you like" (-manyScreenshotCards).
+    @MainActor
+    func testCaptureManyCardsScreenshot() throws {
+        let app = launchSeeded(extra: ["-manyScreenshotCards"])
+        defer { app.terminate() }
+        XCTAssertTrue(app.buttons[SeededCard.joesMarket].appears(within: 5))
+        Thread.sleep(forTimeInterval: 1)
+        attach(app, name: "09_ManyCards\(suffix)")
+    }
+
+    /// Launches with the screenshot cards in custom order and, unless asked for,
+    /// without the card for where you are, whatever the simulator's own settings
+    /// say, so every capture shows the same grid. UI tests never ask to send
+    /// notifications (`DevelopmentHooks.notifications`), so no prompt covers the captures.
+    @MainActor
+    private func launchSeeded(showsCardWhereYouAre: Bool = false, extra: [String] = []) -> XCUIApplication {
+        // Distances in the locale's own units, whatever the simulator's own settings say.
         let app = XCUIApplication.forTesting([
-            "-screenshotSeed", "-cardSortOrder", "custom", "-showsCardWhereYouAre", "NO", "-distanceUnits", "automatic"
-        ])
+            "-screenshotSeed", "-cardSortOrder", "custom", "-showsCardWhereYouAre", showsCardWhereYouAre ? "YES" : "NO",
+            "-distanceUnits", "automatic", "-mapsApp", "appleMaps"
+        ] + extra)
         app.launchEnvironment["CARDS_UI_TESTING"] = "1"
         app.launchEnvironment["CARDS_SCREENSHOT_SEED"] = "1"
         app.launch()

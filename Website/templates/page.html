@@ -36,8 +36,67 @@
     <ul>
       <li><a href="{{privacyPath}}"{{{privacyHreflang}}}>{{privacyPolicy}}</a></li>
       <li><a href="mailto:{{supportEmail}}">{{contact}}</a></li>
+      <li><button type="button" class="link" id="cookie-settings">{{cookieSettings}}</button></li>
     </ul>
     <p dir="ltr">&copy; {{copyright}}</p>
   </footer>
+
+  <!-- Google Analytics, through Google Tag Manager, only once the visitor allows
+       it: until then no Google script loads and no cookie is set (PLAT-10). The
+       choice is kept in this browser; Cookie Settings asks again. -->
+  <div class="consent" id="consent" role="region" aria-label="{{cookieSettings}}" hidden>
+    <p>{{consent}}</p>
+    <div class="consent-choices">
+      <button type="button" class="secondary" data-consent="denied">{{consentDecline}}</button>
+      <button type="button" data-consent="granted">{{consentAccept}}</button>
+    </div>
+  </div>
+  <script>
+    (function () {
+      var key = "analytics-consent";
+      var banner = document.getElementById("consent");
+      function load() {
+        if (window.analyticsLoaded) return;
+        window.analyticsLoaded = true;
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        window.gtag = gtag;
+        gtag("js", new Date());
+        dataLayer.push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+        var script = document.createElement("script");
+        script.async = true;
+        script.src = "https://www.googletagmanager.com/gtm.js?id=GTM-MD2TJFTZ";
+        document.head.appendChild(script);
+      }
+      // Google Analytics' own cookies, gone once the visitor says no.
+      function forget() {
+        document.cookie.split(";").forEach(function (cookie) {
+          var name = cookie.split("=")[0].trim();
+          if (name.indexOf("_ga") !== 0 && name.indexOf("_gid") !== 0) return;
+          var host = location.hostname;
+          [host, "." + host, "." + host.split(".").slice(-2).join(".")].forEach(function (domain) {
+            document.cookie = name + "=; Max-Age=0; path=/; domain=" + domain;
+          });
+          document.cookie = name + "=; Max-Age=0; path=/";
+        });
+      }
+      function choose(choice) {
+        try { localStorage.setItem(key, choice); } catch (error) {}
+        banner.hidden = true;
+        if (choice === "granted") { load(); } else { forget(); }
+      }
+      var stored = null;
+      try { stored = localStorage.getItem(key); } catch (error) {}
+      if (stored === "granted") { load(); } else if (stored !== "denied") { banner.hidden = false; }
+      banner.addEventListener("click", function (event) {
+        var choice = event.target.getAttribute && event.target.getAttribute("data-consent");
+        if (choice) choose(choice);
+      });
+      document.getElementById("cookie-settings").addEventListener("click", function () {
+        banner.hidden = false;
+        banner.querySelector("button").focus();
+      });
+    })();
+  </script>
 </body>
 </html>

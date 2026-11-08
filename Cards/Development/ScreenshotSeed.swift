@@ -68,6 +68,29 @@ enum ScreenshotSeed {
         try context.save()
     }
 
+    /// Ten more made-up cards after the six, for the App Store image of a full
+    /// grid (-manyScreenshotCards), none with a place.
+    @MainActor
+    static func insertMany(into context: ModelContext) throws {
+        let more: [(name: String, color: CardColor)] = [
+            ("Paper Lantern Books", .orange),
+            ("Riverside Swim Club", .teal),
+            ("Little Fern Florist", .green),
+            ("Copper Kettle Bakery", .red),
+            ("Northside Cinema", .indigo),
+            ("Brightwell Pharmacy", .blue),
+            ("Tidal Yoga Studio", .pink),
+            ("Old Mill Garden Centre", .green),
+            ("Harbour Fish Bar", .teal),
+            ("Kite Hill Library", .graphite)
+        ]
+        for (offset, card) in more.enumerated() {
+            let code = String(4_006_381_333_931 + offset * 7)
+            context.insert(CardItem(timestamp: added, code: code, name: card.name, barcodeType: .code128, order: 6 + offset, color: card.color))
+        }
+        try context.save()
+    }
+
     /// The code of the card `insertCardThatCannotDraw` adds, fourteen digits,
     /// one too many for EAN-13, so its screen shows the failure message.
     static let codeThatCannotDraw = "50123456789012"

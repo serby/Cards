@@ -32,7 +32,7 @@ As a card holder with an iPhone Duo, I want the app to work on it, so that my ca
 
 - The app runs on iPhone Duo as an iPhone app.
 - Scrolling the edit form puts the keyboard away, so the colour and location sections can be reached on the smaller outer display (CARD-5).
-- The App Store screenshots are captured on the iPhone Duo's outer display, among other devices.
+- The App Store screenshots are captured on the iPhone Duo's outer display, among other devices, and its App Store images show them on a drawing of the device (PLAT-13).
 
 **Since:** 1.3
 **Where:** `Cards/UI/Screens/CardEditView.swift`, `CardsUITests/CardsScreenshotTests.swift`, `CardsUITests/CardsWidgetScreenshotTests.swift`
@@ -124,14 +124,15 @@ As someone looking for a card wallet, I want the App Store listing in my languag
 
 As someone deciding whether to get the app, I want a website that says what it does, in my language, so that I can find out before I open the App Store.
 
-- https://cards.serby.net is built from the App Store listing, the changelog and the app, so it says what they say: the listing's name, subtitle and description, the promise that the app is free, with no ads, no in-app purchases and no limit on cards, and always will be, the store images with their captions read as their descriptions, and a link to the App Store.
+- https://cards.serby.net is built from the App Store listing, the changelog and the app, so it says what they say: the listing's name, subtitle and description, the promise that the app is free, with no ads, no in-app purchases and no limit on cards, and always will be, the store images with their captions read as their descriptions, and a link to the App Store. In preparation for 1.4 the site shows the iPhone Duo's images, which are nearer square than the iPhone's, so a row of them fits the page (PLAT-13).
 - It lists the languages the app speaks, each named in its own language and in English (PLAT-7), and which iOS it needs (PLAT-1).
 - What's New shows the current version and, under Earlier versions, every one before it, with the app's own words for What's New, the version and each kind of change (SET-2). A change with no translation shows in British English, as in the app. A version still in preparation is not shown.
 - It has a page in British English at `/` and one in each of the app's other languages, `/es/`, `/de/` and `/ja/`, made from the Spain, Germany and Japan listings, linked to each other for search engines and by a language switcher. American English and Mexican Spanish read the British English and Spanish pages, as they read the app.
 - The privacy policy, in British English at `/privacy.html`, the listings' privacy URL, says what leaves the device (PLAT-4, PLAT-5) and names the third-party code from the app's package pins.
 - The share link page (`/add`, SHARE-1), App Review's sample codes (`/demo.html`) and the universal link file are served as they are.
-- The pages need no JavaScript, follow light and dark appearance and Increase Contrast, use the app's pink, and keep every text at WCAG AA contrast.
-- The site is deployed only once every page's store images are present, so it never shows another version's pictures.
+- The pages work without JavaScript, follow light and dark appearance and Increase Contrast, use the app's pink, and keep every text at WCAG AA contrast. In preparation for 1.4 the store images sit in one row that scrolls sideways, as the App Store shows them.
+- The site is deployed only once the British English page's store images are present. Until another language's images are composed its page leaves them out, so it never shows another language's or version's pictures.
+- In preparation for 1.4 the site counts visits with Google Analytics, through Google Tag Manager, only for visitors who allow it. A banner on every page made from `page.html` asks, in the page's language, "Can this website count your visit with Google Analytics? It uses cookies to do so. The app itself never tracks you.", with "No thanks" and "Allow". Until a visitor chooses Allow no Google script loads and no cookie is set. The choice is kept in the browser, "Cookie Settings" at the foot of every page asks again, and choosing No thanks removes Google Analytics' cookies. The share link page and App Review's sample codes never load it. The privacy policy says what is sent and that the app itself has no analytics (PLAT-4).
 
 **Since:** In preparation for 1.4
 **Where:** `scripts/build-website.ts`, `scripts/lib/website.ts`, `Website/site.json`, `Website/templates/`, `Website/static/`, `.github/workflows/website.yml`, `scripts/website.test.ts`
@@ -158,3 +159,26 @@ As a card holder, I want to see the open source software the app is built with a
 
 **Since:** In preparation for 1.4
 **Where:** `Cards/Core/Models/OpenSourceLibrary.swift`, `Cards/UI/Screens/SettingsListView+Privacy.swift`, `Cards/UI/Screens/AcknowledgementsView.swift`, `Cards/UI/Screens/OpenSourceLicenceView.swift`, `CardsTests/PrivacySettingsTests.swift`
+
+### PLAT-13: See what the app does from its App Store images
+
+As someone looking at the listing, I want its images to show what the app does for me, the way it looks on a phone, so that I can tell in a few seconds whether it is the app I want.
+
+- In preparation for 1.4 the images lead with what sets the app apart, in this order (docs/BRAND.md):
+  1. "Your card, ready when you arrive": the Cards tab with the card for where you are in full at the top (SET-3).
+  2. "On your Home Screen": a Home Screen with the widget showing the card for where you are, and the app's icon, and nothing else (WID-1).
+  3. "Your cards stay yours", with "No account", "No tracking" and "iCloud or this device": Settings at iCloud Sync, Data and Share Diagnostics (PLAT-4, DATA-8, PLAT-11).
+  4. "Free, with no ads": a grid full of cards, sixteen made-up ones (PLAT-4).
+  5. "Share a card": the share menu with Share Link and Share Image (SHARE-1, SHARE-2).
+  6. "Ready at the till": a card's screen (BAR-4, PLACE-9).
+  7. "A reminder when you arrive": adding a place on the map (PLACE-1, ARR-1).
+  Colours and icons, which the 1.3 images led with, are no longer one of them.
+- Each image is the screen as it is on the device, captured by the screenshot UI tests in the listing's language with the status bar at 9:41, full signal and battery, drawn on the device: its display's own shape and corners, a thin black bezel and a metal frame, with nothing cropped or covered and no black bars. On iPhone Duo that is the outer display, with the tight corners and the spine on the hinge side.
+- Above the device is the caption, on a white panel with rounded corners, as a card face holds its name: the title in bold dark ink and the subtitle in the lighter ink, or a row of chips in the brand pink. The background is the gradient of one of the card colours, a different one for each image, from the app's palette.
+- Captions are in the system font, wrapped to balanced lines, at most two for the title and two for the subtitle, and made smaller when a language needs it; the panel grows to hold them and the device shrinks to fit below.
+- Each device's image is drawn from a vector template, `screenshots/templates/<device>.svg`, which any SVG editor opens: the composer (`scripts/compose-store-images.ts`) fills it in from each listing's `captions.json` and the raw captures, and renders it with headless Chrome at the size App Store Connect takes, with no alpha channel. The colours come from `card-colours.json`, which a unit test keeps the same as the app's palette.
+- The images show only made-up businesses (LANGUAGE.md).
+
+**Since:** In preparation for 1.4
+**Where:** `screenshots/templates/`, `screenshots/store/<locale>/captions.json`, `scripts/compose-store-images.ts`, `scripts/lib/store-images.ts`, `scripts/store-images.test.ts`, `scripts/capture-screenshots.ts`, `CardsUITests/CardsScreenshotTests.swift`, `CardsUITests/CardsWidgetScreenshotTests.swift`, `Cards/Development/ScreenshotSeed.swift` (`insertMany`), `CardsTests/StoreImageColoursTests.swift`, `scripts/lib/website.ts` (`screenshotSuffix`)
+**Notes:** Only the iPhone Duo template and its British English images exist so far, for review. The iPhone and iPad templates and every other listing's captions follow once they are agreed. The creative asset is still drawn by `StoreCreativeAsset` in Swift.

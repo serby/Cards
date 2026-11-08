@@ -9,7 +9,7 @@ import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { after, describe, test } from "node:test";
 
-import { buildWebsite } from "./build-website.ts";
+import { buildWebsite, missingImages } from "./build-website.ts";
 import type { Changelog } from "./lib/changelog.ts";
 import { storeLocales } from "./lib/locales.ts";
 import { writePNG } from "./lib/png.ts";
@@ -310,14 +310,14 @@ describe("the build", () => {
         const lines: string[] = [];
         const result = buildWebsite({ root, out, log: (line) => lines.push(line) });
         assert.deepEqual(result.skipped, []);
-        for (const file of ["index.html", "de/index.html", "es/index.html", "ja/index.html", "fr/index.html", "ar/index.html", "privacy.html", "style.css", "screenshots/en-GB/01_Cards.png"]) {
+        for (const file of ["index.html", "de/index.html", "es/index.html", "ja/index.html", "fr/index.html", "ar/index.html", "privacy.html", "style.css", "screenshots/en-GB/01_Places.png"]) {
             assert.ok(result.files.includes(file), `${file} is built`);
         }
         for (const file of ["add.html", "demo.html", "_headers", ".well-known/apple-app-site-association", "icon.png"]) {
             assert.deepEqual(readFileSync(join(out, file)), readFileSync(join(repository, "Website/static", file)), `${file} is copied unchanged`);
         }
         assert.ok(result.files.every((file) => !file.startsWith("screenshots/en-US/") && !file.startsWith("screenshots/es-MX/")), "only the pages' listings' images");
-        assert.match(readFileSync(join(out, "index.html"), "utf8"), /<img src="\/screenshots\/en-GB\/01_Cards\.png" width="440" height="2"/);
+        assert.match(readFileSync(join(out, "index.html"), "utf8"), /<img src="\/screenshots\/en-GB\/01_Places\.png" width="440" height="2"/);
         assert.match(lines.join("\n"), /6 home pages \(\/ \/de\/ \/es\/ \/ja\/ \/fr\/ \/ar\/\)/);
         assert.match(readFileSync(join(out, "ar/index.html"), "utf8"), /<html lang="ar-SA" dir="rtl">/);
     });
@@ -325,10 +325,34 @@ describe("the build", () => {
     test("stops while an App Store image is missing, unless told to leave it out", () => {
         const root = copyOfSources();
         const out = join(root, "Website", "dist");
-        assert.throws(() => buildWebsite({ root, out, log: () => undefined }), /these App Store images are missing[\s\S]*screenshots\/store\/en-GB\/01_Cards\.png[\s\S]*--allow-missing-images/);
+        assert.throws(() => buildWebsite({ root, out, log: () => undefined }), /these App Store images are missing[\s\S]*screenshots\/store\/en-GB\/01_Places_Duo\.png[\s\S]*--allow-missing-images/);
         const result = buildWebsite({ root, out, allowMissingImages: true, log: () => undefined });
-        assert.ok(result.skipped.includes("screenshots/store/ja/01_Cards.png"));
+        assert.ok(result.skipped.includes("screenshots/store/ja/01_Cards_Duo.png"));
         assert.ok(!readFileSync(join(out, "ja/index.html"), "utf8").includes(`class="screenshots"`));
+    });
+
+    test("asks before Google Analytics loads, in each page's language", () => {
+        const root = copyOfSources();
+        addStoreImages(root);
+        const out = join(root, "Website", "dist");
+        buildWebsite({ root, out, log: () => undefined });
+        for (const [file, allow] of [["index.html", "Allow"], ["de/index.html", "Erlauben"], ["privacy.html", "Allow"]] as const) {
+            const html = readFileSync(join(out, file), "utf8");
+            assert.ok(!/<script[^>]+src="https:\/\/www\.googletagmanager\.com/.test(html), `${file} loads no Google script until it is allowed`);
+            assert.match(html, /<div class="consent" id="consent"[^>]* hidden>/, `${file} has the banner, hidden until its script shows it`);
+            assert.ok(html.includes(`data-consent="granted">${allow}</button>`), `${file} asks in its language`);
+            assert.ok(html.includes("gtm.js?id=GTM-MD2TJFTZ"), `${file} loads the tag once allowed`);
+        }
+        for (const file of ["add.html", "demo.html"]) assert.ok(!readFileSync(join(out, file), "utf8").includes("googletagmanager"), `${file} never loads analytics`);
+    });
+
+    test("checks for the British English page's images, and only those", () => {
+        const root = copyOfSources();
+        const missing = missingImages(readSite(root), root);
+        assert.ok(missing.some((image) => image.endsWith("en-GB/01_Places_Duo.png")));
+        assert.ok(missing.every((image) => image.includes("/en-GB/")), "other languages' pages leave theirs out");
+        addStoreImages(root);
+        assert.deepEqual(missingImages(readSite(root), root), []);
     });
 
     test("refuses a static file the build would overwrite", () => {
