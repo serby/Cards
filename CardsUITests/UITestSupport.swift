@@ -61,7 +61,7 @@ extension XCTestCase {
     func launchWithSeededCards() -> XCUIApplication {
         let variant = (self as? CardsUITestCase).map { type(of: $0).variantArguments } ?? []
         let app = XCUIApplication.forTesting([
-            "-screenshotSeed", "-cardSortOrder", "custom", "-showsCardWhereYouAre", "NO", "-distanceUnits", "automatic"
+            "-screenshotSeed", "-cardSortOrder", "custom", "-showsCardWhereYouAre", "NO", "-distanceUnits", "automatic", "-mapsApp", "appleMaps"
         ] + variant)
         app.launch()
         return app

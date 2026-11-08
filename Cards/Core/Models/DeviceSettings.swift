@@ -14,6 +14,9 @@ public enum DeviceSettings {
     /// The units distances are shown in, a `DistanceUnits` (SET-4). Automatic
     /// until another is chosen. The widget reads a copy (`WidgetSettings`).
     public static let distanceUnitsKey = "distanceUnits"
+    /// The app a card's places open in, a `MapsApp` (SET-5). Apple Maps until
+    /// another is chosen.
+    public static let mapsAppKey = "mapsApp"
     /// Whether the cards sync through the person's iCloud account (DATA-8). On
     /// until it is turned off in Settings; off, they are kept on this device only.
     public static let syncsWithICloudKey = "syncsWithICloud"

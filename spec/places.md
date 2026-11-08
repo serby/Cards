@@ -86,14 +86,14 @@ As a card holder, I want to see how far I am from the places I use each card, so
 - The list shows "Here", in semibold with a filled location arrow, or the distance, such as "350 m", on a white pill at the end of the row.
 - The card screen and the widget name the place too: "At Boulder Barn", or "350 m · Boulder Barn".
 - In preparation for 1.4: inside more than one of a card's places, the one whose middle you are nearer is named, where before it was the first in the card's order. A card with more than one place also lists its nearest five on the card screen (PLACE-9).
-- In preparation for 1.4: on the card screen, tapping the place in the top panel opens it in Apple Maps as a pin with its name, as a place in the list does (PLACE-9), whether the card has one place or several. VoiceOver reads it as a button with the hint "Opens this place in Maps". The tile on the Cards tab, the card for where you are and a shared card's image don't open it.
+- In preparation for 1.4: on the card screen, tapping the place in the top panel opens it in the maps app chosen in Settings > Maps, Apple Maps unless Google Maps is chosen (SET-5), as a place in the list does (PLACE-9), whether the card has one place or several. VoiceOver reads it as a button with the hint "Opens this place in Maps", or "Opens this place in Google Maps". The tile on the Cards tab, the card for where you are and a shared card's image don't open it.
 - VoiceOver reads "You're at Boulder Barn" or "350 m from Boulder Barn" (A11Y-1). In preparation for 1.4 it says the units in full: "350 metres from Boulder Barn".
 - Distances are in the units of the device's region, in the style used for road distances, such as "350 m" or "0.4 mi". In preparation for 1.4 they are in the units chosen in Settings > Distances, which follows the device's measurement system unless you choose Kilometres or Miles (SET-4).
 - No distance shows for a card without places, or while the app doesn't know where you are.
 - Distances follow your location while the app is open, from fixes about 100 metres accurate, updated after you move 25 metres or more.
 
 **Since:** 1.3
-**Where:** `Cards/Core/Models/CardLocation.swift`, `Cards/Core/Models/DistanceFormat.swift`, `Cards/UI/Components/ProximityLabel.swift`, `Cards/UI/Components/CardFaceView.swift` (`linksNearestPlace`), `Cards/UI/ViewState/CardViewState.swift` (`CardDetail.nearestPlaceMapsURL`), `CardsTests/DistanceFormatTests.swift`, `Cards/Core/Services/LocationService.swift`, `CardsTests/CardLocationTests.swift`, `CardsTests/CardPlacesTests.swift`, `CardsTests/WidgetTests.swift`
+**Where:** `Cards/Core/Models/CardLocation.swift`, `Cards/Core/Models/DistanceFormat.swift`, `Cards/UI/Components/ProximityLabel.swift`, `Cards/UI/Components/CardFaceView.swift` (`linksNearestPlace`), `Cards/UI/ViewState/CardViewState.swift` (`CardDetail.nearestPlace`), `CardsTests/DistanceFormatTests.swift`, `Cards/Core/Services/LocationService.swift`, `CardsTests/CardLocationTests.swift`, `CardsTests/CardPlacesTests.swift`, `CardsTests/WidgetTests.swift`
 **Notes:** Distances only change while the app is in use. On coming back to the app they show the last known location until a new fix arrives.
 
 ### PLACE-7: Choose whether the app uses my location
@@ -135,14 +135,14 @@ As a card holder, I want to see which of a card's places are nearest and how far
 - While the app doesn't know where you are, with no permission or no fix yet, the heading is "Places" and it lists the first five in the card's order, without distances.
 - A card with one place shows no list, since the top panel already names it (CARD-4), and a card with no places shows none either.
 - The list follows your location as the distances do (PLACE-6), so the order changes as you move.
-- Tapping a place opens it in Apple Maps as a pin with the place's name, where you can get directions.
+- Tapping a place opens it in the maps app chosen in Settings > Maps (SET-5), where you can get directions: in Apple Maps, the default, as a pin with the place's name, and in Google Maps as a pin at its position.
 - A long name wraps onto as many lines as it needs, and the distance stays on one line beside it. At the accessibility text sizes the distance moves below the name (A11Y-3).
 - Each place is at least 44 points high, with a hairline between places.
 - The card screen scrolls when the list makes it taller than the screen.
-- VoiceOver reads the heading as a heading, and each place as a button that reads as the distance does, "You're at Joe's Market Notting Hill" or "350 metres from Joe's Market Kensington" (SET-4), or just the name while the app doesn't know where you are, with the hint "Opens this place in Maps" (A11Y-1).
+- VoiceOver reads the heading as a heading, and each place as a button that reads as the distance does, "You're at Joe's Market Notting Hill" or "350 metres from Joe's Market Kensington" (SET-4), or just the name while the app doesn't know where you are, with the hint "Opens this place in Maps", or "Opens this place in Google Maps" (A11Y-1).
 
 **Since:** In preparation for 1.4
-**Where:** `Cards/Core/Models/CardPlaces.swift`, `Cards/Core/Models/CardLocation.swift` (`nearest(_:to:)`, `mapsURL`), `Cards/UI/Screens/CardDetailView.swift` (`PlacesPanel`), `Cards/UI/Components/CardFaceView.swift` (`footer`), `Cards/Features/CardDetail+CardItem.swift`, `CardsTests/CardPlacesTests.swift`
+**Where:** `Cards/Core/Models/CardPlaces.swift`, `Cards/Core/Models/CardLocation.swift` (`nearest(_:to:)`, `mapsURL(in:)`), `Cards/UI/Screens/CardDetailView.swift` (`PlacesPanel`), `Cards/UI/Components/CardFaceView.swift` (`footer`), `Cards/Features/CardDetail+CardItem.swift`, `CardsTests/CardPlacesTests.swift`
 **Notes:** The nearest place shows twice, in the top panel and first in the list. Joe's Market has two places in the screenshot cards, so its card screen shows the list.
 
 ### PLACE-10: Name a place from the map

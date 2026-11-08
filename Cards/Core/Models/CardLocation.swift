@@ -44,16 +44,28 @@ public struct CardLocation: Codable, Hashable, Identifiable, Sendable {
         location.distance(from: CLLocation(latitude: latitude, longitude: longitude))
     }
 
-    /// Apple Maps with a pin at the place, labelled with its name (PLACE-9).
-    public var mapsURL: URL? {
+    /// The place in `app` (PLACE-9): in Apple Maps a pin labelled with its
+    /// name, and in Google Maps a pin at its position, as Google's Maps URLs
+    /// take one, which open its app when installed and its website otherwise.
+    public func mapsURL(in app: MapsApp) -> URL? {
         var components = URLComponents()
         components.scheme = "https"
-        components.host = "maps.apple.com"
-        components.path = "/"
-        components.queryItems = [
-            URLQueryItem(name: "ll", value: "\(latitude),\(longitude)"),
-            URLQueryItem(name: "q", value: name)
-        ]
+        switch app {
+        case .appleMaps:
+            components.host = "maps.apple.com"
+            components.path = "/"
+            components.queryItems = [
+                URLQueryItem(name: "ll", value: "\(latitude),\(longitude)"),
+                URLQueryItem(name: "q", value: name)
+            ]
+        case .googleMaps:
+            components.host = "www.google.com"
+            components.path = "/maps/search/"
+            components.queryItems = [
+                URLQueryItem(name: "api", value: "1"),
+                URLQueryItem(name: "query", value: "\(latitude),\(longitude)")
+            ]
+        }
         return components.url
     }
 }

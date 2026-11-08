@@ -2,7 +2,7 @@ import SwiftUI
 
 /// The card face: its colour, with the name, the barcode, and the number and
 /// date on white panels. The card screen shows it with a copy button beside the
-/// number, the place in the top panel opening in Maps (PLACE-6), and the card's
+/// number, the place in the top panel opening in the maps app (PLACE-6, SET-5), and the card's
 /// places on a panel below (PLACE-9); anywhere else (a shared image, the card at
 /// the top of the list) shows it as it is.
 public struct CardFaceView<NumberAccessory: View, Footer: View>: View {
@@ -36,6 +36,7 @@ public struct CardFaceView<NumberAccessory: View, Footer: View>: View {
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.colorSchemeContrast) private var colorSchemeContrast
+    @Environment(\.mapsApp) private var mapsApp
 
     /// The code and its accessory side by side, or stacked at the accessibility sizes.
     private var numberLayout: AnyLayout {
@@ -54,7 +55,7 @@ public struct CardFaceView<NumberAccessory: View, Footer: View>: View {
                 nameAndIcon
 
                 if let proximity = card.proximity {
-                    if linksNearestPlace, let url = card.nearestPlaceMapsURL {
+                    if linksNearestPlace, let url = card.nearestPlace?.mapsURL(in: mapsApp) {
                         Link(destination: url) {
                             proximityLabel(proximity)
                                 // Tall enough to tap at every text size, by
@@ -65,7 +66,7 @@ public struct CardFaceView<NumberAccessory: View, Footer: View>: View {
                         }
                         .buttonStyle(.plain)
                         .padding(.vertical, -Self.linkReach)
-                        .accessibilityHint(Text.opensPlaceInMaps)
+                        .accessibilityHint(Text.opensPlace(in: mapsApp))
                         .accessibilityIdentifier("cardProximityText")
                     } else {
                         proximityLabel(proximity)

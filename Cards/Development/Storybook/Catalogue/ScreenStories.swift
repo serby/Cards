@@ -259,6 +259,7 @@ private let settingsStory = Story(
         .toggle("iCloud sync", true),
         .options("iCloud deletion", ICloudDeletion.allCases.map(\.rawValue), ICloudDeletion.notAsked.rawValue),
         .toggle("Share diagnostics", true),
+        .options("Maps app", MapsApp.allCases.map(\.rawValue), MapsApp.appleMaps.rawValue),
         .text("Message", "")
     ] + DistanceKnobs.knobs,
     gallery: [
@@ -318,6 +319,10 @@ private let settingsStory = Story(
             arrivalNotifications: knobs.boolBinding("Arrival notifications"),
             showsCardWhereYouAre: knobs.boolBinding("Show card where I am"),
             distanceUnits: knobs.distanceUnitsBinding,
+            mapsApp: Binding(
+                get: { MapsApp(rawValue: knobs.string("Maps app")) ?? .appleMaps },
+                set: { knobs.select($0.rawValue, for: "Maps app") }
+            ),
             syncsWithICloud: knobs.boolBinding("iCloud sync"),
             sharesDiagnostics: knobs.boolBinding("Share diagnostics"),
             message: message

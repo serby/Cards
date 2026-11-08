@@ -160,6 +160,25 @@ class CardPlacesAndSettingsUITests: CardsUITestCase {
         XCTAssertTrue([.button, .link].contains(proximity.elementType), "The place is a \(proximity.elementType), not a link")
     }
 
+    /// Settings > Maps offers Apple Maps and Google Maps, Apple Maps until
+    /// another is chosen (SET-5). The choice is kept, so the test ends on Apple Maps.
+    @MainActor
+    func testChooseTheMapsApp() throws {
+        let app = XCUIApplication.forTesting(["-screenshotSeed", "-cardSortOrder", "custom", "-showsCardWhereYouAre", "NO"])
+        app.launch()
+        app.settingsTab.tap()
+        let picker = app.buttons["mapsAppPicker"]
+        XCTAssertTrue(waitForElement(picker))
+        XCTAssertTrue(app.reveal(picker), "The Maps menu is not clear of the tab bar")
+        for name in ["Google Maps", "Apple Maps"] {
+            picker.tap()
+            let option = app.buttons[name]
+            XCTAssertTrue(waitForElement(option))
+            option.tap()
+            XCTAssertTrue(picker.matches(NSPredicate(format: "label CONTAINS %@ OR value BEGINSWITH %@", name, name)), name)
+        }
+    }
+
     /// Picks `distanceUnits` in Settings > Distances. Automatic is listed with
     /// what it means, as "Automatic (Miles)", so it is found by how it starts.
     @MainActor

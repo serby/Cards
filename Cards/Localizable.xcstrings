@@ -859,6 +859,29 @@
         }
       }
     },
+    "Apple Maps" : {
+      "comment" : "A choice in Settings > Maps: open places in Apple's Maps app. Use the name Apple gives the app in your language.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Karten"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Maps"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appleマップ"
+          }
+        }
+      }
+    },
     "Arrival Notifications" : {
       "comment" : "Settings switch for the notification shown on arriving at one of a card's places.",
       "localizations" : {
@@ -3612,6 +3635,29 @@
         }
       }
     },
+    "Google Maps" : {
+      "comment" : "A choice in Settings > Maps: open places in Google Maps. Use the name Google gives the app in your language.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google Maps"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google Maps"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google マップ"
+          }
+        }
+      }
+    },
     "Graphite" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker: a dark blue-grey.",
       "localizations" : {
@@ -4582,6 +4628,29 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "マップのピン"
+          }
+        }
+      }
+    },
+    "Maps" : {
+      "comment" : "Settings menu for the app a card's places open in: Apple Maps or Google Maps.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Karten-App"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mapas"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "マップ"
           }
         }
       }
@@ -5686,6 +5755,29 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "マップを開いてこの場所を変更します"
+          }
+        }
+      }
+    },
+    "Opens this place in Google Maps" : {
+      "comment" : "VoiceOver hint for a place on a card's screen, in its top panel or its list of places, when Settings > Maps is Google Maps.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öffnet diesen Ort in Google Maps"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre este lugar en Google Maps"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "この場所をGoogle マップで開きます"
           }
         }
       }
@@ -7977,6 +8069,29 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "これらの場所に到着すると通知でお知らせします。通知をタップするとカードが開きます。"
+          }
+        }
+      }
+    },
+    "Where a card's places open when you tap one. Google Maps opens in your browser if its app isn't installed." : {
+      "comment" : "Under the Maps menu in Settings. Google Maps is Google's app; use the name Google gives it in your language.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die App, in der sich die Orte einer Karte öffnen, wenn du einen antippst. Google Maps öffnet sich im Browser, wenn die App nicht installiert ist."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dónde se abren los lugares de una tarjeta al tocar uno. Google Maps se abre en el navegador si su app no está instalada."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カードの場所をタップしたときに開くアプリです。Google マップのアプリがない場合はブラウザで開きます。"
           }
         }
       }

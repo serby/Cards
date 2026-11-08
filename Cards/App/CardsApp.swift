@@ -10,6 +10,8 @@ struct CardsApp: App {
     @State private var arrivalScheduler = ArrivalScheduler(notifications: DevelopmentHooks.notifications)
     /// Set in Settings, and handed to every screen and the widget from here (SET-4).
     @AppStorage(DeviceSettings.distanceUnitsKey) private var distanceUnits = DistanceUnits.automatic
+    /// Set in Settings, and handed to the card screen from here (SET-5).
+    @AppStorage(DeviceSettings.mapsAppKey) private var mapsApp = MapsApp.appleMaps
     /// Set in Settings (DATA-8). Changing it opens the store again, with or
     /// without iCloud, on the same file.
     @AppStorage(DeviceSettings.syncsWithICloudKey) private var syncsWithICloud = true
@@ -91,6 +93,7 @@ struct CardsApp: App {
         .environment(\.mapShowsPointsOfInterest, DevelopmentHooks.mapShowsPointsOfInterest)
         .environment(\.placeSearch, DevelopmentHooks.placeSearch)
         .environment(\.distanceUnits, distanceUnits)
+        .environment(\.mapsApp, mapsApp)
         // The widget runs in its own process, so it gets a copy of the choice.
         .onChange(of: distanceUnits, initial: true) {
             widgetSettings.setDistanceUnits(distanceUnits)

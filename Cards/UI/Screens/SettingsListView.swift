@@ -8,7 +8,9 @@ public struct SettingsListView: View {
     @Binding private var brightnessBoost: Bool
     @Binding private var arrivalNotifications: Bool
     @Binding private var showsCardWhereYouAre: Bool
-    @Binding private var distanceUnits: DistanceUnits
+    @Binding var distanceUnits: DistanceUnits
+    /// The app a card's places open in (SET-5).
+    @Binding var mapsApp: MapsApp
     /// Whether the cards sync through iCloud (DATA-8).
     @Binding var syncsWithICloud: Bool
     /// Whether the app may send its developer diagnostics (PLAT-11).
@@ -24,7 +26,7 @@ public struct SettingsListView: View {
     @Environment(\.accessibilityAnnouncer) var announcer
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     /// Says what Automatic means, as "Automatic (Kilometres)".
-    @Environment(\.locale) private var locale
+    @Environment(\.locale) var locale
 
     public init(
         state: SettingsState,
@@ -32,6 +34,7 @@ public struct SettingsListView: View {
         arrivalNotifications: Binding<Bool> = .constant(true),
         showsCardWhereYouAre: Binding<Bool> = .constant(false),
         distanceUnits: Binding<DistanceUnits> = .constant(.automatic),
+        mapsApp: Binding<MapsApp> = .constant(.appleMaps),
         syncsWithICloud: Binding<Bool> = .constant(true),
         sharesDiagnostics: Binding<Bool> = .constant(true),
         message: Binding<String?> = .constant(nil),
@@ -42,6 +45,7 @@ public struct SettingsListView: View {
         _arrivalNotifications = arrivalNotifications
         _showsCardWhereYouAre = showsCardWhereYouAre
         _distanceUnits = distanceUnits
+        _mapsApp = mapsApp
         _syncsWithICloud = syncsWithICloud
         _sharesDiagnostics = sharesDiagnostics
         _message = message
@@ -134,6 +138,7 @@ public struct SettingsListView: View {
                 .font(.caption)
                 .foregroundStyle(Color.secondaryText)
                 .accessibilityIdentifier("distanceUnitsFooter")
+                mapsAppRows
             } header: {
                 Text("Locations", comment: "Settings section heading for the switches about arrival notifications and the card for where you are.")
                     .foregroundStyle(Color.secondaryText)
@@ -293,46 +298,6 @@ extension SettingsListView {
             : AnyLayout(HStackLayout())
     }
 
-    /// The Distances menu: its title and the units side by side, or the units
-    /// under the title at accessibility sizes, wrapping. The system's menu
-    /// picker cut its value off there ("Auto…Miles)" on iOS 26.5), so this is
-    /// a menu of the same choices with a label of its own. VoiceOver reads it
-    /// as it read the picker: the title, then the units as its value.
-    var distanceUnitsMenu: some View {
-        let title = Text(
-            "Distances",
-            comment: "Settings menu for the units distances and radii are shown in: Automatic, Kilometres or Miles."
-        )
-        let value = Text(distanceUnits.title(for: locale))
-        return Menu {
-            Picker(selection: $distanceUnits) {
-                ForEach(DistanceUnits.allCases) { units in
-                    Text(units.title(for: locale))
-                        .tag(units)
-                }
-            } label: {
-                title
-            }
-        } label: {
-            rowLayout {
-                title
-                    .foregroundStyle(Color.primaryText)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                HStack(spacing: 4) {
-                    value
-                        .multilineTextAlignment(.leading)
-                    Image(systemName: "chevron.up.chevron.down")
-                        .imageScale(.small)
-                }
-                .foregroundStyle(Color.accent)
-            }
-        }
-        .tint(.accent)
-        .accessibilityLabel(title)
-        .accessibilityValue(value)
-        .accessibilityIdentifier("distanceUnitsPicker")
-    }
-
     /// A switch with a line or two under its title saying what it does. Side by
     /// side, or the switch under its text at accessibility sizes, where beside it
     /// the text had a third of the row and ran a word or two to a line. The row
@@ -362,6 +327,13 @@ extension SettingsListView {
 }
 
 #if DEBUG
+#Preview("Google Maps chosen") {
+    @Previewable @State var app = MapsApp.googleMaps
+    NavigationStack {
+        SettingsListView(state: .sample, brightnessBoost: .constant(true), mapsApp: $app)
+    }
+}
+
 #Preview("With cards") {
     @Previewable @State var boost = true
     NavigationStack {

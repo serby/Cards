@@ -265,13 +265,14 @@ public struct CardDetailView: View {
 
 /// A card's places on a white panel at the foot of its face (PLACE-9): each
 /// name with its distance, nearest first, or in the card's order while where
-/// you are is unknown. A place opens in Maps.
+/// you are is unknown. A place opens in the maps app chosen in Settings (SET-5).
 private struct PlacesPanel: View {
     let places: CardPlaces
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.displayScale) private var displayScale
     @Environment(\.distanceFormat) private var distanceFormat
+    @Environment(\.mapsApp) private var mapsApp
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -315,13 +316,13 @@ private struct PlacesPanel: View {
     /// One place, tall enough to tap, read as its name and distance (A11Y-1).
     @ViewBuilder
     private func row(_ place: NearbyPlace) -> some View {
-        if let url = place.location.mapsURL {
+        if let url = place.location.mapsURL(in: mapsApp) {
             Link(destination: url) {
                 rowContent(place)
             }
             .buttonStyle(.plain)
             .accessibilityLabel(spoken(place))
-            .accessibilityHint(Text.opensPlaceInMaps)
+            .accessibilityHint(Text.opensPlace(in: mapsApp))
             .accessibilityIdentifier("cardPlaceRow")
         } else {
             rowContent(place)

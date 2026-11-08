@@ -9,6 +9,7 @@ public struct SettingsScreen: View {
     @AppStorage(ArrivalPlan.enabledKey) private var arrivalNotifications = true
     @AppStorage(DeviceSettings.showsCardWhereYouAreKey) private var showsCardWhereYouAre = false
     @AppStorage(DeviceSettings.distanceUnitsKey) private var distanceUnits = DistanceUnits.automatic
+    @AppStorage(DeviceSettings.mapsAppKey) private var mapsApp = MapsApp.appleMaps
     /// CardsApp opens the store again when this changes (DATA-8).
     @AppStorage(DeviceSettings.syncsWithICloudKey) private var syncsWithICloud = true
     @AppStorage(DeviceSettings.sharesDiagnosticsKey) private var sharesDiagnostics = true
@@ -44,6 +45,7 @@ public struct SettingsScreen: View {
             arrivalNotifications: $arrivalNotifications,
             showsCardWhereYouAre: $showsCardWhereYouAre,
             distanceUnits: $distanceUnits,
+            mapsApp: $mapsApp,
             syncsWithICloud: $syncsWithICloud,
             sharesDiagnostics: $sharesDiagnostics,
             message: $message,

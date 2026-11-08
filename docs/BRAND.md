@@ -27,7 +27,7 @@ Card Barcodes should work for everyone who has a card to show: in their own lang
 These decide the hard calls.
 
 1. **Free, with no ads, always.** No ads, no in-app purchases, no subscriptions and no limit on cards. No feature is held back to sell later.
-2. **Your cards go nowhere you have not chosen.** Cards leave the device only for your own iCloud, and only while iCloud Sync is on. There is no account, no analytics and no tracking. A shared card travels inside the link, in the part a browser never sends to our website. Where anything else leaves the device, we say so: when you add a place, its search and position go to Apple Maps to find and name it.
+2. **Your cards go nowhere you have not chosen.** Cards leave the device only for your own iCloud, and only while iCloud Sync is on. There is no account, no analytics and no tracking. A shared card travels inside the link, in the part a browser never sends to our website. Where anything else leaves the device, we say so: when you add a place, its search and position go to Apple Maps to find and name it, and when you open a place, it goes to the maps app you chose in Settings.
 3. **You can take your data with you.** Export and import use JSON that anyone can read, and an export from any version of the app can be imported again.
 4. **Speed at the till comes first.** We judge every change by how quickly it gets a barcode on screen and read. Opening, finding and showing a card stay as few steps as we can make them.
 5. **Everyone can use it.** Every screen works with VoiceOver, the largest text sizes, right-to-left languages and dark mode, and its colours pass contrast checks. A change is not finished until it does.

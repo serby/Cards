@@ -69,6 +69,7 @@
 				Core/Models/CardLocation.swift,
 				Core/Models/DistanceFormat.swift,
 				Core/Models/DistanceUnits.swift,
+				Core/Models/MapsApp.swift,
 				Core/Models/WidgetCard.swift,
 				Core/Navigation/NavigationRoute.swift,
 				Core/Services/WidgetSettings.swift,

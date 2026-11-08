@@ -137,7 +137,7 @@ struct CardPlacesTests {
     }
 
     @Test func aPlaceOpensInMapsAsAPinWithItsName() throws {
-        let url = try #require(places[0].mapsURL)
+        let url = try #require(places[0].mapsURL(in: .appleMaps))
         let components = try #require(URLComponents(url: url, resolvingAgainstBaseURL: false))
         #expect(components.scheme == "https")
         #expect(components.host == "maps.apple.com")
@@ -146,14 +146,26 @@ struct CardPlacesTests {
         #expect(items["q"] == "Joe's Market Notting Hill")
     }
 
-    /// PLACE-6: the place the top panel names opens in Maps, with one place or
+    /// SET-5: Google Maps gets a pin at the place's position, in the form its
+    /// Maps URLs take, which open its app or its website.
+    @Test func aPlaceOpensInGoogleMapsAsAPinAtItsPosition() throws {
+        let url = try #require(places[0].mapsURL(in: .googleMaps))
+        let components = try #require(URLComponents(url: url, resolvingAgainstBaseURL: false))
+        #expect(components.scheme == "https")
+        #expect(components.host == "www.google.com")
+        #expect(components.path == "/maps/search/")
+        let items = Dictionary(uniqueKeysWithValues: (components.queryItems ?? []).map { ($0.name, $0.value) })
+        #expect(items == ["api": "1", "query": "51.509,-0.196"])
+    }
+
+    /// PLACE-6: the top panel's place opens in the maps app, with one place or
     /// many, and nothing opens while where you are is unknown.
-    @Test func theTopPanelsPlaceOpensInMaps() {
+    @Test func theTopPanelsPlaceOpensInTheMapsApp() {
         let many = CardItem(code: "482019375610284", name: "Joe's Market", locations: places)
-        #expect(CardDetail(many, near: here).nearestPlaceMapsURL == places[0].mapsURL)
+        #expect(CardDetail(many, near: here).nearestPlace == places[0])
         let one = CardItem(code: "482019375610284", name: "Joe's Market", locations: [places[1]])
-        #expect(CardDetail(one, near: here).nearestPlaceMapsURL == places[1].mapsURL)
-        #expect(CardDetail(many, near: nil).nearestPlaceMapsURL == nil)
-        #expect(CardDetail(CardItem(code: "482019375610284", name: "Joe's Market"), near: here).nearestPlaceMapsURL == nil)
+        #expect(CardDetail(one, near: here).nearestPlace == places[1])
+        #expect(CardDetail(many, near: nil).nearestPlace == nil)
+        #expect(CardDetail(CardItem(code: "482019375610284", name: "Joe's Market"), near: here).nearestPlace == nil)
     }
 }

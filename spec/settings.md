@@ -9,7 +9,7 @@ As a card holder, I want one screen for the app's settings and data, so that I k
 - The Settings tab shows a grouped list titled "Settings", white rows on the system's grouped grey, with room below the last section so it ends clear of the tab bar, in this order (1.3):
   - "What's New" on its own at the top (SET-2).
   - Display, with the Brightness Boost switch and its caption (BAR-4).
-  - Locations, with the Arrival Notifications switch, its caption, and the message when notifications are off for the app (ARR-5), then the Show Card Where I Am switch and its caption (SET-3), then the Distances menu and its caption (SET-4) (in preparation for 1.4).
+  - Locations, with the Arrival Notifications switch, its caption, and the message when notifications are off for the app (ARR-5), then the Show Card Where I Am switch and its caption (SET-3), then the Distances menu and its caption (SET-4), then the Maps menu and its caption (SET-5) (in preparation for 1.4).
   - iCloud, with the iCloud Sync switch and its caption, and with sync off "Delete Cards from iCloud" and its caption (DATA-8, DATA-9) (in preparation for 1.4).
   - Data, with "Export as JSON" (DATA-2), "Import JSON" (DATA-3) and "Delete All Cards" (DATA-5).
   - Privacy, with the Share Diagnostics switch, its caption and a note on iOS's own crash reports (PLAT-11) (in preparation for 1.4).
@@ -56,7 +56,7 @@ As a card holder, I want the card for the place I am in shown in full above my o
 
 As a card holder, I want distances in the units I think in, so that I can tell at a glance how far away a place is.
 
-- Settings > Locations has a "Distances" menu, below Show Card Where I Am, with the caption "Automatic follows the measurement system in Language & Region in the Settings app."
+- Settings > Locations has a "Distances" menu, below Show Card Where I Am and above Maps (SET-5), with the caption "Automatic follows the measurement system in Language & Region in the Settings app."
 - At the accessibility text sizes the choice sits under "Distances" and wraps onto as many lines as it needs, so "Automatic (Miles)" is never cut off. VoiceOver reads the menu as "Distances" with the choice as its value.
 - It has three choices:
   - "Automatic", the default, listed with what it means on this device: "Automatic (Kilometres)" when the measurement system in Settings > General > Language & Region is Metric, and "Automatic (Miles)" when it is UK or US. Distances are then written as iOS writes road distances for that system, as they were before there was a choice: kilometres and metres for Metric, miles and yards for UK, and miles and feet for US.
@@ -71,3 +71,20 @@ As a card holder, I want distances in the units I think in, so that I can tell a
 **Since:** In preparation for 1.4
 **Where:** `Cards/UI/Screens/SettingsListView.swift`, `Cards/Features/SettingsScreen.swift`, `Cards/App/CardsApp.swift`, `Cards/Core/Models/DistanceUnits.swift`, `Cards/Core/Models/DistanceFormat.swift`, `Cards/Core/Models/DeviceSettings.swift`, `Cards/UI/Environment/DistanceUnitsEnvironment.swift`, `CardsTests/DistanceFormatTests.swift`, `CardsUITests/CardPlacesAndSettingsUITests.swift` (`testDistancesFollowTheSetting`)
 **Notes:** iOS always has a measurement system, so Automatic always means Kilometres or Miles. In the US, Automatic keeps feet below half a mile, as iOS writes road distances there, while Miles always uses yards; the radius is in yards either way.
+
+### SET-5: Choose the app places open in
+
+As a card holder, I want a card's places to open in the maps app I use, so that I get directions where I am used to getting them.
+
+- Settings > Locations has a "Maps" menu, below Distances, with the caption "Where a card's places open when you tap one. Google Maps opens in your browser if its app isn't installed."
+- It has two choices, "Apple Maps", the default, and "Google Maps". iOS doesn't tell apps which maps app someone uses, so the app can't start on it, and starts on Apple Maps.
+- The choice decides where the card screen opens a place: the place in the top panel (PLACE-6) and each place in its list (PLACE-9).
+  - Apple Maps opens a pin at the place, labelled with its name, as before there was a choice: `https://maps.apple.com/?ll=<latitude>,<longitude>&q=<name>`.
+  - Google Maps opens a pin at the place's position, in Google's Maps URL form, which opens Google Maps' app when it is installed and its website in the browser when it isn't: `https://www.google.com/maps/search/?api=1&query=<latitude>,<longitude>`. Google's form takes no name with a position, so the pin is unlabelled.
+- VoiceOver's hint for a place says where it opens: "Opens this place in Maps", or "Opens this place in Google Maps".
+- At the accessibility text sizes the choice sits under "Maps" and wraps, as Distances does (SET-4). VoiceOver reads the menu as "Maps" with the choice as its value.
+- The choice is kept on the device under `mapsApp` and doesn't sync, so each device has its own (DATA-1).
+
+**Since:** In preparation for 1.4
+**Where:** `Cards/Core/Models/MapsApp.swift`, `Cards/Core/Models/CardLocation.swift` (`mapsURL(in:)`), `Cards/Core/Models/DeviceSettings.swift`, `Cards/UI/Screens/SettingsListView+Menus.swift`, `Cards/UI/ViewState/MapsApp+Title.swift`, `Cards/UI/Environment/MapsAppEnvironment.swift`, `Cards/UI/Components/Text+OpensPlace.swift`, `Cards/Features/SettingsScreen.swift`, `Cards/App/CardsApp.swift`, `CardsTests/CardPlacesTests.swift`, `CardsUITests/CardPlacesAndSettingsUITests.swift` (`testChooseTheMapsApp`)
+**Notes:** In the EU (iOS 18.4 and later) and Japan (iOS 26.2 and later) people can choose a default navigation app, which iOS hands directions to through `geo-navigation://`. A pin isn't directions, so Apple Maps' choice still opens Apple Maps there.

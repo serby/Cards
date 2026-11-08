@@ -18,7 +18,7 @@ As someone using VoiceOver, I want every card read in plain words, so that I can
 - The brightness button reads "Brightness Boost", with the hint "Turns full brightness on or off, so the barcode scans easily" (in preparation for 1.4).
 - In preparation for 1.4: Share reads "Share card", with the hint "Shares this card as a link to add it, or as an image".
 - "Add current location" has the hint "Opens a map to save where you are as one of this card's places" (1.3).
-- In preparation for 1.4: on a card with more than one place, "Nearest places", or "Places", reads as a heading, and each place reads as a button the way its distance does, such as "350 metres from Joe's Market Kensington", with the hint "Opens this place in Maps" (PLACE-9).
+- In preparation for 1.4: on a card with more than one place, "Nearest places", or "Places", reads as a heading, and each place reads as a button the way its distance does, such as "350 metres from Joe's Market Kensington", with the hint "Opens this place in Maps", or "Opens this place in Google Maps" when Settings > Maps is Google Maps (PLACE-9, SET-5).
 - In the edit form the fields read "Card name" and "Card code", the type menu "Barcode type", and Save "Save card".
 - Save's hint is "Save changes to this card", or "Needs a name and a code no other card uses" while it is disabled (CARD-3, CARD-9) (1.3).
 
