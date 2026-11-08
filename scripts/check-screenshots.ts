@@ -36,7 +36,10 @@ const devices: { suffix: string; size: Size }[] = [
     { suffix: "_iPad", size: { width: 2064, height: 2752 } },
 ];
 /// Whole screens, the device's size. capture-screenshots.ts lists the same screens.
-const screens = ["01_CardList", "02_CardDetail", "03_EditCard", "04_LocationPicker", "06_ShareCard"];
+const screens = [
+    "01_CardList", "02_CardDetail", "03_EditCard", "04_LocationPicker", "05_HomeScreen", "06_ShareCard",
+    "07_CardWhereYouAre", "08_Privacy", "09_ManyCards",
+];
 /// Crops of the Home Screen round the widget, whatever size the widget takes
 /// there, so they can be any size.
 const bands = ["05_Widget"];

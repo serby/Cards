@@ -38,12 +38,9 @@ const exportFolder = "/tmp/Cards-screenshots-export";
 /// The screens the tests capture, before the device's suffix. check-screenshots.ts
 /// lists the same screens.
 const screens = [
-    "01_CardList", "02_CardDetail", "03_EditCard", "04_LocationPicker", "05_Widget", "06_ShareCard",
+    "01_CardList", "02_CardDetail", "03_EditCard", "04_LocationPicker", "05_Widget", "05_HomeScreen", "06_ShareCard",
     "07_CardWhereYouAre", "08_Privacy", "09_ManyCards",
 ];
-/// The test runner, uninstalled once the tests finish so the Home Screen shows
-/// only the app's icon and its widget.
-const testRunner = "net.serby.CardsUITests.xctrunner";
 
 interface CaptureSet {
     /// The suffix the screenshot names carry, such as "_iPad".
@@ -105,16 +102,18 @@ async function capture(device: string, locale: string): Promise<void> {
     console.log(`==> Setting the simulator to ${language}, ${region}`);
     setSystemLanguage(simulator.udid, { languages: [language], locale: `${language}_${region}` });
     try {
-        runTests(simulator, set, language, region);
-        // The Home Screen the widget test left, in the locale's language, with
-        // the widget the only one on it once the test runner's icon has gone.
-        console.log("==> Capturing the Home Screen");
-        run("xcrun", ["simctl", "uninstall", simulator.udid, testRunner]);
-        await new Promise((resolve) => setTimeout(resolve, 3000));
-        mkdirSync(outFolder, { recursive: true });
-        run("xcrun", ["simctl", "io", simulator.udid, "screenshot", join(outFolder, `05_HomeScreen${set.names}.png`)]);
+        // Once more if it fails: a simulator sometimes fails to launch the test
+        // runner, and a whole run then stops on one device.
+        try {
+            runTests(simulator, set, language, region);
+        } catch (error) {
+            console.log(`==> The screenshot test failed (${error instanceof Error ? error.message.split("\n")[0] : String(error)}); running it once more`);
+            bootAgain(simulator);
+            runTests(simulator, set, language, region);
+        }
     } finally {
         console.log("==> Setting the simulator back to its own language and region");
+        bootAgain(simulator);
         setSystemLanguage(simulator.udid, original);
     }
 
@@ -131,7 +130,13 @@ async function capture(device: string, locale: string): Promise<void> {
 
 /// Runs the screenshot tests on the simulator, which is already in the locale's
 /// language and region, with the status bar at 9:41.
-function runTests(simulator: Simulator, set: CaptureSet, language: string, region: string): void {
+/// Boots the simulator if xcodebuild shut it down, and waits until it is ready.
+function bootAgain(simulator: Simulator): void {
+    run("xcrun", ["simctl", "bootstatus", simulator.udid, "-b"], { stdio: ["ignore", "ignore", "inherit"] });
+}
+
+/// 9:41, full signal and a full battery, as every capture shows.
+function overrideStatusBar(simulator: Simulator): void {
     run("xcrun", [
         "simctl", "status_bar", simulator.udid, "override",
         "--time", "9:41",
@@ -143,6 +148,10 @@ function runTests(simulator: Simulator, set: CaptureSet, language: string, regio
         "--batteryState", "charged",
         "--batteryLevel", "100",
     ]);
+}
+
+function runTests(simulator: Simulator, set: CaptureSet, language: string, region: string): void {
+    overrideStatusBar(simulator);
 
     console.log(`==> Running screenshot test on ${simulator.device} (iOS ${simulator.version}) in ${language}, ${region}`);
     rmSync(resultBundle, { recursive: true, force: true });
