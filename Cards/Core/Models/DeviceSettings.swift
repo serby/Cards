@@ -14,4 +14,11 @@ public enum DeviceSettings {
     /// The units distances are shown in, a `DistanceUnits` (SET-4). Automatic
     /// until another is chosen. The widget reads a copy (`WidgetSettings`).
     public static let distanceUnitsKey = "distanceUnits"
+    /// Whether the cards sync through the person's iCloud account (DATA-8). On
+    /// until it is turned off in Settings; off, they are kept on this device only.
+    public static let syncsWithICloudKey = "syncsWithICloud"
+    /// Whether the app may send its developer crash reports and performance data
+    /// (PLAT-11). On until it is turned off in Settings. The app sends none yet:
+    /// the crash reporting to come must ask this first, and never send cards or places.
+    public static let sharesDiagnosticsKey = "sharesDiagnostics"
 }

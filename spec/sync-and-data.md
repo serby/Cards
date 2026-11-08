@@ -1,6 +1,6 @@
 # Sync and data
 
-Where cards are kept, how they sync through iCloud, exporting and importing them as JSON, old exports, and deleting every card.
+Where cards are kept, how they sync through iCloud, keeping them on the device only and deleting them from iCloud, exporting and importing them as JSON, old exports, and deleting every card.
 
 ### DATA-1: Have my cards on all my devices
 
@@ -11,7 +11,7 @@ As a person with several devices, I want my cards to sync through my iCloud acco
 - Adding, editing, reordering and deleting a card all reach your other devices. Deleting a card deletes it everywhere (CARD-6).
 - Changes from other devices arrive when the app is opened, as the app has no push notifications from CloudKit.
 - Settings (SET-1), the widget's choice of card (WID-2) and the scheduled arrival notifications (ARR-1) belong to each device and don't sync. A card's own arrival switch syncs with the card, but the Arrival Notifications switch in Settings is set on each device (ARR-5).
-- There is no account to create. Signed out of iCloud, cards are kept on the device.
+- There is no account to create. Signed out of iCloud, or with iCloud Sync off (DATA-8), cards are kept on the device.
 
 **Since:** 1.1
 **Where:** `Cards/Core/Services/CardStore.swift`, `Cards/Cards.entitlements`, `Cards/Core/Models/CardItem.swift`
@@ -99,3 +99,32 @@ As a card holder, I want to import an export saved as a file, so that I don't ha
 
 **Since:** In preparation for 1.4
 **Where:** `Cards/UI/Screens/SettingsListView.swift`, `Cards/Features/SettingsScreen.swift`, `Cards/Core/Services/FileReader.swift`, `Cards/Core/Models/CardImport.swift`, `CardsTests/ImportFileTests.swift`
+
+### DATA-8: Keep my cards on this device only
+
+As a card holder, I want to turn iCloud sync off, so that my cards stay on this device and nowhere else.
+
+- Settings > iCloud has an "iCloud Sync" switch with the caption "Keeps your cards in your iCloud account, so they are on all your devices. Turn it off to keep them on this device only." It is on until you turn it off.
+- Turning it off reopens the store without iCloud, on the same file, so every card stays on the device and nothing more is sent to iCloud or taken from it. The app's screens are built again on the new store, so Settings shows again where it was. Turning it back on syncs again (DATA-1).
+- While it is off, export and import (DATA-2, DATA-3) are the way to move cards to another device.
+- The switch is kept on the device under `syncsWithICloud` and doesn't sync, so each device has its own.
+- The cards already in iCloud stay there until you delete them (DATA-9).
+
+**Since:** In preparation for 1.4
+**Where:** `Cards/Core/Services/CardStore.swift`, `Cards/App/CardsApp.swift`, `Cards/UI/Screens/SettingsListView+Privacy.swift`, `Cards/Features/SettingsScreen.swift`, `Cards/Core/Models/DeviceSettings.swift`, `CardsTests/CardStoreTests.swift`
+**Notes:** UI tests use an in-memory store, which never syncs, so the switch doesn't reopen it there. A store that has synced keeps saving once it is opened without iCloud, and the other way round (`CardStoreTests`).
+
+### DATA-9: Delete my cards from iCloud
+
+As a card holder who has turned iCloud sync off, I want to delete the copy of my cards in iCloud, so that none of my cards are kept there.
+
+- With iCloud Sync off, Settings > iCloud shows "Delete Cards from iCloud" under the switch, with the caption "Your cards stay in iCloud until you delete them there."
+- It asks first, in a dialog titled "Delete Cards from iCloud" with the message "This deletes your cards from iCloud. The cards on this device are kept.", "Delete from iCloud" and "Cancel".
+- Deleting removes the zone of the app's private CloudKit database that holds every card (`com.apple.coredata.cloudkit.zone` in `iCloud.net.serby.Cards`). The cards on this device are untouched.
+- While it runs, the caption says "Deleting your cards from iCloud…" beside a spinner, and the button is off. Then it says "Your cards are no longer in iCloud. A device that still has iCloud Sync on will upload its cards again.", or, when iCloud can't be reached or you are not signed in, "Your cards could not be deleted from iCloud. Check that you're signed in to iCloud and online, then try again." VoiceOver reads the result when it comes.
+- Nothing in iCloud to delete counts as deleted.
+- Turning iCloud Sync on again clears the caption.
+
+**Since:** In preparation for 1.4
+**Where:** `Cards/Core/Services/ICloudCards.swift`, `Cards/UI/Screens/SettingsListView+Privacy.swift`, `Cards/Features/SettingsScreen.swift`, `CardsTests/PrivacySettingsTests.swift`
+**Notes:** Only the device that deletes stops syncing. Another device with iCloud Sync on uploads its cards again, as the caption says.

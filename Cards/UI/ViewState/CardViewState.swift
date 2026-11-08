@@ -121,6 +121,10 @@ public struct SettingsState: Hashable, Sendable {
     public let notificationsBlocked: Bool
     /// Every version and its changes, newest first, for What's New.
     public let changelog: [ChangelogVersion]
+    /// How deleting the cards in iCloud is going, once it has been asked for (DATA-9).
+    public let iCloudDeletion: ICloudDeletion
+    /// The open source software the app is built with, for Acknowledgements (PLAT-12).
+    public let libraries: [OpenSourceLibrary]
 
     public init(
         appVersion: String?,
@@ -129,7 +133,9 @@ public struct SettingsState: Hashable, Sendable {
         authorURL: URL?,
         cardCount: Int,
         notificationsBlocked: Bool = false,
-        changelog: [ChangelogVersion] = []
+        changelog: [ChangelogVersion] = [],
+        iCloudDeletion: ICloudDeletion = .notAsked,
+        libraries: [OpenSourceLibrary] = OpenSourceLibrary.all
     ) {
         self.appVersion = appVersion
         self.appBuild = appBuild
@@ -138,5 +144,17 @@ public struct SettingsState: Hashable, Sendable {
         self.cardCount = cardCount
         self.notificationsBlocked = notificationsBlocked
         self.changelog = changelog
+        self.iCloudDeletion = iCloudDeletion
+        self.libraries = libraries
     }
+}
+
+/// Where deleting the cards in iCloud has got to (DATA-9).
+public enum ICloudDeletion: String, CaseIterable, Hashable, Sendable {
+    /// Not asked for since iCloud Sync was turned off.
+    case notAsked
+    case deleting
+    case deleted
+    /// iCloud could not be reached, or the person is not signed in to it.
+    case failed
 }

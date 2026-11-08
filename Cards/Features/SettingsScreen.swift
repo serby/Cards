@@ -9,12 +9,17 @@ public struct SettingsScreen: View {
     @AppStorage(ArrivalPlan.enabledKey) private var arrivalNotifications = true
     @AppStorage(DeviceSettings.showsCardWhereYouAreKey) private var showsCardWhereYouAre = false
     @AppStorage(DeviceSettings.distanceUnitsKey) private var distanceUnits = DistanceUnits.automatic
+    /// CardsApp opens the store again when this changes (DATA-8).
+    @AppStorage(DeviceSettings.syncsWithICloudKey) private var syncsWithICloud = true
+    @AppStorage(DeviceSettings.sharesDiagnosticsKey) private var sharesDiagnostics = true
     @Environment(ArrivalScheduler.self) private var arrivalScheduler
+    @Environment(\.iCloudCards) private var iCloudCards
     @Environment(\.clipboard) private var clipboard
     @Environment(\.fileReader) private var fileReader
     @Environment(\.openURL) private var openURL
     @Environment(\.scenePhase) private var scenePhase
     @State private var notificationsBlocked = false
+    @State private var iCloudDeletion = ICloudDeletion.notAsked
     /// Read once: it ships with the app and does not change while it runs.
     private static let changelog = ChangelogStore.bundled()
 
@@ -32,12 +37,15 @@ public struct SettingsScreen: View {
                 authorURL: URL(string: "https://github.com/serby"),
                 cardCount: cards.count,
                 notificationsBlocked: notificationsBlocked,
-                changelog: Self.changelog
+                changelog: Self.changelog,
+                iCloudDeletion: iCloudDeletion
             ),
             brightnessBoost: $brightnessBoost,
             arrivalNotifications: $arrivalNotifications,
             showsCardWhereYouAre: $showsCardWhereYouAre,
             distanceUnits: $distanceUnits,
+            syncsWithICloud: $syncsWithICloud,
+            sharesDiagnostics: $sharesDiagnostics,
             message: $message,
             actions: SettingsActions(
                 exportCards: { showExportSheet = true },
@@ -49,15 +57,37 @@ public struct SettingsScreen: View {
                 },
                 deleteAllCards: deleteAllCards,
                 readClipboard: { clipboard.read() },
-                openNotificationSettings: openNotificationSettings
+                openNotificationSettings: openNotificationSettings,
+                deleteICloudCards: deleteICloudCards
             )
         )
         .sheet(isPresented: $showExportSheet) {
             ShareSheet(items: [exportJSON()])
         }
+        // A deletion said how it went for the time iCloud Sync was off.
+        .onChange(of: syncsWithICloud) {
+            iCloudDeletion = .notAsked
+        }
         // Checked again on coming back, in case notifications were allowed in Settings.
         .task(id: scenePhase) {
             notificationsBlocked = await arrivalScheduler.isBlockedInSettings()
+        }
+    }
+
+    private func deleteICloudCards() {
+        iCloudDeletion = .deleting
+        Task {
+            iCloudDeletion = await Self.deletion(by: iCloudCards)
+        }
+    }
+
+    /// Deletes the cards in iCloud with `iCloudCards`, and says how it went.
+    static func deletion(by iCloudCards: ICloudCards) async -> ICloudDeletion {
+        do {
+            try await iCloudCards.deleteAll()
+            return .deleted
+        } catch {
+            return .failed
         }
     }
 

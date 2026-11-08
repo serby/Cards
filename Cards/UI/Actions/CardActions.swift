@@ -105,6 +105,8 @@ public struct SettingsActions {
     public var readClipboard: () -> String?
     /// Opens the app's page in the Settings app, where notifications are allowed.
     public var openNotificationSettings: () -> Void
+    /// Deletes the cards in iCloud, keeping those on the device (DATA-9).
+    public var deleteICloudCards: () -> Void
 
     public init(
         exportCards: @escaping () -> Void = {},
@@ -112,7 +114,8 @@ public struct SettingsActions {
         importFile: @escaping (Result<URL, any Error>) -> Void = { _ in },
         deleteAllCards: @escaping () -> Void = {},
         readClipboard: @escaping () -> String? = { nil },
-        openNotificationSettings: @escaping () -> Void = {}
+        openNotificationSettings: @escaping () -> Void = {},
+        deleteICloudCards: @escaping () -> Void = {}
     ) {
         self.exportCards = exportCards
         self.importCards = importCards
@@ -120,6 +123,7 @@ public struct SettingsActions {
         self.deleteAllCards = deleteAllCards
         self.readClipboard = readClipboard
         self.openNotificationSettings = openNotificationSettings
+        self.deleteICloudCards = deleteICloudCards
     }
 }
 

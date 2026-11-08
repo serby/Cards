@@ -50,11 +50,11 @@ Only write what the code does. If a criterion is wrong, fix the criterion or the
 | [places.md](places.md) | PLACE | Adding places on the map or by searching, naming them from the map, the radius, Add current location, removing places, distances, a card's nearest places and location permission |
 | [arrival-notifications.md](arrival-notifications.md) | ARR | A reminder on arrival, opening the card from it, the 20-region limit and watching the nearest places as you move, permission, the Settings switch and each card's own switch |
 | [widget.md](widget.md) | WID | The Home Screen widget: nearest or chosen card, refresh, opening the card, layouts, tinted Home Screens and the snapshot |
-| [sync-and-data.md](sync-and-data.md) | DATA | iCloud sync, export and import as JSON without duplicates, old exports, deleting every card, and where the store lives |
+| [sync-and-data.md](sync-and-data.md) | DATA | iCloud sync, turning it off and deleting the cards from iCloud, export and import as JSON without duplicates, old exports, deleting every card, and where the store lives |
 | [settings.md](settings.md) | SET | The Settings screen and What's New |
 | [navigation.md](navigation.md) | NAV | The tabs, bringing the Cards tab forward, and `cards://` links |
 | [accessibility.md](accessibility.md) | A11Y | VoiceOver, larger text sizes, announcements, touch targets and haptics |
-| [platforms-and-privacy.md](platforms-and-privacy.md) | PLAT | iPhone, iPad, iPhone Duo, iOS 18 and later, languages and the App Store listings, privacy: no accounts, analytics or tracking, location and camera on the device, when the app asks for an App Store rating, and the website |
+| [platforms-and-privacy.md](platforms-and-privacy.md) | PLAT | iPhone, iPad, iPhone Duo, iOS 18 and later, languages and the App Store listings, privacy: no accounts, analytics or tracking, the Share Diagnostics switch and the open source acknowledgements, location and camera on the device, when the app asks for an App Store rating, and the website |
 | [sharing.md](sharing.md) | SHARE | Sending a card as a link someone can add to their app, or as an image, and adding a shared card |
 | [development.md](development.md) | DEV | The debug builds' Development tab: the Storybook, a test arrival notification, the review prompt and the app's language |
 | [deployment.md](deployment.md) | DEPLOY | The workflows: CI checking every app change with SwiftLint, a build and every test on each device and iOS, testing the scripts, releasing a version, the App Store listing, the website, and the same checks run locally |

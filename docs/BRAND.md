@@ -16,7 +16,7 @@ A loyalty card is only needed for a few seconds, at the till, often with a queue
 
 Card Barcodes is free. There are no ads, no in-app purchases and no limit on how many cards you keep. That will not change.
 
-Your cards are your data. By default they are kept in your own iCloud account, Apple's database, so the same cards are on every Apple device you use. If you would rather keep them on one device, you can: with iCloud off, your cards stay on that device. Either way, you can export every card to a JSON file you can open and read, keep it where you like and import it again. We will never take your cards off your device and put them anywhere other than your iCloud, and only with your permission.
+Your cards are your data. By default they are kept in your own iCloud account, Apple's database, so the same cards are on every Apple device you use. If you would rather keep them on one device, turn off iCloud Sync in Settings and they stay on that device, and Delete Cards from iCloud removes the copy already there. Either way, you can export every card to a JSON file you can open and read, keep it where you like and import it again. We will never take your cards off your device and put them anywhere other than your iCloud, and only with your permission.
 
 We say plainly what the app does. It keeps your cards and shows their barcodes quickly. It doesn't track you and it doesn't claim to do more than it does.
 
@@ -27,7 +27,7 @@ Card Barcodes should work for everyone who has a card to show: in their own lang
 These decide the hard calls.
 
 1. **Free, with no ads, always.** No ads, no in-app purchases, no subscriptions and no limit on cards. No feature is held back to sell later.
-2. **Your cards go nowhere you have not chosen.** Cards leave the device only for your own iCloud. There is no account, no analytics and no tracking. A shared card travels inside the link, in the part a browser never sends to our website. Where anything else leaves the device, we say so: when you add a place, its search and position go to Apple Maps to find and name it.
+2. **Your cards go nowhere you have not chosen.** Cards leave the device only for your own iCloud, and only while iCloud Sync is on. There is no account, no analytics and no tracking. A shared card travels inside the link, in the part a browser never sends to our website. Where anything else leaves the device, we say so: when you add a place, its search and position go to Apple Maps to find and name it.
 3. **You can take your data with you.** Export and import use JSON that anyone can read, and an export from any version of the app can be imported again.
 4. **Speed at the till comes first.** We judge every change by how quickly it gets a barcode on screen and read. Opening, finding and showing a card stay as few steps as we can make them.
 5. **Everyone can use it.** Every screen works with VoiceOver, the largest text sizes, right-to-left languages and dark mode, and its colours pass contrast checks. A change is not finished until it does.

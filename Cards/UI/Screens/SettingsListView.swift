@@ -4,19 +4,24 @@ import UniformTypeIdentifiers
 /// The settings screen. Export, import, delete and clipboard reads are all
 /// actions, so nothing here reaches for a store, the pasteboard or a file directly.
 public struct SettingsListView: View {
-    private let state: SettingsState
+    let state: SettingsState
     @Binding private var brightnessBoost: Bool
     @Binding private var arrivalNotifications: Bool
     @Binding private var showsCardWhereYouAre: Bool
     @Binding private var distanceUnits: DistanceUnits
+    /// Whether the cards sync through iCloud (DATA-8).
+    @Binding var syncsWithICloud: Bool
+    /// Whether the app may send its developer diagnostics (PLAT-11).
+    @Binding var sharesDiagnostics: Bool
     /// The import result to show in an alert, already in the app's language.
     @Binding private var message: String?
-    private let actions: SettingsActions
+    let actions: SettingsActions
 
     @State private var showDeleteConfirmation = false
+    @State var showICloudDeleteConfirmation = false
     @State private var showImportSheet = false
     @State private var importText = ""
-    @Environment(\.accessibilityAnnouncer) private var announcer
+    @Environment(\.accessibilityAnnouncer) var announcer
     @Environment(\.colorSchemeContrast) private var colorSchemeContrast
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     /// Says what Automatic means, as "Automatic (Kilometres)".
@@ -28,6 +33,8 @@ public struct SettingsListView: View {
         arrivalNotifications: Binding<Bool> = .constant(true),
         showsCardWhereYouAre: Binding<Bool> = .constant(false),
         distanceUnits: Binding<DistanceUnits> = .constant(.automatic),
+        syncsWithICloud: Binding<Bool> = .constant(true),
+        sharesDiagnostics: Binding<Bool> = .constant(true),
         message: Binding<String?> = .constant(nil),
         actions: SettingsActions = SettingsActions()
     ) {
@@ -36,6 +43,8 @@ public struct SettingsListView: View {
         _arrivalNotifications = arrivalNotifications
         _showsCardWhereYouAre = showsCardWhereYouAre
         _distanceUnits = distanceUnits
+        _syncsWithICloud = syncsWithICloud
+        _sharesDiagnostics = sharesDiagnostics
         _message = message
         self.actions = actions
     }
@@ -132,6 +141,8 @@ public struct SettingsListView: View {
                     .accessibilityIdentifier("locationsSectionHeader")
             }
 
+            iCloudSection
+
             Section {
                 Button(action: actions.exportCards) {
                     Text("Export as JSON", comment: "Settings button that shares all cards as a JSON file. JSON is a file format; keep the name.")
@@ -181,6 +192,9 @@ public struct SettingsListView: View {
                     .foregroundStyle(Color.secondaryText)
                     .accessibilityIdentifier("dataSectionHeader")
             }
+
+            privacySection
+            acknowledgementsSection
 
             Section {
                 if let version = state.appVersion, let build = state.appBuild {
@@ -271,28 +285,7 @@ public struct SettingsListView: View {
     }
 }
 
-extension DistanceUnits {
-    /// The choice as Settings lists it. Automatic says what it means where
-    /// `locale` applies: "Automatic (Kilometres)" or "Automatic (Miles)".
-    func title(for locale: Locale) -> String {
-        switch self {
-        case .automatic:
-            String(
-                localized: "Automatic (\(resolved(for: locale).title(for: locale)))",
-                comment: """
-                    A choice in Settings > Distances: the units that follow the iPhone's measurement system. \
-                    The argument is those units, Kilometres or Miles.
-                    """
-            )
-        case .kilometres:
-            String(localized: "Kilometres", comment: "A choice in Settings > Distances: show distances in metres and kilometres.")
-        case .miles:
-            String(localized: "Miles", comment: "A choice in Settings > Distances: show distances in yards and miles.")
-        }
-    }
-}
-
-private extension SettingsListView {
+extension SettingsListView {
     /// A label and its value or control side by side, or stacked at
     /// accessibility text sizes. No Spacer inside: the label fills the row.
     var rowLayout: AnyLayout {
@@ -388,6 +381,13 @@ private extension SettingsListView {
     @Previewable @State var boost = false
     NavigationStack {
         SettingsListView(state: .noCards, brightnessBoost: $boost)
+    }
+}
+
+#Preview("iCloud Sync off") {
+    @Previewable @State var syncs = false
+    NavigationStack {
+        SettingsListView(state: .sample, brightnessBoost: .constant(true), syncsWithICloud: $syncs)
     }
 }
 

@@ -10,6 +10,10 @@ struct CardsApp: App {
     @State private var arrivalScheduler = ArrivalScheduler(notifications: DevelopmentHooks.notifications)
     /// Set in Settings, and handed to every screen and the widget from here (SET-4).
     @AppStorage(DeviceSettings.distanceUnitsKey) private var distanceUnits = DistanceUnits.automatic
+    /// Set in Settings (DATA-8). Changing it opens the store again, with or
+    /// without iCloud, on the same file.
+    @AppStorage(DeviceSettings.syncsWithICloudKey) private var syncsWithICloud = true
+    @State private var modelContainer: ModelContainer
     private let widgetSettings = WidgetSettings.live
     private let performanceTracker = PerformanceTracker()
     private let arrivalRouter: ArrivalNotificationRouter
@@ -25,19 +29,26 @@ struct CardsApp: App {
             navigationManager.navigate(to: .card(code))
         }
         UNUserNotificationCenter.current().delegate = arrivalRouter
+        let syncs = UserDefaults.standard.object(forKey: DeviceSettings.syncsWithICloudKey) as? Bool ?? true
+        DevelopmentHooks.initializeCloudKitSchemaIfRequested()
+        let container = Self.makeModelContainer(syncsWithICloud: syncs)
+        do {
+            try DevelopmentHooks.seedScreenshotCards(into: container)
+        } catch {
+            fatalError("Seeding the screenshot cards failed: \(error)")
+        }
+        _modelContainer = State(initialValue: container)
     }
 
-    var sharedModelContainer: ModelContainer = {
+    /// The cards' store, syncing with iCloud or not (CardStore).
+    private static func makeModelContainer(syncsWithICloud: Bool) -> ModelContainer {
         do {
-            let modelConfiguration = CardStore.configuration(inMemory: DevelopmentHooks.isUITesting)
-            DevelopmentHooks.initializeCloudKitSchemaIfRequested()
-            let container = try ModelContainer(for: CardStore.schema, configurations: [modelConfiguration])
-            try DevelopmentHooks.seedScreenshotCards(into: container)
-            return container
+            let configuration = CardStore.configuration(inMemory: DevelopmentHooks.isUITesting, syncsWithICloud: syncsWithICloud)
+            return try ModelContainer(for: CardStore.schema, configurations: [configuration])
         } catch {
             fatalError("ModelContainer failed: \(error)")
         }
-    }()
+    }
 
     @ViewBuilder
     private var tabView: some View {
@@ -51,6 +62,9 @@ struct CardsApp: App {
                     CardListScreen()
                         .environment(navigationManager)
                 }
+                // A new store means new card screens, so none keeps a card of the
+                // old one. Settings stays as it is, where the switch was turned.
+                .id(ObjectIdentifier(modelContainer))
             } label: {
                 Label(
                     LocalizedStringResource("Cards", comment: "Tab bar item for the list of the user's loyalty cards."),
@@ -98,8 +112,13 @@ struct CardsApp: App {
     var body: some Scene {
         WindowGroup {
             tabView
+                .onChange(of: syncsWithICloud) {
+                    // An in-memory store (UI tests) never syncs, and a new one would be empty.
+                    guard !DevelopmentHooks.isUITesting else { return }
+                    modelContainer = Self.makeModelContainer(syncsWithICloud: syncsWithICloud)
+                }
         }
-        .modelContainer(sharedModelContainer)
+        .modelContainer(modelContainer)
         .onChange(of: scenePhase) { oldPhase, newPhase in
             switch (oldPhase, newPhase) {
             // A warm start runs from leaving the background to being active. Going

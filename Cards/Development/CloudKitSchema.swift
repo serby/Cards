@@ -9,7 +9,7 @@ import SwiftData
 /// documentation describes. Run it by launching a Debug build with
 /// -initializeCloudKitSchema (see docs/DEVELOPMENT.md, "Releasing").
 enum CloudKitSchema {
-    static let containerIdentifier = "iCloud.net.serby.Cards"
+    static let containerIdentifier = CardStore.iCloudContainer
     private static let log = Logger(subsystem: "net.serby.Cards", category: "CloudKitSchema")
 
     enum Failure: Error {

@@ -10,6 +10,7 @@ let screenStories: [Story] = [
     sharedCardStory,
     settingsStory,
     changelogStory,
+    openSourceLicenceStory,
     importCardsStory
 ]
 
@@ -41,7 +42,7 @@ private struct EditCardStory: View {
 
 /// A screen that is pushed onto a navigation stack in the app.
 @MainActor
-private func pushed<Content: View>(@ViewBuilder _ content: () -> Content) -> AnyView {
+func pushed<Content: View>(@ViewBuilder _ content: () -> Content) -> AnyView {
     AnyView(NavigationStack(root: content))
 }
 
@@ -254,6 +255,9 @@ private let settingsStory = Story(
         .toggle("Show card where I am", false),
         .toggle("Notifications blocked", false),
         .toggle("Has What's New", true),
+        .toggle("iCloud sync", true),
+        .options("iCloud deletion", ICloudDeletion.allCases.map(\.rawValue), ICloudDeletion.notAsked.rawValue),
+        .toggle("Share diagnostics", true),
         .text("Message", "")
     ] + DistanceKnobs.knobs,
     gallery: [
@@ -298,7 +302,8 @@ private let settingsStory = Story(
         authorURL: URL(string: knobs.string("Author URL")),
         cardCount: knobs.integer("Card count"),
         notificationsBlocked: knobs.bool("Notifications blocked"),
-        changelog: knobs.bool("Has What's New") ? ChangelogVersion.samples : []
+        changelog: knobs.bool("Has What's New") ? ChangelogVersion.samples : [],
+        iCloudDeletion: ICloudDeletion(rawValue: knobs.string("iCloud deletion")) ?? .notAsked
     )
     // An empty Message knob means no alert. The knob's text is shown as it is.
     let message = Binding<String?>(
@@ -312,6 +317,8 @@ private let settingsStory = Story(
             arrivalNotifications: knobs.boolBinding("Arrival notifications"),
             showsCardWhereYouAre: knobs.boolBinding("Show card where I am"),
             distanceUnits: knobs.distanceUnitsBinding,
+            syncsWithICloud: knobs.boolBinding("iCloud sync"),
+            sharesDiagnostics: knobs.boolBinding("Share diagnostics"),
             message: message
         )
         .distances(knobs)

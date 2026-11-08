@@ -42,9 +42,9 @@ As a card holder with an iPhone Duo, I want the app to work on it, so that my ca
 
 As a card holder, I want an app that doesn't watch me, so that I can trust it with my cards.
 
-- There is no account or sign-in. Sync uses your own iCloud account (DATA-1).
-- There are no ads, analytics or tracking, and the app makes no network requests of its own.
-- The only third-party code is RSBarcodes_Swift, which draws barcodes on the device.
+- There is no account or sign-in. Sync uses your own iCloud account (DATA-1), and can be turned off (DATA-8).
+- There are no ads, analytics or tracking, and the app makes no network requests of its own. It sends no diagnostics yet (PLAT-11).
+- The only third-party code is RSBarcodes_Swift, which draws barcodes on the device, and Settings > Acknowledgements shows its licence (PLAT-12).
 - The app times its own cold and warm starts and writes them to the device's log, and nowhere else.
 - The app declares that it uses no non-exempt encryption.
 
@@ -134,3 +134,26 @@ As someone deciding whether to get the app, I want a website that says what it d
 
 **Since:** In preparation for 1.4
 **Where:** `scripts/build-website.ts`, `scripts/lib/website.ts`, `Website/site.json`, `Website/templates/`, `Website/static/`, `.github/workflows/website.yml`, `scripts/website.test.ts`
+
+### PLAT-11: Choose whether the app shares diagnostics
+
+As a card holder, I want to decide whether the app sends its developer crash reports, so that nothing about my use of it leaves my device unless I agree.
+
+- Settings > Privacy has a "Share Diagnostics" switch with the caption "Lets Card Barcodes send crash reports and performance data to its developer, to find and fix problems. Your cards and places are never included." It is on until you turn it off.
+- Under it: "iOS shares its own crash reports with app developers only when Share With App Developers is on, in Privacy & Security > Analytics & Improvements in the Settings app. Card Barcodes can't change that setting." An app has no way to read or change that setting, so the app only says where it is.
+- The switch is kept on the device under `sharesDiagnostics` and doesn't sync.
+- The app sends no diagnostics yet. Crash reporting added later (Sentry is planned) must send nothing while the switch is off, must never send cards, codes, places or locations, and must be named in the privacy policy (PLAT-10), the App Store privacy details and Acknowledgements (PLAT-12) before it ships.
+
+**Since:** In preparation for 1.4
+**Where:** `Cards/UI/Screens/SettingsListView+Privacy.swift`, `Cards/Features/SettingsScreen.swift`, `Cards/Core/Models/DeviceSettings.swift`
+
+### PLAT-12: See the open source software the app uses
+
+As a card holder, I want to see the open source software the app is built with and its licences, so that I know what is in it and its authors are credited.
+
+- Settings > Acknowledgements has a row for each library, with its name and its licence's name, as "RSBarcodes_Swift" and "MIT License", and the footer "Card Barcodes is built with this open source software. Each row opens its licence."
+- A row opens a screen titled with the library's name showing its licence in full, as the project ships it, in English, which can be selected and copied, and a "Project Website" row that opens the project's page in the browser.
+- Every package in `Package.resolved` is listed, and a unit test fails when one is missing (`PrivacySettingsTests`).
+
+**Since:** In preparation for 1.4
+**Where:** `Cards/Core/Models/OpenSourceLibrary.swift`, `Cards/UI/Screens/SettingsListView+Privacy.swift`, `Cards/UI/Screens/OpenSourceLicenceView.swift`, `CardsTests/PrivacySettingsTests.swift`

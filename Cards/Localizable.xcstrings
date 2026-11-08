@@ -583,6 +583,29 @@
         }
       }
     },
+    "Acknowledgements" : {
+      "comment" : "Settings section heading for the open source software the app is built with, each opening its licence.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Danksagungen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Agradecimientos"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "謝辞"
+          }
+        }
+      }
+    },
     "Add" : {
       "comment" : "Toolbar button that adds the place under the map pin to the card. A verb.",
       "localizations" : {
@@ -1458,7 +1481,7 @@
       }
     },
     "Cancel" : {
-      "comment" : "Button in the delete-all dialog that keeps the cards.\nButton in the delete-card dialog that keeps the card.\nCloses the Add Location sheet without adding a place.\nCloses the import sheet without importing.\nCloses the list of barcodes found in a photo or a file without filling in the card form.\nCloses the sheet for a card someone shared without adding the card.",
+      "comment" : "Button in the delete-all dialog that keeps the cards.\nButton in the delete-card dialog that keeps the card.\nButton in the delete-from-iCloud dialog that keeps the cards in iCloud.\nCloses the Add Location sheet without adding a place.\nCloses the import sheet without importing.\nCloses the list of barcodes found in a photo or a file without filling in the card form.\nCloses the sheet for a card someone shared without adding the card.",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1568,6 +1591,29 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Card Barcodesではこの種類のバーコードを表示できません。"
+          }
+        }
+      }
+    },
+    "Card Barcodes is built with this open source software. Each row opens its licence." : {
+      "comment" : "Under the Acknowledgements section in Settings. Card Barcodes is the app's name.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Card Barcodes verwendet diese Open-Source-Software. Jede Zeile öffnet die zugehörige Lizenz."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Card Barcodes se ha creado con este software de código abierto. Cada fila abre su licencia."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Card Barcodesは以下のオープンソースソフトウェアを使用して作られています。各行をタップするとライセンスが表示されます。"
           }
         }
       }
@@ -2446,6 +2492,52 @@
         }
       }
     },
+    "Delete Cards from iCloud" : {
+      "comment" : "Settings button, shown with iCloud Sync off, that deletes the cards in iCloud after asking.\nTitle of the dialog that asks the user to confirm deleting their cards from iCloud.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Karten aus iCloud löschen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eliminar tarjetas de iCloud"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloudからカードを削除"
+          }
+        }
+      }
+    },
+    "Delete from iCloud" : {
+      "comment" : "Destructive button in the dialog that deletes the user's cards from iCloud.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aus iCloud löschen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eliminar de iCloud"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloudから削除"
+          }
+        }
+      }
+    },
     "Delete this card?" : {
       "comment" : "Title of the dialog that asks before deleting a card from the card form, while the card has no name.",
       "localizations" : {
@@ -2665,6 +2757,29 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "場所「%@」を削除しました"
+          }
+        }
+      }
+    },
+    "Deleting your cards from iCloud…" : {
+      "comment" : "Under Delete Cards from iCloud in Settings, while the cards are being deleted from iCloud.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine Karten werden aus iCloud gelöscht …"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eliminando tus tarjetas de iCloud…"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloudからカードを削除中…"
           }
         }
       }
@@ -3773,6 +3888,52 @@
         }
       }
     },
+    "iCloud" : {
+      "comment" : "Settings section heading for syncing the cards through iCloud. iCloud is Apple's service; keep the name.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud"
+          }
+        }
+      }
+    },
+    "iCloud Sync" : {
+      "comment" : "Settings switch that syncs the cards through the user's iCloud account. iCloud is Apple's service; keep the name.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud-Synchronisierung"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sincronización con iCloud"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud同期"
+          }
+        }
+      }
+    },
     "Icon" : {
       "comment" : "Label of the row in the card form that shows the card's icon and opens a grid to choose one, and the title of that grid. A noun.",
       "localizations" : {
@@ -4034,6 +4195,29 @@
         }
       }
     },
+    "iOS shares its own crash reports with app developers only when Share With App Developers is on, in Privacy & Security > Analytics & Improvements in the Settings app. Card Barcodes can't change that setting." : {
+      "comment" : "Under the Share Diagnostics switch in Settings. Share With App Developers, Privacy & Security and Analytics & Improvements are the names of iOS's own settings; use their names in your language.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS teilt seine eigenen Absturzberichte nur dann mit App-Entwicklern, wenn „Mit App-Entwicklern teilen“ aktiviert ist, unter „Datenschutz & Sicherheit“ > „Analyse & Verbesserungen“ in der App „Einstellungen“. Card Barcodes kann diese Einstellung nicht ändern."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS solo comparte sus propios informes de errores con los desarrolladores de apps cuando «Compartir con desarrolladores de apps» está activado, en Privacidad y seguridad > Análisis y mejoras, en la app Ajustes. Card Barcodes no puede cambiar ese ajuste."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS自体のクラッシュレポートは、「設定」の「プライバシーとセキュリティ」>「解析と改善」で「Appデベロッパと共有」がオンの場合にのみアプリの開発者と共有されます。この設定をCard Barcodesから変更することはできません。"
+          }
+        }
+      }
+    },
     "It is deleted from all your devices. This cannot be undone." : {
       "comment" : "Message in the dialog that asks before deleting a card from the card form.",
       "localizations" : {
@@ -4076,6 +4260,29 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "読み込むJSON"
+          }
+        }
+      }
+    },
+    "Keeps your cards in your iCloud account, so they are on all your devices. Turn it off to keep them on this device only." : {
+      "comment" : "Under the iCloud Sync switch in Settings, saying what it does when it is on and when it is off.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bewahrt deine Karten in deinem iCloud-Account auf, sodass sie auf allen deinen Geräten verfügbar sind. Deaktiviere die Option, um sie nur auf diesem Gerät zu behalten."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guarda tus tarjetas en tu cuenta de iCloud para que estén en todos tus dispositivos. Desactívalo para guardarlas solo en este dispositivo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カードをiCloudアカウントに保存し、すべてのデバイスで使えるようにします。オフにすると、カードはこのデバイスにのみ保存されます。"
           }
         }
       }
@@ -4214,6 +4421,29 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ラベンダー"
+          }
+        }
+      }
+    },
+    "Lets Card Barcodes send crash reports and performance data to its developer, to find and fix problems. Your cards and places are never included." : {
+      "comment" : "Under the Share Diagnostics switch in Settings, saying what it allows. Card Barcodes is the app's name.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erlaubt Card Barcodes, Absturzberichte und Leistungsdaten an den Entwickler zu senden, um Probleme zu finden und zu beheben. Deine Karten und Orte sind nie enthalten."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permite que Card Barcodes envíe informes de errores y datos de rendimiento a su desarrollador para encontrar y corregir problemas. Tus tarjetas y lugares nunca se incluyen."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "問題の発見と修正のために、Card Barcodesがクラッシュレポートとパフォーマンスデータを開発者に送信できるようにします。カードや場所の情報が含まれることはありません。"
           }
         }
       }
@@ -5346,7 +5576,7 @@
       }
     },
     "Opens in your web browser" : {
-      "comment" : "VoiceOver hint for the Settings row that opens the author's website.",
+      "comment" : "VoiceOver hint for the Settings row that opens the author's website.\nVoiceOver hint for the row that opens an open source library's project page.",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -5893,6 +6123,52 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "値札"
+          }
+        }
+      }
+    },
+    "Privacy" : {
+      "comment" : "Settings section heading for the Share Diagnostics switch.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Datenschutz"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privacidad"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "プライバシー"
+          }
+        }
+      }
+    },
+    "Project Website" : {
+      "comment" : "Row under an open source licence that opens the library's project page.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Projekt-Website"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sitio web del proyecto"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "プロジェクトのWebサイト"
           }
         }
       }
@@ -6570,6 +6846,29 @@
         }
       }
     },
+    "Share Diagnostics" : {
+      "comment" : "Settings switch that lets the app send its developer crash reports and performance data.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diagnose teilen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compartir diagnósticos"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "診断データを共有"
+          }
+        }
+      }
+    },
     "Share Image" : {
       "comment" : "Share menu item on a card's screen: sends a picture of the card.",
       "localizations" : {
@@ -7191,6 +7490,29 @@
         }
       }
     },
+    "This deletes your cards from iCloud. The cards on this device are kept." : {
+      "comment" : "Message in the dialog that asks the user to confirm deleting their cards from iCloud.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dies löscht deine Karten aus iCloud. Die Karten auf diesem Gerät bleiben erhalten."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esto elimina tus tarjetas de iCloud. Las tarjetas de este dispositivo se conservan."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloudからカードを削除します。このデバイス上のカードは残ります。"
+          }
+        }
+      }
+    },
     "This link doesn't contain a card." : {
       "comment" : "In the sheet that opens from a link to a shared card, when the link is damaged or holds no card.",
       "localizations" : {
@@ -7793,6 +8115,75 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@にいます。バーコードの準備ができました。"
+          }
+        }
+      }
+    },
+    "Your cards are no longer in iCloud. A device that still has iCloud Sync on will upload its cards again." : {
+      "comment" : "Under Delete Cards from iCloud in Settings, once the cards have been deleted from iCloud. iCloud Sync is the switch above.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine Karten sind nicht mehr in iCloud. Ein Gerät, auf dem die iCloud-Synchronisierung noch aktiviert ist, lädt seine Karten erneut hoch."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tus tarjetas ya no están en iCloud. Un dispositivo que aún tenga activada la sincronización con iCloud volverá a subir sus tarjetas."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カードはiCloudから削除されました。iCloud同期がオンのままのデバイスがあると、そのカードが再度アップロードされます。"
+          }
+        }
+      }
+    },
+    "Your cards could not be deleted from iCloud. Check that you're signed in to iCloud and online, then try again." : {
+      "comment" : "Under Delete Cards from iCloud in Settings, when iCloud could not be reached or the user is not signed in to it.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine Karten konnten nicht aus iCloud gelöscht werden. Prüfe, ob du bei iCloud angemeldet und online bist, und versuche es dann erneut."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se han podido eliminar tus tarjetas de iCloud. Comprueba que has iniciado sesión en iCloud y que tienes conexión, y vuelve a intentarlo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloudからカードを削除できませんでした。iCloudにサインインしていてインターネットに接続されていることを確認して、もう一度お試しください。"
+          }
+        }
+      }
+    },
+    "Your cards stay in iCloud until you delete them there." : {
+      "comment" : "Under Delete Cards from iCloud in Settings, with iCloud Sync off, before anything has been deleted.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine Karten bleiben in iCloud, bis du sie dort löschst."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tus tarjetas permanecen en iCloud hasta que las elimines allí."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カードは、iCloudから削除するまでiCloudに残ります。"
           }
         }
       }
