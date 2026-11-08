@@ -1,16 +1,17 @@
 name: CI
 
-# Every push and pull request that changes the app: the validations, the release check and every
-# test run. The tests run where scripts/lib/test-devices.ts says, the same
-# list `make test-all` uses: the unit tests on the iPhone 17 on iOS 27.0, and
-# the UI tests on the iPhone 17 on iOS 26.5, the iPhone 16 on iOS 18.6 and the
-# iPad mini on iOS 26.5, each in its own job. The App Store images are checked
-# by release.yml, which uploads them, not here.
-
-# Only changes to the app trigger it: its code, tests and project, the
-# changelog it bundles for What's New, the scripts that build and test it, and
-# this workflow. Docs, the spec, the website, metadata/, screenshots/ and
-# .claude/ do not.
+# Checks the app on every change to it (spec/deployment.md, DEPLOY-1): its
+# code passes SwiftLint, its strings are translated, the changelog it shows in
+# Settings > What's New is valid, and it builds and passes every test on each
+# device and iOS it supports. The devices and iOS versions are the test runs in
+# scripts/lib/test-devices.ts, the list `make test-all` uses: the unit tests on
+# the iPhone 17 on iOS 27.0, and the UI tests on the iPhone 17 on iOS 26.5, the
+# iPhone 16 on iOS 18.6 and the iPad mini on iOS 26.5, a job each.
+#
+# Only changes to the app trigger it: its code, tests and project, the Xcode
+# and SwiftLint versions and rules, and the changelog it bundles. The scripts
+# have their own workflow (scripts.yml), and the release checks (development
+# code, metadata, App Store images) run in release.yml.
 on:
   push:
     paths:
@@ -20,8 +21,9 @@ on:
       - 'CardsUITests/**'
       - 'Cards.xcodeproj/**'
       - '.xcode-version'
+      - '.swiftlint.yml'
+      - '.swiftlint-version'
       - 'changelog.json'
-      - 'scripts/**'
       - '.github/workflows/ci.yml'
   pull_request:
     paths:
@@ -31,8 +33,9 @@ on:
       - 'CardsUITests/**'
       - 'Cards.xcodeproj/**'
       - '.xcode-version'
+      - '.swiftlint.yml'
+      - '.swiftlint-version'
       - 'changelog.json'
-      - 'scripts/**'
       - '.github/workflows/ci.yml'
 
 # A newer push makes an older run's result moot.
@@ -41,6 +44,17 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # The same SwiftLint version as local builds (.swiftlint-version), with the
+  # rules in .swiftlint.yml. --strict fails on warnings too: the code is kept
+  # with none (docs/DEVELOPMENT.md, rule 7).
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v5
+
+    - name: Lint with SwiftLint
+      run: docker run --rm -v "$PWD:/work" -w /work "ghcr.io/realm/swiftlint:$(cat .swiftlint-version)" swiftlint lint --strict
+
   checks:
     runs-on: ubuntu-latest
     steps:
@@ -50,43 +64,15 @@ jobs:
       with:
         node-version: 24
 
-    # The App Store listing text in metadata/ must fit App Store Connect's limits.
-    - name: Check App Store metadata
-      run: node scripts/check-metadata.ts
-
-    # changelog.json must be valid, start with the app's version, and match the
-    # files generated from it.
-    - name: Check the changelog
-      run: node scripts/check-changelog.ts
-
     # Every shipped language is complete in every catalogue, with matching
     # placeholders and plural forms.
     - name: Check translations are complete
       run: node scripts/check-strings.ts
 
-    - name: Test the scripts
-      run: node --test scripts/*.test.ts
-
-  # Development code (Cards/Development: Storybook, previews, sample data,
-  # UI-test hooks) must never reach a release build.
-  release-check:
-    # The Xcode 27 image, so CI builds with the same Xcode as local builds (.xcode-version).
-    runs-on: xcode-27
-    steps:
-    - uses: actions/checkout@v5
-
-    - uses: actions/setup-node@v4
-      with:
-        node-version: 24
-
-    - name: Select the Xcode in .xcode-version
-      run: |
-        developer_dir="$(node scripts/select-xcode.ts)"
-        echo "DEVELOPER_DIR=$developer_dir" >> "$GITHUB_ENV"
-        "$developer_dir/usr/bin/xcodebuild" -version
-
-    - name: Check release build has no development code
-      run: node scripts/check-release-build.ts
+    # changelog.json, which the app shows in Settings > What's New, must be
+    # valid, start with the app's version and match the files generated from it.
+    - name: Check the changelog
+      run: node scripts/check-changelog.ts
 
   # The test runs, read from scripts/lib/test-devices.ts so the devices and
   # iOS versions are written down once.

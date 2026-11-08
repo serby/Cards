@@ -57,3 +57,4 @@ Only write what the code does. If a criterion is wrong, fix the criterion or the
 | [platforms-and-privacy.md](platforms-and-privacy.md) | PLAT | iPhone, iPad, iPhone Duo, iOS 18 and later, languages and the App Store listings, privacy: no accounts, analytics or tracking, location and camera on the device, when the app asks for an App Store rating, and the website |
 | [sharing.md](sharing.md) | SHARE | Sending a card as a link someone can add to their app, or as an image, and adding a shared card |
 | [development.md](development.md) | DEV | The debug builds' Development tab: the Storybook, a test arrival notification, the review prompt and the app's language |
+| [deployment.md](deployment.md) | DEPLOY | The workflows: CI checking every app change with SwiftLint, a build and every test on each device and iOS, testing the scripts, releasing a version, the App Store listing, the website, and the same checks run locally |

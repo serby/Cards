@@ -31,11 +31,23 @@ jobs:
         echo "DEVELOPER_DIR=$developer_dir" >> "$GITHUB_ENV"
         "$developer_dir/usr/bin/xcodebuild" -version
 
+    # The release checks (spec/deployment.md, DEPLOY-3), before anything is
+    # signed, built for the App Store or uploaded. CI checks the app; these
+    # check what ships with it.
+
+    # The App Store listing text in metadata/ must fit App Store Connect's limits.
+    - name: Check App Store metadata
+      run: node scripts/check-metadata.ts
+
     # Every App Store image the listing names must be present, at its size and
-    # with no alpha channel, before anything is built or uploaded. CI does not
-    # check them; they are composed when a version is ready to ship.
+    # with no alpha channel. They are composed when a version is ready to ship.
     - name: Check the App Store images are present
       run: node scripts/check-store-images.ts
+
+    # Development code (Cards/Development: Storybook, previews, sample data,
+    # UI-test hooks) must never reach a release build.
+    - name: Check the release build has no development code
+      run: node scripts/check-release-build.ts
 
     - name: Install signing
       uses: ./.github/actions/install-signing
