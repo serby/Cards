@@ -110,10 +110,12 @@ async function bootForTests(udid: string, log: Log): Promise<void> {
     // Booting fails when it is already booted, which is fine.
     await xcrun(["simctl", "boot", udid], log, { output: "log", errors: "discard", mayFail: true });
     await xcrun(["simctl", "bootstatus", udid, "-b"], log, { output: "log" });
+    // Only for tidier screenshots: on a simulator just created on a freshly
+    // installed runtime, as on CI, it can fail, which must not stop the tests.
     await xcrun(
         ["simctl", "status_bar", udid, "override", "--time", "14:34", "--batteryState", "charged", "--batteryLevel", "100", "--wifiBars", "3", "--cellularBars", "4"],
         log,
-        { output: "log" },
+        { output: "log", mayFail: true },
     );
     await new Promise((resolve) => setTimeout(resolve, settleSeconds * 1000));
     await xcrun(["simctl", "list", "devices", "booted"], log, { output: "log" });
