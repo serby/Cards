@@ -41,7 +41,7 @@ final class CardsWidgetScreenshotTests: XCTestCase {
         // Give the widget time to load its timeline and draw.
         Thread.sleep(forTimeInterval: 4)
         let widgets = springboard.icons
-            .matching(NSPredicate(format: "identifier == %@ AND value == %@", "Card Barcodes", "Widget"))
+            .matching(NSPredicate(format: "identifier == %@ AND value == %@", "Card Barcodes", words.widget))
         XCTAssertTrue(widgets.firstMatch.appears(within: 5), "The widget is not on the Home Screen")
 
         // A crop of the Home Screen round the widget, which leaves out the other
@@ -118,7 +118,7 @@ final class CardsWidgetScreenshotTests: XCTestCase {
         result?.tap()
 
         // The gallery shows the medium size, the only one, with its own Add Widget button.
-        let add = springboard.buttons.matching(NSPredicate(format: "label CONTAINS[c] %@", words.addWidget)).firstMatch
+        let add = springboard.buttons.matching(NSPredicate(format: "label CONTAINS[c] %@", words.galleryAddWidget)).firstMatch
         if !add.appears(within: 5) { attachSpringBoard("without_gallery_add") }
         XCTAssertTrue(add.exists, "No Add Widget button for Card Barcodes")
         add.tap()
@@ -144,23 +144,38 @@ final class CardsWidgetScreenshotTests: XCTestCase {
 }
 
 /// The words on SpringBoard's buttons that adding a widget goes through, in
-/// each language a store locale captures in.
+/// each language a store locale captures in. XCUITest matches accessibility
+/// labels, which can differ from what the button shows: SpringBoard's strings
+/// give its Edit button "Bearb." in German and "+" in French, and its
+/// accessibility labels "Bearbeiten" and "Modifier".
 private struct SpringBoardWords {
     let edit: String
     let editHomeScreen: String
+    /// The Edit menu's item that opens the widget gallery.
     let addWidget: String
+    /// The gallery's button that adds the widget it shows, which French words
+    /// differently from the menu item.
+    let galleryAddWidget: String
     let done: String
+    /// The accessibility value of a widget on the Home Screen.
+    let widget: String
 
     init(language: String) {
         switch language {
+        case "ar":
+            (edit, editHomeScreen, addWidget, done) = ("تعديل", "تعديل الشاشة الرئيسية", "إضافة أداة", "تم")
         case "de":
             (edit, editHomeScreen, addWidget, done) = ("Bearbeiten", "Home-Bildschirm bearbeiten", "Widget hinzufügen", "Fertig")
         case "es":
             (edit, editHomeScreen, addWidget, done) = ("Editar", "Editar pantalla de inicio", "Añadir widget", "OK")
+        case "fr":
+            (edit, editHomeScreen, addWidget, done) = ("Modifier", "Modifier l’écran d’accueil", "Ajouter un widget", "OK")
         case "ja":
             (edit, editHomeScreen, addWidget, done) = ("編集", "ホーム画面を編集", "ウィジェットを追加", "完了")
         default:
             (edit, editHomeScreen, addWidget, done) = ("Edit", "Edit Home Screen", "Add Widget", "Done")
         }
+        galleryAddWidget = language == "fr" ? "Ajouter le widget" : addWidget
+        widget = ["ar": "أداة", "ja": "ウィジェット"][language] ?? "Widget"
     }
 }
