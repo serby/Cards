@@ -1,13 +1,18 @@
+Card Barcodes ya está en español, alemán, japonés, francés y árabe, y sigue el idioma de tu iPhone.
+Desactiva Sincronización con iCloud en Ajustes para guardar tus tarjetas solo en este dispositivo, y elimina la copia que ya está en iCloud.
 Comparte una tarjeta como un enlace que otra persona puede agregar a su propio Card Barcodes, o como una imagen.
 Busca tus tarjetas y ordénalas por última visualización, en tu propio orden o por el lugar más cercano.
+Guarda notas con una tarjeta, como cuándo se reinician sus puntos. Aparecen en la tarjeta y la búsqueda las encuentra.
 Ponle a cada tarjeta un ícono, entre 76 repartidos en 16 grupos, que aparece en la lista y en la propia tarjeta.
 Agrega una tarjeta desde una foto, una captura de pantalla o un PDF de su código de barras, como un boleto electrónico.
 Una tarjeta con varios lugares muestra los cinco más cercanos y a qué distancia está cada uno. Toca uno para abrirlo en Mapas.
+Elige en Ajustes si los lugares se abren en Apple Maps o en Google Maps. Toca el lugar en la parte superior de una tarjeta para abrirlo allí.
 Muestra completa la tarjeta del lugar donde estás arriba de tus demás tarjetas, con una nueva opción en Ajustes.
 Muestra las distancias en kilómetros o en millas, o deja que sigan la configuración de tu iPhone, con una nueva opción en Ajustes.
 Encuentra un lugar buscando una tienda, una calle, una ciudad o un código postal. Los lugares toman su nombre del mapa, y puedes cambiarlo.
 Cambia un lugar que hayas agregado a una tarjeta.
 Importa tarjetas desde un archivo JSON, además de pegándolas.
+Las pestañas de la parte inferior de la pantalla siguen a la vista mientras te desplazas.
 La cámara enfoca una tarjeta que tengas cerca. Toca para enfocar, o enciende la linterna si hay poca luz.
 Tus tarjetas se muestran en una cuadrícula, de dos en dos en el iPhone y de cuatro en cuatro en el iPad. Mantén presionada una tarjeta para editarla o eliminarla, o elimínala desde su pantalla de edición.
 Abrir una tarjeta ya no produce una respuesta háptica, algo que solo ocurría la primera vez.

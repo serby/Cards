@@ -6,6 +6,26 @@
       "changes": [
         {
           "type": "new",
+          "text": "Card Barcodes is now in Spanish, German, Japanese, French and Arabic, and follows your iPhone's language.",
+          "es": "Card Barcodes ya está en español, alemán, japonés, francés y árabe, y sigue el idioma de tu iPhone.",
+          "es-MX": "Card Barcodes ya está en español, alemán, japonés, francés y árabe, y sigue el idioma de tu iPhone.",
+          "de": "Card Barcodes gibt es jetzt auf Spanisch, Deutsch, Japanisch, Französisch und Arabisch, in der Sprache deines iPhone.",
+          "ja": "Card Barcodesがスペイン語、ドイツ語、日本語、フランス語、アラビア語に対応しました。iPhoneの言語で表示されます。",
+          "fr": "Card Barcodes est désormais en espagnol, en allemand, en japonais, en français et en arabe, et suit la langue de votre iPhone.",
+          "ar": "أصبح Card Barcodes متاحًا بالإسبانية والألمانية واليابانية والفرنسية والعربية، ويتبع لغة iPhone لديك."
+        },
+        {
+          "type": "new",
+          "text": "Turn off iCloud Sync in Settings to keep your cards on this device only, and delete the copy already in iCloud.",
+          "es": "Desactiva Sincronización con iCloud en Ajustes para guardar tus tarjetas solo en este dispositivo, y elimina la copia que ya está en iCloud.",
+          "es-MX": "Desactiva Sincronización con iCloud en Ajustes para guardar tus tarjetas solo en este dispositivo, y elimina la copia que ya está en iCloud.",
+          "de": "Schalte iCloud-Synchronisierung in den Einstellungen aus, um deine Karten nur auf diesem Gerät zu behalten, und lösche die Kopie, die schon in iCloud ist.",
+          "ja": "設定でiCloud同期をオフにすると、カードをこのデバイスだけに保存できます。iCloudにすでにあるコピーも削除できます。",
+          "fr": "Désactivez Synchronisation iCloud dans Réglages pour garder vos cartes sur cet appareil uniquement, et supprimez la copie déjà dans iCloud.",
+          "ar": "أوقف مزامنة iCloud في الإعدادات لتبقى بطاقاتك على هذا الجهاز فقط، واحذف النسخة الموجودة في iCloud."
+        },
+        {
+          "type": "new",
           "text": "Share a card as a link someone can add to their own Card Barcodes, or as a picture.",
           "es": "Comparte una tarjeta como un enlace que otra persona puede añadir a su propio Card Barcodes, o como una imagen.",
           "es-MX": "Comparte una tarjeta como un enlace que otra persona puede agregar a su propio Card Barcodes, o como una imagen.",
@@ -22,6 +42,16 @@
           "ja": "カードを検索して、最近表示した順、自分で決めた順、近い順に並べ替えられます。",
           "fr": "Recherchez parmi vos cartes et triez-les par dernière consultation, selon votre ordre personnalisé ou par lieu le plus proche.",
           "ar": "ابحث في بطاقاتك، وافرزها حسب آخر عرض أو ترتيبك المخصص أو أقرب مكان."
+        },
+        {
+          "type": "new",
+          "text": "Keep notes with a card, such as when its points reset. They show on the card, and search finds them.",
+          "es": "Guarda notas con una tarjeta, como cuándo se reinician sus puntos. Aparecen en la tarjeta y la búsqueda las encuentra.",
+          "es-MX": "Guarda notas con una tarjeta, como cuándo se reinician sus puntos. Aparecen en la tarjeta y la búsqueda las encuentra.",
+          "de": "Speichere Notizen zu einer Karte, etwa wann ihre Punkte zurückgesetzt werden. Sie stehen auf der Karte, und die Suche findet sie.",
+          "ja": "ポイントがリセットされる時期など、カードにメモを残せます。メモはカードに表示され、検索でも見つかります。",
+          "fr": "Ajoutez des notes à une carte, par exemple quand ses points sont remis à zéro. Elles s’affichent sur la carte, et la recherche les trouve.",
+          "ar": "احتفظ بملاحظات مع البطاقة، مثل موعد إعادة ضبط نقاطها. تظهر الملاحظات على البطاقة، ويعثر عليها البحث."
         },
         {
           "type": "new",
@@ -51,6 +81,16 @@
           "ja": "複数の場所があるカードでは、近い5か所とそれぞれまでの距離が表示されます。タップするとマップで開きます。",
           "fr": "Une carte associée à plusieurs lieux affiche les cinq plus proches et la distance de chacun. Touchez-en un pour l’ouvrir dans Plans.",
           "ar": "تعرض البطاقة التي لها عدة أماكن أقرب خمسة أماكن ومدى بُعد كل منها. اضغط على أحدها لفتحه في الخرائط."
+        },
+        {
+          "type": "new",
+          "text": "Choose whether places open in Apple Maps or Google Maps, in Settings. Tap the place at the top of a card to open it there.",
+          "es": "Elige en Ajustes si los lugares se abren en Apple Maps o en Google Maps. Toca el lugar en la parte superior de una tarjeta para abrirlo allí.",
+          "es-MX": "Elige en Ajustes si los lugares se abren en Apple Maps o en Google Maps. Toca el lugar en la parte superior de una tarjeta para abrirlo allí.",
+          "de": "Wähle in den Einstellungen, ob sich Orte in Apple Karten oder Google Maps öffnen. Tippe auf den Ort oben auf einer Karte, um ihn dort zu öffnen.",
+          "ja": "場所をAppleマップとGoogle マップのどちらで開くかを設定で選べます。カード上部の場所をタップすると、そのアプリで開きます。",
+          "fr": "Choisissez dans Réglages si les lieux s’ouvrent dans Plans ou dans Google Maps. Touchez le lieu en haut d’une carte pour l’y ouvrir.",
+          "ar": "اختر في الإعدادات ما إذا كانت الأماكن تُفتح في خرائط Apple أو خرائط Google. اضغط على المكان أعلى البطاقة لفتحه هناك."
         },
         {
           "type": "new",
@@ -102,6 +142,16 @@
           "ja": "ペーストに加えて、JSONファイルからもカードを読み込めます。",
           "fr": "Importez des cartes depuis un fichier JSON, et plus seulement en les collant.",
           "ar": "استورد بطاقات من ملف JSON، بالإضافة إلى لصقها."
+        },
+        {
+          "type": "improved",
+          "text": "The tabs at the bottom of the screen stay in view as you scroll.",
+          "es": "Las pestañas de la parte inferior de la pantalla siguen a la vista mientras te desplazas.",
+          "es-MX": "Las pestañas de la parte inferior de la pantalla siguen a la vista mientras te desplazas.",
+          "de": "Die Tabs unten auf dem Bildschirm bleiben beim Scrollen sichtbar.",
+          "ja": "画面下部のタブが、スクロール中も表示されたままになります。",
+          "fr": "Les onglets en bas de l’écran restent visibles pendant le défilement.",
+          "ar": "تبقى علامات التبويب أسفل الشاشة ظاهرة أثناء التمرير."
         },
         {
           "type": "improved",

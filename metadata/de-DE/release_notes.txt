@@ -1,13 +1,18 @@
+Card Barcodes gibt es jetzt auf Spanisch, Deutsch, Japanisch, Französisch und Arabisch, in der Sprache deines iPhone.
+Schalte iCloud-Synchronisierung in den Einstellungen aus, um deine Karten nur auf diesem Gerät zu behalten, und lösche die Kopie, die schon in iCloud ist.
 Teile eine Karte als Link, den jemand in sein eigenes Card Barcodes übernehmen kann, oder als Bild.
 Durchsuche deine Karten und sortiere sie nach zuletzt angesehen, nach deiner eigenen Reihenfolge oder nach dem nächsten Ort.
+Speichere Notizen zu einer Karte, etwa wann ihre Punkte zurückgesetzt werden. Sie stehen auf der Karte, und die Suche findet sie.
 Gib jeder Karte ein Symbol, aus 76 in 16 Gruppen, zu sehen in der Liste und auf der Karte.
 Füge eine Karte aus einem Foto, einem Bildschirmfoto oder einem PDF ihres Barcodes hinzu, etwa aus einem E-Ticket.
 Eine Karte mit mehreren Orten zeigt die fünf nächsten und wie weit jeder entfernt ist. Tippe auf einen, um ihn in Apple Karten zu öffnen.
+Wähle in den Einstellungen, ob sich Orte in Apple Karten oder Google Maps öffnen. Tippe auf den Ort oben auf einer Karte, um ihn dort zu öffnen.
 Zeige die Karte für den Ort, an dem du bist, vollständig über deinen anderen Karten, mit einem neuen Schalter in den Einstellungen.
 Zeige Entfernungen in Kilometern oder Meilen an, oder lass sie den Einstellungen deines iPhone folgen, mit einer neuen Auswahl in den Einstellungen.
 Finde einen Ort, indem du nach einem Geschäft, einer Straße, einer Stadt oder einer Postleitzahl suchst. Orte bekommen ihren Namen automatisch, und du kannst ihn ändern.
 Ändere einen Ort, den du einer Karte hinzugefügt hast.
 Importiere Karten aus einer JSON-Datei, nicht nur durch Einsetzen.
+Die Tabs unten auf dem Bildschirm bleiben beim Scrollen sichtbar.
 Die Kamera stellt auf eine nah gehaltene Karte scharf. Tippe zum Scharfstellen, oder schalte bei wenig Licht die Taschenlampe ein.
 Deine Karten erscheinen in einem Raster, zwei nebeneinander auf dem iPhone und vier auf dem iPad. Halte eine Karte gedrückt, um sie zu bearbeiten oder zu löschen, oder lösche sie beim Bearbeiten.
 Beim Öffnen einer Karte gibt es kein haptisches Feedback mehr, das es nur beim ersten Mal gab.
