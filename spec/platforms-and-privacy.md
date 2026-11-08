@@ -32,7 +32,7 @@ As a card holder with an iPhone Duo, I want the app to work on it, so that my ca
 
 - The app runs on iPhone Duo as an iPhone app.
 - Scrolling the edit form puts the keyboard away, so the colour and location sections can be reached on the smaller outer display (CARD-5).
-- The App Store screenshots are captured on the iPhone Duo's outer display, among other devices.
+- The App Store screenshots are captured on the iPhone Duo's outer display, among other devices, and its App Store images show them on a drawing of the device (PLAT-13).
 
 **Since:** 1.3
 **Where:** `Cards/UI/Screens/CardEditView.swift`, `CardsUITests/CardsScreenshotTests.swift`, `CardsUITests/CardsWidgetScreenshotTests.swift`
@@ -157,3 +157,26 @@ As a card holder, I want to see the open source software the app is built with a
 
 **Since:** In preparation for 1.4
 **Where:** `Cards/Core/Models/OpenSourceLibrary.swift`, `Cards/UI/Screens/SettingsListView+Privacy.swift`, `Cards/UI/Screens/AcknowledgementsView.swift`, `Cards/UI/Screens/OpenSourceLicenceView.swift`, `CardsTests/PrivacySettingsTests.swift`
+
+### PLAT-13: See what the app does from its App Store images
+
+As someone looking at the listing, I want its images to show what the app does for me, the way it looks on a phone, so that I can tell in a few seconds whether it is the app I want.
+
+- In preparation for 1.4 the images lead with what sets the app apart, in this order (docs/BRAND.md):
+  1. "Your card, ready when you arrive": the Cards tab with the card for where you are in full at the top (SET-3).
+  2. "On your Home Screen": a Home Screen with the widget showing the card for where you are, and the app's icon, and nothing else (WID-1).
+  3. "Your cards stay yours", with "No account", "No tracking" and "iCloud or this device": Settings at iCloud Sync, Data and Share Diagnostics (PLAT-4, DATA-8, PLAT-11).
+  4. "Free, with no ads": a grid full of cards, sixteen made-up ones (PLAT-4).
+  5. "Share a card": the share menu with Share Link and Share Image (SHARE-1, SHARE-2).
+  6. "Ready at the till": a card's screen (BAR-4, PLACE-9).
+  7. "A reminder when you arrive": adding a place on the map (PLACE-1, ARR-1).
+  Colours and icons, which the 1.3 images led with, are no longer one of them.
+- Each image is the screen as it is on the device, captured by the screenshot UI tests in the listing's language with the status bar at 9:41, full signal and battery, drawn on the device: its display's own shape and corners, a thin black bezel and a metal frame, with nothing cropped or covered and no black bars. On iPhone Duo that is the outer display, with the tight corners and the spine on the hinge side.
+- Above the device is the caption, on a white panel with rounded corners, as a card face holds its name: the title in bold dark ink and the subtitle in the lighter ink, or a row of chips in the brand pink. The background is the gradient of one of the card colours, a different one for each image, from the app's palette.
+- Captions are in the system font, wrapped to balanced lines, at most two for the title and two for the subtitle, and made smaller when a language needs it; the panel grows to hold them and the device shrinks to fit below.
+- Each device's image is drawn from a vector template, `screenshots/templates/<device>.svg`, which any SVG editor opens: the composer (`scripts/compose-store-images.ts`) fills it in from each listing's `captions.json` and the raw captures, and renders it with headless Chrome at the size App Store Connect takes, with no alpha channel. The colours come from `card-colours.json`, which a unit test keeps the same as the app's palette.
+- The images show only made-up businesses (LANGUAGE.md).
+
+**Since:** In preparation for 1.4
+**Where:** `screenshots/templates/`, `screenshots/store/<locale>/captions.json`, `scripts/compose-store-images.ts`, `scripts/lib/store-images.ts`, `scripts/store-images.test.ts`, `scripts/capture-screenshots.ts`, `CardsUITests/CardsScreenshotTests.swift`, `CardsUITests/CardsWidgetScreenshotTests.swift`, `Cards/Development/ScreenshotSeed.swift` (`insertMany`), `CardsTests/StoreImageColoursTests.swift`, `scripts/lib/website.ts` (`screenshotSuffix`)
+**Notes:** Only the iPhone Duo template and its British English images exist so far, for review. The iPhone and iPad templates and every other listing's captions follow once they are agreed. The creative asset is still drawn by `StoreCreativeAsset` in Swift.

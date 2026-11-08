@@ -3,49 +3,15 @@ import SwiftUI
 import Testing
 import UIKit
 
-/// Renders the App Store images: the screenshots, and the universal creative
-/// asset. Not part of the normal test run: `make store-screenshots` turns it on
-/// with CARDS_STORE_SCREENSHOTS=1. It reads and writes the repository directly,
+/// Renders the universal creative asset. The App Store screenshots are composed
+/// from vector templates by scripts/compose-store-images.ts. Not part of the
+/// normal test run: `make store-screenshots` turns it on with
+/// CARDS_STORE_SCREENSHOTS=1. It reads and writes the repository directly,
 /// which a simulator can do.
 @MainActor
 struct StoreScreenshotTests {
     nonisolated private static let enabled = ProcessInfo.processInfo.environment["CARDS_STORE_SCREENSHOTS"] == "1"
     private static let files = StoreListingFiles.repository
-
-    /// Each device's suffix and the pixel size App Store Connect takes for it.
-    private static let devices: [(suffix: String, size: CGSize)] = [
-        ("", CGSize(width: 1_320, height: 2_868)),
-        ("_iPad", CGSize(width: 2_064, height: 2_752)),
-        ("_Duo", CGSize(width: 1_398, height: 2_034))
-    ]
-
-    @Test(.enabled(if: enabled))
-    func renderStoreScreenshots() throws {
-        let locales = try Self.files.locales()
-        #expect(!locales.isEmpty)
-        for locale in locales {
-            let folder = Self.files.store.appending(path: locale)
-            let captions = try JSONDecoder().decode(
-                [StoreScreenshotCaption].self,
-                from: Data(contentsOf: folder.appending(path: "captions.json"))
-            )
-            for caption in captions {
-                for device in Self.devices {
-                    let name = "\(caption.screen)\(device.suffix)"
-                    let image = try #require(Self.files.capture(name, locale: locale), "Missing screenshots/\(locale)/\(name).png")
-                    let view = StoreScreenshot(
-                        title: caption.title,
-                        subtitle: caption.subtitle,
-                        color: .stored(caption.color),
-                        screenshot: image,
-                        layout: caption.layout,
-                        canvas: device.size
-                    )
-                    try render(view, size: device.size).write(to: folder.appending(path: "\(caption.file)\(device.suffix).png"))
-                }
-            }
-        }
-    }
 
     /// One universal creative asset for each locale with a creative-asset.json.
     @Test(.enabled(if: enabled))

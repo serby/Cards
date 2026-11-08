@@ -1,0 +1,28 @@
+{
+  "accent": "#D0185B",
+  "panel": { "fill": "#FFFFFF", "ink": "#1C1C1E", "secondaryInkOpacity": 0.7 },
+  "cards": {
+    "red": { "top": "#B3261E", "bottom": "#8C1E17", "ink": "#FFFFFF" },
+    "coral": { "top": "#EA8C78", "bottom": "#E5735A", "ink": "#1C1C1E" },
+    "orange": { "top": "#F4A14F", "bottom": "#F28C28", "ink": "#1C1C1E" },
+    "yellow": { "top": "#FAD16F", "bottom": "#F9C74F", "ink": "#1C1C1E" },
+    "lime": { "top": "#AED581", "bottom": "#9CCC65", "ink": "#1C1C1E" },
+    "green": { "top": "#24692B", "bottom": "#1C5222", "ink": "#FFFFFF" },
+    "olive": { "top": "#556B2F", "bottom": "#425325", "ink": "#FFFFFF" },
+    "mint": { "top": "#6DC3BB", "bottom": "#4DB6AC", "ink": "#1C1C1E" },
+    "teal": { "top": "#00695C", "bottom": "#005248", "ink": "#FFFFFF" },
+    "sky": { "top": "#6FCEF8", "bottom": "#4FC3F7", "ink": "#1C1C1E" },
+    "blue": { "top": "#1458B0", "bottom": "#104589", "ink": "#FFFFFF" },
+    "indigo": { "top": "#3F51B5", "bottom": "#313F8D", "ink": "#FFFFFF" },
+    "navy": { "top": "#1A237E", "bottom": "#141B62", "ink": "#FFFFFF" },
+    "lavender": { "top": "#C1AFE1", "bottom": "#B39DDB", "ink": "#1C1C1E" },
+    "purple": { "top": "#7B1FA2", "bottom": "#60187E", "ink": "#FFFFFF" },
+    "pink": { "top": "#AD1457", "bottom": "#871044", "ink": "#FFFFFF" },
+    "rose": { "top": "#F6A3BF", "bottom": "#F48FB1", "ink": "#1C1C1E" },
+    "maroon": { "top": "#7F1D1D", "bottom": "#631717", "ink": "#FFFFFF" },
+    "brown": { "top": "#795548", "bottom": "#5E4238", "ink": "#FFFFFF" },
+    "sand": { "top": "#DED5D2", "bottom": "#D7CCC8", "ink": "#1C1C1E" },
+    "graphite": { "top": "#455A64", "bottom": "#36464E", "ink": "#FFFFFF" },
+    "black": { "top": "#121212", "bottom": "#0E0E0E", "ink": "#FFFFFF" }
+  }
+}

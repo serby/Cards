@@ -1,50 +1,51 @@
 [
   {
-    "file": "01_Cards",
-    "screen": "01_CardList",
+    "file": "01_Places",
+    "screen": "07_CardWhereYouAre",
     "color": "blue",
-    "layout": "screen",
-    "title": "All your loyalty cards",
-    "subtitle": "As many as you like, with no ads"
+    "title": "Your card, ready when you arrive",
+    "subtitle": "Add the places you use it, and it's first in the list when you're there"
   },
   {
-    "file": "02_Scan",
-    "screen": "02_CardDetail",
-    "color": "graphite",
-    "layout": "screen",
-    "title": "Ready at the till",
-    "subtitle": "Open a card and the screen brightens"
-  },
-  {
-    "file": "03_Widget",
-    "screen": "05_Widget",
+    "file": "02_Widget",
+    "screen": "05_HomeScreen",
     "color": "teal",
-    "layout": "band",
-    "title": "The card for where you are",
-    "subtitle": "On your Home Screen and when you arrive"
+    "title": "On your Home Screen",
+    "subtitle": "The widget shows the card for where you are"
   },
   {
-    "file": "04_Places",
-    "screen": "04_LocationPicker",
-    "color": "red",
-    "layout": "screen",
-    "title": "A reminder when you arrive",
-    "subtitle": "Add the places you use each card"
+    "file": "03_Privacy",
+    "screen": "08_Privacy",
+    "color": "graphite",
+    "title": "Your cards stay yours",
+    "chips": ["No account", "No tracking", "iCloud or this device"]
+  },
+  {
+    "file": "04_Free",
+    "screen": "09_ManyCards",
+    "color": "green",
+    "title": "Free, with no ads",
+    "subtitle": "As many cards as you like, with nothing to buy"
   },
   {
     "file": "05_Share",
     "screen": "06_ShareCard",
-    "color": "green",
-    "layout": "screen",
+    "color": "purple",
     "title": "Share a card",
-    "subtitle": "As a link or a picture"
+    "subtitle": "Send it as a link or a picture"
   },
   {
-    "file": "06_Colours",
-    "screen": "03_EditCard",
-    "color": "purple",
-    "layout": "screen",
-    "title": "Any colour you like",
-    "subtitle": "And an icon for every card"
+    "file": "06_Till",
+    "screen": "02_CardDetail",
+    "color": "red",
+    "title": "Ready at the till",
+    "subtitle": "Open a card and the screen brightens for the scanner"
+  },
+  {
+    "file": "07_Arrive",
+    "screen": "04_LocationPicker",
+    "color": "orange",
+    "title": "A reminder when you arrive",
+    "subtitle": "Search for the shop, or drop a pin on the map"
   }
 ]
