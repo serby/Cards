@@ -112,7 +112,7 @@ class AccessibilityAuditCase: XCTestCase {
     /// edit form's largest-size screenshot shows Code grown and wrapped. The
     /// check names the text in a row by its label, with no identifier, so text
     /// inside one of these counts too (`isInside`).
-    private static let growsInFull: Set<String> = [
+    private static let growsInFull = Set([
         "importJSONButton", "deleteAllCardsButton", "dataSectionHeader", "locationsFooter",
         "versionRow", "authorLink", "notifyOnArrivalToggle", "codeLabel", "wrappingPrompt", "colourSectionHeader",
         // The Distances menu's title and the units chosen, reported "partially
@@ -128,14 +128,15 @@ class AccessibilityAuditCase: XCTestCase {
         // capture-l10n` on iOS 26.5), and the right-to-left audit's screenshot
         // shows Delete Card grown and whole.
         "distanceUnitsFooter", "deleteCardButton", "locationsSectionHeader"
-    ]
+    ]).union(growsInFullInSettings)
 
     /// Text the clipping check says may be cut off at larger sizes, since the
     /// tests run on iOS 26 and 27, which the largest-size screenshots show
     /// grown and whole (`growsInFull`): Delete Card and Created by, the last
     /// rows of a screen scrolled to its end, and the add form's Locations
     /// heading, on iOS 26 only.
-    private static let wholeAtTheLargestSize: Set<String> = ["deleteCardButton", "authorLink", "locationsSectionHeader"]
+    private static let wholeAtTheLargestSize = Set(["deleteCardButton", "authorLink", "locationsSectionHeader"])
+        .union(wholeAtTheFootOfSettings)
 
     /// A place's row in the card form. The check reports its name and radius
     /// by their text, with no identifier, as the row speaks for both

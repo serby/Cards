@@ -32,6 +32,23 @@ extension AccessibilityAuditCase {
     /// pass on iOS 18.1, 26 and 27.
     static let growsInFullOnIOS18: Set<String> = ["locationNameField", "radiusLabel", "radiusValue"]
 
+    /// Accepted by Paul on 8 November 2026, rather than changing the views
+    /// (`growsInFull`): the caption under the Maps menu (SET-5), which the
+    /// Dynamic Type check calls "partially unsupported" at the default size on
+    /// the iPad mini (A17 Pro) on iOS 26.5 and the iPhone 16 on iOS 18.1, and
+    /// the Privacy heading, the same on the iPad only; the iPhone 17 on iOS
+    /// 26.5 reports neither. `make capture-l10n` at AX5 on that iPad shows the
+    /// caption grown and wrapped on three lines and the heading grown.
+    static let growsInFullInSettings: Set<String> = ["mapsAppFooter", "privacySectionHeader"]
+
+    /// Accepted by Paul on 8 November 2026 (`wholeAtTheLargestSize`): Version
+    /// and its number at the foot of Settings, which the clipping check says
+    /// may be cut off on the iPad mini (A17 Pro) on iOS 26.5 at the default
+    /// size. The Arabic audit's screenshot at the largest size on that iPad,
+    /// and `make capture-l10n` at AX5 in English, show both grown, stacked and
+    /// whole.
+    static let wholeAtTheFootOfSettings: Set<String> = ["versionRow"]
+
     /// Whether the tests are running on iOS 18.
     static var isOnIOS18: Bool {
         ProcessInfo.processInfo.operatingSystemVersion.majorVersion == 18
