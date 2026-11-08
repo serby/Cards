@@ -33,11 +33,22 @@ extension XCUIApplication {
     /// The app as every UI test launches it, not yet launched: `-uiTesting`,
     /// for an in-memory store and the shipping UI, `-disableAnimations`, so
     /// XCUITest never waits for an animation to end
-    /// (`DevelopmentHooks.disableAnimationsIfRequested`), then `arguments`.
+    /// (`DevelopmentHooks.disableAnimationsIfRequested`), British English
+    /// unless `arguments` choose a language or region, then `arguments`.
     static func forTesting(_ arguments: [String] = []) -> XCUIApplication {
         let app = XCUIApplication()
-        app.launchArguments += ["-uiTesting", "-disableAnimations"] + arguments
+        app.launchArguments += ["-uiTesting", "-disableAnimations"] + britishEnglish(unlessSetIn: arguments) + arguments
         return app
+    }
+
+    /// The tests expect British English ("metres", "colour"), the app's own.
+    /// A simulator takes its language and region from its Mac, British on
+    /// Paul's but American on GitHub's runners, where VoiceOver said "750
+    /// meters" and the Distances test failed, so the tests set it themselves.
+    private static func britishEnglish(unlessSetIn arguments: [String]) -> [String] {
+        arguments.contains { $0 == "-AppleLanguages" || $0 == "-AppleLocale" }
+            ? []
+            : ["-AppleLanguages", "(en-GB)", "-AppleLocale", "en_GB"]
     }
 
     /// Launches with an in-memory store, and with the six screenshot cards
