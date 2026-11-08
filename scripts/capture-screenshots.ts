@@ -37,7 +37,13 @@ const resultBundle = "/tmp/Cards-screenshots.xcresult";
 const exportFolder = "/tmp/Cards-screenshots-export";
 /// The screens the tests capture, before the device's suffix. check-screenshots.ts
 /// lists the same screens.
-const screens = ["01_CardList", "02_CardDetail", "03_EditCard", "04_LocationPicker", "05_Widget", "06_ShareCard"];
+const screens = [
+    "01_CardList", "02_CardDetail", "03_EditCard", "04_LocationPicker", "05_Widget", "06_ShareCard",
+    "07_CardWhereYouAre", "08_Privacy", "09_ManyCards",
+];
+/// The test runner, uninstalled once the tests finish so the Home Screen shows
+/// only the app's icon and its widget.
+const testRunner = "net.serby.CardsUITests.xctrunner";
 
 interface CaptureSet {
     /// The suffix the screenshot names carry, such as "_iPad".
@@ -100,6 +106,13 @@ async function capture(device: string, locale: string): Promise<void> {
     setSystemLanguage(simulator.udid, { languages: [language], locale: `${language}_${region}` });
     try {
         runTests(simulator, set, language, region);
+        // The Home Screen the widget test left, in the locale's language, with
+        // the widget the only one on it once the test runner's icon has gone.
+        console.log("==> Capturing the Home Screen");
+        run("xcrun", ["simctl", "uninstall", simulator.udid, testRunner]);
+        await new Promise((resolve) => setTimeout(resolve, 3000));
+        mkdirSync(outFolder, { recursive: true });
+        run("xcrun", ["simctl", "io", simulator.udid, "screenshot", join(outFolder, `05_HomeScreen${set.names}.png`)]);
     } finally {
         console.log("==> Setting the simulator back to its own language and region");
         setSystemLanguage(simulator.udid, original);
@@ -143,6 +156,9 @@ function runTests(simulator: Simulator, set: CaptureSet, language: string, regio
             "-destination", `platform=iOS Simulator,id=${simulator.udid}`,
             "-only-testing:CardsUITests/CardsScreenshotTests/testCaptureScreenshots",
             "-only-testing:CardsUITests/CardsScreenshotTests/testCaptureShareScreenshot",
+            "-only-testing:CardsUITests/CardsScreenshotTests/testCaptureCardWhereYouAreScreenshot",
+            "-only-testing:CardsUITests/CardsScreenshotTests/testCapturePrivacyScreenshot",
+            "-only-testing:CardsUITests/CardsScreenshotTests/testCaptureManyCardsScreenshot",
             "-only-testing:CardsUITests/CardsWidgetScreenshotTests/testCaptureWidgetScreenshot",
             "-testLanguage", language,
             "-testRegion", region,

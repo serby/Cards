@@ -59,6 +59,9 @@ enum DevelopmentHooks {
         if screenshotSeedRequested {
             try ScreenshotSeed.insert(into: container.mainContext)
         }
+        if screenshotSeedRequested, CommandLine.arguments.contains("-manyScreenshotCards") {
+            try ScreenshotSeed.insertMany(into: container.mainContext)
+        }
         if CommandLine.arguments.contains("-cardThatCannotDraw") {
             try ScreenshotSeed.insertCardThatCannotDraw(into: container.mainContext)
         }
