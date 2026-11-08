@@ -24,6 +24,16 @@ extension AccessibilityAuditCase {
         return names.first { type.contains($0.0) }?.1 ?? "check \(type.rawValue)"
     }
 
+    /// Text the clipping check says may be cut off at larger sizes, since the
+    /// tests run on iOS 26 and 27, which the largest-size screenshots show
+    /// grown and whole (`growsInFull`): Delete Card and Created by, the last
+    /// rows of a screen scrolled to its end, and the add form's Locations
+    /// heading, on iOS 26 only; and a card's notes and the form's Notes
+    /// caption, whole and wrapped at the largest size (Paul agreed, 8 November 2026).
+    static let wholeAtTheLargestSize: Set<String> = [
+        "deleteCardButton", "authorLink", "locationsSectionHeader", "cardNotesText", "notesFooter"
+    ]
+
     /// Elements the Dynamic Type check calls "partially unsupported" on iOS 18
     /// only, at the default size: the Add Location panel's name field, Radius
     /// and the radius itself, on iOS 18.5 (CI, 8 November 2026). The audit's
