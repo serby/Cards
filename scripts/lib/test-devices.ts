@@ -5,10 +5,10 @@
 // initialize-cloudkit-schema.ts read them, through lib/simulator.ts and
 // lib/phone.ts. The automated tests run on the simulators in testRuns, each on
 // a pinned iOS release, so a Mac and CI test the same devices on the same iOS:
-// with Xcode 27.1, the unit tests on the iPhone 17 on iOS 27.0 and the UI tests
-// on the iPhone 17 and the iPad mini on iOS 26.5; with Xcode 26.3 on CI, the UI
-// tests on the iPhone 17 on iOS 26.5 and the iPhone 16 on iOS 18.5. run-tests.ts
-// runs them, `make test` the unit tests and the first UI run, CI every one. `make build` and the rest (select-test-simulator.ts,
+// the unit tests on the iPhone 17 on iOS 27.0, and the UI tests on the iPhone 17
+// and the iPad mini on iOS 26.5 and the iPhone 16 on iOS 18.5, all built once
+// by Xcode 27.1. run-tests.ts runs them, `make test` the unit tests and the
+// first UI run, CI every one. `make build` and the rest (select-test-simulator.ts,
 // report-test-coverage.ts, capture-l10n.ts) use the first UI run's iPhone 17
 // on iOS 26.5, the iOS most people have. The App Store screenshots are the
 // exception: capture-screenshots.ts keeps the sizes the store asks for.
@@ -16,7 +16,7 @@
 // It holds names, never UDIDs, which differ from Mac to Mac: the scripts look
 // the devices up when they run.
 //
-// Usage: import { automatedTestSimulator, automatedTestSimulatorWith, defaultTestSimulator, describeTestSimulator, distinctRuns, everydayTestRuns, sameName, testPhone, testRun, testRuns, testSimulator, testSimulators } from "./lib/test-devices.ts";
+// Usage: import { automatedTestSimulator, automatedTestSimulatorWith, defaultTestSimulator, describeTestSimulator, everydayTestRuns, sameName, testPhone, testRun, testRuns, testSimulator, testSimulators } from "./lib/test-devices.ts";
 
 import { UsageError } from "./command-line.ts";
 
@@ -45,7 +45,7 @@ export interface TestSimulator {
     /// launch the app there, so they keep to simulators of their own.
     ownSimulator?: boolean;
     /// The runtime to download from Apple where no `os` runtime is installed,
-    /// such as "26.5", as on CI: GitHub's xcode-27 image has only iOS 27.0.
+    /// such as "26.5", as on CI: GitHub's xcode-27 image has only iOS 27.
     /// It is a version, not a build: xcodebuild says builds such as 23F77 are
     /// "not available for download". Neither Xcode 27 nor Xcode 26.6 offers an
     /// iOS 18 runtime, so the iOS 18 run uses the one GitHub's macos-15 image has.
@@ -86,21 +86,21 @@ export interface TestRun {
     suite: "unit" | "ui";
     simulator: TestSimulator;
     /// The GitHub runner image CI runs it on.
-    image: "xcode-27" | "macos-26" | "macos-15";
-    /// The Xcode CI runs it with, where not the one in .xcode-version: Xcode
-    /// 26.3, to check the app still builds and works with Xcode 26, and for iOS
-    /// 18, which no image has with Xcode 27 (only macos-15 has an iOS 18
-    /// runtime, and its newest Xcode is 26.3). A Mac runs it with the pinned
-    /// Xcode, so it skips a run that is then the same as another (distinctRuns).
+    image: "xcode-27" | "macos-15";
+    /// The Xcode that runs its tests on CI, where not the one in .xcode-version.
+    /// It builds nothing: every run takes the tests the pinned Xcode built once,
+    /// which bring that Xcode's XCTest with them (lib/built-tests.ts). The iOS
+    /// 18 run needs it, as only GitHub's macos-15 image has an iOS 18 runtime,
+    /// which Xcode 27 cannot download, and its newest Xcode is 26.3. A Mac runs
+    /// every run with the pinned Xcode.
     ciXcode?: string;
 }
 
-/// Every test run, as CI runs them, each on a pinned iOS release. With the
-/// pinned Xcode (27.1): the unit tests, which are the same everywhere, once on
-/// the newest iOS, and the UI tests on the iOS most people have, on an iPhone
-/// and an iPad. With Xcode 26.3: the UI tests on the iPhone on that iOS again,
-/// and on the oldest iOS the app supports. No iPhone 17 runs iOS 18, so the
-/// iOS 18 run uses the iPhone 16, the newest that does.
+/// Every test run, as CI runs them, each on a pinned iOS release. The unit
+/// tests are the same everywhere, so they run once, on the newest iOS. The UI
+/// tests run where layout and behaviour differ: the iOS most people have, on an
+/// iPhone and an iPad, and the oldest iOS the app supports. No iPhone 17 runs
+/// iOS 18, so the iOS 18 run uses the iPhone 16, the newest that does.
 export const testRuns: readonly TestRun[] = [
     {
         key: "unit",
@@ -116,13 +116,11 @@ export const testRuns: readonly TestRun[] = [
         simulator: { key: "ui-ipad-26", model: "iPad mini (A17 Pro)", os: "26.5", purpose: "for the UI tests on an iPad", download: "26.5", ownSimulator: true },
         image: "xcode-27",
     },
-    // The macos-26 image has iOS 26.5, so CI downloads nothing for it.
-    { key: "ui-iphone-26-xcode-26", suite: "ui", simulator: automatedTests, image: "macos-26", ciXcode: "26.3" },
     {
         key: "ui-iphone-18",
         suite: "ui",
-        // On GitHub's macos-15 image, which has iOS 18.5 and 18.6; on Paul's Mac
-        // the iOS 18.1 an older Xcode installed.
+        // On GitHub's macos-15 image, which has iOS 18.5 and 18.6, run by its
+        // Xcode 26.3; on Paul's Mac the iOS 18.1 an older Xcode installed.
         simulator: { key: "ui-iphone-18", model: "iPhone 16", os: "18.5", localOs: "18", purpose: "for the UI tests on iOS 18", ownSimulator: true },
         image: "macos-15",
         ciXcode: "26.3",
@@ -133,21 +131,6 @@ export const testRuns: readonly TestRun[] = [
 /// environment variable is set), and otherwise the one in .xcode-version.
 export function xcodeVersionFor(run: TestRun, pinned: string, onCI = Boolean(process.env.CI)): string {
     return onCI && run.ciXcode ? run.ciXcode : pinned;
-}
-
-/// The runs to run here, and those skipped as the same as an earlier one: off
-/// CI every run uses the pinned Xcode, so one that differs only in its CI
-/// Xcode (ui-iphone-26-xcode-26) would repeat another.
-export function distinctRuns(runs: readonly TestRun[], pinned: string, onCI = Boolean(process.env.CI)): { runs: TestRun[]; skipped: { run: TestRun; sameAs: TestRun }[] } {
-    const kept: TestRun[] = [];
-    const skipped: { run: TestRun; sameAs: TestRun }[] = [];
-    const id = (run: TestRun) => [run.suite, run.simulator.model, run.simulator.os, xcodeVersionFor(run, pinned, onCI)].join("|");
-    for (const run of runs) {
-        const sameAs = kept.find((earlier) => id(earlier) === id(run));
-        if (sameAs) skipped.push({ run, sameAs });
-        else kept.push(run);
-    }
-    return { runs: kept, skipped };
 }
 
 /// What `make test` runs: the unit tests, and the UI tests on the iPhone on

@@ -1,40 +1,45 @@
-// Builds the app and its tests once, then runs test runs from
-// lib/test-devices.ts, each on its own simulator and pinned iOS: by default
-// the unit tests (iPhone 17, iOS 27.0) and the UI tests on the iPhone 17 on
-// iOS 26.5, as `make test` does; --all for every run, as `make test-all`
-// does; --run for chosen ones, as each CI job does. The simulators are made
-// ready while the build runs: a missing iOS runtime is downloaded from Apple
-// and installed (scripts/lib/simulator.ts), and a missing simulator created.
-// The UI tests run in parallel on clones of their simulator, a class at a
-// time. A failing test runs once more, and one that fails twice fails the
-// run. Each run's result bundle is kept, for CI to upload when it fails. Off
-// CI every run uses the pinned Xcode, so a run that differs from another only
-// in the Xcode CI gives it is skipped.
+// Builds the app and its tests once with the Xcode in .xcode-version, then runs
+// test runs from lib/test-devices.ts, each on its own simulator and pinned iOS:
+// by default the unit tests (iPhone 17, iOS 27.0) and the UI tests on the
+// iPhone 17 on iOS 26.5, as `make test` does; --all for every run, as `make
+// test-all` does; --run for chosen ones. The tests are built into a folder that
+// runs on any Mac, with the build Xcode's XCTest (lib/built-tests.ts), and run
+// from it; with --built, it runs a folder build-tests.ts made, as each CI job
+// does, and builds nothing, so CI compiles once, with that one Xcode, whatever
+// Xcode then runs the tests. The simulators are made ready while the build runs
+// or the folder is read: a missing iOS runtime is downloaded from Apple and
+// installed (scripts/lib/simulator.ts), and a missing simulator created. The UI
+// tests run in parallel on clones of their simulator, a class at a time. A
+// failing test runs once more, and one that fails twice fails the run. Each
+// run's result bundle is kept, for CI to upload when it fails.
 //
-// Usage: node scripts/run-tests.ts [--run <key>]... [--all] [--workers <n>] [--device <model>] [--os <version>] [--results <dir>]
+// Usage: node scripts/run-tests.ts [--run <key>]... [--all] [--built <dir>] [--workers <n>] [--device <model>] [--os <version>] [--results <dir>]
 //   --run      a test run from lib/test-devices.ts, such as ui-ipad-26; repeat for more
 //   --all      every test run
+//   --built    tests build-tests.ts built, to run without building
 //   --workers  simulator clones for the UI tests: 5, or 2 on CI
 //   --device   another device type for a one-off run, such as "iPhone 17 Pro"
 //   --os       another iOS for a one-off run, such as "27"
 //   --results  where the result bundles go, /tmp/cards-tests unless given
 
-import { mkdirSync, rmSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, rmSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { parseArgs } from "node:util";
+import { buildTests, testRunFile } from "./lib/built-tests.ts";
 import { bootTestSimulator, type Simulator } from "./lib/simulator.ts";
-import { distinctRuns, everydayTestRuns, testRun, testRuns, xcodeVersionFor, type TestRun } from "./lib/test-devices.ts";
-import { finished, pinnedXcodeVersion, projectArgs as project, start, useXcodeVersion } from "./lib/xcode.ts";
+import { everydayTestRuns, testRun, testRuns, xcodeVersionFor, type TestRun } from "./lib/test-devices.ts";
+import { finished, pinnedXcodeVersion, start, useXcodeVersion } from "./lib/xcode.ts";
 
-const usage = "Usage: node scripts/run-tests.ts [--run <key>]... [--all] [--workers <n>] [--device <model>] [--os <version>] [--results <dir>]";
+const usage = "Usage: node scripts/run-tests.ts [--run <key>]... [--all] [--built <dir>] [--workers <n>] [--device <model>] [--os <version>] [--results <dir>]";
 
-let options: { run?: string[]; all: boolean; workers?: string; device?: string; os?: string; results: string };
+let options: { run?: string[]; all: boolean; built?: string; workers?: string; device?: string; os?: string; results: string };
 let runs: TestRun[];
 try {
     options = parseArgs({
         options: {
             run: { type: "string", multiple: true },
             all: { type: "boolean", default: false },
+            built: { type: "string" },
             workers: { type: "string" },
             device: { type: "string" },
             os: { type: "string" },
@@ -54,29 +59,30 @@ if (!Number.isInteger(workers) || workers < 1) {
     process.exit(2);
 }
 
-// One Xcode builds and runs everything, so every run must use the same one.
+// The pinned Xcode builds, and runs the tests it built. Tests built earlier run
+// with the Xcode their runs name, the same for every run chosen.
 const pinned = pinnedXcodeVersion();
-const xcodes = [...new Set(runs.map((run) => xcodeVersionFor(run, pinned)))];
-if (xcodes.length > 1) {
-    console.error(`These runs need different Xcodes (${xcodes.join(", ")}): run them separately.`);
-    process.exit(2);
+if (options.built) {
+    const xcodes = [...new Set(runs.map((run) => xcodeVersionFor(run, pinned)))];
+    if (xcodes.length > 1) {
+        console.error(`These runs need different Xcodes to run them (${xcodes.join(", ")}): run them separately.`);
+        process.exit(2);
+    }
+    if (xcodes[0] !== pinned) useXcodeVersion(xcodes[0]!);
 }
-if (xcodes[0] !== pinned) useXcodeVersion(xcodes[0]!);
 
 /// A run with the one-off --device or --os applied to its simulator.
 function withOverrides(run: TestRun): TestRun {
     const model = options.device?.trim();
     const os = options.os?.trim();
     if (!model && !os) return run;
-    const { download, ...simulator } = run.simulator;
+    const { download, localOs, ...simulator } = run.simulator;
     return {
         ...run,
-        simulator: { ...simulator, key: "one-off", model: model || simulator.model, os: os || simulator.os, purpose: "a one-off run", ...(os ? {} : { download }) },
+        simulator: { ...simulator, key: "one-off", model: model || simulator.model, os: os || simulator.os, purpose: "a one-off run", ...(os ? {} : { download, localOs }) },
     };
 }
 runs = runs.map(withOverrides);
-const distinct = distinctRuns(runs, pinned);
-runs = distinct.runs;
 
 function message(error: unknown): string {
     return error instanceof Error ? error.message : String(error);
@@ -86,6 +92,10 @@ function message(error: unknown): string {
 function xcodebuild(args: string[]): Promise<void> {
     return finished(start("xcodebuild", args), `xcodebuild ${args[0]}`);
 }
+
+const resultsDir = resolve(options.results);
+const builtDir = resolve(options.built ?? join(resultsDir, "built"));
+const xctestrun = testRunFile(builtDir);
 
 // Each simulator's progress is held back until the build is done, so it does
 // not interleave with the build's output. Runs on the same simulator share it.
@@ -97,7 +107,9 @@ for (const run of runs) {
     logs.set(id, "");
     simulators.set(id, bootTestSimulator(run.simulator, { log: (text) => logs.set(id, logs.get(id) + text) }));
 }
-const building = xcodebuild(["build-for-testing", ...project, "-destination", "generic/platform=iOS Simulator", "-enableCodeCoverage", "NO", "ARCHS=arm64"]);
+const building = options.built
+    ? (existsSync(xctestrun) ? Promise.resolve() : Promise.reject(new Error(`${builtDir} holds no built tests: make them with node scripts/build-tests.ts --out ${builtDir}`)))
+    : buildTests(builtDir);
 const results = await Promise.allSettled([building, ...simulators.values()]);
 for (const [id, log] of logs) console.log(`\n==> Simulator: ${id.replace("|", ", iOS ")}\n${log}`);
 const problems = results.filter((result) => result.status === "rejected").map((result) => message((result as PromiseRejectedResult).reason));
@@ -105,10 +117,12 @@ if (problems.length > 0) {
     for (const problem of problems) console.error(`error: ${problem}`);
     process.exit(1);
 }
+const builtWith = readFileSync(join(builtDir, "built-with.txt"), "utf8").trim();
+const runWith = options.built ? xcodeVersionFor(runs[0]!, pinned) : pinned;
+console.log(`\n==> Tests built by ${builtWith}, run by Xcode ${runWith}, from ${builtDir}`);
 
-const resultsDir = resolve(options.results);
 mkdirSync(resultsDir, { recursive: true });
-const summary: string[] = distinct.skipped.map(({ run, sameAs }) => `skipped ${run.key}: the same as ${sameAs.key} here, as only CI runs it with Xcode ${run.ciXcode}`);
+const summary: string[] = [];
 let failed = false;
 for (const run of runs) {
     const simulator = await simulators.get(`${run.simulator.model}|${run.simulator.os}`)!;
@@ -121,17 +135,15 @@ for (const run of runs) {
     try {
         await xcodebuild([
             "test-without-building",
-            ...project,
+            "-xctestrun", xctestrun,
             "-destination", `id=${simulator.udid}`,
             run.suite === "unit" ? "-only-testing:CardsTests" : "-only-testing:CardsUITests",
             ...(run.suite === "ui" ? ["-parallel-testing-enabled", "YES", "-parallel-testing-worker-count", String(workers)] : []),
             "-resultBundlePath", bundle,
             // The unit tests in English in the US, as CI has always run them. The
-            // UI tests on the simulator's own settings, which they were written
-            // for and which a new simulator has here and on CI alike: forcing the
-            // US region makes VoiceOver say "meters" where they expect "metres".
+            // UI tests choose their own language and region when they launch the
+            // app (UITestNavigation.swift), British English unless a test says.
             ...(run.suite === "unit" ? ["-testLanguage", "en", "-testRegion", "US"] : []),
-            "-enableCodeCoverage", "NO",
             "-collect-test-diagnostics", "never",
             "-retry-tests-on-failure",
             "-test-iterations", "2",

@@ -229,10 +229,9 @@ export function pickTestSimulator(choice: TestSimulator, list: SimulatorList, sd
         : { ...pick, name: choice.model, booted: false };
 }
 
-/// The newest available iOS runtime that `choice` asks for and that runs its
-/// model, if one is installed: off CI, its `localOs` one where none is. A major
-/// version alone takes none newer than the SDK; a version such as "26.5" is
-/// taken as given, as Xcode 26.3 (SDK 26.2) runs iOS 26.5 on CI.
+/// The newest available iOS runtime that `choice` asks for, runs its model
+/// and the SDK can build for, if one is installed: off CI, its `localOs` one
+/// where none is.
 function testRuntime(choice: TestSimulator, list: SimulatorList, sdkVersion: string, onCI = Boolean(process.env.CI)): Runtime | undefined {
     const type = list.devicetypes.find((deviceType) => deviceType.name === choice.model);
     const sdk = versionParts(sdkVersion);
@@ -244,7 +243,7 @@ function testRuntime(choice: TestSimulator, list: SimulatorList, sdkVersion: str
                 return candidate.isAvailable === true
                     && candidate.platform === "iOS"
                     && compareVersions(version.slice(0, wanted.length), wanted) === 0
-                    && (wanted.length > 1 || compareVersions(version.slice(0, sdk.length), sdk) <= 0)
+                    && compareVersions(version.slice(0, sdk.length), sdk) <= 0
                     && (candidate.supportedDeviceTypes ?? []).some((supported) => supported.identifier === type?.identifier);
             })
             .sort((a, b) => compareVersions(versionParts(b.version), versionParts(a.version)))[0];

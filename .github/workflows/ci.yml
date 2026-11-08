@@ -3,12 +3,13 @@ name: CI
 # Checks the app on every change to it (spec/deployment.md, DEPLOY-1): its
 # code passes SwiftLint, its strings are translated, the changelog it shows in
 # Settings > What's New is valid, and it builds and passes every test on each
-# device and iOS it supports. The devices and iOS versions are the test runs in
-# scripts/lib/test-devices.ts, the list `make test-all` uses, a job each: with
-# Xcode 27.1, the unit tests on the iPhone 17 on iOS 27.0 and the UI tests on
-# the iPhone 17 and the iPad mini on iOS 26.5; with Xcode 26.3, the UI tests on
-# the iPhone 17 on iOS 26.5 (macOS 26 image) and the iPhone 16 on iOS 18.5
-# (macOS 15 image, the only one with iOS 18).
+# device and iOS it supports. The Xcode in .xcode-version builds the app and
+# its tests once; a job for each test run in scripts/lib/test-devices.ts, the
+# list `make test-all` uses, then runs them without building: the unit tests on
+# the iPhone 17 on iOS 27.0, and the UI tests on the iPhone 17 and the iPad mini
+# on iOS 26.5 and on the iPhone 16 on iOS 18.5. The iOS 18 job runs on the macOS
+# 15 image, the only one with iOS 18, whose Xcode 26.3 runs the tests; the
+# built tests bring Xcode 27.1's XCTest with them.
 #
 # Only changes to the app trigger it: its code, tests and project, the Xcode
 # and SwiftLint versions and rules, and the changelog it bundles. The scripts
@@ -94,8 +95,39 @@ jobs:
       id: runs
       run: echo "runs=$(node scripts/print-test-runs.ts)" >> "$GITHUB_OUTPUT"
 
+  # Builds the app and its tests once, with the Xcode in .xcode-version, into
+  # a folder that runs on any Mac: the products, their .xctestrun and that
+  # Xcode's simulator test frameworks (scripts/lib/built-tests.ts). It is
+  # packed in a tar, as artifacts lose file permissions.
+  build:
+    runs-on: xcode-27
+    steps:
+    - uses: actions/checkout@v5
+
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 24
+
+    - name: Select the Xcode in .xcode-version
+      run: |
+        developer_dir="$(node scripts/select-xcode.ts)"
+        echo "DEVELOPER_DIR=$developer_dir" >> "$GITHUB_ENV"
+        "$developer_dir/usr/bin/xcodebuild" -version
+
+    - name: Build the app and its tests
+      run: node scripts/build-tests.ts --out "$RUNNER_TEMP/built"
+
+    - name: Pack the built tests
+      run: tar -C "$RUNNER_TEMP/built" -cf "$RUNNER_TEMP/built-tests.tar" .
+
+    - uses: actions/upload-artifact@v4
+      with:
+        name: built-tests
+        path: ${{ runner.temp }}/built-tests.tar
+        retention-days: 1
+
   tests:
-    needs: test-runs
+    needs: [test-runs, build]
     name: ${{ matrix.name }}
     strategy:
       fail-fast: false
@@ -109,8 +141,17 @@ jobs:
       with:
         node-version: 24
 
-    # The Xcode in .xcode-version, except where the run names another: the
-    # Xcode 26.3 runs on the macOS 26 and macOS 15 images.
+    - uses: actions/download-artifact@v4
+      with:
+        name: built-tests
+        path: ${{ runner.temp }}
+
+    - name: Unpack the built tests
+      run: mkdir -p "$RUNNER_TEMP/built" && tar -C "$RUNNER_TEMP/built" -xf "$RUNNER_TEMP/built-tests.tar"
+
+    # The Xcode that runs the tests: the one in .xcode-version, except where the
+    # run names another, as the iOS 18 run names the macOS 15 image's 26.3. It
+    # builds nothing.
     - name: Select the Xcode for this run
       run: |
         developer_dir="$(node scripts/select-xcode.ts --run ${{ matrix.key }})"
@@ -118,10 +159,10 @@ jobs:
         "$developer_dir/usr/bin/xcodebuild" -version
 
     # Downloads the run's iOS runtime from Apple where the image lacks it
-    # (iOS 26.5 on the Xcode 27 image; the macOS 26 and 15 images have theirs)
-    # while the app and tests build, then runs the tests on their simulator.
-    - name: Build and run the tests
-      run: node scripts/run-tests.ts --run ${{ matrix.key }} --results "$RUNNER_TEMP/results"
+    # (iOS 26.5 on the Xcode 27 image; the macOS 15 image has iOS 18.5), then
+    # runs the built tests on their simulator.
+    - name: Run the tests
+      run: node scripts/run-tests.ts --run ${{ matrix.key }} --built "$RUNNER_TEMP/built" --results "$RUNNER_TEMP/results"
 
     - name: Upload the result bundle
       if: ${{ failure() }}

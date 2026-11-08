@@ -7,7 +7,7 @@ import { describe, test } from "node:test";
 
 import { type ListedDevice, pickPhone } from "./lib/phone.ts";
 import { pickTestSimulator, runtimeToInstall, type SimulatorList } from "./lib/simulator.ts";
-import { automatedTestSimulator, automatedTestSimulatorWith, defaultTestSimulator, distinctRuns, sameName, testSimulator, everydayTestRuns, testRun, testRuns, xcodeVersionFor } from "./lib/test-devices.ts";
+import { automatedTestSimulator, automatedTestSimulatorWith, defaultTestSimulator, sameName, testSimulator, everydayTestRuns, testRun, testRuns, xcodeVersionFor } from "./lib/test-devices.ts";
 
 const iPhone17Type = { name: "iPhone 17", identifier: "com.apple.CoreSimulator.SimDeviceType.iPhone-17" };
 const seType = { name: "iPhone SE (3rd generation)", identifier: "com.apple.CoreSimulator.SimDeviceType.iPhone-SE-3rd-generation" };
@@ -98,12 +98,6 @@ describe("test simulators", () => {
         const list = thisMac();
         list.runtimes.push(runtime("27.2", [iPhone17Type]));
         assert.equal(pickTestSimulator(defaultTestSimulator, list, "27.1").version, "27.0");
-    });
-
-    test("take a version as given, newer than the SDK too, as Xcode 26.3 runs iOS 26.5 on CI", () => {
-        const pick = pickTestSimulator(automatedTestSimulator, thisMac(), "26.2", true);
-        assert.equal(pick.version, "26.5");
-        assert.equal(runtimeToInstall(automatedTestSimulator, thisMac(), "26.2", true), undefined);
     });
 
     test("keep the SE on iOS 27.0", () => {
@@ -213,13 +207,12 @@ describe("the test runs", () => {
         for (const key of everydayTestRuns) assert.equal(testRun(key).key, key);
     });
 
-    test("run Xcode 27.1's tests on iOS 27 and 26, and Xcode 26.3's UI tests on iOS 26.5 and 18.5", () => {
+    test("run the unit tests on the newest iOS and the UI tests on iOS 26, an iPad and iOS 18", () => {
         const described = testRuns.map((run) => `${run.suite} ${run.simulator.model} ${run.simulator.os} ${run.image} ${xcodeVersionFor(run, "27.1", true)}`);
         assert.deepEqual(described, [
             "unit iPhone 17 27.0 xcode-27 27.1",
             "ui iPhone 17 26.5 xcode-27 27.1",
             "ui iPad mini (A17 Pro) 26.5 xcode-27 27.1",
-            "ui iPhone 17 26.5 macos-26 26.3",
             "ui iPhone 16 18.5 macos-15 26.3",
         ]);
     });
@@ -234,19 +227,7 @@ describe("the test runs", () => {
     });
 
     test("says which runs there are for an unknown one", () => {
-        assert.throws(() => testRun("ui-watch"), /The test runs are unit, ui-iphone-26, ui-ipad-26, ui-iphone-26-xcode-26, ui-iphone-18/);
-    });
-});
-
-describe("the runs a Mac runs", () => {
-    test("skip the Xcode 26.3 run on iOS 26.5, the same as the Xcode 27.1 one off CI", () => {
-        const { runs, skipped } = distinctRuns(testRuns, "27.1", false);
-        assert.deepEqual(runs.map((run) => run.key), ["unit", "ui-iphone-26", "ui-ipad-26", "ui-iphone-18"]);
-        assert.deepEqual(skipped.map(({ run, sameAs }) => `${run.key} ${sameAs.key}`), ["ui-iphone-26-xcode-26 ui-iphone-26"]);
-    });
-
-    test("are every run on CI", () => {
-        assert.equal(distinctRuns(testRuns, "27.1", true).runs.length, testRuns.length);
+        assert.throws(() => testRun("ui-watch"), /The test runs are unit, ui-iphone-26, ui-ipad-26, ui-iphone-18/);
     });
 });
 
