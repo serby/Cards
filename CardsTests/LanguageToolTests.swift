@@ -17,7 +17,7 @@ struct LanguageToolTests {
     @Test func theAppBundleOffersSystemAndTheLanguagesItShips() {
         let ids = LanguageChoice.all().map(\.id)
         #expect(ids.first == "system")
-        #expect(Set(["en", "de", "es", "ja"]).isSubset(of: ids))
+        #expect(Set(["en", "de", "es", "ja", "fr", "ar"]).isSubset(of: ids))
         #expect(!ids.contains("Base"))
     }
 
@@ -25,7 +25,9 @@ struct LanguageToolTests {
     @Test(arguments: [
         ("de", ["Deutsch", "German"]),
         ("ja", ["日本語", "Japanese"]),
-        ("es", ["Español", "Spanish"])
+        ("es", ["Español", "Spanish"]),
+        ("fr", ["Français", "French"]),
+        ("ar", ["العربية", "Arabic"])
     ])
     func languagesAreNamedInThemselves(_ id: String, _ names: [String]) {
         let choice = LanguageChoice(language: StoryLanguage(id))

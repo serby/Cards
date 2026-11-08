@@ -78,16 +78,17 @@ As a card holder, I want the camera used only when I am scanning a card, so that
 
 As a card holder, I want the app in my own language, so that I understand every screen.
 
-- The app speaks British English, and, in preparation for 1.4, Spanish (Spain), German and Japanese. It follows the language chosen for it in iOS Settings, or the device's language, and falls back to British English for any other.
+- The app speaks British English, and, in preparation for 1.4, Spanish (Spain), German, Japanese, French and Arabic. It follows the language chosen for it in iOS Settings, or the device's language, and falls back to British English for any other.
 - Every word on screen and every word VoiceOver speaks is translated, including the app's name under its icon, the permission prompts, the arrival notification, the Home Screen widget and its gallery entry, and What's New for 1.4 (SET-2). The user's own words, card names, codes and place names, are shown as typed.
 - Dates, distances and radii follow the device's region: "1,5 km" in Germany, "400 yd" in the UK, "0.93 mi" in the US. Distances are spoken in full by VoiceOver ("350 metres", "350 Meter").
-- Counts use each language's plural forms: "1 card", "2 cards"; Japanese has one form for every number.
+- Counts use each language's plural forms: "1 card", "2 cards"; Japanese has one form for every number, and Arabic six.
+- In Arabic the app is laid out right to left, as iOS lays out its own apps: tabs, lists, forms and the card grid start on the right.
 - Card codes, version numbers and JSON read left to right in every language, and barcodes are never mirrored.
 - An English device always shows English, never a translation, because `Info.plist` keeps `CFBundleDevelopmentRegion`.
 
-**Since:** 1.0 (English), in preparation for 1.4 (Spanish, German and Japanese)
+**Since:** 1.0 (English), in preparation for 1.4 (Spanish, German, Japanese, French and Arabic)
 **Where:** `Cards/Localizable.xcstrings`, `Cards/InfoPlist.xcstrings`, `CardsWidget/Localizable.xcstrings`, `CardsWidget/InfoPlist.xcstrings`, `Cards.xcodeproj/project.pbxproj` (`knownRegions`), `CardsTests/LocalisationBundleTests.swift`, `CardsUITests/CardsLocalisationScreenshotTests.swift`
-**Notes:** French, Italian, Arabic, Traditional Chinese, Brazilian Portuguese, Korean and Simplified Chinese were translated on the localisation branch and are held back for later waves; `l10n/context.md` says how to bring each back. The right-to-left layout that Arabic needs is built and tested with right to left forced (`CardsRightToLeftUITests`).
+**Notes:** Italian, Traditional Chinese, Brazilian Portuguese, Korean and Simplified Chinese were translated on the localisation branch and are held back for later waves; `l10n/context.md` says how to bring each back. The right-to-left UI tests and audits run in Arabic (`CardsRightToLeftUITests`).
 
 ### PLAT-8: Be asked for a rating only once the app has helped
 

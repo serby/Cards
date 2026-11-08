@@ -31,5 +31,5 @@ These decide the hard calls.
 3. **You can take your data with you.** Export and import use JSON that anyone can read, and an export from any version of the app can be imported again.
 4. **Speed at the till comes first.** We judge every change by how quickly it gets a barcode on screen and read. Opening, finding and showing a card stay as few steps as we can make them.
 5. **Everyone can use it.** Every screen works with VoiceOver, the largest text sizes, right-to-left languages and dark mode, and its colours pass contrast checks. A change is not finished until it does.
-6. **Every language.** Every word in the app is translated, and a language ships only when it is complete. Today that is English, Spanish, German and Japanese, and more will follow.
+6. **Every language.** Every word in the app is translated, and a language ships only when it is complete. Today that is English, Spanish, German, Japanese, French and Arabic, and more will follow.
 7. **Plain words.** The listing, the website and the app describe what the app does today. We make no claim we cannot show and use no "best" or "number one".

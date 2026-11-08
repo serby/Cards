@@ -5,6 +5,12 @@
       "comment" : "The Home Screen widget's name where iOS names the widget itself, such as in Location Services in Settings. It is the app's name, Card Barcodes, which is never translated.",
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Card Barcodes"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -18,6 +24,12 @@
           }
         },
         "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Card Barcodes"
+          }
+        },
+        "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Card Barcodes"
@@ -48,6 +60,12 @@
       "comment" : "Shown by iOS when the Home Screen widget first asks for the user's location. Explains that the widget uses it to show the card for the place where the user is.",
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يتيح موقعك للأداة عرض بطاقة المكان الذي أنت فيه."
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -64,6 +82,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tu ubicación se usa para que el widget muestre la tarjeta del lugar en el que estás."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votre position permet au widget d’afficher la carte du lieu où vous vous trouvez."
           }
         },
         "ja" : {

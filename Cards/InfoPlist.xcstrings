@@ -5,6 +5,12 @@
       "comment" : "The app's name under its icon on the Home Screen and in Settings. Keep it short: about 12 characters fit under the icon before iOS truncates it. The app shows barcodes from loyalty and membership cards.",
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Card Barcodes"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -18,6 +24,12 @@
           }
         },
         "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Card Barcodes"
+          }
+        },
+        "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Card Barcodes"
@@ -35,6 +47,12 @@
       "comment" : "Short name of the app, used where iOS has no room for the display name. 15 characters at most. Normally the same as the display name.",
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Card Barcodes"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -53,6 +71,12 @@
             "value" : "Card Barcodes"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Card Barcodes"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -65,6 +89,12 @@
       "comment" : "Shown by iOS when the app first asks to use the camera. Explains that the camera only scans the barcodes printed on the user's loyalty and membership cards.",
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تُستخدم الكاميرا لمسح الرموز الشريطية ضوئيًا على بطاقات الولاء والعضوية الخاصة بك."
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -83,6 +113,12 @@
             "value" : "La cámara se usa para escanear los códigos de barras de tus tarjetas de fidelización y de socio."
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’appareil photo permet de scanner les codes-barres de vos cartes de fidélité et d’adhésion."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -95,6 +131,12 @@
       "comment" : "Shown by iOS when the app first asks for the user's location. Explains the two uses: showing how far away the places are where each card is used, and a notification that reminds the user of the right card on arriving at one. It no longer promises a barcode on the Lock Screen.",
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يُستخدم موقعك لإظهار مدى بُعدك عن الأماكن التي تستخدم فيها بطاقاتك، ولتذكيرك بالبطاقة المناسبة عند وصولك."
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -113,6 +155,12 @@
             "value" : "Tu ubicación se usa para mostrar a qué distancia estás de los lugares donde usas tus tarjetas y para recordarte la tarjeta adecuada cuando llegues."
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votre position permet d’indiquer à quelle distance se trouvent les lieux où vous utilisez vos cartes, et de vous rappeler la bonne carte à votre arrivée."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -125,6 +173,12 @@
       "comment" : "Shown by iOS the first time the user saves the picture of a card they share to their photos (Save Image in the share sheet). The app only adds that picture and never reads the photo library. A full sentence ending with a full stop, as Apple writes these prompts.",
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يحفظ صورة البطاقة التي تشاركها في صورك."
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -141,6 +195,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "La imagen de la tarjeta que compartes se guarda en tus fotos."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enregistre dans vos photos l’image d’une carte que vous partagez."
           }
         },
         "ja" : {

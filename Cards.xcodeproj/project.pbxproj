@@ -314,6 +314,8 @@
 				de,
 				es,
 				ja,
+				fr,
+				ar,
 			);
 			mainGroup = AA00000000000000000000A2;
 			minimizedProjectReferenceProxies = 1;
