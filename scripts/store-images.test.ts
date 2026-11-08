@@ -6,7 +6,7 @@ import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, test } from "node:test";
-import { capturesNamed, creativeAssetKinds, pageFor, parseCaptions, parseCreativeAssets, readCardColours, root, storeDevices, templatesDir, variablesFor, withoutAlpha } from "./lib/store-images.ts";
+import { capturesNamed, creativeAssetKinds, isRightToLeft, pageFor, parseCaptions, parseCreativeAssets, readCardColours, root, storeDevices, templateFor, templatesDir, variablesFor, withoutAlpha } from "./lib/store-images.ts";
 
 describe("parseCaptions", () => {
     test("reads an image with a subtitle, and one with chips", () => {
@@ -105,4 +105,19 @@ describe("the creative asset templates", () => {
             for (const name of capturesNamed(svg)) assert.ok(existsSync(join(root, "screenshots", "en-GB", `${name}_Duo.png`)), `${kind.template} crops ${name}`);
         });
     }
+});
+
+describe("right-to-left listings", () => {
+    test("Arabic runs right to left, and takes the mirrored creative templates", () => {
+        assert.equal(isRightToLeft("ar-SA"), true);
+        assert.equal(isRightToLeft("fr-FR"), false);
+        assert.match(templateFor("Header.svg", "ar-SA"), /Header-rtl\.svg$/);
+        assert.match(templateFor("Header.svg", "fr-FR"), /Header\.svg$/);
+        // Devices have one template for both directions.
+        assert.match(templateFor("Duo.svg", "ar-SA"), /Duo\.svg$/);
+    });
+
+    test("the page says so, for the layout script", () => {
+        assert.ok(pageFor("<svg></svg>", { title: "t" }, {}, undefined, {}, true).includes('"rtl":true'));
+    });
 });

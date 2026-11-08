@@ -126,6 +126,8 @@ const NS = "http://www.w3.org/2000/svg";
 for (const [name, value] of Object.entries(data.variables)) svg.style.setProperty(name, value);
 const number = (element, name, fallback) => element && element.dataset[name] !== undefined ? Number(element.dataset[name]) : fallback;
 const width = Number(svg.getAttribute("width"));
+// A right-to-left language's text runs from the right, its chips too.
+if (data.rtl) for (const id of ["title", "subtitle"]) document.getElementById(id)?.setAttribute("direction", "rtl");
 const height = Number(svg.getAttribute("height"));
 
 // Words for text with spaces; for text without, such as Japanese, the phrases
@@ -237,6 +239,7 @@ function makeChips() {
         const label = copy.querySelector("text");
         const rect = copy.querySelector("rect");
         label.textContent = text;
+        if (data.rtl) label.setAttribute("direction", "rtl");
         const chipPadding = number(label, "padding", 36);
         const chipHeight = Number(rect.getAttribute("height"));
         const labelWidth = label.getComputedTextLength();
@@ -247,7 +250,7 @@ function makeChips() {
     });
     const total = made.reduce((sum, item) => sum + item.width, 0) + spacing * (made.length - 1);
     let x = (width - total) / 2;
-    for (const item of made) {
+    for (const item of data.rtl ? [...made].reverse() : made) {
         item.copy.setAttribute("transform", "translate(" + x + " 0)");
         x += item.width + spacing;
     }
@@ -298,6 +301,7 @@ export function pageFor(
     variables: Record<string, string>,
     screenPNG?: Uint8Array,
     captures: Record<string, Uint8Array> = {},
+    rtl = false,
 ): string {
     const dataURI = (png: Uint8Array) => `data:image/png;base64,${Buffer.from(png).toString("base64")}`;
     const data = {
@@ -307,6 +311,7 @@ export function pageFor(
         variables,
         screen: screenPNG ? dataURI(screenPNG) : "",
         captures: Object.fromEntries(Object.entries(captures).map(([name, png]) => [name, dataURI(png)])),
+        rtl,
     };
     // "</" would end the script element early.
     const json = JSON.stringify(data).replaceAll("</", "<\\/");
@@ -372,14 +377,26 @@ export function renderPage(page: string, width: number, height: number, chrome: 
     }
 }
 
+/// Whether a locale's language runs right to left, as Arabic does.
+export function isRightToLeft(locale: string): boolean {
+    return ["ar", "he", "fa", "ur"].includes(locale.split("-")[0] ?? "");
+}
+
+/// The template to draw with: its right-to-left version, `<name>-rtl.svg`, for
+/// a right-to-left locale where there is one.
+export function templateFor(name: string, locale: string, rootDir: string = root): string {
+    const rtl = join(rootDir, "screenshots", "templates", name.replace(/\.svg$/, "-rtl.svg"));
+    return isRightToLeft(locale) && existsSync(rtl) ? rtl : join(rootDir, "screenshots", "templates", name);
+}
+
 /// The App Store image for `caption` on `device`, from the locale's raw capture.
 export function composeStoreImage(caption: StoreImageCaption, device: StoreDevice, locale: string, rootDir: string = root): Buffer {
     const templatePath = join(rootDir, "screenshots", "templates", device.template);
     if (!existsSync(templatePath)) throw new Error(`No template for ${device.name} yet: ${templatePath}`);
     const capturePath = join(rootDir, "screenshots", locale, `${caption.screen}${device.suffix}.png`);
     if (!existsSync(capturePath)) throw new Error(`Missing the raw capture ${capturePath}: make capture-screenshots`);
-    const template = readFileSync(templatePath, "utf8");
-    const page = pageFor(template, caption, variablesFor(caption.color, readCardColours(rootDir)), readFileSync(capturePath));
+    const template = readFileSync(templateFor(device.template, locale, rootDir), "utf8");
+    const page = pageFor(template, caption, variablesFor(caption.color, readCardColours(rootDir)), readFileSync(capturePath), {}, isRightToLeft(locale));
     return renderPage(page, device.width, device.height);
 }
 
@@ -437,12 +454,12 @@ export function capturesNamed(template: string): string[] {
 
 /// A creative asset for the locale, from its template and the locale's iPhone Duo captures.
 export function composeCreativeAsset(kind: CreativeAssetKind, entry: CreativeAssetEntry, locale: string, rootDir: string = root): Buffer {
-    const template = readFileSync(join(rootDir, "screenshots", "templates", kind.template), "utf8");
+    const template = readFileSync(templateFor(kind.template, locale, rootDir), "utf8");
     const captures = Object.fromEntries(capturesNamed(template).map((name) => {
         const path = join(rootDir, "screenshots", locale, `${name}_Duo.png`);
         if (!existsSync(path)) throw new Error(`Missing the raw capture ${path}: make capture-screenshots`);
         return [name, readFileSync(path)];
     }));
-    const page = pageFor(template, { title: entry.title }, variablesFor(entry.color, readCardColours(rootDir)), undefined, captures);
+    const page = pageFor(template, { title: entry.title }, variablesFor(entry.color, readCardColours(rootDir)), undefined, captures, isRightToLeft(locale));
     return renderPage(page, kind.width, kind.height);
 }
