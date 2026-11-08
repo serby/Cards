@@ -118,8 +118,7 @@ private let cardDetailStory = Story(
         // Joe's Market's sample places, listed below the face from two (PLACE-9).
         // "Has location" also decides whether they have distances.
         .number("Places", 0, in: 0...Double(CardLocation.joesMarket.count), step: 1),
-        // Blank shows no notes panel (CARD-14).
-        .text("Notes", ""),
+        .text("Notes", ""), // Blank shows no notes panel (CARD-14).
         .toggle("Share menu", true)
     ] + ProximityKnobs.knobs(place: "Green Leaf Shepherd's Bush", distance: 320),
     gallery: [CardDetail.sample, .qr, .invalidCode].map { card in (name: card.name, view: cardDetailScreen(card)) } + [
@@ -326,10 +325,7 @@ private let settingsStory = Story(
             arrivalNotifications: knobs.boolBinding("Arrival notifications"),
             showsCardWhereYouAre: knobs.boolBinding("Show card where I am"),
             distanceUnits: knobs.distanceUnitsBinding,
-            mapsApp: Binding(
-                get: { MapsApp(rawValue: knobs.string("Maps app")) ?? .appleMaps },
-                set: { knobs.select($0.rawValue, for: "Maps app") }
-            ),
+            mapsApp: knobs.optionBinding("Maps app", default: MapsApp.appleMaps),
             syncsWithICloud: knobs.boolBinding("iCloud sync"),
             sharesDiagnostics: knobs.boolBinding("Share diagnostics"),
             message: message
