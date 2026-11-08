@@ -9,7 +9,7 @@ As a card holder, I want to send a card to someone, so that they can add it to t
 - The card screen's toolbar has a share button, the share icon, at the top right. Reading from the left, the toolbar is share, brightness (BAR-4) and Edit (CARD-5), so the brightness button and Edit stay where they were. VoiceOver reads it as "Share card".
 - The share button opens a menu with "Share Link" and "Share Image" (SHARE-2).
 - Share Link opens the share sheet with a link to `https://cards.serby.net/add#…`, titled with the card's name. The part after `#` holds the whole card: its name, code, barcode type, colour, icon (CARD-12), places (PLACE-1) with their names, positions and radii, and arrival switch (ARR-6).
-- The link carries nothing else: not when the card was added, where it sits in the list, or when it was last opened (CARD-11). In preparation for 1.4 it leaves out the card's notes too (CARD-14), as a default for Paul to confirm.
+- The link carries nothing else: not when the card was added, where it sits in the list, or when it was last opened (CARD-11). In preparation for 1.4 it leaves out the card's notes too (CARD-14), as notes can be personal.
 - The card travels in the part after `#`, which browsers never send to a server, so the card's code does not reach cards.serby.net.
 - The same card always makes the same link.
 - On a phone with Card Barcodes, opening the link opens the app (SHARE-3). Without it, the link opens a page on cards.serby.net titled "Someone shared a card with you" that shows the card's name, read from the part after `#` in the browser, says to open the link on an iPhone or iPad with Card Barcodes, and links to the App Store. A link without a readable card shows the page without a name.
