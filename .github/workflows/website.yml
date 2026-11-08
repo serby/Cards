@@ -1,8 +1,8 @@
 name: Deploy Website
 
 # The site is built from the app's own sources (scripts/lib/website.ts lists
-# them), so a change to any of them redeploys it. The build stops, deploying
-# nothing, if a source is broken or an App Store image is missing.
+# them), so a change to any of them redeploys it. It deploys nothing while an
+# App Store image is missing, and the build stops if a source is broken.
 
 on:
   push:
@@ -41,10 +41,24 @@ jobs:
       with:
         node-version: 24
 
+    # The site shows the App Store images, which are composed when a version is
+    # ready to ship. Until they are all there it says so and deploys nothing,
+    # rather than failing every push in between.
+    - name: Check the App Store images are present
+      id: images
+      continue-on-error: true
+      run: node scripts/check-store-images.ts
+
     - name: Build the website
+      if: ${{ steps.images.outcome == 'success' }}
       run: node scripts/build-website.ts
 
+    - name: Say why nothing was deployed
+      if: ${{ steps.images.outcome != 'success' }}
+      run: echo "::notice::Not deployed: some App Store images are missing (see the step above). The site deploys once they are committed."
+
     - name: Deploy to Cloudflare Pages
+      if: ${{ steps.images.outcome == 'success' }}
       env:
         CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

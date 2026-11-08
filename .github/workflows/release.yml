@@ -31,6 +31,12 @@ jobs:
         echo "DEVELOPER_DIR=$developer_dir" >> "$GITHUB_ENV"
         "$developer_dir/usr/bin/xcodebuild" -version
 
+    # Every App Store image the listing names must be present, at its size and
+    # with no alpha channel, before anything is built or uploaded. CI does not
+    # check them; they are composed when a version is ready to ship.
+    - name: Check the App Store images are present
+      run: node scripts/check-store-images.ts
+
     - name: Install signing
       uses: ./.github/actions/install-signing
       with:

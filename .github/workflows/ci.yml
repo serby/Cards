@@ -1,28 +1,15 @@
 name: CI
 
-# Kept fast: the build, the unit tests and quick checks, in parallel jobs.
-# Screenshots are captured, composed and looked at locally before they are
-# committed; CI only checks the App Store images are present.
+# Every push and pull request: the validations, the release check and every
+# test run. The tests run where scripts/lib/test-devices.ts says, the same
+# list `make test-all` uses: the unit tests on the iPhone 17 on iOS 27.0, and
+# the UI tests on the iPhone 17 on iOS 26.5, the iPhone 16 on iOS 18.6 and the
+# iPad mini on iOS 26.5, each in its own job. The App Store images are checked
+# by release.yml, which uploads them, not here.
 
 on:
   push:
-    branches: [ main ]
-    paths-ignore:
-      - '**.md'
-      - 'docs/**'
-      - 'spec/**'
-      - '.claude/**'
-      - '.gitignore'
-      - 'Website/**'
   pull_request:
-    branches: [ main ]
-    paths-ignore:
-      - '**.md'
-      - 'docs/**'
-      - 'spec/**'
-      - '.claude/**'
-      - '.gitignore'
-      - 'Website/**'
 
 # A newer push makes an older run's result moot.
 concurrency:
@@ -39,9 +26,6 @@ jobs:
       with:
         node-version: 24
 
-    - name: Check the App Store images are present
-      run: node scripts/check-store-images.ts
-
     # The App Store listing text in metadata/ must fit App Store Connect's limits.
     - name: Check App Store metadata
       run: node scripts/check-metadata.ts
@@ -51,16 +35,10 @@ jobs:
     - name: Check the changelog
       run: node scripts/check-changelog.ts
 
-    # Every language in knownRegions is complete in every catalogue, with
-    # matching placeholders and plural forms.
+    # Every shipped language is complete in every catalogue, with matching
+    # placeholders and plural forms.
     - name: Check translations are complete
       run: node scripts/check-strings.ts
-
-    # The website is built from the listing, the changelog, the store images and
-    # the app, so a source that breaks it fails here, before website.yml would
-    # deploy it. Built only, never deployed.
-    - name: Build the website
-      run: node scripts/build-website.ts
 
     - name: Test the scripts
       run: node --test scripts/*.test.ts
@@ -86,8 +64,12 @@ jobs:
     - name: Check release build has no development code
       run: node scripts/check-release-build.ts
 
-  build-and-test:
-    runs-on: xcode-27
+  # The test runs, read from scripts/lib/test-devices.ts so the devices and
+  # iOS versions are written down once.
+  test-runs:
+    runs-on: ubuntu-latest
+    outputs:
+      runs: ${{ steps.runs.outputs.runs }}
     steps:
     - uses: actions/checkout@v5
 
@@ -95,25 +77,42 @@ jobs:
       with:
         node-version: 24
 
-    - name: Select the Xcode in .xcode-version
+    - name: List the test runs
+      id: runs
+      run: echo "runs=$(node scripts/print-test-runs.ts)" >> "$GITHUB_OUTPUT"
+
+  tests:
+    needs: test-runs
+    name: ${{ matrix.name }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(needs.test-runs.outputs.runs) }}
+    runs-on: ${{ matrix.image }}
+    steps:
+    - uses: actions/checkout@v5
+
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 24
+
+    # The Xcode in .xcode-version, except where the run names another: iOS 18
+    # runs with Xcode 26.6 on the macOS 26 image, as Xcode 27 cannot download it.
+    - name: Select the Xcode for this run
       run: |
-        developer_dir="$(node scripts/select-xcode.ts)"
+        developer_dir="$(node scripts/select-xcode.ts --run ${{ matrix.key }})"
         echo "DEVELOPER_DIR=$developer_dir" >> "$GITHUB_ENV"
         "$developer_dir/usr/bin/xcodebuild" -version
 
-    # The tests run on the same simulator as locally, the iPhone 17 on iOS 26
-    # (scripts/lib/test-devices.ts). This image has only iOS 27 simulators, so
-    # while the app and tests build the script downloads the iOS 26.5 runtime
-    # from Apple (about 8.5 GB) and installs it, then boots the simulator; the
-    # unit tests run on it once both are done. Not cached: the runtime would
-    # take most of the repository's 10 GB of Actions cache, which is cleared
-    # after a week unused, longer than CI often goes between pushes.
-    - name: Build and run the unit tests
-      run: node scripts/run-unit-tests.ts
+    # Downloads the run's iOS runtime from Apple where the image lacks it
+    # (iOS 26.5 on the Xcode 27 image, iOS 18.6 on the macOS 26 one) while the
+    # app and tests build, then runs the tests on their simulator.
+    - name: Build and run the tests
+      run: node scripts/run-tests.ts --run ${{ matrix.key }} --results "$RUNNER_TEMP/results"
 
-    - name: Upload test result bundle
+    - name: Upload the result bundle
       if: ${{ failure() }}
       uses: actions/upload-artifact@v4
       with:
-        name: CardsTests.xcresult
-        path: /tmp/CardsTests.xcresult
+        name: ${{ matrix.key }}.xcresult
+        path: ${{ runner.temp }}/results/${{ matrix.key }}.xcresult
