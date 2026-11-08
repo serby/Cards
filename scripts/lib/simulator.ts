@@ -378,6 +378,9 @@ export function systemLanguage(udid: string): SystemLanguage {
 /// SpringBoard takes them, and waits until it has booted again. Undefined
 /// values are deleted, as on a new simulator.
 export function setSystemLanguage(udid: string, language: SystemLanguage): void {
+    // defaults runs inside the simulator, so it must be booted: a parallel
+    // test run shuts its device down to clone it, and leaves it shut down.
+    run("xcrun", ["simctl", "bootstatus", udid, "-b"], { stdio: "ignore" });
     const write = (key: string, value: string[] | string | undefined): void => {
         if (value === undefined) {
             try {

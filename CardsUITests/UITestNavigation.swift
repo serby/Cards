@@ -175,7 +175,8 @@ extension XCUIApplication {
     /// Swipes up until `element` is fully on screen, clear of the tab bar.
     @discardableResult
     func reveal(_ element: XCUIElement) -> Bool {
-        for _ in 0..<8 {
+        // Settings in French at the largest text size took more than 8 to reach Import JSON.
+        for _ in 0..<16 {
             if isOnScreen(element) { return true }
             swipeUp(velocity: .slow)
         }
@@ -185,7 +186,7 @@ extension XCUIApplication {
     /// Swipes up until the screen stops moving, so whatever comes after the
     /// last control, such as a section's footer, is clear of the tab bar too.
     func scrollToEnd() {
-        for _ in 0..<8 {
+        for _ in 0..<16 {
             let before = layoutSignature
             swipeUp(velocity: .slow)
             if layoutSignature == before { return }

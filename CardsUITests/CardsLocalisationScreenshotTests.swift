@@ -17,11 +17,23 @@ import XCTest
 final class CardsLocalisationScreenshotTests: XCTestCase {
     private static let environment = ProcessInfo.processInfo.environment
 
-    /// The text size, as a content size category such as
-    /// `UICTContentSizeCategoryAccessibilityXXXL`, or the simulator's own.
+    /// The language and locale the script chose, such as `fr` and `fr_FR`, and
+    /// the text size, as a content size category such as
+    /// `UICTContentSizeCategoryAccessibilityXXXL`, or the simulator's own. The
+    /// language goes in the app's own arguments, so `forTesting` sees it and
+    /// leaves out its British English.
     private static var launchArguments: [String] {
-        guard let size = environment["CARDS_L10N_CONTENT_SIZE"], !size.isEmpty else { return [] }
-        return ["-UIPreferredContentSizeCategoryName", size]
+        var arguments: [String] = []
+        if let language = environment["CARDS_L10N_LANGUAGE"], !language.isEmpty {
+            arguments += ["-AppleLanguages", "(\(language))"]
+        }
+        if let locale = environment["CARDS_L10N_LOCALE"], !locale.isEmpty {
+            arguments += ["-AppleLocale", locale]
+        }
+        if let size = environment["CARDS_L10N_CONTENT_SIZE"], !size.isEmpty {
+            arguments += ["-UIPreferredContentSizeCategoryName", size]
+        }
+        return arguments
     }
 
     override func setUpWithError() throws {
@@ -195,7 +207,7 @@ final class CardsLocalisationScreenshotTests: XCTestCase {
     @MainActor
     private func capturePages(_ app: XCUIApplication, _ name: String) {
         capture(name)
-        for page in 2...10 {
+        for page in 2...20 {
             let before = app.layoutSignature
             // At the screen's edge, in the margin beside the rows, so the drag
             // never starts on a control: on the barcode type menu it opened the

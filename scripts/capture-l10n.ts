@@ -145,17 +145,15 @@ export function appleLocale(language: string, region: string): string {
     return `${[locale.language, locale.script].filter(Boolean).join("-")}_${region}`;
 }
 
-interface TestTarget {
-    UITargetAppPath?: string;
-    UITargetAppCommandLineArguments?: string[];
-}
+type TestTarget = Record<string, unknown>;
 
-/// A copy of the .xctestrun beside it that runs in `language` and `region`,
-/// as `xcodebuild test -testLanguage -testRegion` would: the targets' test
-/// language and region, and the app launched in them. With -xctestrun
-/// xcodebuild ignores both flags, and the file's TestLanguage alone reaches
-/// the test runner but not the app, so the app gets the launch arguments a
-/// scheme's App Language and App Region give it.
+/// A copy of the .xctestrun beside it whose test runner runs in `language`
+/// and `region`, as `xcodebuild test -testLanguage -testRegion` would set
+/// them: with -xctestrun xcodebuild ignores both flags. The file's
+/// TestLanguage reaches the test runner but not the app, so the app's own
+/// language comes from the test, which reads CARDS_L10N_LANGUAGE and
+/// CARDS_L10N_LOCALE (`capture`) and passes them as launch arguments: the
+/// tests launch in British English unless their arguments name a language.
 function testRunIn(testRun: string, label: string, language: string, region: string): string {
     const copy = join(dirname(testRun), `run-${label}.xctestrun`);
     cpSync(testRun, copy);
@@ -170,15 +168,9 @@ function testRunIn(testRun: string, label: string, language: string, region: str
         : Object.entries(plist)
             .filter(([key]) => key !== "__xctestrun_metadata__")
             .map(([key, target]): [string, TestTarget] => [key, target as TestTarget]);
-    for (const [path, target] of targets) {
+    for (const [path] of targets) {
         run("plutil", ["-replace", `${path}.TestLanguage`, "-string", language, copy]);
         run("plutil", ["-replace", `${path}.TestRegion`, "-string", region, copy]);
-        if (!target.UITargetAppPath) continue;
-        const launch = [
-            ...(target.UITargetAppCommandLineArguments ?? []),
-            "-AppleLanguages", `(${language})`, "-AppleLocale", appleLocale(language, region),
-        ];
-        run("plutil", ["-replace", `${path}.UITargetAppCommandLineArguments`, "-json", JSON.stringify(launch), copy]);
     }
     return copy;
 }
@@ -216,7 +208,12 @@ function capture(options: {
             "-resultBundlePath", results,
         ],
         join(logs, `${label}.log`),
-        { TEST_RUNNER_CARDS_L10N_CAPTURE: "1", TEST_RUNNER_CARDS_L10N_CONTENT_SIZE: sizes[size] },
+        {
+            TEST_RUNNER_CARDS_L10N_CAPTURE: "1",
+            TEST_RUNNER_CARDS_L10N_LANGUAGE: language,
+            TEST_RUNNER_CARDS_L10N_LOCALE: appleLocale(language, regionFor(language)),
+            TEST_RUNNER_CARDS_L10N_CONTENT_SIZE: sizes[size],
+        },
     );
 
     let saved = 0;
