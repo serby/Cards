@@ -13,7 +13,8 @@ extension CardDetail {
             color: item.getColor(),
             places: CardPlaces(item.locations, near: location),
             proximity: item.locations.proximity(to: location),
-            icon: item.icon
+            icon: item.icon,
+            notes: item.notes
         )
     }
 }

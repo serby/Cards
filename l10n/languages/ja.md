@@ -20,6 +20,7 @@
 - Brightness Boost: 明るさブースト, everywhere.
 - postcode: 郵便番号; radius: 半径 (半径%@, number after).
 - icon: アイコン (never シンボル); share: 共有; search: 検索; sort: 並べ替え; torch: ライト; What's New: 新機能.
+- notes: メモ, as in 連絡先; the empty field's placeholder: メモを追加.
 - colour: カラー; colour names in katakana as Apple's accent colours: ブルー, グラファイト, ティール.
 
 ## Typography

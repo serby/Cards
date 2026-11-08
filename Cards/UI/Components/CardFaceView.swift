@@ -2,9 +2,9 @@ import SwiftUI
 
 /// The card face: its colour, with the name, the barcode, and the number and
 /// date on white panels. The card screen shows it with a copy button beside the
-/// number, the place in the top panel opening in the maps app (PLACE-6, SET-5), and the card's
-/// places on a panel below (PLACE-9); anywhere else (a shared image, the card at
-/// the top of the list) shows it as it is.
+/// number, the place in the top panel opening in the maps app (PLACE-6, SET-5),
+/// and the card's places and notes on panels below (PLACE-9, CARD-14); anywhere
+/// else (a shared image, the card at the top of the list) shows it as it is.
 public struct CardFaceView<NumberAccessory: View, Footer: View>: View {
     private let card: CardDetail
     /// How wide `numberAccessory` is, so a matching space on the other side keeps

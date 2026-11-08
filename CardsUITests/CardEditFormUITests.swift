@@ -1,7 +1,7 @@
 import XCTest
 
-/// The edit form: opening it from a tile, deleting a card from it and choosing
-/// its icon (CARD-5, CARD-6, CARD-10, CARD-12).
+/// The edit form: opening it from a tile, deleting a card from it, choosing
+/// its icon and writing its notes (CARD-5, CARD-6, CARD-10, CARD-12, CARD-14).
 final class CardEditFormUITests: XCTestCase {
     override func setUpWithError() throws {
         continueAfterFailure = false
@@ -52,6 +52,38 @@ final class CardEditFormUITests: XCTestCase {
         XCTAssertTrue(waitForElement(app.buttons["addCardButton"]))
         XCTAssertTrue(tile(app, "Honeycomb Rewards").disappears(within: 3))
         XCTAssertTrue(tile(app, "Nordic Nest Home").exists)
+    }
+
+    /// Notes written in the form are saved with the card and show on its screen,
+    /// on lines of their own, and the form opens on them again (CARD-14).
+    @MainActor
+    func testWriteNotes() throws {
+        let app = launchWithSeededCards()
+        let honeycomb = tile(app, "Honeycomb Rewards")
+        XCTAssertTrue(waitForElement(honeycomb))
+        honeycomb.tap()
+        let edit = app.buttons["editCardButton"]
+        XCTAssertTrue(waitForElement(edit))
+        XCTAssertFalse(app.staticTexts["cardNotesText"].exists, "A card without notes shows no notes")
+        edit.tap()
+
+        // The form's rows below the screen do not exist until it is scrolled to them.
+        XCTAssertTrue(waitForElement(app.buttons["saveCardButton"]))
+        let notesField = app.textFields["notesTextField"]
+        XCTAssertTrue(app.reveal(notesField), "Could not scroll to the notes field")
+        notesField.tap()
+        notesField.typeText("Points reset each January.\nAsk for a paper receipt.")
+        app.buttons["saveCardButton"].tap()
+
+        let notes = app.staticTexts["cardNotesText"]
+        XCTAssertTrue(waitForElement(notes), "The card's screen shows no notes")
+        XCTAssertTrue(notes.label.contains("Points reset each January."), notes.label)
+        XCTAssertTrue(notes.label.contains("\nAsk for a paper receipt."), "The notes lost their line break: \(notes.label)")
+
+        edit.tap()
+        XCTAssertTrue(waitForElement(app.buttons["saveCardButton"]))
+        XCTAssertTrue(app.reveal(notesField), "Could not scroll to the notes field again")
+        XCTAssertTrue(waitForValue(notesField, "Points reset each January.\nAsk for a paper receipt."))
     }
 
     /// An icon chosen in the grid is saved with the card and is there when the

@@ -109,3 +109,36 @@ struct PlacesPanel: View {
             .accessibilityHidden(true)
     }
 }
+
+/// A card's notes on a white panel at the foot of its face, below its places
+/// (CARD-14), so the barcode stays first. They keep their line breaks, wrap at
+/// every text size and can be selected, to copy a line of them.
+struct NotesPanel: View {
+    let notes: String
+
+    @Environment(\.colorSchemeContrast) private var colorSchemeContrast
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text("Notes", comment: "Heading of a card's notes, on the card's screen and in the card form. A noun.")
+                .font(.footnote.weight(.semibold))
+                // With Increase Contrast, the full ink of the notes.
+                .foregroundStyle(colorSchemeContrast == .increased ? CardPanel.ink : CardPanel.secondaryInk)
+                .accessibilityAddTraits(.isHeader)
+                .accessibilityIdentifier("cardNotesHeading")
+
+            // The card holder's own words, shown as typed and never looked up.
+            Text(notes)
+                .font(.subheadline)
+                .foregroundStyle(CardPanel.ink)
+                .multilineTextAlignment(.leading)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .textSelection(.enabled)
+                .accessibilityIdentifier("cardNotesText")
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .cardPanel()
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("cardNotesPanel")
+    }
+}

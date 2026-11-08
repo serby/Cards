@@ -37,8 +37,8 @@ public struct CardDetailView: View {
     }
 
     public var body: some View {
-        // Scrolls once the card is taller than the screen, with several places (PLACE-9) or at the largest
-        // text sizes, so the text never squeezes the barcode below a size a scanner reads.
+        // Scrolls once the card is taller than the screen, with several places (PLACE-9), long notes (CARD-14) or
+        // at the largest text sizes, so the text never squeezes the barcode below a size a scanner reads.
         ScrollView {
             VStack {
                 CardFaceView(card: card, accessoryWidth: Self.copyButtonSize, nameFocus: $nameFocused, linksNearestPlace: true) {
@@ -46,6 +46,9 @@ public struct CardDetailView: View {
                 } footer: {
                     if card.places.isListed {
                         PlacesPanel(places: card.places)
+                    }
+                    if let notes = card.notes {
+                        NotesPanel(notes: notes)
                     }
                 }
                 // Flattened, so only the card's outline casts it: every line of text cast its own, a grey
@@ -277,6 +280,15 @@ public struct CardDetailView: View {
     @Previewable @State var boost = true
     NavigationStack {
         CardDetailView(card: .sevenPlaces, brightnessBoost: $boost)
+    }
+    .environment(\.screenBrightness, .simulated(BrightnessBox()))
+    .environment(\.accessibilityAnnouncer, .silent)
+}
+
+#Preview("Notes") {
+    @Previewable @State var boost = true
+    NavigationStack {
+        CardDetailView(card: .withNotes, brightnessBoost: $boost)
     }
     .environment(\.screenBrightness, .simulated(BrightnessBox()))
     .environment(\.accessibilityAnnouncer, .silent)

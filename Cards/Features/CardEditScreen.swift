@@ -29,17 +29,7 @@ public struct CardEditScreen: View {
         self.cardItem = cardItem
         self.navigationManager = navigationManager
         self.onSave = onSave
-        _draft = State(
-            initialValue: CardDraft(
-                name: cardItem.name,
-                code: cardItem.code,
-                barcodeType: cardItem.getBarcodeType(),
-                color: cardItem.getColor(),
-                locations: cardItem.locations,
-                notifiesOnArrival: cardItem.notifiesOnArrival,
-                icon: cardItem.icon
-            )
-        )
+        _draft = State(initialValue: CardDraft(cardItem))
     }
 
     public var body: some View {
@@ -126,13 +116,7 @@ public struct CardEditScreen: View {
 
     private func save() {
         guard draft.canSave(takenCodes: takenCodes) else { return }
-        cardItem.name = draft.trimmedName
-        cardItem.code = draft.trimmedCode
-        cardItem.type = draft.barcodeType.rawValue
-        cardItem.color = draft.color.rawValue
-        cardItem.locations = draft.locations
-        cardItem.notifiesOnArrival = draft.notifiesOnArrival
-        cardItem.icon = draft.icon
+        cardItem.apply(draft)
 
         if let onSave {
             onSave(cardItem)

@@ -33,6 +33,8 @@ public struct CardDetail: Identifiable, Hashable, Sendable {
     public let proximity: CardProximity?
     /// The card's icon, an SF Symbol name, or nil for none (CARD-12).
     public let icon: String?
+    /// The card's notes as it keeps them, or nil for none, so blank notes show nothing (CARD-14).
+    public let notes: String?
 
     public init(
         id: String,
@@ -43,7 +45,8 @@ public struct CardDetail: Identifiable, Hashable, Sendable {
         color: CardColor = .standard,
         places: CardPlaces = .none,
         proximity: CardProximity? = nil,
-        icon: String? = nil
+        icon: String? = nil,
+        notes: String? = nil
     ) {
         self.id = id
         self.name = name
@@ -54,6 +57,7 @@ public struct CardDetail: Identifiable, Hashable, Sendable {
         self.places = places
         self.proximity = proximity
         self.icon = icon
+        self.notes = CardNotes.kept(notes)
     }
 
     /// The place the top panel names (PLACE-6), when it names one.
@@ -73,6 +77,8 @@ public struct CardDraft: Hashable, Sendable {
     public var notifiesOnArrival: Bool
     /// The card's icon, an SF Symbol name, or nil for none (CARD-12).
     public var icon: String?
+    /// The notes as typed, empty for none; saving trims them (CARD-14).
+    public var notes: String
 
     public init(
         name: String = "",
@@ -81,7 +87,8 @@ public struct CardDraft: Hashable, Sendable {
         color: CardColor = .standard,
         locations: [CardLocation] = [],
         notifiesOnArrival: Bool = true,
-        icon: String? = nil
+        icon: String? = nil,
+        notes: String = ""
     ) {
         self.name = name
         self.code = code
@@ -90,6 +97,7 @@ public struct CardDraft: Hashable, Sendable {
         self.locations = locations
         self.notifiesOnArrival = notifiesOnArrival
         self.icon = icon
+        self.notes = notes
     }
 }
 

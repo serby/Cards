@@ -141,6 +141,42 @@ extension CardEditView {
         }
     }
 
+    /// Anything the card holder wants to keep with the card, below its places
+    /// (CARD-14). The field grows with its text, and Return starts a new line.
+    var notesSection: some View {
+        Section {
+            TextField("Add a note", text: $draft.notes, prompt: Text(verbatim: ""), axis: .vertical)
+                .lineLimit(3...)
+                .focused($focusedField, equals: .notes)
+                .accessibilityIdentifier("notesTextField")
+                .accessibilityLabel(notesLabel)
+                .accessibilityHint(
+                    Text("Sets notes shown on this card's screen", comment: "VoiceOver hint for the notes field in the card form.")
+                )
+                // The prompt wraps behind the field rather than being cut off.
+                .wrappingPrompt(
+                    Text("Add a note", comment: "Placeholder in the empty notes field in the card form, where any text can be kept with the card."),
+                    isShown: draft.notes.isEmpty,
+                    onTap: { focusedField = .notes }
+                )
+        } header: {
+            notesLabel
+                .foregroundStyle(Color.secondaryText)
+                .accessibilityIdentifier("notesSectionHeader")
+        } footer: {
+            Text(
+                "Notes show on the card's screen. They are left out when you share the card.",
+                comment: "Footer under the notes field in the card form. Sharing sends the card as a link or a picture."
+            )
+            .foregroundStyle(Color.secondaryText)
+            .accessibilityIdentifier("notesFooter")
+        }
+    }
+
+    var notesLabel: Text {
+        Text("Notes", comment: "Heading of a card's notes, on the card's screen and in the card form. A noun.")
+    }
+
     /// Asks before deleting. The dialog hangs off the button, so on iPad its
     /// popover points at it rather than at the top of the form.
     var deleteButton: some View {

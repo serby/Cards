@@ -120,8 +120,8 @@ public extension CardDetail {
 
 /// Joe's Market with several places, for the card screen's list of them (PLACE-9).
 public extension CardDetail {
-    /// Joe's Market with its first `places` sample places, measured from `location`.
-    static func joesMarket(places: Int, near location: CLLocation? = .sampleHere) -> CardDetail {
+    /// Joe's Market with its first `places` sample places, measured from `location`, and `notes`.
+    static func joesMarket(places: Int, near location: CLLocation? = .sampleHere, notes: String? = nil) -> CardDetail {
         let locations = Array(CardLocation.joesMarket.prefix(places))
         return CardDetail(
             id: "482019375610284",
@@ -131,9 +131,13 @@ public extension CardDetail {
             timestamp: Date(timeIntervalSince1970: 1_700_000_000),
             color: .blue,
             places: CardPlaces(locations, near: location),
-            proximity: locations.proximity(to: location)
+            proximity: locations.proximity(to: location),
+            notes: notes
         )
     }
+
+    /// Two places with notes below them, the last panel on the face (CARD-14).
+    static let withNotes = joesMarket(places: 2, notes: "Double points on Tuesdays.\nScan the card before the first item.")
 
     /// Two places, as Joe's Market has in the screenshot cards.
     static let twoPlaces = joesMarket(places: 2)
@@ -162,7 +166,8 @@ public extension CardDraft {
         barcodeType: .code128,
         color: .teal,
         locations: [.sample],
-        icon: "figure.climbing"
+        icon: "figure.climbing",
+        notes: "Shoe hire is free with this card."
     )
     static let empty = CardDraft()
 }
