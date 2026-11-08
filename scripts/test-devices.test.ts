@@ -7,7 +7,7 @@ import { describe, test } from "node:test";
 
 import { type ListedDevice, pickPhone } from "./lib/phone.ts";
 import { pickTestSimulator, runtimeToInstall, type SimulatorList } from "./lib/simulator.ts";
-import { automatedTestSimulator, automatedTestSimulatorWith, defaultTestSimulator, sameName, testSimulator } from "./lib/test-devices.ts";
+import { automatedTestSimulator, automatedTestSimulatorWith, defaultTestSimulator, sameName, testSimulator, everydayTestRuns, testRun, testRuns, xcodeVersionFor } from "./lib/test-devices.ts";
 
 const iPhone17Type = { name: "iPhone 17", identifier: "com.apple.CoreSimulator.SimDeviceType.iPhone-17" };
 const seType = { name: "iPhone SE (3rd generation)", identifier: "com.apple.CoreSimulator.SimDeviceType.iPhone-SE-3rd-generation" };
@@ -152,11 +152,12 @@ describe("the automated tests' simulator", () => {
         assert.equal(automatedTestSimulatorWith({ model: " ", os: "" }), automatedTestSimulator);
         const pro = automatedTestSimulatorWith({ model: "iPhone 17 Pro" });
         assert.equal(pro.model, "iPhone 17 Pro");
-        assert.equal(pro.os, "26");
+        assert.equal(pro.os, "26.5");
         assert.equal(pro.download, automatedTestSimulator.download);
         const newer = automatedTestSimulatorWith({ os: "27" });
         assert.equal(newer.model, "iPhone 17");
-        assert.equal(pickTestSimulator(newer, thisMac(), "27.1").udid, "DEFAULT-17");
+        // Never the (Default) one Paul tests on by hand: a one-off gets its own.
+        assert.equal(pickTestSimulator(newer, thisMac(), "27.1").udid, undefined);
     });
 });
 
@@ -194,5 +195,37 @@ describe("the phone", () => {
 
     test("is missing when no iPhone is reachable", () => {
         assert.equal(pickPhone([device("Paul’s iPhone (2)", { state: "unavailable" })], "Paul's iPhone (2)"), undefined);
+    });
+});
+
+describe("the test runs", () => {
+    test("are named once each, and `make test` runs two of them", () => {
+        const keys = testRuns.map((run) => run.key);
+        assert.equal(new Set(keys).size, keys.length);
+        assert.deepEqual([...everydayTestRuns], ["unit", "ui-iphone-26"]);
+        for (const key of everydayTestRuns) assert.equal(testRun(key).key, key);
+    });
+
+    test("run the unit tests on the newest iOS and the UI tests on iOS 26, 18 and an iPad", () => {
+        const described = testRuns.map((run) => `${run.suite} ${run.simulator.model} ${run.simulator.os}`);
+        assert.deepEqual(described, ["unit iPhone 17 27.0", "ui iPhone 17 26.5", "ui iPhone 16 18", "ui iPad mini (A17 Pro) 26.5"]);
+        for (const run of testRuns) assert.ok(run.simulator.download, `${run.key} names a runtime to download`);
+    });
+
+    test("use the pinned Xcode, except iOS 18 on CI, which Xcode 27 cannot download", () => {
+        for (const run of testRuns) assert.equal(xcodeVersionFor(run, "27.1", false), "27.1");
+        assert.equal(xcodeVersionFor(testRun("ui-iphone-18"), "27.1", true), "26.6");
+        assert.equal(xcodeVersionFor(testRun("ui-ipad-26"), "27.1", true), "27.1");
+        assert.equal(testRun("ui-iphone-18").image, "macos-26");
+    });
+
+    test("says which runs there are for an unknown one", () => {
+        assert.throws(() => testRun("ui-watch"), /The test runs are unit, ui-iphone-26, ui-iphone-18, ui-ipad-26/);
+    });
+});
+
+describe("the test runs' simulators", () => {
+    test("are their own, never the (Default) one Paul tests on by hand", () => {
+        for (const run of testRuns) assert.equal(run.simulator.ownSimulator, true, run.key);
     });
 });

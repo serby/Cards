@@ -4,7 +4,10 @@
 // one. developerDir() finds it: XCODE_APP if set, else
 // /Applications/Xcode<version>.app, or Xcode_<version>.app as on GitHub's
 // runners, or Xcode-<version>.app. It throws, rather than falling back to
-// another Xcode, when that Xcode is missing or is a different version.
+// another Xcode, when that Xcode is missing or is a different version. A
+// script may ask for another version by name first (useXcodeVersion), as
+// run-tests.ts does for the one test run CI cannot run on it
+// (lib/test-devices.ts, ciXcode).
 
 import { execFileSync, spawn, type ChildProcess, type StdioOptions } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
@@ -19,11 +22,19 @@ export function pinnedXcodeVersion(): string {
 }
 
 let cachedDeveloperDir: string | undefined;
+let requestedVersion: string | undefined;
+
+/// Makes developerDir() find `version` instead of the one in .xcode-version.
+/// Call it before anything runs an Xcode tool.
+export function useXcodeVersion(version: string): void {
+    if (cachedDeveloperDir && version !== requestedVersion) throw new Error("useXcodeVersion must come before any Xcode tool runs");
+    requestedVersion = version;
+}
 
 /// The Developer directory of the pinned Xcode, for DEVELOPER_DIR.
 export function developerDir(): string {
     if (cachedDeveloperDir) return cachedDeveloperDir;
-    const version = pinnedXcodeVersion();
+    const version = requestedVersion ?? pinnedXcodeVersion();
     const candidates = process.env.XCODE_APP
         ? [process.env.XCODE_APP]
         : [`Xcode${version}.app`, `Xcode_${version}.app`, `Xcode-${version}.app`].map((name) => join("/Applications", name));
@@ -32,13 +43,13 @@ export function developerDir(): string {
         throw new Error(
             process.env.XCODE_APP
                 ? `XCODE_APP is ${process.env.XCODE_APP}, which does not exist`
-                : `Xcode ${version}, from .xcode-version, is not installed in /Applications. Install it, or set XCODE_APP to it`,
+                : `Xcode ${version}, ${requestedVersion ? "which the test run asks for" : "from .xcode-version"}, is not installed in /Applications. Install it, or set XCODE_APP to it`,
         );
     }
     const xcodebuild = join(app, "Contents", "Developer", "usr", "bin", "xcodebuild");
     if (!existsSync(xcodebuild)) throw new Error(`${app} is not an Xcode`);
     const actual = execFileSync(xcodebuild, ["-version"], { encoding: "utf8" }).split("\n")[0]?.replace(/^Xcode /, "").trim();
-    if (actual !== version) throw new Error(`${app} is Xcode ${actual}, but .xcode-version says ${version}`);
+    if (actual !== version) throw new Error(`${app} is Xcode ${actual}, but ${requestedVersion ? "the test run asks for" : ".xcode-version says"} ${version}`);
     cachedDeveloperDir = join(app, "Contents", "Developer");
     return cachedDeveloperDir;
 }

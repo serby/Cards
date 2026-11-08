@@ -1,7 +1,7 @@
 // Prints the xcodebuild destination of the simulator the automated tests run
 // on and `make build` builds for (lib/test-devices.ts), the iPhone 17 on the
 // newest installed iOS 26, as `platform=iOS Simulator,id=<UDID>`. The Makefile
-// uses it, and CI's run-unit-tests.ts the same simulator, so local runs and CI
+// uses it, and run-tests.ts the same simulator for the UI tests' main run, so local runs and CI
 // test the same device on the same iOS. It creates the simulator when there is
 // none, saying so on standard error, and fails, saying how to install it, when
 // no iOS 26 runtime is installed. --model and --os pick another for a one-off

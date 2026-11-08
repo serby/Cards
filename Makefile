@@ -22,7 +22,7 @@ DESTINATION = $(or $(shell node scripts/select-test-simulator.ts --model "$(SIMU
 # location, so they and Xcode carry on from each other's builds.
 XCODEBUILD := xcodebuild -project Cards.xcodeproj -scheme Cards
 
-.PHONY: build clean test test-unit test-e2e test-a11y test-tsan test-coverage coverage-report sim device initialize-cloudkit-schema \
+.PHONY: build clean test test-unit test-e2e test-all test-a11y test-tsan test-coverage coverage-report sim device initialize-cloudkit-schema \
 	check check-release check-metadata check-changelog check-screenshots \
 	capture-screenshots store-screenshots upload-build upload-metadata upload-screenshots upload-creative-assets \
 	report-strings check-strings translate-strings add-language test-scripts capture-l10n build-website serve-website
@@ -49,14 +49,24 @@ clean:
 TEST_WORKERS ?= 5
 TEST_OPTIONS = -parallel-testing-worker-count $(TEST_WORKERS) -collect-test-diagnostics never -retry-tests-on-failure -test-iterations 2
 
+# The test runs are listed, with their devices and pinned iOS versions, in
+# scripts/lib/test-devices.ts; scripts/run-tests.ts builds once and runs them.
+# `make test` runs the unit tests (iPhone 17, iOS 27.0) and the UI tests on the
+# iPhone 17 on iOS 26.5; `make test-all` every run, as CI does. SIMULATOR_DEVICE
+# and SIMULATOR_VERSION move the chosen runs to another simulator for a one-off.
+RUN_TESTS = node scripts/run-tests.ts --workers $(TEST_WORKERS) --device "$(SIMULATOR_DEVICE)" --os "$(SIMULATOR_VERSION)"
+
 test:
-	$(XCODEBUILD) test -destination '$(DESTINATION)' $(TEST_OPTIONS)
+	$(RUN_TESTS)
 
 test-unit:
-	$(XCODEBUILD) test -destination '$(DESTINATION)' -only-testing:CardsTests
+	$(RUN_TESTS) --run unit
 
 test-e2e:
-	$(XCODEBUILD) test -destination '$(DESTINATION)' -only-testing:CardsUITests $(TEST_OPTIONS)
+	$(RUN_TESTS) --run ui-iphone-26
+
+test-all:
+	$(RUN_TESTS) --all
 
 # Xcode's accessibility audit on every screen, in English and in Arabic at the
 # largest text size. Part of `make test` too.

@@ -3,17 +3,20 @@
 // SE (3rd generation) simulator for the small screen, and his own iPhone for
 // checks on a device: run-in-simulator.ts, run-on-device.ts and
 // initialize-cloudkit-schema.ts read them, through lib/simulator.ts and
-// lib/phone.ts. The automated tests and every build for a simulator (`make
-// build`, `make test` and the rest through select-test-simulator.ts, CI's
-// run-unit-tests.ts, report-test-coverage.ts and capture-l10n.ts) run on one
-// more, the iPhone 17 on iOS 26, the iOS most people have, so local runs and
-// CI test the same device on the same iOS. The App Store screenshots are the
+// lib/phone.ts. The automated tests run on the simulators in testRuns, each on
+// a pinned iOS release, so a Mac and CI test the same devices on the same iOS:
+// the unit tests on the iPhone 17 on iOS 27.0, and the UI tests on the iPhone
+// 17 on iOS 26.5, the iPhone 16 on iOS 18.6 and the iPad mini on iOS 26.5.
+// run-tests.ts runs them, `make test` the unit tests and the first UI run, CI
+// every one. `make build` and the rest (select-test-simulator.ts,
+// report-test-coverage.ts, capture-l10n.ts) use the first UI run's iPhone 17
+// on iOS 26.5, the iOS most people have. The App Store screenshots are the
 // exception: capture-screenshots.ts keeps the sizes the store asks for.
 //
 // It holds names, never UDIDs, which differ from Mac to Mac: the scripts look
 // the devices up when they run.
 //
-// Usage: import { automatedTestSimulator, automatedTestSimulatorWith, defaultTestSimulator, describeTestSimulator, sameName, testPhone, testSimulator, testSimulators } from "./lib/test-devices.ts";
+// Usage: import { automatedTestSimulator, automatedTestSimulatorWith, defaultTestSimulator, describeTestSimulator, everydayTestRuns, sameName, testPhone, testRun, testRuns, testSimulator, testSimulators } from "./lib/test-devices.ts";
 
 import { UsageError } from "./command-line.ts";
 
@@ -31,10 +34,15 @@ export interface TestSimulator {
     os: string;
     /// What it is for, as the scripts and docs say it.
     purpose: string;
+    /// Only a simulator named exactly as the model, never "<model> (Default)",
+    /// which Xcode makes and Paul tests on by hand: the test runs install and
+    /// launch the app there, so they keep to simulators of their own.
+    ownSimulator?: boolean;
     /// The runtime to download from Apple where no `os` runtime is installed,
-    /// such as "26.5", as on CI: GitHub's xcode-27 image has only iOS 27.
-    /// Keep it the newest release of `os`, which is what a Mac that has
-    /// `os` installed runs.
+    /// such as "26.5", as on CI: GitHub's xcode-27 image has only iOS 27.0.
+    /// It is a version, not a build: xcodebuild says builds such as 23F77 are
+    /// "not available for download", and it offers no iOS 18, which xcodes
+    /// (on GitHub's images too) installs instead (lib/simulator.ts).
     download?: string;
 }
 
@@ -58,10 +66,76 @@ const iPhoneSE: TestSimulator = {
 const automatedTests: TestSimulator = {
     key: "tests",
     model: "iPhone 17",
-    os: "26",
-    purpose: "for the automated tests and `make build`, on the iOS most people have",
+    os: "26.5",
+    purpose: "for the UI tests and `make build`, on the iOS most people have",
     download: "26.5",
+    ownSimulator: true,
 };
+
+/// A set of tests and the simulator they run on.
+export interface TestRun {
+    /// What run-tests.ts's --run and CI's matrix take.
+    key: string;
+    /// The unit tests (CardsTests) or the UI tests (CardsUITests).
+    suite: "unit" | "ui";
+    simulator: TestSimulator;
+    /// The GitHub runner image CI runs it on.
+    image: "xcode-27" | "macos-26";
+    /// The Xcode CI runs it with, where not the one in .xcode-version. Xcode 27
+    /// cannot download an iOS 18 runtime ("not available for download"), and no
+    /// runner image has Xcode 27 with iOS 18, so CI runs iOS 18 with Xcode 26.6
+    /// on the macOS 26 image, which downloads it. A Mac with an iOS 18 runtime
+    /// installed runs it with the pinned Xcode.
+    ciXcode?: string;
+}
+
+/// Every test run, as CI runs them, each on a pinned iOS release. The unit
+/// tests are the same everywhere, so they run once, on the newest iOS. The UI
+/// tests run where layout and behaviour differ: the iOS most people have, the
+/// oldest iOS the app supports and an iPad. No iPhone 17 runs iOS 18, so the
+/// iOS 18 run uses the iPhone 16, the newest that does.
+export const testRuns: readonly TestRun[] = [
+    {
+        key: "unit",
+        suite: "unit",
+        // On GitHub's xcode-27 image already, so CI downloads nothing for it.
+        simulator: { key: "unit", model: "iPhone 17", os: "27.0", purpose: "for the unit tests, on the newest iOS", download: "27.0", ownSimulator: true },
+        image: "xcode-27",
+    },
+    { key: "ui-iphone-26", suite: "ui", simulator: automatedTests, image: "xcode-27" },
+    {
+        key: "ui-iphone-18",
+        suite: "ui",
+        // The newest iOS 18 installed: 18.6 on CI, which downloads it; on Paul's
+        // Mac the iOS 18.1 an older Xcode installed, as Xcode 27 cannot.
+        simulator: { key: "ui-iphone-18", model: "iPhone 16", os: "18", purpose: "for the UI tests on iOS 18", download: "18.6", ownSimulator: true },
+        image: "macos-26",
+        ciXcode: "26.6",
+    },
+    {
+        key: "ui-ipad-26",
+        suite: "ui",
+        simulator: { key: "ui-ipad-26", model: "iPad mini (A17 Pro)", os: "26.5", purpose: "for the UI tests on an iPad", download: "26.5", ownSimulator: true },
+        image: "xcode-27",
+    },
+];
+
+/// The Xcode version a test run uses here: its `ciXcode` on CI (the CI
+/// environment variable is set), and otherwise the one in .xcode-version.
+export function xcodeVersionFor(run: TestRun, pinned: string, onCI = Boolean(process.env.CI)): string {
+    return onCI && run.ciXcode ? run.ciXcode : pinned;
+}
+
+/// What `make test` runs: the unit tests, and the UI tests on the iPhone on
+/// the iOS most people have. CI and `make test-all` run every one.
+export const everydayTestRuns: readonly string[] = ["unit", "ui-iphone-26"];
+
+/// The test run a key names.
+export function testRun(key: string): TestRun {
+    const found = testRuns.find((run) => run.key === key.trim().toLowerCase());
+    if (found) return found;
+    throw new UsageError(`No test run called ${key}. The test runs are ${testRuns.map((run) => run.key).join(", ")}`);
+}
 
 /// The simulators, the default first.
 export const testSimulators: readonly TestSimulator[] = [iPhone17, iPhoneSE, automatedTests];

@@ -217,7 +217,7 @@ export function pickTestSimulator(choice: TestSimulator, list: SimulatorList, sd
     const found = (list.devices[runtime.identifier] ?? [])
         .filter((simulator) => simulator.isAvailable !== false
             && (simulator.deviceTypeIdentifier ?? type.identifier) === type.identifier
-            && (sameName(simulator.name, choice.model) || sameName(simulator.name, defaultName)))
+            && (sameName(simulator.name, choice.model) || (!choice.ownSimulator && sameName(simulator.name, defaultName))))
         .sort((a, b) => rank(a) - rank(b))[0];
 
     const pick = { version, runtime: runtime.identifier, deviceType: type.identifier };
@@ -270,10 +270,20 @@ export async function installTestRuntime(choice: TestSimulator, log: Log): Promi
 
     log(`No iOS ${choice.os} runtime is installed: downloading iOS ${version} from Apple\n`);
     const started = Date.now();
-    const variant = process.arch === "arm64" ? "arm64" : "universal";
-    // Its progress is a line per update; only the lines that say what it did are kept.
-    const printed = await xcrun(["xcodebuild", "-downloadPlatform", "iOS", "-buildVersion", version, "-architectureVariant", variant], log);
-    for (const line of printed.split(/[\r\n]+/).filter((text) => text.trim() && !text.includes("%"))) log(`${line.trim()}\n`);
+    // Its progress is a line per update; only the lines that say what it did
+    // are kept. Some runtimes, such as iOS 18.6, come only as "universal", so
+    // where there is no arm64 one it asks for that.
+    const download = async (variant: string, mayFail: boolean): Promise<void> => {
+        const printed = await xcrun(["xcodebuild", "-downloadPlatform", "iOS", "-buildVersion", version, "-architectureVariant", variant], log, { mayFail });
+        for (const line of printed.split(/[\r\n]+/).filter((text) => text.trim() && !text.includes("%"))) log(`${line.trim()}\n`);
+    };
+    if (process.arch === "arm64") {
+        await download("arm64", true);
+        const now = await list();
+        if (runtimeToInstall(choice, now.list, now.sdkVersion)) await download("universal", false);
+    } else {
+        await download("universal", false);
+    }
 
     const after = await list();
     if (runtimeToInstall(choice, after.list, after.sdkVersion)) {
