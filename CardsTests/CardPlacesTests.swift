@@ -145,4 +145,15 @@ struct CardPlacesTests {
         #expect(items["ll"] == "51.509,-0.196")
         #expect(items["q"] == "Joe's Market Notting Hill")
     }
+
+    /// PLACE-6: the place the top panel names opens in Maps, with one place or
+    /// many, and nothing opens while where you are is unknown.
+    @Test func theTopPanelsPlaceOpensInMaps() {
+        let many = CardItem(code: "482019375610284", name: "Joe's Market", locations: places)
+        #expect(CardDetail(many, near: here).nearestPlaceMapsURL == places[0].mapsURL)
+        let one = CardItem(code: "482019375610284", name: "Joe's Market", locations: [places[1]])
+        #expect(CardDetail(one, near: here).nearestPlaceMapsURL == places[1].mapsURL)
+        #expect(CardDetail(many, near: nil).nearestPlaceMapsURL == nil)
+        #expect(CardDetail(CardItem(code: "482019375610284", name: "Joe's Market"), near: here).nearestPlaceMapsURL == nil)
+    }
 }

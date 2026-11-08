@@ -86,13 +86,14 @@ As a card holder, I want to see how far I am from the places I use each card, so
 - The list shows "Here", in semibold with a filled location arrow, or the distance, such as "350 m", on a white pill at the end of the row.
 - The card screen and the widget name the place too: "At Boulder Barn", or "350 m · Boulder Barn".
 - In preparation for 1.4: inside more than one of a card's places, the one whose middle you are nearer is named, where before it was the first in the card's order. A card with more than one place also lists its nearest five on the card screen (PLACE-9).
+- In preparation for 1.4: on the card screen, tapping the place in the top panel opens it in Apple Maps as a pin with its name, as a place in the list does (PLACE-9), whether the card has one place or several. VoiceOver reads it as a button with the hint "Opens this place in Maps". The tile on the Cards tab, the card for where you are and a shared card's image don't open it.
 - VoiceOver reads "You're at Boulder Barn" or "350 m from Boulder Barn" (A11Y-1). In preparation for 1.4 it says the units in full: "350 metres from Boulder Barn".
 - Distances are in the units of the device's region, in the style used for road distances, such as "350 m" or "0.4 mi". In preparation for 1.4 they are in the units chosen in Settings > Distances, which follows the device's measurement system unless you choose Kilometres or Miles (SET-4).
 - No distance shows for a card without places, or while the app doesn't know where you are.
 - Distances follow your location while the app is open, from fixes about 100 metres accurate, updated after you move 25 metres or more.
 
 **Since:** 1.3
-**Where:** `Cards/Core/Models/CardLocation.swift`, `Cards/Core/Models/DistanceFormat.swift`, `Cards/UI/Components/ProximityLabel.swift`, `CardsTests/DistanceFormatTests.swift`, `Cards/Core/Services/LocationService.swift`, `CardsTests/CardLocationTests.swift`, `CardsTests/CardPlacesTests.swift`, `CardsTests/WidgetTests.swift`
+**Where:** `Cards/Core/Models/CardLocation.swift`, `Cards/Core/Models/DistanceFormat.swift`, `Cards/UI/Components/ProximityLabel.swift`, `Cards/UI/Components/CardFaceView.swift` (`linksNearestPlace`), `Cards/UI/ViewState/CardViewState.swift` (`CardDetail.nearestPlaceMapsURL`), `CardsTests/DistanceFormatTests.swift`, `Cards/Core/Services/LocationService.swift`, `CardsTests/CardLocationTests.swift`, `CardsTests/CardPlacesTests.swift`, `CardsTests/WidgetTests.swift`
 **Notes:** Distances only change while the app is in use. On coming back to the app they show the last known location until a new fix arrives.
 
 ### PLACE-7: Choose whether the app uses my location

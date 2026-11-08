@@ -2,8 +2,9 @@ import SwiftUI
 
 /// The card face: its colour, with the name, the barcode, and the number and
 /// date on white panels. The card screen shows it with a copy button beside the
-/// number, and the card's places on a panel below (PLACE-9); anywhere else (a
-/// shared image, the card at the top of the list) shows it as it is.
+/// number, the place in the top panel opening in Maps (PLACE-6), and the card's
+/// places on a panel below (PLACE-9); anywhere else (a shared image, the card at
+/// the top of the list) shows it as it is.
 public struct CardFaceView<NumberAccessory: View, Footer: View>: View {
     private let card: CardDetail
     /// How wide `numberAccessory` is, so a matching space on the other side keeps
@@ -11,6 +12,8 @@ public struct CardFaceView<NumberAccessory: View, Footer: View>: View {
     private let accessoryWidth: CGFloat
     /// Moves VoiceOver to the card's name, for a screen that opens on the card.
     private let nameFocus: AccessibilityFocusState<Bool>.Binding?
+    /// Whether the place in the top panel opens in Maps, as on the card screen.
+    private let linksNearestPlace: Bool
     private let numberAccessory: NumberAccessory
     /// Panels below the number's, in the same column; each takes `cardPanel()`.
     private let footer: Footer
@@ -19,12 +22,14 @@ public struct CardFaceView<NumberAccessory: View, Footer: View>: View {
         card: CardDetail,
         accessoryWidth: CGFloat,
         nameFocus: AccessibilityFocusState<Bool>.Binding? = nil,
+        linksNearestPlace: Bool = false,
         @ViewBuilder numberAccessory: () -> NumberAccessory,
         @ViewBuilder footer: () -> Footer
     ) {
         self.card = card
         self.accessoryWidth = accessoryWidth
         self.nameFocus = nameFocus
+        self.linksNearestPlace = linksNearestPlace
         self.numberAccessory = numberAccessory()
         self.footer = footer()
     }
@@ -49,18 +54,27 @@ public struct CardFaceView<NumberAccessory: View, Footer: View>: View {
                 nameAndIcon
 
                 if let proximity = card.proximity {
-                    // The card's screen shows the whole place at every size,
-                    // centred like the name above when it wraps: on one line it
-                    // was cut off at the larger text sizes.
-                    ProximityLabel(proximity, showsPlace: true, wraps: true)
-                        .multilineTextAlignment(.center)
-                        .font(.subheadline.weight(.medium))
-                        .foregroundStyle(supportingInk)
+                    if linksNearestPlace, let url = card.nearestPlaceMapsURL {
+                        Link(destination: url) {
+                            proximityLabel(proximity)
+                                // Tall enough to tap at every text size, by
+                                // reaching into the space round it rather than
+                                // moving anything: the padding is taken back below.
+                                .padding(.vertical, Self.linkReach)
+                                .contentShape(.rect)
+                        }
+                        .buttonStyle(.plain)
+                        .padding(.vertical, -Self.linkReach)
+                        .accessibilityHint(Text.opensPlaceInMaps)
                         .accessibilityIdentifier("cardProximityText")
-                        // Its own label replaces the text's, and with it the
-                        // static text trait, which left the accessibility
-                        // audit taking it for an 18 pt tall control.
-                        .accessibilityAddTraits(.isStaticText)
+                    } else {
+                        proximityLabel(proximity)
+                            .accessibilityIdentifier("cardProximityText")
+                            // Its own label replaces the text's, and with it the
+                            // static text trait, which left the accessibility
+                            // audit taking it for an 18 pt tall control.
+                            .accessibilityAddTraits(.isStaticText)
+                    }
                 }
             }
             .cardPanel()
@@ -129,6 +143,20 @@ public struct CardFaceView<NumberAccessory: View, Footer: View>: View {
             }
         }
         .keepsColoursWhenInverted()
+    }
+
+    /// How far the place's link reaches above and below its text, so it is at
+    /// least 44 points tall: into the gap below the name and the panel's padding.
+    private static var linkReach: CGFloat { 13 }
+
+    /// The distance and the place, shown whole at every size and centred like
+    /// the name above when it wraps: on one line it was cut off at the larger
+    /// text sizes.
+    private func proximityLabel(_ proximity: CardProximity) -> some View {
+        ProximityLabel(proximity, showsPlace: true, wraps: true)
+            .multilineTextAlignment(.center)
+            .font(.subheadline.weight(.medium))
+            .foregroundStyle(supportingInk)
     }
 
     /// The name, with the card's icon beside it, or above it at the

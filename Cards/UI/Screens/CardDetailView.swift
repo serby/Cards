@@ -41,7 +41,7 @@ public struct CardDetailView: View {
         // text sizes, so the text never squeezes the barcode below a size a scanner reads.
         ScrollView {
             VStack {
-                CardFaceView(card: card, accessoryWidth: Self.copyButtonSize, nameFocus: $nameFocused) {
+                CardFaceView(card: card, accessoryWidth: Self.copyButtonSize, nameFocus: $nameFocused, linksNearestPlace: true) {
                     copyCodeButton
                 } footer: {
                     if card.places.isListed {
@@ -321,9 +321,7 @@ private struct PlacesPanel: View {
             }
             .buttonStyle(.plain)
             .accessibilityLabel(spoken(place))
-            .accessibilityHint(
-                Text("Opens this place in Maps", comment: "VoiceOver hint for a place in the list of places on a card's screen. Maps is Apple's app.")
-            )
+            .accessibilityHint(Text.opensPlaceInMaps)
             .accessibilityIdentifier("cardPlaceRow")
         } else {
             rowContent(place)

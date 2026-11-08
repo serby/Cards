@@ -5691,7 +5691,7 @@
       }
     },
     "Opens this place in Maps" : {
-      "comment" : "VoiceOver hint for a place in the list of places on a card's screen. Maps is Apple's app.",
+      "comment" : "VoiceOver hint for a place on a card's screen, in its top panel or its list of places. Maps is Apple's app.",
       "localizations" : {
         "de" : {
           "stringUnit" : {

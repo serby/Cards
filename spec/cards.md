@@ -86,7 +86,7 @@ As a card holder, I want to open a card and see its barcode and number, so that 
 
 - The card screen shows the card face in the card's colour (COL-3): the name on a white panel at the top, the barcode in its frame (BAR-2), and the number and the date the card was added on a white panel below.
 - In preparation for 1.4: the card's icon, if it has one, sits beside the name in the top panel (CARD-12).
-- When the card has places and the app knows where you are, the top panel also says how far away the nearest is, as "At Boulder Barn" or "350 m · Boulder Barn" (PLACE-6) (1.3).
+- When the card has places and the app knows where you are, the top panel also says how far away the nearest is, as "At Boulder Barn" or "350 m · Boulder Barn" (PLACE-6) (1.3). In preparation for 1.4, tapping it opens the place in Apple Maps (PLACE-6).
 - In preparation for 1.4: when the card has more than one place, a panel at the foot of the card face lists the nearest five with their distances, and a place opens in Maps (PLACE-9). The screen scrolls when the card is taller than it.
 - The number is in a monospaced font, and it can be selected and copied (1.3).
 - A copy button beside the number puts it on the clipboard, for typing it into a website or another app. The icon turns into a tick for about a second and a half, and a success haptic plays. The number stays centred on its panel (1.3).

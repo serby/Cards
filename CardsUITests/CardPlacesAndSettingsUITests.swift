@@ -156,6 +156,8 @@ class CardPlacesAndSettingsUITests: CardsUITestCase {
         let proximity = app.descendants(matching: .any)["cardProximityText"].firstMatch
         XCTAssertTrue(waitForElement(proximity))
         XCTAssertTrue(proximity.label.contains("Local Roast Notting Hill"), proximity.label)
+        // With one place, the top panel's place opens it in Maps (PLACE-6).
+        XCTAssertTrue([.button, .link].contains(proximity.elementType), "The place is a \(proximity.elementType), not a link")
     }
 
     /// Picks `distanceUnits` in Settings > Distances. Automatic is listed with

@@ -55,6 +55,12 @@ public struct CardDetail: Identifiable, Hashable, Sendable {
         self.proximity = proximity
         self.icon = icon
     }
+
+    /// Apple Maps at the place the top panel names (PLACE-6), when it names one.
+    public var nearestPlaceMapsURL: URL? {
+        guard let proximity else { return nil }
+        return places.listed.first { $0.proximity == proximity }?.location.mapsURL
+    }
 }
 
 /// The editable form fields, owned by the caller and committed on save.
