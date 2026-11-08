@@ -46,14 +46,15 @@ concurrency:
 jobs:
   # The same SwiftLint version as local builds (.swiftlint-version), with the
   # rules in .swiftlint.yml. --strict fails on warnings too: the code is kept
-  # with none (docs/DEVELOPMENT.md, rule 7).
+  # with none (docs/DEVELOPMENT.md, rule 7). The image runs swiftlint itself,
+  # so the command starts at the subcommand.
   lint:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v5
 
     - name: Lint with SwiftLint
-      run: docker run --rm -v "$PWD:/work" -w /work "ghcr.io/realm/swiftlint:$(cat .swiftlint-version)" swiftlint lint --strict
+      run: docker run --rm -v "$PWD:/work" -w /work "ghcr.io/realm/swiftlint:$(cat .swiftlint-version)" lint --strict
 
   checks:
     runs-on: ubuntu-latest
