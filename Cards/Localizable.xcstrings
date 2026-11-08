@@ -1105,6 +1105,12 @@
     "Add a note" : {
       "comment" : "Placeholder in the empty notes field in the card form, where any text can be kept with the card.",
       "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إضافة ملاحظة"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1115,6 +1121,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Añadir nota"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajouter une note"
           }
         },
         "ja" : {
@@ -8452,6 +8464,12 @@
     "Notes" : {
       "comment" : "Heading of a card's notes, on the card's screen and in the card form. A noun.",
       "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الملاحظات"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8462,6 +8480,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Notas"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notes"
           }
         },
         "ja" : {
@@ -8475,6 +8499,12 @@
     "Notes show on the card's screen. They are left out when you share the card." : {
       "comment" : "Footer under the notes field in the card form. Sharing sends the card as a link or a picture.",
       "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تظهر الملاحظات على شاشة البطاقة. ولا يتم تضمينها عند مشاركة البطاقة."
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8485,6 +8515,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Las notas se muestran en la pantalla de la tarjeta. No se incluyen al compartir la tarjeta."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les notes s’affichent sur l’écran de la carte. Elles sont exclues lorsque vous partagez la carte."
           }
         },
         "ja" : {
@@ -10639,6 +10675,12 @@
     "Sets notes shown on this card's screen" : {
       "comment" : "VoiceOver hint for the notes field in the card form.",
       "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يعيّن الملاحظات المعروضة على شاشة هذه البطاقة"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10649,6 +10691,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Define las notas que se muestran en la pantalla de esta tarjeta"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Définit les notes affichées sur l’écran de cette carte"
           }
         },
         "ja" : {
