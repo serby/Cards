@@ -7,8 +7,9 @@ name: CI
 # its tests once; a job for each test run in scripts/lib/test-devices.ts, the
 # list `make test-all` uses, then runs them without building: the unit tests on
 # the iPhone 17 on iOS 27.0, and the UI tests on the iPhone 17 and the iPad mini
-# on iOS 26.5 and on the iPhone 16 on iOS 18.5. The iOS 18 job runs on the macOS
-# 15 image, the only one with iOS 18, whose Xcode 26.3 runs the tests; the
+# on iOS 26.5 and on the iPhone 16 on iOS 18.5. Each runs on an image that has
+# its iOS: iOS 26.5 on the macOS 26 image, run by its Xcode 26.6, and iOS 18.5
+# on the macOS 15 image, the only one with iOS 18, run by its Xcode 26.3; the
 # built tests bring Xcode 27.1's XCTest with them.
 #
 # Only changes to the app trigger it: its code, tests and project, the Xcode
@@ -150,17 +151,15 @@ jobs:
       run: mkdir -p "$RUNNER_TEMP/built" && tar -C "$RUNNER_TEMP/built" -xf "$RUNNER_TEMP/built-tests.tar"
 
     # The Xcode that runs the tests: the one in .xcode-version, except where the
-    # run names another, as the iOS 18 run names the macOS 15 image's 26.3. It
-    # builds nothing.
+    # run names another, as the iOS 26 runs name the macOS 26 image's 26.6 and
+    # the iOS 18 run the macOS 15 image's 26.3. It builds nothing.
     - name: Select the Xcode for this run
       run: |
         developer_dir="$(node scripts/select-xcode.ts --run ${{ matrix.key }})"
         echo "DEVELOPER_DIR=$developer_dir" >> "$GITHUB_ENV"
         "$developer_dir/usr/bin/xcodebuild" -version
 
-    # Downloads the run's iOS runtime from Apple where the image lacks it
-    # (iOS 26.5 on the Xcode 27 image; the macOS 15 image has iOS 18.5), then
-    # runs the built tests on their simulator.
+    # Runs the built tests on their simulator, on an image that has its iOS.
     - name: Run the tests
       run: node scripts/run-tests.ts --run ${{ matrix.key }} --built "$RUNNER_TEMP/built" --results "$RUNNER_TEMP/results"
 

@@ -45,7 +45,8 @@ export interface TestSimulator {
     /// launch the app there, so they keep to simulators of their own.
     ownSimulator?: boolean;
     /// The runtime to download from Apple where no `os` runtime is installed,
-    /// such as "26.5", as on CI: GitHub's xcode-27 image has only iOS 27.
+    /// such as "26.5", on a Mac that lacks it. CI downloads nothing: each run
+    /// is on a GitHub image that has its runtime.
     /// It is a version, not a build: xcodebuild says builds such as 23F77 are
     /// "not available for download". Neither Xcode 27 nor Xcode 26.6 offers an
     /// iOS 18 runtime, so the iOS 18 run uses the one GitHub's macos-15 image has.
@@ -86,13 +87,14 @@ export interface TestRun {
     suite: "unit" | "ui";
     simulator: TestSimulator;
     /// The GitHub runner image CI runs it on.
-    image: "xcode-27" | "macos-15";
+    image: "xcode-27" | "macos-26" | "macos-15";
     /// The Xcode that runs its tests on CI, where not the one in .xcode-version.
     /// It builds nothing: every run takes the tests the pinned Xcode built once,
     /// which bring that Xcode's XCTest with them (lib/built-tests.ts). The iOS
     /// 18 run needs it, as only GitHub's macos-15 image has an iOS 18 runtime,
-    /// which Xcode 27 cannot download, and its newest Xcode is 26.3. A Mac runs
-    /// every run with the pinned Xcode.
+    /// which Xcode 27 cannot download, and its newest Xcode is 26.3; the iOS 26
+    /// runs too, on the macos-26 image, whose iOS 26.5 comes with Xcode 26.6. A
+    /// Mac runs every run with the pinned Xcode.
     ciXcode?: string;
 }
 
@@ -109,12 +111,16 @@ export const testRuns: readonly TestRun[] = [
         simulator: { key: "unit", model: "iPhone 17", os: "27.0", purpose: "for the unit tests, on the newest iOS", download: "27.0", ownSimulator: true },
         image: "xcode-27",
     },
-    { key: "ui-iphone-26", suite: "ui", simulator: automatedTests, image: "xcode-27" },
+    // On GitHub's macos-26 image, which has iOS 26.5, run by its Xcode 26.6.
+    // On the xcode-27 image a downloaded iOS 26.5 never finished booting
+    // ("Waiting on Data Migration", 8 November 2026), so no UI test ran.
+    { key: "ui-iphone-26", suite: "ui", simulator: automatedTests, image: "macos-26", ciXcode: "26.6" },
     {
         key: "ui-ipad-26",
         suite: "ui",
         simulator: { key: "ui-ipad-26", model: "iPad mini (A17 Pro)", os: "26.5", purpose: "for the UI tests on an iPad", download: "26.5", ownSimulator: true },
-        image: "xcode-27",
+        image: "macos-26",
+        ciXcode: "26.6",
     },
     {
         key: "ui-iphone-18",

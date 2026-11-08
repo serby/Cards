@@ -211,14 +211,14 @@ describe("the test runs", () => {
         const described = testRuns.map((run) => `${run.suite} ${run.simulator.model} ${run.simulator.os} ${run.image} ${xcodeVersionFor(run, "27.1", true)}`);
         assert.deepEqual(described, [
             "unit iPhone 17 27.0 xcode-27 27.1",
-            "ui iPhone 17 26.5 xcode-27 27.1",
-            "ui iPad mini (A17 Pro) 26.5 xcode-27 27.1",
+            "ui iPhone 17 26.5 macos-26 26.6",
+            "ui iPad mini (A17 Pro) 26.5 macos-26 26.6",
             "ui iPhone 16 18.5 macos-15 26.3",
         ]);
     });
 
-    test("download only what the image lacks: iOS 26.5 on the xcode-27 image, and never iOS 18", () => {
-        for (const run of testRuns.filter((run) => run.image === "xcode-27")) assert.ok(run.simulator.download, `${run.key} names a runtime to download`);
+    test("run each iOS on an image that has it, so CI downloads nothing, and never iOS 18", () => {
+        assert.deepEqual(testRuns.map((run) => `${run.simulator.os} ${run.image}`), ["27.0 xcode-27", "26.5 macos-26", "26.5 macos-26", "18.5 macos-15"]);
         assert.equal(testRun("ui-iphone-18").simulator.download, undefined);
     });
 
