@@ -18,6 +18,8 @@ public final class CardItem: Identifiable {
     public var icon: String?
     /// When the card was last opened, for sorting by last viewed; nil until it is.
     public var lastViewed: Date?
+    /// Free text kept with the card (CARD-14), trimmed, or nil for none.
+    public var notes: String?
 
     public init(
         timestamp: Date = Date(),
@@ -29,7 +31,8 @@ public final class CardItem: Identifiable {
         locations: [CardLocation] = [],
         notifiesOnArrival: Bool = true,
         icon: String? = nil,
-        lastViewed: Date? = nil
+        lastViewed: Date? = nil,
+        notes: String? = nil
     ) {
         self.timestamp = timestamp
         self.code = code
@@ -41,6 +44,7 @@ public final class CardItem: Identifiable {
         self.notifiesOnArrival = notifiesOnArrival
         self.icon = icon
         self.lastViewed = lastViewed
+        self.notes = CardNotes.kept(notes)
     }
 
     public func getBarcodeType() -> BarcodeType {
@@ -81,6 +85,7 @@ public struct CardItemDTO: Codable {
     public let notifiesOnArrival: Bool?  // nil in exports made before the per-card setting
     public let icon: String?
     public let lastViewed: Date?
+    public let notes: String?  // nil in exports made before notes, and for a card without any
 
     public init(from card: CardItem) {
         timestamp = card.timestamp
@@ -93,6 +98,7 @@ public struct CardItemDTO: Codable {
         notifiesOnArrival = card.notifiesOnArrival
         icon = card.icon
         lastViewed = card.lastViewed
+        notes = card.notes
     }
 
     public func toCardItem() -> CardItem {
@@ -106,7 +112,8 @@ public struct CardItemDTO: Codable {
             locations: locations ?? [],
             notifiesOnArrival: notifiesOnArrival ?? true,
             icon: icon,
-            lastViewed: lastViewed
+            lastViewed: lastViewed,
+            notes: notes
         )
     }
 }

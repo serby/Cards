@@ -241,3 +241,15 @@ As a card holder, I want each card to carry an icon, so that I can recognise it 
 **Since:** In preparation for 1.4
 **Where:** `Cards/Core/Models/CardIcon.swift`, `Cards/UI/Components/CardIconPicker.swift`, `Cards/UI/Screens/CardEditView.swift`, `Cards/Features/CardEditScreen.swift`, `Cards/UI/Components/CardFaceView.swift`, `Cards/Features/CardDetailScreen.swift`, `Cards/Core/Models/CardItem.swift`, `Cards/UI/Screens/CardListView.swift`, `CardsTests/CardIconTests.swift`, `CardsUITests/CardEditFormUITests.swift` (`testChooseAnIcon`, `testTheIconGridOpensAtTheChosenIcon`), `Cards/UI/Screens/CardDetailView.swift`, `Cards/UI/Components/CardTileView.swift`, `Cards/Features/CardListScreen.swift`
 **Notes:** Every icon is in SF Symbols 6, so iOS 18 draws it; `CardIconTests` checks each one on the oldest supported iOS. Stored names never change: an icon can move to another group, but is removed rather than renamed. An icon name the build doesn't list, such as one from a newer version, still shows on the card.
+
+### CARD-14: Keep notes with a card
+
+As a card holder, I want to keep a few notes with a card, so that what I need to remember about it is with its barcode.
+
+- A card can keep notes: free text of any length, such as what the card is for or when its points run out. A card has none until it is given some.
+- Notes keep their line breaks. They are kept without the spaces and new lines at either end, and notes that are only spaces and new lines count as none.
+- The notes are stored with the card, so they sync (DATA-1), are exported, and are imported with the card (DATA-2, DATA-3). Older cards and older exports have none (DATA-4).
+
+**Since:** In preparation for 1.4
+**Where:** `Cards/Core/Models/CardNotes.swift`, `Cards/Core/Models/CardItem.swift`, `CardsTests/CardNotesTests.swift`
+**Notes:** Nothing shows or edits notes yet, so a card only gets them from an import.
