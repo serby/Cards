@@ -1,0 +1,50 @@
+[
+  {
+    "file": "01_Cards",
+    "screen": "01_CardList",
+    "color": "blue",
+    "layout": "screen",
+    "title": "كل بطاقات الولاء لديك",
+    "subtitle": "بالعدد الذي تريده، بلا إعلانات"
+  },
+  {
+    "file": "02_Scan",
+    "screen": "02_CardDetail",
+    "color": "graphite",
+    "layout": "screen",
+    "title": "جاهزة عند الدفع",
+    "subtitle": "افتح بطاقة فيزداد سطوع الشاشة"
+  },
+  {
+    "file": "03_Widget",
+    "screen": "05_Widget",
+    "color": "teal",
+    "layout": "band",
+    "title": "بطاقة المكان الذي أنت فيه",
+    "subtitle": "على الشاشة الرئيسية وعند وصولك"
+  },
+  {
+    "file": "04_Places",
+    "screen": "04_LocationPicker",
+    "color": "red",
+    "layout": "screen",
+    "title": "تذكير عند وصولك",
+    "subtitle": "أضف الأماكن التي تستخدم فيها كل بطاقة"
+  },
+  {
+    "file": "05_Share",
+    "screen": "06_ShareCard",
+    "color": "green",
+    "layout": "screen",
+    "title": "شارك بطاقة",
+    "subtitle": "كرابط أو كصورة"
+  },
+  {
+    "file": "06_Colours",
+    "screen": "03_EditCard",
+    "color": "purple",
+    "layout": "screen",
+    "title": "بأي لون تريده",
+    "subtitle": "وأيقونة لكل بطاقة"
+  }
+]

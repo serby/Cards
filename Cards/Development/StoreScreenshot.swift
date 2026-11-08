@@ -83,3 +83,12 @@ struct StoreScreenshotCaption: Decodable {
     let subtitle: String
     let layout: StoreScreenshot.Layout
 }
+
+extension LayoutDirection {
+    /// The direction a store locale's language is written in, such as right to
+    /// left for ar-SA, so the locale's App Store images are laid out the way it
+    /// reads: the creative asset's line sits on the right, before the phone.
+    init(storeLocale: String) {
+        self = Locale.Language(identifier: storeLocale).characterDirection == .rightToLeft ? .rightToLeft : .leftToRight
+    }
+}

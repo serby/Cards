@@ -4,8 +4,9 @@ import Testing
 import UIKit
 
 /// Renders the App Store images: the screenshots, and the universal creative
-/// asset. Not part of the normal test run: `make store-screenshots` turns it on
-/// with CARDS_STORE_SCREENSHOTS=1. It reads and writes the repository directly,
+/// asset, each laid out in its locale's direction. The renders are not part of
+/// the normal test run: `make store-screenshots` turns them on with
+/// CARDS_STORE_SCREENSHOTS=1. They read and write the repository directly,
 /// which a simulator can do.
 @MainActor
 struct StoreScreenshotTests {
@@ -25,6 +26,7 @@ struct StoreScreenshotTests {
         #expect(!locales.isEmpty)
         for locale in locales {
             let folder = Self.files.store.appending(path: locale)
+            let direction = LayoutDirection(storeLocale: locale)
             let captions = try JSONDecoder().decode(
                 [StoreScreenshotCaption].self,
                 from: Data(contentsOf: folder.appending(path: "captions.json"))
@@ -41,7 +43,8 @@ struct StoreScreenshotTests {
                         layout: caption.layout,
                         canvas: device.size
                     )
-                    try render(view, size: device.size).write(to: folder.appending(path: "\(caption.file)\(device.suffix).png"))
+                    let png = try render(view.environment(\.layoutDirection, direction), size: device.size)
+                    try png.write(to: folder.appending(path: "\(caption.file)\(device.suffix).png"))
                 }
             }
         }
@@ -54,9 +57,22 @@ struct StoreScreenshotTests {
             guard let entry = try Self.files.creativeAsset(locale) else { continue }
             let image = try #require(Self.files.capture(entry.screen, locale: locale), "Missing screenshots/\(locale)/\(entry.screen).png")
             let view = StoreCreativeAsset(title: entry.title, color: .stored(entry.color), screenshot: image)
+                .environment(\.layoutDirection, LayoutDirection(storeLocale: locale))
             let png = try render(view, size: StoreCreativeAsset.canvas)
             try png.write(to: Self.files.store.appending(path: "\(locale)/\(entry.file).png"))
         }
+    }
+
+    /// Arabic's images are laid out right to left, as it reads, and every other
+    /// store locale's left to right.
+    @Test(arguments: [
+        ("ar-SA", LayoutDirection.rightToLeft),
+        ("fr-FR", LayoutDirection.leftToRight),
+        ("en-GB", LayoutDirection.leftToRight),
+        ("ja", LayoutDirection.leftToRight)
+    ])
+    func storeLocalesAreLaidOutInTheirLanguagesDirection(_ locale: String, _ direction: LayoutDirection) {
+        #expect(LayoutDirection(storeLocale: locale) == direction)
     }
 
     private func render(_ view: some View, size: CGSize) throws -> Data {

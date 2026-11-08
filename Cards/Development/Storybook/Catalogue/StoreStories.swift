@@ -79,6 +79,8 @@ private struct CreativeAssetPreview: View {
                         screenshot: screenshot,
                         showsSafeArea: showsSafeArea
                     )
+                    // In the locale's direction, as it is rendered, whatever the stage's.
+                    .environment(\.layoutDirection, LayoutDirection(storeLocale: locale))
                 }
             } else {
                 ContentUnavailableView(

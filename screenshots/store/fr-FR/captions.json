@@ -1,0 +1,50 @@
+[
+  {
+    "file": "01_Cards",
+    "screen": "01_CardList",
+    "color": "blue",
+    "layout": "screen",
+    "title": "Toutes vos cartes de fidélité",
+    "subtitle": "Autant que vous voulez, sans pub"
+  },
+  {
+    "file": "02_Scan",
+    "screen": "02_CardDetail",
+    "color": "graphite",
+    "layout": "screen",
+    "title": "Prête à la caisse",
+    "subtitle": "Ouvrez une carte et l’écran s’éclaire"
+  },
+  {
+    "file": "03_Widget",
+    "screen": "05_Widget",
+    "color": "teal",
+    "layout": "band",
+    "title": "La carte du lieu où vous êtes",
+    "subtitle": "Sur l’écran d’accueil et à votre arrivée"
+  },
+  {
+    "file": "04_Places",
+    "screen": "04_LocationPicker",
+    "color": "red",
+    "layout": "screen",
+    "title": "Un rappel à votre arrivée",
+    "subtitle": "Ajoutez les lieux de chaque carte"
+  },
+  {
+    "file": "05_Share",
+    "screen": "06_ShareCard",
+    "color": "green",
+    "layout": "screen",
+    "title": "Partagez une carte",
+    "subtitle": "Sous forme de lien ou d’image"
+  },
+  {
+    "file": "06_Colours",
+    "screen": "03_EditCard",
+    "color": "purple",
+    "layout": "screen",
+    "title": "La couleur de votre choix",
+    "subtitle": "Et une icône pour chaque carte"
+  }
+]
