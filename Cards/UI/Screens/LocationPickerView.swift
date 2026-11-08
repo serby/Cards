@@ -264,10 +264,9 @@ public struct LocationPickerView: View {
     private var searchField: some View {
         HStack(spacing: 10) {
             // Wraps rather than cutting the text off at large text sizes; Return
-            // finds the best match. The setter is a closure, not `set: edit`:
-            // Xcode 26's compiler crashes making the method a Binding setter.
+            // finds the best match.
             TextField(
-                text: Binding(get: { query }, set: { edit($0) }).singleLine(onReturn: findBestMatch),
+                text: Binding(get: { query }, set: edit).singleLine(onReturn: findBestMatch),
                 prompt: Text(verbatim: ""),
                 axis: .vertical
             ) { searchPrompt }
