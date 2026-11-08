@@ -6,14 +6,14 @@ The Settings tab: what the app is, the switches it keeps, the data actions, and 
 
 As a card holder, I want one screen for the app's settings and data, so that I know where to look.
 
-- The Settings tab shows a grouped list titled "Settings", in this order (1.3):
+- The Settings tab shows a grouped list titled "Settings", white rows on the system's grouped grey, in this order (1.3):
   - "What's New" on its own at the top (SET-2).
   - Display, with the Brightness Boost switch and its caption (BAR-4).
   - Locations, with the Arrival Notifications switch, its caption, and the message when notifications are off for the app (ARR-5), then the Show Card Where I Am switch and its caption (SET-3), then the Distances menu and its caption (SET-4) (in preparation for 1.4).
   - iCloud, with the iCloud Sync switch and its caption, and with sync off "Delete Cards from iCloud" and its caption (DATA-8, DATA-9) (in preparation for 1.4).
   - Data, with "Export as JSON" (DATA-2), "Import JSON" (DATA-3) and "Delete All Cards" (DATA-5).
   - Privacy, with the Share Diagnostics switch, its caption and a note on iOS's own crash reports (PLAT-11) (in preparation for 1.4).
-  - Acknowledgements, a row for each open source library the app is built with, opening its licence (PLAT-12) (in preparation for 1.4).
+  - "Acknowledgements", a row on its own that opens the open source software the app is built with (PLAT-12) (in preparation for 1.4).
   - Last, "Version", with the version and build number, as "1.3 (<build>)", and "Created by Paul Serby", which opens https://github.com/serby and has an external link icon. The Version row only shows when both numbers are known.
 - Brightness Boost and Arrival Notifications are on by default. Both are kept on the device and don't sync (DATA-1).
 - Each card also has its own arrival switch, in its edit form rather than here, which syncs with the card (ARR-6) (1.3).

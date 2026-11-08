@@ -139,36 +139,20 @@ extension SettingsListView {
         }
     }
 
+    /// One row that opens the open source software the app is built with,
+    /// rather than the list itself, which kept the long screen longer.
     var acknowledgementsSection: some View {
         Section {
-            ForEach(state.libraries) { library in
-                NavigationLink {
-                    OpenSourceLicenceView(library: library)
-                } label: {
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text(verbatim: library.name)
-                            .foregroundStyle(Color.primaryText)
-                        Text(verbatim: library.licenceName)
-                            .font(.subheadline)
-                            .foregroundStyle(Color.secondaryText)
-                    }
-                }
-                .accessibilityIdentifier("libraryRow")
+            NavigationLink {
+                AcknowledgementsView(libraries: state.libraries)
+            } label: {
+                Text(
+                    "Acknowledgements",
+                    comment: "Settings row, and the title of the screen it opens, listing the open source software the app is built with."
+                )
+                .foregroundStyle(Color.primaryText)
             }
-        } header: {
-            Text(
-                "Acknowledgements",
-                comment: "Settings section heading for the open source software the app is built with, each opening its licence."
-            )
-            .foregroundStyle(Color.secondaryText)
-            .accessibilityIdentifier("acknowledgementsSectionHeader")
-        } footer: {
-            Text(
-                "Card Barcodes is built with this open source software. Each row opens its licence.",
-                comment: "Under the Acknowledgements section in Settings. Card Barcodes is the app's name."
-            )
-            .foregroundStyle(Color.secondaryText)
-            .accessibilityIdentifier("acknowledgementsFooter")
+            .accessibilityIdentifier("acknowledgementsRow")
         }
     }
 }

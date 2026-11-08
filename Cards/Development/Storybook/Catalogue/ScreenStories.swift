@@ -10,6 +10,7 @@ let screenStories: [Story] = [
     sharedCardStory,
     settingsStory,
     changelogStory,
+    acknowledgementsStory,
     openSourceLicenceStory,
     importCardsStory
 ]

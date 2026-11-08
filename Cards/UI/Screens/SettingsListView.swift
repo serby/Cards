@@ -22,7 +22,6 @@ public struct SettingsListView: View {
     @State private var showImportSheet = false
     @State private var importText = ""
     @Environment(\.accessibilityAnnouncer) var announcer
-    @Environment(\.colorSchemeContrast) private var colorSchemeContrast
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     /// Says what Automatic means, as "Automatic (Kilometres)".
     @Environment(\.locale) private var locale
@@ -238,11 +237,9 @@ public struct SettingsListView: View {
                 }
             }
         }
+        // The system's grouped grey behind white rows, so each section stands
+        // apart and the long screen reads as groups.
         .listStyle(.insetGrouped)
-        // White cells on a white screen: with Increase Contrast the list keeps
-        // the grouped background, so each cell has an edge.
-        .scrollContentBackground(colorSchemeContrast == .increased ? .visible : .hidden)
-        .background(Color.primaryBackground)
         .navigationTitle(Text("Settings", comment: "Title of the Settings screen."))
         .sheet(isPresented: $showImportSheet) {
             ImportCardsView(

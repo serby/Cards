@@ -151,9 +151,9 @@ As a card holder, I want to decide whether the app sends its developer crash rep
 
 As a card holder, I want to see the open source software the app is built with and its licences, so that I know what is in it and its authors are credited.
 
-- Settings > Acknowledgements has a row for each library, with its name and its licence's name, as "RSBarcodes_Swift" and "MIT License", and the footer "Card Barcodes is built with this open source software. Each row opens its licence."
-- A row opens a screen titled with the library's name showing its licence in full, as the project ships it, in English, which can be selected and copied, and a "Project Website" row that opens the project's page in the browser.
+- Settings has an "Acknowledgements" row, in a section of its own above Version. It opens a screen titled "Acknowledgements" with a row for each library, with its name and its licence's name, as "RSBarcodes_Swift" and "MIT License", and the footer "Card Barcodes is built with this open source software. Each row opens its licence."
+- A library's row opens a screen titled with its name showing its licence in full, as the project ships it, in English, which can be selected and copied, and a "Project Website" row that opens the project's page in the browser.
 - Every package in `Package.resolved` is listed, and a unit test fails when one is missing (`PrivacySettingsTests`).
 
 **Since:** In preparation for 1.4
-**Where:** `Cards/Core/Models/OpenSourceLibrary.swift`, `Cards/UI/Screens/SettingsListView+Privacy.swift`, `Cards/UI/Screens/OpenSourceLicenceView.swift`, `CardsTests/PrivacySettingsTests.swift`
+**Where:** `Cards/Core/Models/OpenSourceLibrary.swift`, `Cards/UI/Screens/SettingsListView+Privacy.swift`, `Cards/UI/Screens/AcknowledgementsView.swift`, `Cards/UI/Screens/OpenSourceLicenceView.swift`, `CardsTests/PrivacySettingsTests.swift`

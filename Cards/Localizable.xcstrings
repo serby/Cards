@@ -584,7 +584,7 @@
       }
     },
     "Acknowledgements" : {
-      "comment" : "Settings section heading for the open source software the app is built with, each opening its licence.",
+      "comment" : "Settings row, and the title of the screen it opens, listing the open source software the app is built with.",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1596,7 +1596,7 @@
       }
     },
     "Card Barcodes is built with this open source software. Each row opens its licence." : {
-      "comment" : "Under the Acknowledgements section in Settings. Card Barcodes is the app's name.",
+      "comment" : "Under the list of open source software on the Acknowledgements screen. Card Barcodes is the app's name.",
       "localizations" : {
         "de" : {
           "stringUnit" : {

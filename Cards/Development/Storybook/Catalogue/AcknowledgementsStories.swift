@@ -25,3 +25,29 @@ let openSourceLicenceStory = Story(
     )
     return pushed { OpenSourceLicenceView(library: library) }
 }
+
+@MainActor
+let acknowledgementsStory = Story(
+    id: "acknowledgements",
+    title: "AcknowledgementsView",
+    section: "Screens",
+    galleryLayout: .oneAtATime,
+    knobs: [
+        .number("Extra libraries", 0, in: 0...5, step: 1)
+    ],
+    gallery: [
+        (name: "The app's libraries", view: pushed { AcknowledgementsView(libraries: OpenSourceLibrary.all) }),
+        (name: "None", view: pushed { AcknowledgementsView(libraries: []) })
+    ]
+) { knobs in
+    // Made-up libraries after the app's own, to see a longer list.
+    let extra = (0..<knobs.integer("Extra libraries")).map { index in
+        OpenSourceLibrary(
+            name: "Little Fern Kit \(index + 1)",
+            url: nil,
+            licenceName: "MIT License",
+            licenceText: OpenSourceLibrary.rsBarcodes.licenceText
+        )
+    }
+    return pushed { AcknowledgementsView(libraries: OpenSourceLibrary.all + extra) }
+}
