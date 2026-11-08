@@ -5,8 +5,8 @@ import Foundation
 /// card for where you are (SET-3), and moving a card in custom order (CARD-10).
 /// Pure: the list's connector applies it.
 public enum CardArrangement {
-    /// The cards whose names match `search`, in `order`. `location` is where you
-    /// are, for `.location`; without it, that order is custom order.
+    /// The cards whose names or notes match `search`, in `order`. `location` is
+    /// where you are, for `.location`; without it, that order is custom order.
     ///
     /// Equal places keep custom order, and equal `order` values (two devices
     /// that renumbered before they synced) keep the order of `cards`.
@@ -16,7 +16,7 @@ public enum CardArrangement {
         search: String = "",
         near location: CLLocation? = nil
     ) -> [CardItem] {
-        let custom = customOrder(cards.filter { name($0.name, matches: search) })
+        let custom = customOrder(cards.filter { card($0, matches: search) })
         switch order {
         case .custom:
             return custom
@@ -37,6 +37,12 @@ public enum CardArrangement {
         let wanted = query(search)
         return wanted.isEmpty
             || straightened(name).range(of: wanted, options: [.caseInsensitive, .diacriticInsensitive]) != nil
+    }
+
+    /// Whether `card`'s name or its notes (CARD-14) contain `search`, read as
+    /// `name(_:matches:)` reads a name.
+    public static func card(_ card: CardItem, matches search: String) -> Bool {
+        name(card.name, matches: search) || card.notes.map { name($0, matches: search) } == true
     }
 
     /// Whether `search` leaves any card out: false while it is blank.

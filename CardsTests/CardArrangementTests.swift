@@ -103,6 +103,19 @@ struct CardArrangementTests {
         #expect(Self.codes(cards, by: .custom, search: "corner grocer").isEmpty)
     }
 
+    /// A search finds a card by its notes too, read as a name is (CARD-14).
+    @Test func searchMatchesNotesToo() {
+        let honeycomb = CardItem(code: "9988776655443", name: "Honeycomb Rewards", order: 0, notes: "Points reset each January.")
+        let localRoast = CardItem(code: "1234567890128", name: "Local Roast Coffee", order: 1, notes: "Ask for a stamp at the till.")
+        let joes = CardItem(code: "482019375610284", name: "Joe's Market", order: 2)
+        let cards = [honeycomb, localRoast, joes]
+        #expect(Self.codes(cards, by: .custom, search: "january") == ["9988776655443"])
+        #expect(Self.codes(cards, by: .custom, search: " STAMP ") == ["1234567890128"])
+        #expect(Self.codes(cards, by: .custom, search: "joe") == ["482019375610284"])
+        #expect(Self.codes(cards, by: .custom, search: "receipt").isEmpty)
+        #expect(Self.codes(cards, by: .custom).count == 3)
+    }
+
     @Test func onlyASearchWithTextFilters() {
         #expect(!CardArrangement.isFiltering(""))
         #expect(!CardArrangement.isFiltering("  \n"))
