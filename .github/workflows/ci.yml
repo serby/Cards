@@ -52,19 +52,19 @@ jobs:
   # with none (docs/DEVELOPMENT.md, rule 7). The image runs swiftlint itself,
   # so the command starts at the subcommand.
   lint:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v7
 
     - name: Lint with SwiftLint
       run: docker run --rm -v "$PWD:/work" -w /work "ghcr.io/realm/swiftlint:$(cat .swiftlint-version)" lint --strict
 
   checks:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v7
 
-    - uses: actions/setup-node@v4
+    - uses: actions/setup-node@v7
       with:
         node-version: 24
 
@@ -81,13 +81,13 @@ jobs:
   # The test runs, read from scripts/lib/test-devices.ts so the devices and
   # iOS versions are written down once.
   test-runs:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     outputs:
       runs: ${{ steps.runs.outputs.runs }}
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v7
 
-    - uses: actions/setup-node@v4
+    - uses: actions/setup-node@v7
       with:
         node-version: 24
 
@@ -102,9 +102,9 @@ jobs:
   build:
     runs-on: xcode-27
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v7
 
-    - uses: actions/setup-node@v4
+    - uses: actions/setup-node@v7
       with:
         node-version: 24
 
@@ -120,7 +120,7 @@ jobs:
     - name: Pack the built tests
       run: tar -C "$RUNNER_TEMP/built" -cf "$RUNNER_TEMP/built-tests.tar" .
 
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v7
       with:
         name: built-tests
         path: ${{ runner.temp }}/built-tests.tar
@@ -135,13 +135,13 @@ jobs:
         include: ${{ fromJSON(needs.test-runs.outputs.runs) }}
     runs-on: ${{ matrix.image }}
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v7
 
-    - uses: actions/setup-node@v4
+    - uses: actions/setup-node@v7
       with:
         node-version: 24
 
-    - uses: actions/download-artifact@v4
+    - uses: actions/download-artifact@v8
       with:
         name: built-tests
         path: ${{ runner.temp }}
@@ -166,7 +166,7 @@ jobs:
 
     - name: Upload the result bundle
       if: ${{ failure() }}
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: ${{ matrix.key }}.xcresult
         path: ${{ runner.temp }}/results/${{ matrix.key }}.xcresult

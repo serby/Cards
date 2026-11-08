@@ -51,7 +51,7 @@ concurrency:
 
 jobs:
   upload:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     # Apple can take a quarter of an hour to process a screenshot on a slow day.
     timeout-minutes: 120
     # The steps pass the version as "$VERSION", never as ${{ inputs.version }},
@@ -63,9 +63,9 @@ jobs:
       if: ${{ inputs.prepare-version && inputs.version == '' }}
       run: echo "::error::Preparing the version needs a version number, such as 1.3."; exit 1
 
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v7
 
-    - uses: actions/setup-node@v4
+    - uses: actions/setup-node@v7
       with:
         node-version: 24
 
