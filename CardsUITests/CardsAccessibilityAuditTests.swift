@@ -127,15 +127,28 @@ class AccessibilityAuditCase: XCTestCase {
         // wraps on six lines and Locations is grown and whole (`make
         // capture-l10n` on iOS 26.5), and the right-to-left audit's screenshot
         // shows Delete Card grown and whole.
-        "distanceUnitsFooter", "deleteCardButton", "locationsSectionHeader"
+        "distanceUnitsFooter", "deleteCardButton", "locationsSectionHeader",
+        // The caption under the edit form's Notes field, reported "unsupported"
+        // at the default size at the foot of the form, as Delete Card below it
+        // is; the add form's same caption passes, and the largest-size
+        // screenshot shows it grown and wrapped. Agreed by Paul, 8 November
+        // 2026, with that evidence (rule 8).
+        "notesFooter"
     ]
 
     /// Text the clipping check says may be cut off at larger sizes, since the
     /// tests run on iOS 26 and 27, which the largest-size screenshots show
     /// grown and whole (`growsInFull`): Delete Card and Created by, the last
     /// rows of a screen scrolled to its end, and the add form's Locations
-    /// heading, on iOS 26 only.
-    private static let wholeAtTheLargestSize: Set<String> = ["deleteCardButton", "authorLink", "locationsSectionHeader"]
+    /// heading, on iOS 26 only. And a card's notes, on the card screen
+    /// (`cardNotesText`) and the caption under them in the edit form
+    /// (`notesFooter`), reported clipped at the default size: the
+    /// largest-size screenshots show both grown and whole, wrapped on as many
+    /// lines as they need, and the right-to-left largest-size audits pass.
+    /// Agreed by Paul, 8 November 2026, with that evidence (rule 8).
+    private static let wholeAtTheLargestSize: Set<String> = [
+        "deleteCardButton", "authorLink", "locationsSectionHeader", "cardNotesText", "notesFooter"
+    ]
 
     /// A place's row in the card form. The check reports its name and radius
     /// by their text, with no identifier, as the row speaks for both
