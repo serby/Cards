@@ -257,7 +257,6 @@ class AccessibilityAuditCase: XCTestCase {
                 || growsInFull.contains(element.identifier)
                 || isInside(frame, anyOf: growsInFull.union([locationRow]), in: app)
                 || (isOnIOS18 && isInside(frame, anyOf: growsInFullOnIOS18, in: app))
-                || isInside(frame, anyOf: atTheFootOfSettings, in: app)
                 || isOnTileUnderTheTabBar(frame, in: app)
         case .contrast:
             // A disabled control, such as Import with nothing pasted: WCAG 1.4.3
@@ -280,7 +279,7 @@ class AccessibilityAuditCase: XCTestCase {
             // show it whole in every language.
             if element.identifier == "wrappingPrompt" { return true }
             if isInside(frame, anyOf: [locationRow], in: app) { return true }
-            if isInside(frame, anyOf: wholeAtTheLargestSize.union(atTheFootOfSettings), in: app) { return true }
+            if isInside(frame, anyOf: wholeAtTheLargestSize, in: app) { return true }
             // The Cards tab's search field is UIKit's own, in the navigation
             // bar, which iOS sizes and collapses as the list scrolls. The
             // audit's screenshots of the report catch it part collapsed, 31 pt
