@@ -59,6 +59,16 @@ extension AccessibilityAuditCase {
     /// whole.
     static let wholeAtTheFootOfSettings: Set<String> = ["versionRow"]
 
+    /// Accepted by Paul on 9 November 2026: an empty field's prompt
+    /// (`wrappingPrompt`), which the contrast check failed on the iPad mini
+    /// (A17 Pro) on iOS 26.5 in CI run 42605129365, on both attempts: the
+    /// Notes prompt "Add a note" at the end of Add Card. The audit's own
+    /// screenshot measures it #636366 on #FFFFFF, 6.0:1, the footer below it
+    /// in the same colour passes, and so does the same prompt on the iPhone
+    /// on iOS 26.5. Most likely the check measures it through the empty text
+    /// field drawn over it (`WrappingPrompt`).
+    static let readableUnderTheirField: Set<String> = ["wrappingPrompt"]
+
     /// Whether the tests are running on iOS 18.
     static var isOnIOS18: Bool {
         ProcessInfo.processInfo.operatingSystemVersion.majorVersion == 18

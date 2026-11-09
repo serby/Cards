@@ -258,7 +258,7 @@ class AccessibilityAuditCase: XCTestCase {
             // A disabled control, such as Import with nothing pasted: WCAG 1.4.3
             // exempts inactive controls.
             if !element.isEnabled { return true }
-            if shortHeadings.contains(element.identifier) { return true }
+            if shortHeadings.contains(element.identifier) || readableUnderTheirField.contains(element.identifier) { return true }
             if isTileDistance(element, in: app) { return true }
             if isInScrollEdgeEffect(frame, bars: bars) { return true }
             // Text in or partly under a translucent bar is measured against the
