@@ -154,7 +154,7 @@ function wrap(element, text) {
     const maxLines = number(element, "maxLines", 2);
     const lineHeight = number(element, "lineHeight", 1.2);
     const joiner = /\s/.test(text.trim()) ? " " : "";
-    const words = pieces(text);
+    const words = pieces(text.replace(/\n/g, " "));
     const x = element.getAttribute("x");
     let size = Number(element.getAttribute("font-size"));
     for (;;) {
@@ -174,10 +174,13 @@ function wrap(element, text) {
             if (line) lines.push(line);
             return lines;
         };
-        let lines = breakAt(maxWidth);
+        // A line break in the text is where it breaks, for a language whose
+        // words a width alone would split, such as Japanese with no 、.
+        const given = text.includes("\n");
+        let lines = given ? text.split("\n").map((line) => line.trim()).filter(Boolean) : breakAt(maxWidth);
         // Balanced, as CSS's text-wrap: balance: the narrowest width that
         // still takes as many lines, so no word is left on a line of its own.
-        if (lines.length > 1) {
+        if (!given && lines.length > 1) {
             let limit = maxWidth;
             while (limit > maxWidth / 2 && breakAt(limit * 0.97).length === lines.length) limit *= 0.97;
             lines = breakAt(limit);
@@ -355,7 +358,7 @@ export function renderPage(page: string, width: number, height: number, chrome: 
         const pagePath = join(work, "page.html");
         const shot = join(work, "image.png");
         writeFileSync(pagePath, page);
-        execFileSync(chrome, [
+        const args = [
             "--headless=new",
             "--disable-gpu",
             "--hide-scrollbars",
@@ -366,7 +369,14 @@ export function renderPage(page: string, width: number, height: number, chrome: 
             "--virtual-time-budget=5000",
             `--screenshot=${shot}`,
             `file://${pagePath}`,
-        ], { stdio: ["ignore", "ignore", "pipe"], timeout: 60_000 });
+        ];
+        // Once more if Chrome fails: it sometimes exits early when the Mac's
+        // display is asleep, and a whole set stops on one image.
+        try {
+            execFileSync(chrome, args, { stdio: ["ignore", "ignore", "pipe"], timeout: 60_000 });
+        } catch {
+            execFileSync(chrome, args, { stdio: ["ignore", "ignore", "pipe"], timeout: 60_000 });
+        }
         const picture = readPNG(readFileSync(shot), "Chrome's screenshot");
         if (picture.width !== width || picture.height !== height) {
             throw new Error(`Chrome drew the page ${picture.width} x ${picture.height}, not ${width} x ${height}`);

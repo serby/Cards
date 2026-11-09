@@ -37,26 +37,26 @@
   </defs>
   <rect width="3840" height="2560" fill="url(#background)"/>
   <rect id="safe-area" x="836" y="765" width="2168" height="1030" fill="none" visibility="hidden"/>
-  <g transform="translate(3064.05 180) rotate(7 237.975 168.15)" filter="url(#card-shadow)">
-    <clipPath id="tile0-clip"><rect width="475.95" height="336.3" rx="85.5"/></clipPath>
+  <g transform="translate(3064.05 180) rotate(7 237.975 176.7)" filter="url(#card-shadow)">
+    <clipPath id="tile0-clip"><rect width="475.95" height="353.4" rx="85.5"/></clipPath>
     <g clip-path="url(#tile0-clip)">
-      <svg width="475.95" height="336.3" viewBox="594 273 501 354" preserveAspectRatio="none">
+      <svg width="475.95" height="353.4" viewBox="594 273 501 372" preserveAspectRatio="none">
         <image data-capture="09_ManyCards" width="1398" height="2034" href="" xlink:href=""/>
       </svg>
     </g>
   </g>
-  <g transform="translate(1864.05 120) rotate(-5 237.975 168.15)" filter="url(#card-shadow)">
-    <clipPath id="tile1-clip"><rect width="475.95" height="336.3" rx="85.5"/></clipPath>
+  <g transform="translate(1864.05 120) rotate(-5 237.975 176.7)" filter="url(#card-shadow)">
+    <clipPath id="tile1-clip"><rect width="475.95" height="353.4" rx="85.5"/></clipPath>
     <g clip-path="url(#tile1-clip)">
-      <svg width="475.95" height="336.3" viewBox="51 1067 501 354" preserveAspectRatio="none">
+      <svg width="475.95" height="353.4" viewBox="51 1103 501 372" preserveAspectRatio="none">
         <image data-capture="09_ManyCards" width="1398" height="2034" href="" xlink:href=""/>
       </svg>
     </g>
   </g>
-  <g transform="translate(664.05 220) rotate(5 237.975 168.15)" filter="url(#card-shadow)">
-    <clipPath id="tile2-clip"><rect width="475.95" height="336.3" rx="85.5"/></clipPath>
+  <g transform="translate(664.05 220) rotate(5 237.975 176.7)" filter="url(#card-shadow)">
+    <clipPath id="tile2-clip"><rect width="475.95" height="353.4" rx="85.5"/></clipPath>
     <g clip-path="url(#tile2-clip)">
-      <svg width="475.95" height="336.3" viewBox="594 1067 501 354" preserveAspectRatio="none">
+      <svg width="475.95" height="353.4" viewBox="594 1103 501 372" preserveAspectRatio="none">
         <image data-capture="09_ManyCards" width="1398" height="2034" href="" xlink:href=""/>
       </svg>
     </g>
@@ -64,23 +64,23 @@
   <g transform="translate(3104.05 1960) rotate(-6 237.975 156.275)" filter="url(#card-shadow)">
     <clipPath id="tile3-clip"><rect width="475.95" height="312.55" rx="85.5"/></clipPath>
     <g clip-path="url(#tile3-clip)">
-      <svg width="475.95" height="312.55" viewBox="51 1464 501 329" preserveAspectRatio="none">
+      <svg width="475.95" height="312.55" viewBox="51 1518 501 329" preserveAspectRatio="none">
         <image data-capture="09_ManyCards" width="1398" height="2034" href="" xlink:href=""/>
       </svg>
     </g>
   </g>
-  <g transform="translate(1914.05 2010) rotate(4 237.975 168.15)" filter="url(#card-shadow)">
-    <clipPath id="tile4-clip"><rect width="475.95" height="336.3" rx="85.5"/></clipPath>
+  <g transform="translate(1914.05 2010) rotate(4 237.975 176.7)" filter="url(#card-shadow)">
+    <clipPath id="tile4-clip"><rect width="475.95" height="353.4" rx="85.5"/></clipPath>
     <g clip-path="url(#tile4-clip)">
-      <svg width="475.95" height="336.3" viewBox="594 670 501 354" preserveAspectRatio="none">
+      <svg width="475.95" height="353.4" viewBox="594 688 501 372" preserveAspectRatio="none">
         <image data-capture="09_ManyCards" width="1398" height="2034" href="" xlink:href=""/>
       </svg>
     </g>
   </g>
-  <g transform="translate(164.05 1900) rotate(-7 237.975 168.15)" filter="url(#card-shadow)">
-    <clipPath id="tile5-clip"><rect width="475.95" height="336.3" rx="85.5"/></clipPath>
+  <g transform="translate(164.05 1900) rotate(-7 237.975 176.7)" filter="url(#card-shadow)">
+    <clipPath id="tile5-clip"><rect width="475.95" height="353.4" rx="85.5"/></clipPath>
     <g clip-path="url(#tile5-clip)">
-      <svg width="475.95" height="336.3" viewBox="51 670 501 354" preserveAspectRatio="none">
+      <svg width="475.95" height="353.4" viewBox="51 688 501 372" preserveAspectRatio="none">
         <image data-capture="09_ManyCards" width="1398" height="2034" href="" xlink:href=""/>
       </svg>
     </g>

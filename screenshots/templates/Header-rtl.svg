@@ -37,18 +37,18 @@
   </defs>
   <rect width="3840" height="1646" fill="url(#background)"/>
   <rect id="safe-area" x="1097" y="493" width="1646" height="661" fill="none" visibility="hidden"/>
-  <g transform="translate(2829.1 170) rotate(8 225.45000000000002 159.3)" filter="url(#card-shadow)">
-    <clipPath id="tile0-clip"><rect width="450.90000000000003" height="318.6" rx="81"/></clipPath>
+  <g transform="translate(2829.1 170) rotate(8 225.45000000000002 167.4)" filter="url(#card-shadow)">
+    <clipPath id="tile0-clip"><rect width="450.90000000000003" height="334.8" rx="81"/></clipPath>
     <g clip-path="url(#tile0-clip)">
-      <svg width="450.90000000000003" height="318.6" viewBox="594 273 501 354" preserveAspectRatio="none">
+      <svg width="450.90000000000003" height="334.8" viewBox="594 273 501 372" preserveAspectRatio="none">
         <image data-capture="09_ManyCards" width="1398" height="2034" href="" xlink:href=""/>
       </svg>
     </g>
   </g>
-  <g transform="translate(3299.1 760) rotate(-6 225.45000000000002 159.3)" filter="url(#card-shadow)">
-    <clipPath id="tile1-clip"><rect width="450.90000000000003" height="318.6" rx="81"/></clipPath>
+  <g transform="translate(3299.1 760) rotate(-6 225.45000000000002 167.4)" filter="url(#card-shadow)">
+    <clipPath id="tile1-clip"><rect width="450.90000000000003" height="334.8" rx="81"/></clipPath>
     <g clip-path="url(#tile1-clip)">
-      <svg width="450.90000000000003" height="318.6" viewBox="51 1067 501 354" preserveAspectRatio="none">
+      <svg width="450.90000000000003" height="334.8" viewBox="51 1103 501 372" preserveAspectRatio="none">
         <image data-capture="09_ManyCards" width="1398" height="2034" href="" xlink:href=""/>
       </svg>
     </g>
@@ -56,7 +56,7 @@
   <g transform="translate(2789.1 1120) rotate(4 225.45000000000002 148.05)" filter="url(#card-shadow)">
     <clipPath id="tile2-clip"><rect width="450.90000000000003" height="296.1" rx="81"/></clipPath>
     <g clip-path="url(#tile2-clip)">
-      <svg width="450.90000000000003" height="296.1" viewBox="51 1464 501 329" preserveAspectRatio="none">
+      <svg width="450.90000000000003" height="296.1" viewBox="51 1518 501 329" preserveAspectRatio="none">
         <image data-capture="09_ManyCards" width="1398" height="2034" href="" xlink:href=""/>
       </svg>
     </g>
@@ -64,31 +64,31 @@
   <g transform="translate(489.09999999999997 120) rotate(-7 225.45000000000002 148.05)" filter="url(#card-shadow)">
     <clipPath id="tile3-clip"><rect width="450.90000000000003" height="296.1" rx="81"/></clipPath>
     <g clip-path="url(#tile3-clip)">
-      <svg width="450.90000000000003" height="296.1" viewBox="594 1464 501 329" preserveAspectRatio="none">
+      <svg width="450.90000000000003" height="296.1" viewBox="594 1518 501 329" preserveAspectRatio="none">
         <image data-capture="09_ManyCards" width="1398" height="2034" href="" xlink:href=""/>
       </svg>
     </g>
   </g>
-  <g transform="translate(99.09999999999997 700) rotate(6 225.45000000000002 159.3)" filter="url(#card-shadow)">
-    <clipPath id="tile4-clip"><rect width="450.90000000000003" height="318.6" rx="81"/></clipPath>
+  <g transform="translate(99.09999999999997 700) rotate(6 225.45000000000002 167.4)" filter="url(#card-shadow)">
+    <clipPath id="tile4-clip"><rect width="450.90000000000003" height="334.8" rx="81"/></clipPath>
     <g clip-path="url(#tile4-clip)">
-      <svg width="450.90000000000003" height="318.6" viewBox="594 1067 501 354" preserveAspectRatio="none">
+      <svg width="450.90000000000003" height="334.8" viewBox="594 1103 501 372" preserveAspectRatio="none">
         <image data-capture="09_ManyCards" width="1398" height="2034" href="" xlink:href=""/>
       </svg>
     </g>
   </g>
-  <g transform="translate(509.09999999999997 1130) rotate(-4 225.45000000000002 159.3)" filter="url(#card-shadow)">
-    <clipPath id="tile5-clip"><rect width="450.90000000000003" height="318.6" rx="81"/></clipPath>
+  <g transform="translate(509.09999999999997 1130) rotate(-4 225.45000000000002 167.4)" filter="url(#card-shadow)">
+    <clipPath id="tile5-clip"><rect width="450.90000000000003" height="334.8" rx="81"/></clipPath>
     <g clip-path="url(#tile5-clip)">
-      <svg width="450.90000000000003" height="318.6" viewBox="594 670 501 354" preserveAspectRatio="none">
+      <svg width="450.90000000000003" height="334.8" viewBox="594 688 501 372" preserveAspectRatio="none">
         <image data-capture="09_ManyCards" width="1398" height="2034" href="" xlink:href=""/>
       </svg>
     </g>
   </g>
-  <g transform="translate(1101 503) rotate(0 320 318.1609195402299)" filter="url(#card-shadow)">
-    <clipPath id="hero-clip"><rect width="640" height="636.3218390804598" rx="56.398467432950184"/></clipPath>
+  <g transform="translate(1101 503) rotate(0 320 324.90421455938696)" filter="url(#card-shadow)">
+    <clipPath id="hero-clip"><rect width="640" height="649.8084291187739" rx="56.398467432950184"/></clipPath>
     <g clip-path="url(#hero-clip)">
-      <svg width="640" height="636.3218390804598" viewBox="51 273 1044 1038" preserveAspectRatio="none">
+      <svg width="640" height="649.8084291187739" viewBox="51 273 1044 1060" preserveAspectRatio="none">
         <image data-capture="07_CardWhereYouAre" width="1398" height="2034" href="" xlink:href=""/>
       </svg>
     </g>
