@@ -69,6 +69,45 @@ extension AccessibilityAuditCase {
     /// field drawn over it (`WrappingPrompt`).
     static let readableUnderTheirField: Set<String> = ["wrappingPrompt"]
 
+    /// Accepted by Paul on 9 November 2026: text the Dynamic Type check calls
+    /// "partially unsupported" on the iPad mini (A17 Pro) on iOS 26.5 in CI run
+    /// 42649546139, on both attempts, though the audit's own element
+    /// screenshots show it grown. In Arabic at the largest size, on a card's
+    /// screen: the Notes heading and text, the card's name and the distance to
+    /// the nearest place, all at that size and wrapped. At the default size, on
+    /// the edit form: the barcode type's value ("EAN-13") and the Notes field,
+    /// standard SwiftUI text the same audit passes on the iPhone.
+    static let growsInFullOnTheIPadIdentifiers: Set<String> = [
+        "cardNotesHeading", "cardNotesText", "cardNameText", "notesTextField"
+    ]
+
+    /// Whether `element` is one of `growsInFullOnTheIPadIdentifiers`, or the
+    /// text inside the nearest-place link or the barcode type menu, which the
+    /// check reports with no identifier. The link reaches 13 pt above and below
+    /// its text (`CardFaceView.linkReach`), so the text may sit that far out.
+    @MainActor
+    static func growsInFullOnTheIPad(_ element: XCUIElement, in app: XCUIApplication) -> Bool {
+        if growsInFullOnTheIPadIdentifiers.contains(element.identifier) { return true }
+        let frame = element.frame
+        return ["cardProximityText", "barcodeTypePicker"].contains { identifier in
+            app.descendants(matching: .any).matching(identifier: identifier).allElementsBoundByIndex.contains { container in
+                container.frame.insetBy(dx: -14, dy: -14).contains(frame)
+            }
+        }
+    }
+
+    /// Accepted by Paul on 9 November 2026: an element that runs past the edge
+    /// of the screen, whose contrast the check measures from pixels that are
+    /// not there. In CI run 42649546139, on the iPad mini (A17 Pro) on iOS
+    /// 26.5, in Arabic at the largest size, it failed "Add current location"
+    /// at the foot of a card's screen on both attempts (and on 522da74): its
+    /// frame runs from y 1121 to 1179.5 pt on a screen 1133 pt tall, and the
+    /// audit's screenshot of it is half solid black.
+    @MainActor
+    static func isPartlyOffScreen(_ frame: CGRect, in app: XCUIApplication) -> Bool {
+        !app.frame.insetBy(dx: -0.5, dy: -0.5).contains(frame)
+    }
+
     /// The checks left out at the end of the Add Card form, Notes on screen, on
     /// iOS 18 only. There the contrast check takes the whole 15 s the audit is
     /// given and fails "Audit failed to complete in time", every attempt, with

@@ -258,13 +258,14 @@ class AccessibilityAuditCase: XCTestCase {
                 || isInside(frame, anyOf: growsInFull.union([locationRow]), in: app)
                 || (isOnIOS18 && isInside(frame, anyOf: growsInFullOnIOS18, in: app))
                 || isOnTileUnderTheTabBar(frame, in: app)
+                || growsInFullOnTheIPad(element, in: app)
         case .contrast:
             // A disabled control, such as Import with nothing pasted: WCAG 1.4.3
             // exempts inactive controls.
             if !element.isEnabled { return true }
             if shortHeadings.contains(element.identifier) || readableUnderTheirField.contains(element.identifier) { return true }
             if isTileDistance(element, in: app) { return true }
-            if isInScrollEdgeEffect(frame, bars: bars) { return true }
+            if isInScrollEdgeEffect(frame, bars: bars) || isPartlyOffScreen(frame, in: app) { return true }
             // Text in or partly under a translucent bar is measured against the
             // bar's blur of whatever is scrolled beneath it: the camera view under
             // Add Card's bar, cards and headings under the tab bar. Pixels taken
