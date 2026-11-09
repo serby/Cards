@@ -147,6 +147,12 @@ final class CardsWidgetScreenshotTests: XCTestCase {
     private func removeRunnerIcon() {
         let runner = springboard.icons.matching(NSPredicate(format: "label BEGINSWITH %@", "CardsUITests")).firstMatch
         guard runner.exists else { return }
+        // Icons settle into place after the widget goes in; one still on another
+        // page is not in the capture, so it stays.
+        for _ in 0..<20 where !runner.isHittable {
+            Thread.sleep(forTimeInterval: 0.2)
+        }
+        guard runner.isHittable else { return }
         runner.press(forDuration: 1.5)
         let remove = springboard.buttons["com.apple.springboardhome.application-shortcut-item.remove-app"]
         guard remove.appears(within: 3) else {

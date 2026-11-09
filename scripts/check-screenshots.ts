@@ -116,7 +116,7 @@ function check(folder: string, waiting: string[]): string[] {
     const errors: string[] = [];
     const folders = new Set(
         readdirSync(folder, { withFileTypes: true })
-            .filter((entry) => entry.isDirectory() && !entry.name.startsWith(".") && entry.name !== "store")
+            .filter((entry) => entry.isDirectory() && !entry.name.startsWith(".") && !["store", "templates"].includes(entry.name))
             .map((entry) => entry.name),
     );
     if (!sameSet(folders, new Set(locales))) {
