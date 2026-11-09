@@ -4,10 +4,10 @@ name: CI
 # code passes SwiftLint, its strings are translated, the changelog it shows in
 # Settings > What's New is valid, and it builds and passes every test on each
 # device and iOS it supports. The Xcode in .xcode-version builds the app and
-# its tests once; a job for each test run in scripts/lib/test-devices.ts, the
-# list `make test-all` uses, then runs them without building: the unit tests on
-# the iPhone 17 on iOS 27.0, and the UI tests on the iPhone 17 and the iPad mini
-# on iOS 26.5 and on the iPhone 16 on iOS 18.5. Each runs on an image that has
+# its tests once; a job for each test run in scripts/lib/test-devices.ts but
+# the iPad's, which only `make test-all` runs, then runs them without
+# building: the unit tests on the iPhone 17 on iOS 27.0, and the UI tests on
+# the iPhone 17 on iOS 26.5 and on the iPhone 16 on iOS 18.5. Each runs on an image that has
 # its iOS: iOS 26.5 on the macOS 26 image, run by its Xcode 26.6, and iOS 18.5
 # on the macOS 15 image, the only one with iOS 18, run by its Xcode 26.3; the
 # built tests bring Xcode 27.1's XCTest with them.

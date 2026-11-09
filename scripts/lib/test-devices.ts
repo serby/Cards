@@ -8,7 +8,8 @@
 // the unit tests on the iPhone 17 on iOS 27.0, and the UI tests on the iPhone 17
 // and the iPad mini on iOS 26.5 and the iPhone 16 on iOS 18.5, all built once
 // by Xcode 27.1. run-tests.ts runs them, `make test` the unit tests and the
-// first UI run, CI every one. `make build` and the rest (select-test-simulator.ts,
+// first UI run, `make test-all` every one, and CI every one but the iPad's
+// (`ciTestRuns`). `make build` and the rest (select-test-simulator.ts,
 // report-test-coverage.ts, capture-l10n.ts) use the first UI run's iPhone 17
 // on iOS 26.5, the iOS most people have. The App Store screenshots are the
 // exception: capture-screenshots.ts keeps the sizes the store asks for.
@@ -16,7 +17,7 @@
 // It holds names, never UDIDs, which differ from Mac to Mac: the scripts look
 // the devices up when they run.
 //
-// Usage: import { automatedTestSimulator, automatedTestSimulatorWith, defaultTestSimulator, describeTestSimulator, everydayTestRuns, sameName, testPhone, testRun, testRuns, testSimulator, testSimulators } from "./lib/test-devices.ts";
+// Usage: import { automatedTestSimulator, automatedTestSimulatorWith, ciTestRuns, defaultTestSimulator, describeTestSimulator, everydayTestRuns, sameName, testPhone, testRun, testRuns, testSimulator, testSimulators } from "./lib/test-devices.ts";
 
 import { UsageError } from "./command-line.ts";
 
@@ -96,6 +97,8 @@ export interface TestRun {
     /// runs too, on the macos-26 image, whose iOS 26.5 comes with Xcode 26.6. A
     /// Mac runs every run with the pinned Xcode.
     ciXcode?: string;
+    /// False for a run CI leaves out, which only `make test-all` runs.
+    onCI?: boolean;
 }
 
 /// Every test run, as CI runs them, each on a pinned iOS release. The unit
@@ -121,6 +124,12 @@ export const testRuns: readonly TestRun[] = [
         simulator: { key: "ui-ipad-26", model: "iPad mini (A17 Pro)", os: "26.5", purpose: "for the UI tests on an iPad", download: "26.5", ownSimulator: true },
         image: "macos-26",
         ciXcode: "26.6",
+        // Not on CI since 9 November 2026, at Paul's call: its accessibility
+        // audits failed a different few tests on every run (timeouts, and
+        // contrast and Dynamic Type reports on text its own screenshots showed
+        // readable and grown), so it held up every push. `make test-all`
+        // still runs it.
+        onCI: false,
     },
     {
         key: "ui-iphone-18",
@@ -139,8 +148,11 @@ export function xcodeVersionFor(run: TestRun, pinned: string, onCI = Boolean(pro
     return onCI && run.ciXcode ? run.ciXcode : pinned;
 }
 
+/// The runs CI has a job for: every run but those marked `onCI: false`.
+export const ciTestRuns: readonly TestRun[] = testRuns.filter((run) => run.onCI !== false);
+
 /// What `make test` runs: the unit tests, and the UI tests on the iPhone on
-/// the iOS most people have. CI and `make test-all` run every one.
+/// the iOS most people have. `make test-all` runs every one.
 export const everydayTestRuns: readonly string[] = ["unit", "ui-iphone-26"];
 
 /// The test run a key names.

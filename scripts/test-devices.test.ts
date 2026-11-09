@@ -7,7 +7,7 @@ import { describe, test } from "node:test";
 
 import { type ListedDevice, pickPhone } from "./lib/phone.ts";
 import { pickTestSimulator, runtimeToInstall, type SimulatorList } from "./lib/simulator.ts";
-import { automatedTestSimulator, automatedTestSimulatorWith, defaultTestSimulator, sameName, testSimulator, everydayTestRuns, testRun, testRuns, xcodeVersionFor } from "./lib/test-devices.ts";
+import { automatedTestSimulator, automatedTestSimulatorWith, ciTestRuns, defaultTestSimulator, sameName, testSimulator, everydayTestRuns, testRun, testRuns, xcodeVersionFor } from "./lib/test-devices.ts";
 
 const iPhone17Type = { name: "iPhone 17", identifier: "com.apple.CoreSimulator.SimDeviceType.iPhone-17" };
 const seType = { name: "iPhone SE (3rd generation)", identifier: "com.apple.CoreSimulator.SimDeviceType.iPhone-SE-3rd-generation" };
@@ -220,6 +220,10 @@ describe("the test runs", () => {
     test("run each iOS on an image that has it, so CI downloads nothing, and never iOS 18", () => {
         assert.deepEqual(testRuns.map((run) => `${run.simulator.os} ${run.image}`), ["27.0 xcode-27", "26.5 macos-26", "26.5 macos-26", "18.5 macos-15"]);
         assert.equal(testRun("ui-iphone-18").simulator.download, undefined);
+    });
+
+    test("leave the iPad out of CI, which runs every other", () => {
+        assert.deepEqual(ciTestRuns.map((run) => run.key), ["unit", "ui-iphone-26", "ui-iphone-18"]);
     });
 
     test("use the pinned Xcode off CI", () => {
