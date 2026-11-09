@@ -17,3 +17,4 @@ La cámara enfoca una tarjeta que tengas cerca. Toca para enfocar, o enciende la
 Tus tarjetas se muestran en una cuadrícula, de dos en dos en el iPhone y de cuatro en cuatro en el iPad. Mantén presionada una tarjeta para editarla o eliminarla, o elimínala desde su pantalla de edición.
 Abrir una tarjeta ya no produce una respuesta háptica, algo que solo ocurría la primera vez.
 Al arrastrar las tarjetas cuando todas caben en la pantalla, la barra superior ya no se oculta para volver a aparecer.
+Cuando no usas el iPhone durante un rato, el widget de la pantalla de inicio sigue mostrando la tarjeta del último lugar donde estuviste, en vez de cambiar a tu primera tarjeta.

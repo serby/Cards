@@ -190,6 +190,15 @@
           "ja": "すべてのカードが画面に収まっているときにドラッグしても、上部のバーが消えて再び表示されることがなくなりました。",
           "fr": "Lorsque toutes les cartes tiennent à l’écran, les faire glisser ne masque plus la barre du haut pour la réafficher ensuite.",
           "ar": "عند سحب البطاقات وهي كلها ظاهرة على الشاشة، لم يعد الشريط العلوي يختفي ثم يعود."
+        },
+        {
+          "type": "fixed",
+          "text": "When your iPhone has been left unused for a while, the Home Screen widget keeps showing the card for where you last were, instead of switching to your first card.",
+          "es": "Cuando no usas el iPhone durante un rato, el widget de la pantalla de inicio sigue mostrando la tarjeta del último lugar donde estuviste, en vez de cambiar a tu primera tarjeta.",
+          "de": "Wenn du dein iPhone eine Weile nicht benutzt, zeigt das Widget auf dem Home-Bildschirm weiter die Karte für den Ort, an dem du zuletzt warst, statt zu deiner ersten Karte zu wechseln.",
+          "ja": "iPhoneをしばらく使っていなくても、ホーム画面のウィジェットが最初のカードに切り替わらず、最後にいた場所のカードを表示し続けるようになりました。",
+          "fr": "Lorsque votre iPhone reste inutilisé un moment, le widget de l’écran d’accueil continue d’afficher la carte du dernier endroit où vous étiez, au lieu de passer à votre première carte.",
+          "ar": "عندما لا تستخدم iPhone لفترة، تواصل أداة الشاشة الرئيسية عرض بطاقة آخر مكان كنت فيه، بدلًا من التبديل إلى بطاقتك الأولى."
         }
       ]
     },

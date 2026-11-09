@@ -17,3 +17,4 @@ L’appareil photo fait la mise au point sur une carte tenue près de l’object
 Vos cartes s’affichent en grille, deux par ligne sur iPhone et quatre sur iPad. Touchez une carte de manière prolongée pour la modifier ou la supprimer, ou supprimez-la depuis son écran de modification.
 L’ouverture d’une carte ne déclenche plus de retour haptique, ce qui ne se produisait que la première fois.
 Lorsque toutes les cartes tiennent à l’écran, les faire glisser ne masque plus la barre du haut pour la réafficher ensuite.
+Lorsque votre iPhone reste inutilisé un moment, le widget de l’écran d’accueil continue d’afficher la carte du dernier endroit où vous étiez, au lieu de passer à votre première carte.

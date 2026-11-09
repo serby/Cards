@@ -17,3 +17,4 @@ The camera focuses on a card held close. Tap to focus, or turn on the torch in l
 Your cards are laid out in a grid, two across on iPhone and four on iPad. Press and hold a card to edit or delete it, or delete it from its edit screen.
 Opening a card no longer plays a haptic, which it only did the first time.
 Dragging cards that all fit on the screen no longer hides the bar at the top and brings it back.
+When your iPhone has been left unused for a while, the Home Screen widget keeps showing the card for where you last were, instead of switching to your first card.

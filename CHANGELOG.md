@@ -31,6 +31,7 @@ Every version of Card Barcodes and what it changed, newest first. This file is g
 
 - Opening a card no longer plays a haptic, which it only did the first time.
 - Dragging cards that all fit on the screen no longer hides the bar at the top and brings it back.
+- When your iPhone has been left unused for a while, the Home Screen widget keeps showing the card for where you last were, instead of switching to your first card.
 
 ## 1.3 (5 November 2026)
 

@@ -17,3 +17,4 @@ Die Kamera stellt auf eine nah gehaltene Karte scharf. Tippe zum Scharfstellen, 
 Deine Karten erscheinen in einem Raster, zwei nebeneinander auf dem iPhone und vier auf dem iPad. Halte eine Karte gedrückt, um sie zu bearbeiten oder zu löschen, oder lösche sie beim Bearbeiten.
 Beim Öffnen einer Karte gibt es kein haptisches Feedback mehr, das es nur beim ersten Mal gab.
 Wenn alle Karten auf den Bildschirm passen und du sie ziehst, verschwindet die obere Leiste nicht mehr kurz.
+Wenn du dein iPhone eine Weile nicht benutzt, zeigt das Widget auf dem Home-Bildschirm weiter die Karte für den Ort, an dem du zuletzt warst, statt zu deiner ersten Karte zu wechseln.
