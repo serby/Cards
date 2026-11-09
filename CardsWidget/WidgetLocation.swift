@@ -12,9 +12,12 @@ extension WidgetLocation {
     static let maximumAge: TimeInterval = 2 * 60
     static let timeout: Duration = .seconds(10)
 
-    /// Uses a recent cached fix when there is one, and otherwise waits a few
-    /// seconds for a new one before giving up. Each step goes to `log`.
-    static func live(log: WidgetLog) -> Self {
+    /// Uses a recent cached reading when there is one, and otherwise waits a
+    /// few seconds for a new one. Without one, as when iOS no longer counts the
+    /// widget in use, it uses the newer of the device's last reading and the
+    /// one `lastLocation` kept, and keeps each good reading for next time. Each
+    /// step goes to `log`.
+    static func live(log: WidgetLog, lastLocation: WidgetLastLocation = .live) -> Self {
         Self {
             let manager = CLLocationManager()
             log.write("location: \(permission(of: manager))")
@@ -22,6 +25,7 @@ extension WidgetLocation {
             if let cached = manager.location {
                 if -cached.timestamp.timeIntervalSinceNow < maximumAge {
                     log.write("location: using the cached fix, \(cached.logDescription)")
+                    lastLocation.write(cached)
                     return cached
                 }
                 log.write("location: the cached fix is too old, \(cached.logDescription)")
@@ -29,14 +33,22 @@ extension WidgetLocation {
                 log.write("location: no cached fix")
             }
             if let fresh = await fresh(within: timeout, log: log) {
+                lastLocation.write(fresh)
                 return fresh
             }
-            if let last = manager.location {
-                log.write("location: falling back to the last fix, \(last.logDescription)")
-                return last
+            let deviceLast = manager.location
+            let kept = lastLocation.read()
+            guard let best = WidgetLastLocation.best(new: nil, deviceLast: deviceLast, kept: kept) else {
+                log.write("location: no fix at all, and none kept")
+                return nil
             }
-            log.write("location: no fix at all")
-            return nil
+            if best === deviceLast {
+                log.write("location: falling back to the device's last fix, \(best.logDescription)")
+                lastLocation.write(best)
+            } else {
+                log.write("location: using the kept fix, \(best.logDescription)")
+            }
+            return best
         }
     }
 

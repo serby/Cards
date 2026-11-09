@@ -108,6 +108,63 @@ struct WidgetTests {
         #expect(settings.distanceUnits() == .automatic)
         #expect(reloads.value == 0)
     }
+
+    private func reading(_ latitude: Double, at seconds: TimeInterval) -> CLLocation {
+        CLLocation(
+            coordinate: CLLocationCoordinate2D(latitude: latitude, longitude: -0.2094),
+            altitude: 0,
+            horizontalAccuracy: 10,
+            verticalAccuracy: -1,
+            timestamp: Date(timeIntervalSince1970: seconds)
+        )
+    }
+
+    /// WID-1: the widget keeps its last good reading, and never swaps it for an
+    /// older one, so a reload iOS gives no location still knows where you were.
+    @Test func lastLocationRoundTripsAndKeepsTheNewest() throws {
+        let url = FileManager.default.temporaryDirectory.appending(path: "widget-location-\(UUID().uuidString).json")
+        defer { try? FileManager.default.removeItem(at: url) }
+        let lastLocation = WidgetLastLocation.file(at: url)
+
+        #expect(lastLocation.read() == nil)
+        lastLocation.write(reading(51.52, at: 100))
+        let kept = try #require(lastLocation.read())
+        #expect(kept.coordinate.latitude == 51.52)
+        #expect(kept.horizontalAccuracy == 10)
+        #expect(kept.timestamp == Date(timeIntervalSince1970: 100))
+
+        lastLocation.write(reading(51.60, at: 50))
+        #expect(lastLocation.read()?.coordinate.latitude == 51.52)
+        lastLocation.write(reading(51.55, at: 200))
+        #expect(lastLocation.read()?.coordinate.latitude == 51.55)
+    }
+
+    @Test func lastLocationThatCannotBeReadIsNone() throws {
+        let url = FileManager.default.temporaryDirectory.appending(path: "widget-location-\(UUID().uuidString).json")
+        defer { try? FileManager.default.removeItem(at: url) }
+        try Data("not json".utf8).write(to: url)
+        #expect(WidgetLastLocation.file(at: url).read() == nil)
+    }
+
+    @Test func lastLocationWithoutAnAppGroupKeepsNothing() {
+        let lastLocation = WidgetLastLocation.file(at: nil)
+        lastLocation.write(reading(51.52, at: 100))
+        #expect(lastLocation.read() == nil)
+    }
+
+    /// WID-1: a new reading wins; without one, the newer of the device's last
+    /// reading and the kept one.
+    @Test func bestReadingIsTheNewOneOrElseTheNewerOfTheOthers() {
+        let new = reading(51.50, at: 300)
+        let older = reading(51.51, at: 100)
+        let newer = reading(51.52, at: 200)
+        #expect(WidgetLastLocation.best(new: new, deviceLast: newer, kept: older) === new)
+        #expect(WidgetLastLocation.best(new: nil, deviceLast: older, kept: newer) === newer)
+        #expect(WidgetLastLocation.best(new: nil, deviceLast: newer, kept: older) === newer)
+        #expect(WidgetLastLocation.best(new: nil, deviceLast: nil, kept: older) === older)
+        #expect(WidgetLastLocation.best(new: nil, deviceLast: older, kept: nil) === older)
+        #expect(WidgetLastLocation.best(new: nil, deviceLast: nil, kept: nil) == nil)
+    }
 }
 
 /// Counts calls from any thread, for clients whose closures are `@Sendable`.

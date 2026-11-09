@@ -8,13 +8,14 @@ As a card holder, I want my Home Screen to show the card for where I am, so that
 
 - The widget comes in the medium size only. In the widget gallery it is called "Card", described as "Shows the barcode of the card nearest to you, or one you choose."
 - By default it shows the card whose nearest place is closest to you, measured to the edge of each place's circle (PLACE-6), with its distance and place name. In preparation for 1.4 the distance is in the units chosen in the app's Settings (SET-4).
-- When no card has a place, or the widget has no location, it shows the card at the top of the list (CARD-7).
+- When no card has a place, or the widget has no location, it shows the first card in the list's own order (CARD-7), whichever way the list is sorted.
 - It only asks for a location when some card has a place, and only when iOS lets the widget use location (`isAuthorizedForWidgetUpdates`). iOS describes it as "Your location lets the widget show the card for the place you are at."
-- It uses a fix up to 2 minutes old when there is one (1.3). Otherwise it waits up to 10 seconds for a new one, and then uses the last fix the device has, however old.
+- It uses a reading up to 2 minutes old when there is one (1.3). Otherwise it waits up to 10 seconds for a new one.
+- In preparation for 1.4: iOS only gives the widget your location for about 15 minutes after it was last on screen. After that Core Location reports it "insufficiently in use" and gives it nothing, not even the device's last reading, so every reload while the phone sat unused showed the first card with no distance. The widget now keeps each good reading, in `widget-location.json` in the App Group, and a reload without a new one uses the newer of the device's last reading and the kept one. So it keeps showing the card for where you were last seen, with its distance from there, and only shows the first card when it has never had a reading. If you have moved since, it shows the card for where you were until a reload gets your new location: iOS reloads a location widget the next time you look at it after a significant location change, and the refresh button reloads it at once (WID-3).
 - The preview in the widget gallery shows your cards without asking for a location.
 
 **Since:** 1.3
-**Where:** `CardsWidget/CardWidget.swift`, `CardsWidget/WidgetLocation.swift`, `Cards/Core/Models/WidgetCard.swift`, `CardsTests/WidgetTests.swift`
+**Where:** `CardsWidget/CardWidget.swift`, `CardsWidget/WidgetLocation.swift`, `Cards/Core/Models/WidgetCard.swift`, `Cards/Core/Services/WidgetLastLocation.swift`, `CardsTests/WidgetTests.swift` (`lastLocationRoundTripsAndKeepsTheNewest`, `bestReadingIsTheNewOneOrElseTheNewerOfTheOthers`)
 **Notes:** In the simulator the widget gets no location, even when the app is launched with the screenshot location, because the widget asks Core Location itself. It then shows the top card with no distance, as in `screenshots/en-GB/05_Widget.png`.
 
 ### WID-2: Choose which card the widget shows
