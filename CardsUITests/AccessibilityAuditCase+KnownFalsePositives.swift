@@ -69,6 +69,27 @@ extension AccessibilityAuditCase {
     /// field drawn over it (`WrappingPrompt`).
     static let readableUnderTheirField: Set<String> = ["wrappingPrompt"]
 
+    /// The checks left out at the end of the Add Card form, Notes on screen, on
+    /// iOS 18 only. There the contrast check takes the whole 15 s the audit is
+    /// given and fails "Audit failed to complete in time", every attempt, with
+    /// no issue found first; at the top of the form it takes 1.7 s, and every
+    /// other named check takes under 3 s at the end (timed one check at a time
+    /// on an iPhone 16 with iOS 18.1, and seen on CI's iOS 18.5 run
+    /// 42605129365). It still runs there on iOS 26.5 and 27, and at the top of
+    /// the form on 18. Paul agreed on 9 Nov 2026.
+    static var skippedAtTheAddFormsEnd: XCUIAccessibilityAuditType {
+        isOnIOS18 ? .contrast : []
+    }
+
+    /// Notes `skipped` checks as ignored audit issues, so the run's summary
+    /// lists them with the other exceptions.
+    func recordSkipped(_ skipped: XCUIAccessibilityAuditType) {
+        let attachment = XCTAttachment(string: "AUDIT[\(name)] skipped \(Self.checkName(skipped))")
+        attachment.name = "Ignored audit issue: \(Self.checkName(skipped)) check skipped"
+        attachment.lifetime = .keepAlways
+        add(attachment)
+    }
+
     /// Whether the tests are running on iOS 18.
     static var isOnIOS18: Bool {
         ProcessInfo.processInfo.operatingSystemVersion.majorVersion == 18
