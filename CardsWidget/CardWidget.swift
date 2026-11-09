@@ -55,11 +55,18 @@ struct CardTimelineProvider: AppIntentTimelineProvider {
     private let snapshot: WidgetSnapshot
     private let settings: WidgetSettings
     private let location: WidgetLocation
+    private let log: WidgetLog
 
-    init(snapshot: WidgetSnapshot = .live, settings: WidgetSettings = .live, location: WidgetLocation = .live) {
+    init(
+        snapshot: WidgetSnapshot = .live,
+        settings: WidgetSettings = .live,
+        location: WidgetLocation = .live(log: .live),
+        log: WidgetLog = .live
+    ) {
         self.snapshot = snapshot
         self.settings = settings
         self.location = location
+        self.log = log
     }
 
     func placeholder(in context: Context) -> CardEntry {
@@ -71,26 +78,37 @@ struct CardTimelineProvider: AppIntentTimelineProvider {
     }
 
     func snapshot(for configuration: SelectCardIntent, in context: Context) async -> CardEntry {
-        await entry(for: configuration, locate: !context.isPreview)
+        await entry(for: configuration, locate: !context.isPreview, reload: context.isPreview ? "gallery preview" : "snapshot")
     }
 
     func timeline(for configuration: SelectCardIntent, in context: Context) async -> Timeline<CardEntry> {
-        let entry = await entry(for: configuration, locate: true)
+        let entry = await entry(for: configuration, locate: true, reload: "timeline")
         // A chosen card only changes when the app rewrites the snapshot, which
         // reloads the widget itself.
-        let policy: TimelineReloadPolicy = entry.followsLocation ? .after(.now.addingTimeInterval(Self.refreshInterval)) : .never
+        let next = Date.now.addingTimeInterval(Self.refreshInterval)
+        let policy: TimelineReloadPolicy = entry.followsLocation ? .after(next) : .never
+        let when = entry.followsLocation ? "after \(next.formatted(date: .omitted, time: .shortened))" : "never, until the cards change"
+        log.write("timeline: asks for the next reload \(when)")
         return Timeline(entries: [entry], policy: policy)
     }
 
-    private func entry(for configuration: SelectCardIntent, locate: Bool) async -> CardEntry {
+    private func entry(for configuration: SelectCardIntent, locate: Bool, reload: String) async -> CardEntry {
         let cards = snapshot.read()
         let chosen = configuration.card?.code.flatMap { code in cards.first { $0.code == code } }
         let needsLocation = cards.contains { !$0.locations.isEmpty }
+        let setting = chosen.map { "chosen card \"\($0.name)\"" }
+            ?? (configuration.card?.code == nil ? "nearest card" : "chosen card missing, so nearest card")
+        log.write("\(reload): start, \(setting), \(cards.count) cards, \(cards.filter { !$0.locations.isEmpty }.count) with places")
         let here = locate && needsLocation ? await location.current() : nil
         let card = chosen ?? cards.nearest(to: here)
+        let state = card?.state(near: here)
+        let why =
+            if chosen != nil { "the chosen card" } else if here != nil { "the nearest card" } else { "the first card, as there is no location" }
+        let distance = state?.proximity.map { ", \(Int($0.distance)) m from \($0.placeName)" } ?? ", no distance"
+        log.write("\(reload): shows \(state.map { "\"\($0.name)\"" } ?? "no card"), \(why)\(distance)")
         return CardEntry(
             date: .now,
-            card: card?.state(near: here),
+            card: state,
             followsLocation: chosen == nil && needsLocation,
             distanceUnits: settings.distanceUnits()
         )

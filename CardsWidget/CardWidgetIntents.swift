@@ -106,6 +106,7 @@ struct RefreshCardWidgetIntent: AppIntent {
     static let isDiscoverable = false
 
     func perform() async throws -> some IntentResult {
-        .result()
+        WidgetLog.live.write("refresh button tapped")
+        return .result()
     }
 }
