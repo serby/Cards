@@ -40,9 +40,10 @@
 
   <script>
     // The card is base64url JSON after the "#", which the browser never sends
-    // here. Show its name, as text, if it has one; otherwise show nothing.
+    // here, with a "." every 100 characters so link detectors keep it whole.
+    // Show its name, as text, if it has one; otherwise show nothing.
     try {
-      var payload = location.hash.slice(1).replace(/-/g, "+").replace(/_/g, "/");
+      var payload = location.hash.slice(1).replace(/\./g, "").replace(/-/g, "+").replace(/_/g, "/");
       payload += "===".slice(0, (4 - payload.length % 4) % 4);
       var bytes = Uint8Array.from(atob(payload), function (c) { return c.charCodeAt(0); });
       var card = JSON.parse(new TextDecoder().decode(bytes));

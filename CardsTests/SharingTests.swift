@@ -54,6 +54,33 @@ struct SharingTests {
         }
     }
 
+    /// SHARE-1: a card with places makes a link hundreds of characters long, and
+    /// link detectors end a link at an unbroken run of over about 300, so in
+    /// WhatsApp it was a link only up to its "#". The dots keep every run short,
+    /// and iOS's detector now finds the whole link.
+    @Test func aLongLinkIsFoundWholeInText() throws {
+        let places = (1...5).map { index in
+            SharedCard.Place(name: "Local Roast Coffee Branch \(index)", latitude: 51.5 + Double(index) / 100, longitude: -0.2, radius: 150)
+        }
+        let card = SharedCard(name: "Local Roast Coffee", code: "5012345678900", barcodeType: .ean13, color: .standard, places: places)
+        let link = try #require(SharedCardLink(card: card).url?.absoluteString)
+        #expect(link.count > 600)
+        #expect(card.payload.split(separator: ".").allSatisfy { $0.count <= SharedCard.segmentLength })
+
+        let text = "Local Roast Coffee \(link)"
+        let detector = try NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue)
+        let found = try #require(detector.firstMatch(in: text, range: NSRange(text.startIndex..., in: text)))
+        #expect(found.url?.absoluteString == link)
+        #expect(found.url.flatMap(SharedCardLink.init(url:))?.card == card)
+    }
+
+    /// Links made before the dots, as anyone may still have in a chat, read the same.
+    @Test func aPayloadWithoutDotsStillReads() {
+        let card = SharedCard(name: Array(repeating: "Local Roast Coffee", count: 20).joined(separator: " "), code: "1")
+        #expect(card.payload.contains("."))
+        #expect(SharedCard(payload: card.payload.replacingOccurrences(of: ".", with: "")) == card)
+    }
+
     /// The link carries the card, not the sharer's history with it or their notes (CARD-14).
     @Test func thePayloadLeavesOutWhatIsTheSharers() throws {
         let json = try #require(Data(base64Encoded: base64(fromURL: SharedCard(joesMarket).payload)))
@@ -257,6 +284,6 @@ private func encode(_ json: String) -> String {
 
 /// Plain base64, with its padding, from base64url.
 private func base64(fromURL payload: String) -> String {
-    let plain = payload.replacingOccurrences(of: "-", with: "+").replacingOccurrences(of: "_", with: "/")
+    let plain = payload.replacingOccurrences(of: ".", with: "").replacingOccurrences(of: "-", with: "+").replacingOccurrences(of: "_", with: "/")
     return plain + String(repeating: "=", count: (4 - plain.count % 4) % 4)
 }

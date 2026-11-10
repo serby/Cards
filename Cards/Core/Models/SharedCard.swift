@@ -6,7 +6,8 @@ import Foundation
 /// it, where it sits in their list or when they last opened it.
 ///
 /// The link carries it after the "#" as JSON in base64url without padding, so
-/// browsers never send it to the website. `v` is the format's version. Readers
+/// browsers never send it to the website, with a "." every `segmentLength`
+/// characters. `v` is the format's version. Readers
 /// ignore fields they don't know, so a new optional field keeps version 1; only
 /// a change an older reader would get wrong raises it, and older readers then
 /// treat the link as holding no card.
@@ -32,6 +33,11 @@ public struct SharedCard: Hashable, Sendable {
     /// The longest payload read, in characters. A card with a dozen places is
     /// under 2,000, so anything much longer is not one of ours.
     public static let maximumPayloadLength = 16_384
+    /// The longest run of characters in a payload without a ".". Link detectors
+    /// end a link at a longer one: iOS's `NSDataDetector` keeps a fragment of
+    /// 301 unbroken characters and drops one of 302, so in WhatsApp a card with
+    /// places was a link only up to its "#". Readers ignore the dots.
+    public static let segmentLength = 100
 
     public var name: String
     public var code: String
@@ -82,18 +88,27 @@ public extension SharedCard {
         encoder.outputFormatting = .sortedKeys
         // Encoding plain strings and numbers cannot fail.
         let json = (try? encoder.encode(self)) ?? Data()
-        return json.base64EncodedString()
+        let base64URL = json.base64EncodedString()
             .replacingOccurrences(of: "+", with: "-")
             .replacingOccurrences(of: "/", with: "_")
             .replacingOccurrences(of: "=", with: "")
+        return stride(from: 0, to: base64URL.count, by: Self.segmentLength)
+            .map { start in
+                let from = base64URL.index(base64URL.startIndex, offsetBy: start)
+                let to = base64URL.index(from, offsetBy: Self.segmentLength, limitedBy: base64URL.endIndex) ?? base64URL.endIndex
+                return String(base64URL[from..<to])
+            }
+            .joined(separator: ".")
     }
 
     /// The card a payload holds, or nil when it holds none: it is empty, too
     /// long, not base64url, not JSON, from a newer format, or a card without a
-    /// name or a code.
+    /// name or a code. The dots between segments are skipped, and a payload
+    /// without them, as links made before 1.4 had, reads the same.
     init?(payload: String) {
         guard !payload.isEmpty, payload.count <= Self.maximumPayloadLength else { return nil }
         var base64 = payload
+            .replacingOccurrences(of: ".", with: "")
             .replacingOccurrences(of: "-", with: "+")
             .replacingOccurrences(of: "_", with: "/")
         base64 += String(repeating: "=", count: (4 - base64.count % 4) % 4)
