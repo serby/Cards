@@ -7,7 +7,9 @@
 // and .../placing-assets-on-your-app-store-surfaces). The placements go to
 // App Review with the version.
 //
-// An image is reserved, uploaded and committed once, then placed. Its reference
+// Every image is reserved, uploaded and committed first, then the run waits for
+// App Store Connect to process them all at once, and places each as it is
+// ready, so one slow image costs its own wait and no other's. Its reference
 // name carries a hash of its bytes, so a run after an unchanged asset uploads
 // nothing. Which placement groups take it comes from App Store Connect's
 // reference data: the groups mapped to the image specification its size meets
@@ -135,6 +137,7 @@ async function main(): Promise<void> {
         `/v1/appAssetLibraryRefData?${query({ "filter[placementTypes]": placementTypes.join(",") })}`,
     )).map((datum) => datum.attributes);
 
+    const uploads: { asset: CreativeAsset; localizationId: string; spec: ImageSpec; image: Resource<LibraryImage> | undefined }[] = [];
     for (const asset of assets) {
         const localization = localizations.find((candidate) => candidate.attributes.locale === asset.locale);
         if (!localization) {
@@ -143,15 +146,28 @@ async function main(): Promise<void> {
         }
         console.log(`==> ${asset.locale}: ${basename(asset.path)}`);
         const spec = specFor(refData, asset);
-        const image = await libraryImage(asc, library.id, asset);
-        const specId = image?.attributes.specId ?? spec.specId;
-        if (image && specId !== spec.specId) {
-            console.log(`   !! App Store Connect matched it to ${specId}, not ${spec.specId}`);
-        }
-        for (const group of placementGroups(refData, asset.placementType, specId)) {
-            await place(asc, localization.id, asset.placementType, group, image?.id);
-        }
+        uploads.push({ asset, localizationId: localization.id, spec, image: await libraryImage(asc, library.id, asset) });
     }
+
+    const waiting = uploads.filter((upload) => upload.image && !usableStates.includes(upload.image.attributes.state)).length;
+    if (waiting > 0) console.log(`==> Waiting for App Store Connect to process ${waiting} image(s)`);
+    const processed = await Promise.allSettled(uploads.map(async (upload) => {
+        const image = upload.image && !usableStates.includes(upload.image.attributes.state) ? await waitForProcessing(asc, upload.image.id) : upload.image;
+        const where = `${upload.asset.locale}: ${basename(upload.asset.path)}`;
+        const specId = image?.attributes.specId ?? upload.spec.specId;
+        if (image && specId !== upload.spec.specId) {
+            console.log(`   !! ${where}: App Store Connect matched it to ${specId}, not ${upload.spec.specId}`);
+        }
+        for (const group of placementGroups(refData, upload.asset.placementType, specId)) {
+            await place(asc, upload.localizationId, upload.asset.placementType, group, image?.id, where);
+        }
+    }));
+    const failures = processed.flatMap((result, index) => {
+        if (result.status === "fulfilled") return [];
+        const upload = uploads[index]!;
+        return [`${upload.asset.locale} ${basename(upload.asset.path)}: ${result.reason instanceof Error ? result.reason.message : String(result.reason)}`];
+    });
+    if (failures.length > 0) throw new Error(`these creative assets are not placed yet:\n  ${failures.join("\n  ")}`);
     console.log("Done. Check the version's product page in App Store Connect, and its preview of the header and search results.");
 }
 
@@ -190,8 +206,8 @@ function placementGroups(refData: RefData[], type: string, specId: string): (str
 }
 
 /// The library's image for this asset: one already uploaded with the same
-/// bytes, or a new one, uploaded and processed. Undefined in a dry run that
-/// would upload it.
+/// bytes, or a new one, uploaded, which may still be processing. Undefined in
+/// a dry run that would upload it.
 async function libraryImage(asc: AppStoreConnect, libraryId: string, asset: CreativeAsset): Promise<Resource<LibraryImage> | undefined> {
     const existing = await asc.all<LibraryImage>(
         `/v1/appAssetLibraries/${libraryId}/images?${query({ "filter[referenceName]": asset.referenceName })}`,
@@ -202,7 +218,10 @@ async function libraryImage(asc: AppStoreConnect, libraryId: string, asset: Crea
         return ready;
     }
     const pending = existing.find((image) => image.attributes.state === "UPLOAD_COMPLETE");
-    if (pending) return await waitForProcessing(asc, pending.id);
+    if (pending) {
+        console.log("   uploaded earlier, still processing");
+        return pending;
+    }
     if (existing.some((image) => image.attributes.state === "REJECTED")) {
         throw new Error(`App Review rejected this exact image (${asset.referenceName}); change the asset before uploading it again`);
     }
@@ -235,7 +254,7 @@ async function libraryImage(asc: AppStoreConnect, libraryId: string, asset: Crea
         data: { type: "appAssetLibraryImages", id: image.id, attributes: { uploaded: true } },
     });
     console.log(`   uploaded ${asset.bytes.length.toLocaleString("en-GB")} bytes`);
-    return await waitForProcessing(asc, image.id);
+    return image;
 }
 
 /// The image once App Store Connect has processed it, which tells which
@@ -245,10 +264,7 @@ async function waitForProcessing(asc: AppStoreConnect, id: string): Promise<Reso
     while (Date.now() < deadline) {
         const image = (await asc.get<Resource<LibraryImage>>(`/v1/appAssetLibraryImages/${id}`)).data;
         const { state, stateDetails } = image.attributes;
-        if (usableStates.includes(state)) {
-            console.log(`   processed (${state})`);
-            return image;
-        }
+        if (usableStates.includes(state)) return image;
         if (state === "FAILED" || state === "REJECTED") {
             throw new Error(`App Store Connect could not use the image (${state}): ${JSON.stringify(stateDetails ?? [])}`);
         }
@@ -259,8 +275,8 @@ async function waitForProcessing(asc: AppStoreConnect, id: string): Promise<Reso
 
 /// Makes the localisation's `type` placement in `group` show the image: kept if
 /// it already does, otherwise any placement there is deleted and a new one made.
-async function place(asc: AppStoreConnect, localizationId: string, type: string, group: string | undefined, imageId: string | undefined): Promise<void> {
-    const label = `${type}${group ? ` ${group}` : ""}`;
+async function place(asc: AppStoreConnect, localizationId: string, type: string, group: string | undefined, imageId: string | undefined, where: string): Promise<void> {
+    const label = `${where} ${type}${group ? ` ${group}` : ""}`;
     const filters: Record<string, string> = { "filter[placementType]": type, include: "image" };
     if (group) filters["filter[placementGroup]"] = group;
     const placements = await asc.all<Placement>(`/v1/appStoreVersionLocalizations/${localizationId}/placements?${query(filters)}`);
