@@ -30,7 +30,7 @@ As a card holder, I want to read what each version of the app changed, so that I
 - The row opens a screen titled "What's New" listing every version in the app's bundled `changelog.json`, newest first. The screen keeps the file's order, and `node scripts/check-changelog.ts` fails unless the file is newest first.
 - Each version is a section headed "Version 1.3", with its date from the changelog, such as "4 November 2026". A version still in preparation has no date and shows none.
 - Each change is a row with its text and an icon for its kind: new, improved or fixed. VoiceOver reads the kind first, as "New: …".
-- Each change shows in the app's language: its translation for the language and region where it has one ("es-MX"), then for the language ("es", "de", "ja"), and otherwise its British English. Where a change has an American English text and the device's region is the US, that text is shown. In preparation for 1.4, every change from 1.4 on is translated; older versions show in English.
+- Each change shows in the app's language: its translation for the language and region where it has one ("es-MX"), then for the language ("es", "de", "ja"), and otherwise its British English. Where a change has an American English text and the device's region is the US, that text is shown. Since 1.4, every change from 1.4 on is translated; older versions show in English.
 - A change of a kind the app doesn't know is left out, and the rest of the changelog still shows.
 - `changelog.json` is also the source of `CHANGELOG.md` and each App Store listing's What's New text (`scripts/generate-changelog.ts`), so the app and the store say the same thing in every language. `node scripts/check-changelog.ts` fails while the newest version lacks a text for any listing.
 
@@ -49,7 +49,7 @@ As a card holder, I want the card for the place I am in shown in full above my o
 - When you leave the place, or turn the switch off, the full card goes and the grid moves up.
 - The card still appears in the grid as well.
 
-**Since:** In preparation for 1.4
+**Since:** 1.4
 **Where:** `Cards/UI/Screens/SettingsListView.swift`, `Cards/Features/SettingsScreen.swift`, `Cards/UI/Screens/CardListView.swift`, `Cards/Features/CardListScreen.swift`, `CardsUITests/CardPlacesAndSettingsUITests.swift` (`testShowCardWhereIAmSwitch`), `Cards/Core/Models/CardArrangement.swift`, `Cards/Core/Models/DeviceSettings.swift`, `CardsTests/CardArrangementTests.swift`, `CardsUITests/CardsUITests.swift` (`testCardWhereYouAre`)
 
 ### SET-4: Choose the units distances are shown in
@@ -68,7 +68,7 @@ As a card holder, I want distances in the units I think in, so that I can tell a
 - Changing the choice changes every distance on screen straight away, and asks the widget to redraw (WID-7).
 - The choice is kept on the device under `distanceUnits` and doesn't sync, so each device has its own (DATA-1). The app copies it for the widget (WID-7).
 
-**Since:** In preparation for 1.4
+**Since:** 1.4
 **Where:** `Cards/UI/Screens/SettingsListView.swift`, `Cards/Features/SettingsScreen.swift`, `Cards/App/CardsApp.swift`, `Cards/Core/Models/DistanceUnits.swift`, `Cards/Core/Models/DistanceFormat.swift`, `Cards/Core/Models/DeviceSettings.swift`, `Cards/UI/Environment/DistanceUnitsEnvironment.swift`, `CardsTests/DistanceFormatTests.swift`, `CardsUITests/CardPlacesAndSettingsUITests.swift` (`testDistancesFollowTheSetting`)
 **Notes:** iOS always has a measurement system, so Automatic always means Kilometres or Miles. In the US, Automatic keeps feet below half a mile, as iOS writes road distances there, while Miles always uses yards; the radius is in yards either way.
 
@@ -85,6 +85,6 @@ As a card holder, I want a card's places to open in the maps app I use, so that 
 - At the accessibility text sizes the choice sits under "Maps" and wraps, as Distances does (SET-4). VoiceOver reads the menu as "Maps" with the choice as its value.
 - The choice is kept on the device under `mapsApp` and doesn't sync, so each device has its own (DATA-1).
 
-**Since:** In preparation for 1.4
+**Since:** 1.4
 **Where:** `Cards/Core/Models/MapsApp.swift`, `Cards/Core/Models/CardLocation.swift` (`mapsURL(in:)`), `Cards/Core/Models/DeviceSettings.swift`, `Cards/UI/Screens/SettingsListView+Menus.swift`, `Cards/UI/ViewState/MapsApp+Title.swift`, `Cards/UI/Environment/MapsAppEnvironment.swift`, `Cards/UI/Components/Text+OpensPlace.swift`, `Cards/Features/SettingsScreen.swift`, `Cards/App/CardsApp.swift`, `CardsTests/CardPlacesTests.swift`, `CardsUITests/CardPlacesAndSettingsUITests.swift` (`testChooseTheMapsApp`)
 **Notes:** In the EU (iOS 18.4 and later) and Japan (iOS 26.2 and later) people can choose a default navigation app, which iOS hands directions to through `geo-navigation://`. A pin isn't directions, so Apple Maps' choice still opens Apple Maps there.

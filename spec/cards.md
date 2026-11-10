@@ -9,10 +9,10 @@ As a card holder, I want all my cards in one list, so that I can find the one I 
 - The Cards tab opens on a list titled "Cards", with one row per card in the order the cards are saved in (each card's `order`).
 - Each row shows the card's name, filled with the card's colour (COL-4), and the distance to the nearest of its places when the card has places and the app knows where you are (PLACE-6).
 - Tapping a row opens the card (CARD-4) with a heavy haptic tap.
-- In preparation for 1.4: the list becomes a grid of tiles (CARD-10), with search and a choice of order (CARD-11), and opening a card plays no haptic (A11Y-5).
-- The navigation bar, with its add button, hides when the list scrolls down from the top, and comes back when the list is at the top again. In preparation for 1.4: the grid does the same, and the bar stays while you search (CARD-11), and while the cards all fit on the screen, where a drag only bounces them.
+- Since 1.4: the list becomes a grid of tiles (CARD-10), with search and a choice of order (CARD-11), and opening a card plays no haptic (A11Y-5).
+- The navigation bar, with its add button, hides when the list scrolls down from the top, and comes back when the list is at the top again. Since 1.4: the grid does the same, and the bar stays while you search (CARD-11), and while the cards all fit on the screen, where a drag only bounces them.
 - With no cards, the list shows "No Cards Yet", "Scan the barcode on a loyalty card to add it." and an "Add Card" button that opens the add form (1.3).
-- At the accessibility text sizes, a row stacks the name above the distance (A11Y-3). In preparation for 1.4: the grid has half as many columns instead (CARD-10).
+- At the accessibility text sizes, a row stacks the name above the distance (A11Y-3). Since 1.4: the grid has half as many columns instead (CARD-10).
 
 **Since:** 1.0
 **Where:** `Cards/UI/Screens/CardListView.swift`, `Cards/UI/Components/CardTileView.swift`, `Cards/Features/CardListScreen.swift`, `CardsUITests/CardsScreenshotTests.swift`
@@ -23,10 +23,10 @@ As a card holder, I want to point the camera at a card's barcode, so that I don'
 
 - The barcode viewfinder button at the top right of the list, labelled "Add Card" for VoiceOver, opens a form titled "Add Card" with the camera above the fields.
 - The camera view is 250 points high, with rounded corners and a red line across the middle.
-- In preparation for 1.4: the camera focuses on a card held close (BAR-5), focuses where you tap (BAR-6) and has a torch button (BAR-7).
+- Since 1.4: the camera focuses on a card held close (BAR-5), focuses where you tap (BAR-6) and has a torch button (BAR-7).
 - The camera reads the nine supported types (BAR-1). On the first read it stops, the phone vibrates, and the form's code and barcode type fill in. The name stays as it was.
-- After a read the camera stays stopped until the scanner view appears again. In preparation for 1.4: the torch goes off with it (BAR-7).
-- Pinching the camera view zooms from wherever the last pinch left off, within the camera's range and never past 8x (1.3). In preparation for 1.4: the range runs from the main lens's own view, never out to the ultra-wide, to 8x the main lens, and the zoom starts where BAR-5 puts it.
+- After a read the camera stays stopped until the scanner view appears again. Since 1.4: the torch goes off with it (BAR-7).
+- Pinching the camera view zooms from wherever the last pinch left off, within the camera's range and never past 8x (1.3). Since 1.4: the range runs from the main lens's own view, never out to the ultra-wide, to 8x the main lens, and the zoom starts where BAR-5 puts it.
 - The first time, the form asks for the camera before it starts it, and iOS shows "Camera is used to scan barcodes on your loyalty and membership cards". The camera area is black until you answer.
 - When camera access is refused or restricted, the camera area says "Camera access is off" and "Turn it on in Settings to scan a card, or type the code below.", with an Open Settings button that opens the app's page in the Settings app (1.3).
 - On a device with no camera, such as the simulator, it says "No camera" and "Type the card's code below." (1.3).
@@ -42,7 +42,7 @@ As a card holder, I want to point the camera at a card's barcode, so that I don'
 
 As a card holder, I want to type a card's number in, so that I can keep a card the camera can't read.
 
-- The add form has a Name field ("Enter name"), a Code field ("Enter code"), a Barcode Type menu, a Colour section (COL-1) and a Locations section (PLACE-1). Colour and Locations are 1.3. In preparation for 1.4 a Notes section follows Locations (CARD-14).
+- The add form has a Name field ("Enter name"), a Code field ("Enter code"), a Barcode Type menu, a Colour section (COL-1) and a Locations section (PLACE-1). Colour and Locations are 1.3. Since 1.4 a Notes section follows Locations (CARD-14).
 - Both fields have autocorrection off. The Code field uses the standard keyboard, so codes can hold letters and symbols.
 - The barcode type defaults to Code 128.
 - Save is disabled until both the name and the code have something in them other than spaces, and while another card uses the code (CARD-9) (1.3).
@@ -76,7 +76,7 @@ As a card holder, I want to add a card from a screenshot, a photo or a PDF of it
 - The photo or file is read on the device by Apple's Vision framework, and is not kept or sent anywhere.
 - This is separate from Import Cards in Settings, which adds cards from an exported JSON file (DATA-3).
 
-**Since:** In preparation for 1.4
+**Since:** 1.4
 **Where:** `Cards/UI/Components/BarcodeImportSection.swift`, `Cards/UI/Components/BarcodeChoiceList.swift`, `Cards/UI/ViewState/BarcodeImportStatus.swift`, `Cards/Core/Models/BarcodeReading.swift`, `Cards/Core/Services/BarcodeImageReader.swift`, `Cards/Core/Services/FileReader.swift`, `Cards/UI/Screens/CardEditView.swift`, `Cards/Features/CardEditScreen.swift`, `CardsTests/BarcodeImageReaderTests.swift`, `CardsUITests/CardsUITests.swift` (`testAddFormOffersAPhotoOrAFile`)
 **Notes:** Vision cannot make its barcode detector in the simulator ("Failed to create barcode detector." on iOS 18.1 and 27.0), so there every photo or file says it could not be read. The tests that read through Vision run only on a device; the simulator, and CI, test how pictures and pages are prepared and what is done with what Vision finds.
 
@@ -85,17 +85,17 @@ As a card holder, I want to add a card from a screenshot, a photo or a PDF of it
 As a card holder, I want to open a card and see its barcode and number, so that it can be scanned or typed in at the till.
 
 - The card screen shows the card face in the card's colour (COL-3): the name on a white panel at the top, the barcode in its frame (BAR-2), and the number and the date the card was added on a white panel below.
-- In preparation for 1.4: the card's icon, if it has one, sits beside the name in the top panel (CARD-12).
-- When the card has places and the app knows where you are, the top panel also says how far away the nearest is, as "At Boulder Barn" or "350 m · Boulder Barn" (PLACE-6) (1.3). In preparation for 1.4, tapping it opens the place in the maps app chosen in Settings (PLACE-6, SET-5).
-- In preparation for 1.4: when the card has more than one place, a panel at the foot of the card face lists the nearest five with their distances, and a place opens in the maps app chosen in Settings (PLACE-9, SET-5). The screen scrolls when the card is taller than it.
-- In preparation for 1.4: when the card has notes, a last panel at the foot of the card face shows them under "Notes", below its places (CARD-14).
+- Since 1.4: the card's icon, if it has one, sits beside the name in the top panel (CARD-12).
+- When the card has places and the app knows where you are, the top panel also says how far away the nearest is, as "At Boulder Barn" or "350 m · Boulder Barn" (PLACE-6) (1.3). Since 1.4, tapping it opens the place in the maps app chosen in Settings (PLACE-6, SET-5).
+- Since 1.4: when the card has more than one place, a panel at the foot of the card face lists the nearest five with their distances, and a place opens in the maps app chosen in Settings (PLACE-9, SET-5). The screen scrolls when the card is taller than it.
+- Since 1.4: when the card has notes, a last panel at the foot of the card face shows them under "Notes", below its places (CARD-14).
 - The number is in a monospaced font, and it can be selected and copied (1.3).
 - A copy button beside the number puts it on the clipboard, for typing it into a website or another app. The icon turns into a tick for about a second and a half, and a success haptic plays. The number stays centred on its panel (1.3).
 - The date shows the abbreviated date and the time, such as "4 Nov 2026 at 09:41".
-- The toolbar has the brightness button (BAR-4) and Edit (CARD-5). In preparation for 1.4 a share button comes first, to their left (SHARE-1).
+- The toolbar has the brightness button (BAR-4) and Edit (CARD-5). Since 1.4 a share button comes first, to their left (SHARE-1).
 - Below the card, "Add current location" opens the map to add a place (PLACE-4) (1.3).
 - Opening a card raises the screen brightness when Brightness Boost is on (BAR-4).
-- In preparation for 1.4: opening a card records when it was last viewed, for the Last viewed order (CARD-11). Coming back to the card from its edit form counts as opening it again.
+- Since 1.4: opening a card records when it was last viewed, for the Last viewed order (CARD-11). Coming back to the card from its edit form counts as opening it again.
 
 **Since:** 1.0
 **Where:** `Cards/UI/Screens/CardDetailView.swift`, `Cards/Features/CardDetailScreen.swift`, `Cards/UI/Actions/CardActions.swift`, `CardsUITests/CardsUITests.swift` (`testAdd`), `CardsUITests/CardPlacesAndSettingsUITests.swift` (`testCopyCardCode`), `CardsUITests/CardsScreenshotTests.swift`
@@ -104,13 +104,13 @@ As a card holder, I want to open a card and see its barcode and number, so that 
 
 As a card holder, I want to change a card's details, so that I can fix a mistake or keep it up to date.
 
-- Edit on the card screen, or in preparation for 1.4 Edit in a tile's long-press menu (CARD-10), opens a form titled "Edit Card" with the card's name, code, barcode type, colour and places, and its Notify When I Arrive switch when it has places (ARR-6). There is no camera. In preparation for 1.4 the form also has the card's icon (CARD-12) and its notes (CARD-14).
-- The Name field takes the keyboard focus on its own after about 0.6 seconds, once. Coming back to the form from another tab leaves the keyboard down (1.3). In preparation for 1.4 no field takes the focus on its own: the form opens with the keyboard down, and tapping a field brings it up.
+- Edit on the card screen, or in preparation for 1.4 Edit in a tile's long-press menu (CARD-10), opens a form titled "Edit Card" with the card's name, code, barcode type, colour and places, and its Notify When I Arrive switch when it has places (ARR-6). There is no camera. Since 1.4 the form also has the card's icon (CARD-12) and its notes (CARD-14).
+- The Name field takes the keyboard focus on its own after about 0.6 seconds, once. Coming back to the form from another tab leaves the keyboard down (1.3). Since 1.4 no field takes the focus on its own: the form opens with the keyboard down, and tapping a field brings it up.
 - Scrolling the form puts the keyboard away (1.3).
 - Save follows the same rules as adding: it is disabled without a name and a code, or while another card uses the code, and it trims both (CARD-3, CARD-9) (1.3).
 - Save writes every field to the card and shows the card screen; going back from there returns to the list.
 - Going back from the form without saving discards every change, including places added or removed in it.
-- A card can't be deleted from the form (CARD-6). In preparation for 1.4 it can: Delete Card at the foot of the edit form asks "Delete Joe's Market?", saying it is deleted from all your devices and cannot be undone, then deletes the card and goes back to the list. Adding a card has no Delete Card.
+- A card can't be deleted from the form (CARD-6). Since 1.4 it can: Delete Card at the foot of the edit form asks "Delete Joe's Market?", saying it is deleted from all your devices and cannot be undone, then deletes the card and goes back to the list. Adding a card has no Delete Card.
 
 **Since:** 1.0
 **Where:** `Cards/Features/CardEditScreen.swift`, `Cards/UI/Screens/CardEditView.swift`, `Cards/UI/ViewState/CardViewState.swift`, `Cards/Core/Navigation/NavigationManager.swift`, `Cards/UI/Actions/CardActions.swift`, `CardsUITests/CardEditFormUITests.swift` (`testDeleteFromTheEditForm`)
@@ -125,8 +125,8 @@ As a card holder, I want to delete a card I no longer use, so that the list only
 - With iCloud, the card is deleted on every device (DATA-1).
 - The card's arrival notifications are cancelled (ARR-1) and the widget stops offering it (WID-7).
 - Every card can be deleted at once from Settings (DATA-5).
-- In preparation for 1.4: Delete Card at the foot of the edit form deletes the card too, after asking, and goes back to the list (CARD-5).
-- In preparation for 1.4: the grid has no swipe actions, so Delete moves to the menu a long press on a tile shows (CARD-10). It deletes the card at once, with the same medium haptic, and the remaining cards are renumbered from 0 in their order. VoiceOver offers Delete as an action on the tile (A11Y-1).
+- Since 1.4: Delete Card at the foot of the edit form deletes the card too, after asking, and goes back to the list (CARD-5).
+- Since 1.4: the grid has no swipe actions, so Delete moves to the menu a long press on a tile shows (CARD-10). It deletes the card at once, with the same medium haptic, and the remaining cards are renumbered from 0 in their order. VoiceOver offers Delete as an action on the tile (A11Y-1).
 
 **Since:** 1.0
 **Where:** `Cards/UI/Screens/CardListView.swift`, `Cards/UI/Components/CardTileView.swift`, `Cards/Features/CardListScreen.swift`, `CardsUITests/CardsUITests.swift` (`testDeleteFromTheLongPressMenu`), `Cards/Features/CardEditScreen.swift`, `Cards/Core/Models/CardImport.swift` (`renumber`), `CardsUITests/CardEditFormUITests.swift` (`testDeleteFromTheEditForm`)
@@ -139,8 +139,8 @@ As a card holder, I want to move cards up and down the list, so that the ones I 
 - After a move every card is renumbered from 0 in its new order and saved, so the order syncs with the cards (DATA-1).
 - The top card is the one the widget shows when it can't pick a nearest card (WID-1).
 - New cards, added in the form or imported, go at the end of the list (CARD-3, DATA-3) (1.3).
-- In preparation for 1.4: you press and hold a tile, then drag it onto another. It takes that tile's place, and the tiles between shift along by one. Every card is then renumbered and saved, as after a move in the list (CARD-10).
-- In preparation for 1.4: tiles can only be dragged in custom order with nothing in the search field (CARD-11).
+- Since 1.4: you press and hold a tile, then drag it onto another. It takes that tile's place, and the tiles between shift along by one. Every card is then renumbered and saved, as after a move in the list (CARD-10).
+- Since 1.4: tiles can only be dragged in custom order with nothing in the search field (CARD-11).
 
 **Since:** 1.0
 **Where:** `Cards/UI/Screens/CardListView.swift`, `Cards/Features/CardListScreen.swift`, `Cards/Core/Models/CardArrangement.swift`, `Cards/Core/Models/CardImport.swift`, `CardsTests/CardFixesTests.swift` (`newCardsGoAtTheEnd`), `CardsTests/CardArrangementTests.swift` (`aMovedCardTakesThePlaceOfTheOneItIsDroppedOn`), `CardsUITests/CardsUITests.swift` (`testDragATileToReorder`)
@@ -186,7 +186,7 @@ As a card holder, I want my cards laid out in a grid, so that I can see more of 
 - VoiceOver reads each tile as one button, the name and then the distance, as the rows did (A11Y-1), and offers Edit and Delete as actions.
 - The add button and the empty state stay as they are on the list.
 
-**Since:** In preparation for 1.4
+**Since:** 1.4
 **Where:** `Cards/UI/Screens/CardListView.swift`, `Cards/UI/Components/CardTileView.swift`, `Cards/Features/CardListScreen.swift`, `Cards/Core/Models/CardArrangement.swift`, `CardsUITests/CardsUITests.swift` (`testDeleteFromTheLongPressMenu`, `testDragATileToReorder`), `CardsUITests/CardEditFormUITests.swift` (`testEditFromTheLongPressMenu`), `CardsUITests/CardsScreenshotTests.swift`
 **Notes:** It replaces the single-column list. A grid has no swipe actions, which is why Delete moved to the long-press menu. Dragging uses SwiftUI's drag and drop, which works from iOS 18, so the other tiles don't part to make a gap while you drag; they move when you let go.
 
@@ -205,7 +205,7 @@ As a card holder, I want to search my cards and choose their order, so that the 
 - Only custom order can be rearranged by dragging, and only with nothing in the search field.
 - Opening a card records when it was last viewed. That date is stored with the card, so it syncs (DATA-1) and is exported (DATA-2).
 
-**Since:** In preparation for 1.4
+**Since:** 1.4
 **Where:** `Cards/UI/Screens/CardListView.swift`, `Cards/Features/CardListScreen.swift`, `Cards/Core/Models/CardArrangement.swift`, `Cards/Core/Models/CardSortOrder.swift`, `Cards/Core/Models/DeviceSettings.swift`, `Cards/Core/Models/CardItem.swift`, `CardsTests/CardArrangementTests.swift`, `CardsUITests/CardsUITests.swift` (`testSearchFiltersCards`, `testSortMenuChangesTheOrder`), `Cards/Features/CardDetailScreen.swift`
 
 ### CARD-12: Give a card an icon
@@ -239,7 +239,7 @@ As a card holder, I want each card to carry an icon, so that I can recognise it 
 - VoiceOver does not read the icon on the card or its tile, because the card's name already says what it is (A11Y-4). In the form, where you choose it, the Icon row reads its value by what the icon shows, such as "Basket", or "None", and so does each icon in the grid. Each group's name is a heading, so the rotor moves from group to group.
 - The icon is stored with the card, so it syncs (DATA-1), is exported, and is imported with the card (DATA-2, DATA-3).
 
-**Since:** In preparation for 1.4
+**Since:** 1.4
 **Where:** `Cards/Core/Models/CardIcon.swift`, `Cards/UI/Components/CardIconPicker.swift`, `Cards/UI/Screens/CardEditView.swift`, `Cards/Features/CardEditScreen.swift`, `Cards/UI/Components/CardFaceView.swift`, `Cards/Features/CardDetailScreen.swift`, `Cards/Core/Models/CardItem.swift`, `Cards/UI/Screens/CardListView.swift`, `CardsTests/CardIconTests.swift`, `CardsUITests/CardEditFormUITests.swift` (`testChooseAnIcon`, `testTheIconGridOpensAtTheChosenIcon`), `Cards/UI/Screens/CardDetailView.swift`, `Cards/UI/Components/CardTileView.swift`, `Cards/Features/CardListScreen.swift`
 **Notes:** Every icon is in SF Symbols 6, so iOS 18 draws it; `CardIconTests` checks each one on the oldest supported iOS. Stored names never change: an icon can move to another group, but is removed rather than renamed. An icon name the build doesn't list, such as one from a newer version, still shows on the card.
 
@@ -259,6 +259,6 @@ As a card holder, I want to keep a few notes with a card, so that what I need to
 - Sharing a card leaves its notes out of both the link and the picture (SHARE-1, SHARE-2), so a card added from a link has none (SHARE-3).
 - The notes are stored with the card, so they sync (DATA-1), are exported, and are imported with the card (DATA-2, DATA-3). Older cards and older exports have none (DATA-4).
 
-**Since:** In preparation for 1.4
+**Since:** 1.4
 **Where:** `Cards/Core/Models/CardNotes.swift`, `Cards/Core/Models/CardItem.swift`, `Cards/UI/ViewState/CardViewState.swift`, `Cards/UI/Screens/CardEditView+Parts.swift` (`notesSection`), `Cards/UI/Screens/CardEditView.swift`, `Cards/Features/CardDraft+CardItem.swift`, `Cards/Features/CardEditScreen.swift`, `Cards/UI/Screens/CardDetailView+Panels.swift` (`NotesPanel`), `Cards/UI/Screens/CardDetailView.swift`, `Cards/Features/CardDetail+CardItem.swift`, `CardsTests/CardNotesTests.swift`, `CardsTests/CardDraftTests.swift`, `CardsTests/SharingTests.swift` (`thePayloadLeavesOutWhatIsTheSharers`, `theSharedImageLeavesOutTheNotes`), `CardsUITests/CardEditFormUITests.swift` (`testWriteNotes`), `CardsUITests/CardsAccessibilityAuditTests.swift` (`testCardDetail`, `testEditCard`, on Local Roast Coffee, whose screenshot card has notes), `Cards/Core/Models/CardArrangement.swift`, `CardsTests/CardArrangementTests.swift` (`searchMatchesNotesToo`)
 **Notes:** Notes are left out of what is shared, as Paul decided on 8 November 2026: notes can be personal, and a card holder sharing a card may not mean to send them.

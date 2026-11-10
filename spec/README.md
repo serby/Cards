@@ -28,11 +28,11 @@ As a card holder, I want to type a card's number in, so that I can keep a card t
 - **Title:** short, in the person's terms.
 - **Story:** `As a <person>, I want <goal>, so that <reason>.` The person is a card holder in most stories, sometimes someone using VoiceOver or a person with several devices.
 - **Acceptance criteria:** a bullet list of statements that can be checked against the app: numbers, defaults, wording and what happens when something goes wrong. A criterion added after the story's first version can say so, as in "(1.3)".
-- **Since:** the version that introduced the story: 1.0, 1.1, 1.3 or 1.4, or Unknown when the history doesn't say. "In preparation for 1.4" marks work planned or being built for the next version and not yet released; a criterion in an older story can be marked the same way.
+- **Since:** the version that introduced the story: 1.0, 1.1, 1.3 or 1.4, or Unknown when the history doesn't say. "In preparation for <version>" marks work planned or being built for the next version and not yet released; a criterion in an older story can be marked the same way.
 - **Where:** the main source files and the tests that cover the story, as repo-relative paths, with `path:line` only when a line really helps.
 - **Notes:** optional. Surprising behaviour and known gaps, stated as facts. No wishlists.
 
-Versions: 1.0 was the first App Store version, prepared in December 2025. 1.1 is the tag `v1.1.0` (18 June 2026). The tag `v1.2` was never released and the version was renumbered 1.3, which is in preparation; everything after `v1.1.0` is in 1.3.
+Versions: 1.0 was the first App Store version, prepared in December 2025. 1.1 is the tag `v1.1.0` (18 June 2026). The tag `v1.2` was never released and the version was renumbered 1.3, the tag `v1.3` (5 November 2026); everything after `v1.1.0` is in 1.3. 1.4 is the tag `v1.4` (10 November 2026).
 
 ## Keeping it true
 

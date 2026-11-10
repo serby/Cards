@@ -8,7 +8,7 @@ As a person with several devices, I want my cards to sync through my iCloud acco
 
 - Cards are stored with SwiftData and mirrored to the private CloudKit database of the iCloud container `iCloud.net.serby.Cards`, in your own iCloud account.
 - Everything about a card syncs: name, code, barcode type, colour, order, the date it was added, its places, and whether it reminds you on arrival (ARR-6).
-- In preparation for 1.4: its notes sync with it too (CARD-14).
+- Since 1.4: its notes sync with it too (CARD-14).
 - Adding, editing, reordering and deleting a card all reach your other devices. Deleting a card deletes it everywhere (CARD-6).
 - Changes from other devices arrive when the app is opened, as the app has no push notifications from CloudKit.
 - Settings (SET-1), the widget's choice of card (WID-2) and the scheduled arrival notifications (ARR-1) belong to each device and don't sync. A card's own arrival switch syncs with the card, but the Arrival Notifications switch in Settings is set on each device (ARR-5).
@@ -25,7 +25,7 @@ As a card holder, I want to export my cards, so that I have a copy I control.
 - Settings > Data > "Export as JSON" opens the share sheet with every card as JSON text.
 - The JSON is an array of cards, pretty-printed with sorted keys. Each card has `code`, `color`, `locations`, `name`, `notifiesOnArrival`, `order`, `timestamp` and `type`.
 - `timestamp` is an ISO 8601 date. `type` is the barcode type's name, such as "EAN-13". `color` is a palette name or "#RRGGBB" (COL-8). Each place has `id`, `name`, `latitude`, `longitude` and `radius` in metres. `notifiesOnArrival` is `true` or `false`, the card's own arrival switch (ARR-6) (1.3).
-- In preparation for 1.4: a card with notes also has `notes`, the text as the card keeps it (CARD-14). A card without notes has no `notes` key.
+- Since 1.4: a card with notes also has `notes`, the text as the card keeps it (CARD-14). A card without notes has no `notes` key.
 - Cards are exported in their list order (1.3).
 - The app only exports when asked.
 
@@ -59,7 +59,7 @@ As a card holder, I want exports from any earlier version to import, so that an 
 - An export without `color`, from before colours, imports with every card in Default (COL-8).
 - An export without `locations`, from before places, imports with no places.
 - An export without `notifiesOnArrival`, from before each card had its own arrival switch, imports with every card switched on (ARR-6).
-- In preparation for 1.4: an export without `notes`, from before notes, imports with no notes, and notes that are only spaces and new lines import as none (CARD-14).
+- Since 1.4: an export without `notes`, from before notes, imports with no notes, and notes that are only spaces and new lines import as none (CARD-14).
 - A barcode type name the app doesn't know, or none, imports as Code 128, and a colour it doesn't know as Default.
 - A card without `order` or `timestamp`, as in a hand-written file, still imports (DATA-3).
 
@@ -100,7 +100,7 @@ As a card holder, I want to import an export saved as a file, so that I don't ha
 - Cancelling the Files picker goes back to the sheet, and imports nothing.
 - A file that cannot be read, or is not a card export, shows "Invalid JSON format", and nothing is imported.
 
-**Since:** In preparation for 1.4
+**Since:** 1.4
 **Where:** `Cards/UI/Screens/SettingsListView.swift`, `Cards/Features/SettingsScreen.swift`, `Cards/Core/Services/FileReader.swift`, `Cards/Core/Models/CardImport.swift`, `CardsTests/ImportFileTests.swift`
 
 ### DATA-8: Keep my cards on this device only
@@ -113,7 +113,7 @@ As a card holder, I want to turn iCloud sync off, so that my cards stay on this 
 - The switch is kept on the device under `syncsWithICloud` and doesn't sync, so each device has its own.
 - The cards already in iCloud stay there until you delete them (DATA-9).
 
-**Since:** In preparation for 1.4
+**Since:** 1.4
 **Where:** `Cards/Core/Services/CardStore.swift`, `Cards/App/CardsApp.swift`, `Cards/UI/Screens/SettingsListView+Privacy.swift`, `Cards/Features/SettingsScreen.swift`, `Cards/Core/Models/DeviceSettings.swift`, `CardsTests/CardStoreTests.swift`
 **Notes:** UI tests use an in-memory store, which never syncs, so the switch doesn't reopen it there. A store that has synced keeps saving once it is opened without iCloud, and the other way round (`CardStoreTests`).
 
@@ -128,6 +128,6 @@ As a card holder who has turned iCloud sync off, I want to delete the copy of my
 - Nothing in iCloud to delete counts as deleted.
 - Turning iCloud Sync on again clears the caption.
 
-**Since:** In preparation for 1.4
+**Since:** 1.4
 **Where:** `Cards/Core/Services/ICloudCards.swift`, `Cards/UI/Screens/SettingsListView+Privacy.swift`, `Cards/Features/SettingsScreen.swift`, `CardsTests/PrivacySettingsTests.swift`
 **Notes:** Only the device that deletes stops syncing. Another device with iCloud Sync on uploads its cards again, as the caption says.

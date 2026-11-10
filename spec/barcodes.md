@@ -9,7 +9,7 @@ As a card holder, I want the app to handle the barcodes loyalty and membership c
 - There are nine types, offered in this order in the Barcode Type menu: Code 128, Code 39, QR Code, EAN-8, EAN-13, Code 93, UPC-E, Aztec, PDF 417.
 - The camera reads the same nine types (CARD-2). It reads no others, so a scan of ITF-14 or Data Matrix fills in nothing.
 - A scanned code sets the barcode type to the type the camera read.
-- In preparation for 1.4: a photo or a file is read for the same nine types, and sets the type the same way (CARD-13). Other kinds it finds, such as Data Matrix, ITF-14 or Codabar, fill in nothing, and the form names them as kinds the app cannot show. The checksum and full ASCII forms of Code 39 and Code 93 read as Code 39 and Code 93.
+- Since 1.4: a photo or a file is read for the same nine types, and sets the type the same way (CARD-13). Other kinds it finds, such as Data Matrix, ITF-14 or Codabar, fill in nothing, and the form names them as kinds the app cannot show. The checksum and full ASCII forms of Code 39 and Code 93 read as Code 39 and Code 93.
 - A card's type is stored by its name. A name the app doesn't know, from a newer build or a hand-edited export, reads as Code 128.
 - QR Code and Aztec are drawn square. The other seven, PDF 417 among them, are drawn as a wide strip.
 
@@ -67,7 +67,7 @@ As a card holder, I want the camera to focus on a card held a few centimetres aw
 - Autofocus is continuous and kept to near subjects, and exposure is continuous, where the camera supports them.
 - Only codes inside the camera view are read, not ones cropped off the top or bottom of the picture.
 
-**Since:** In preparation for 1.4
+**Since:** 1.4
 **Where:** `Cards/Scanner/CameraPlan.swift`, `Cards/Scanner/CameraSession.swift`, `Cards/Scanner/ScannerModel.swift`, `CardsTests/CameraPlanTests.swift`
 **Notes:** The zoom comes from the main lens's minimum focus distance, not the combined camera's, which is the ultra-wide's macro distance on a Pro iPhone and would ask for no zoom. The simulator has no camera, so none of this shows there.
 
@@ -81,7 +81,7 @@ As a card holder, I want to tap the camera view to focus on the barcode, so that
 - After a read, tapping does nothing until the scanner view appears again (CARD-2).
 - VoiceOver reads the camera view as "Barcode scanner", with the hint "Point the camera at a card's barcode to read it. Double-tap to focus on the middle." Double-tapping focuses on the middle of the view.
 
-**Since:** In preparation for 1.4
+**Since:** 1.4
 **Where:** `Cards/UI/Components/ScannerControlsView.swift`, `Cards/Scanner/ScannerModel.swift`, `Cards/Scanner/CameraSession.swift`, `CardsTests/CameraPlanTests.swift` (`pointOfInterestStaysInTheUnitSquare`)
 **Notes:** In the Storybook, the ScannerControlsView story shows the square in fixed places and the ScannerPlaceholderView story shows it where you tap.
 
@@ -96,5 +96,5 @@ As a card holder, I want to turn on the torch while scanning, so that the camera
 - The torch goes off when a code is read, when the scanner leaves the screen and when the form closes.
 - If the torch can't come on, such as when the phone is too hot, the button stays off.
 
-**Since:** In preparation for 1.4
+**Since:** 1.4
 **Where:** `Cards/UI/Components/ScannerControlsView.swift`, `Cards/Scanner/ScannerModel.swift`, `Cards/Scanner/CameraSession.swift`

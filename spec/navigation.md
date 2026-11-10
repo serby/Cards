@@ -14,7 +14,7 @@ As a card holder, I want the app split into my cards and its settings, so that t
 
 **Since:** 1.0
 **Where:** `Cards/App/CardsApp.swift`, `Cards/Core/Navigation/NavigationManager.swift`, `Cards/Core/Navigation/AppTab.swift`, `Cards/UI/Modifiers/ConditionalModifier.swift:18-25`, `CardsTests/NavigationTests.swift`, `CardsTests/CardFixesTests.swift` (`openingACardBringsTheCardsTabForward`)
-**Notes:** Debug builds add a third tab; release builds never have it. In preparation for 1.4 it is the Development tab, with a hammer icon, which holds the Storybook and the other development tools (DEV-1); before, it was the Storybook tab. Before 1.3 the Cards tab went back to the list each time it appeared, and a link or notification opened the card behind Settings without selecting the Cards tab.
+**Notes:** Debug builds add a third tab; release builds never have it. Since 1.4 it is the Development tab, with a hammer icon, which holds the Storybook and the other development tools (DEV-1); before, it was the Storybook tab. Before 1.3 the Cards tab went back to the list each time it appeared, and a link or notification opened the card behind Settings without selecting the Cards tab.
 
 ### NAV-2: Open a card from a link
 
@@ -28,7 +28,7 @@ As a card holder, I want a link to open a card directly, so that the widget and 
 - A link to a code no card has shows "Card not found".
 - Opening a link replaces whatever was showing on the Cards tab: a card link leaves the card on top of the list, and an edit link the edit form on top of the card.
 - Every link the app reads selects the Cards tab, from Settings too (NAV-1) (1.3).
-- In preparation for 1.4: share links, `https://cards.serby.net/add#…` (a universal link) and `cards://cards/add#…`, ask whether to add the card in them (SHARE-3). They show a sheet over the Cards tab instead of replacing what it shows. Other `https` links, and `https://cards.serby.net` links to any other page, are ignored.
+- Since 1.4: share links, `https://cards.serby.net/add#…` (a universal link) and `cards://cards/add#…`, ask whether to add the card in them (SHARE-3). They show a sheet over the Cards tab instead of replacing what it shows. Other `https` links, and `https://cards.serby.net` links to any other page, are ignored.
 
 **Since:** 1.0
 **Where:** `Cards/Core/Navigation/NavigationRoute.swift`, `Cards/Core/Navigation/NavigationManager.swift`, `Cards/Features/CardListScreen.swift`, `Info.plist`, `CardsTests/NavigationTests.swift`, `CardsTests/CardFixesTests.swift` (`openingACardBringsTheCardsTabForward`), `Cards/Core/Navigation/SharedCardLink.swift`, `Cards/App/CardsApp.swift`

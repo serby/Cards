@@ -6,19 +6,19 @@ How the app works with VoiceOver, larger text sizes and touch, and the feedback 
 
 As someone using VoiceOver, I want every card read in plain words, so that I can find and show the right one.
 
-- A list row reads as one button: the card's name, then its distance, as "Joe's Market, You're at Joe's Market Notting Hill" or "Local Roast Coffee, 350 m from Local Roast Portobello" (1.3). In preparation for 1.4 it says the units in full, in the units chosen in Settings (SET-4): "Local Roast Coffee, 350 metres from Local Roast Portobello", or "400 yards from".
-- In preparation for 1.4: a tile in the grid reads the same way, name first although the distance sits above the name, its icon is not read, and Delete is in its actions (CARD-10). The card shown in full where you are reads the same way too, with the hint "Opens the card for where you are" (SET-3).
+- A list row reads as one button: the card's name, then its distance, as "Joe's Market, You're at Joe's Market Notting Hill" or "Local Roast Coffee, 350 m from Local Roast Portobello" (1.3). Since 1.4 it says the units in full, in the units chosen in Settings (SET-4): "Local Roast Coffee, 350 metres from Local Roast Portobello", or "400 yards from".
+- Since 1.4: a tile in the grid reads the same way, name first although the distance sits above the name, its icon is not read, and Delete is in its actions (CARD-10). The card shown in full where you are reads the same way too, with the hint "Opens the card for where you are" (SET-3).
 - The add button reads "Add Card".
-- On the card screen, the name reads as it is written and is a heading, and VoiceOver moves to it when the screen opens. In preparation for 1.4 the label no longer adds "Card name:", which translated badly.
+- On the card screen, the name reads as it is written and is a heading, and VoiceOver moves to it when the screen opens. Since 1.4 the label no longer adds "Card name:", which translated badly.
 - The barcode reads "Barcode" with its type as the value, such as "EAN-13"; a code that cannot be drawn reads "Failed to generate barcode" instead (in preparation for 1.4).
 - The number reads "Card code: " and then the code character by character (1.3).
 - The copy button reads "Copy card code". After a copy it reads "Copied", and VoiceOver announces "Card code copied" (1.3).
 - The date reads "Created on <date>", with the full month, such as "Created on 4 November 2026 at 09:41".
 - Edit has the hint "Opens the card for editing" (in preparation for 1.4).
 - The brightness button reads "Brightness Boost", with the hint "Turns full brightness on or off, so the barcode scans easily" (in preparation for 1.4).
-- In preparation for 1.4: Share reads "Share card", with the hint "Shares this card as a link to add it, or as an image".
+- Since 1.4: Share reads "Share card", with the hint "Shares this card as a link to add it, or as an image".
 - "Add current location" has the hint "Opens a map to save where you are as one of this card's places" (1.3).
-- In preparation for 1.4: on a card with more than one place, "Nearest places", or "Places", reads as a heading, and each place reads as a button the way its distance does, such as "350 metres from Joe's Market Kensington", with the hint "Opens this place in Maps", or "Opens this place in Google Maps" when Settings > Maps is Google Maps (PLACE-9, SET-5).
+- Since 1.4: on a card with more than one place, "Nearest places", or "Places", reads as a heading, and each place reads as a button the way its distance does, such as "350 metres from Joe's Market Kensington", with the hint "Opens this place in Maps", or "Opens this place in Google Maps" when Settings > Maps is Google Maps (PLACE-9, SET-5).
 - In the edit form the fields read "Card name" and "Card code", the type menu "Barcode type", and Save "Save card".
 - Save's hint is "Save changes to this card", or "Needs a name and a code no other card uses" while it is disabled (CARD-3, CARD-9) (1.3).
 
@@ -41,11 +41,11 @@ As someone using VoiceOver, I want to be told when the app changes the screen br
 As a card holder who uses large text, I want the app to grow with my text size, so that I can read it.
 
 - Text uses the system's text styles, so it follows Dynamic Type throughout.
-- At the accessibility text sizes, a list row stacks the name above the distance (1.3). In preparation for 1.4: a tile always has the name above the distance, and at those sizes the grid has half as many columns, one on iPhone and two on iPad (CARD-10).
+- At the accessibility text sizes, a list row stacks the name above the distance (1.3). Since 1.4: a tile always has the name above the distance, and at those sizes the grid has half as many columns, one on iPhone and two on iPad (CARD-10).
 - The location sheet's fields are at least 44 points high and grow with the text (1.3).
-- In preparation for 1.4: the icon grid's swatches and headings grow with the text, so fewer swatches fit on a row (CARD-12).
+- Since 1.4: the icon grid's swatches and headings grow with the text, so fewer swatches fit on a row (CARD-12).
 - Distances never wrap: they stay on one line (PLACE-6).
-- In preparation for 1.4: in the card screen's list of places, long names wrap, and at the accessibility text sizes each distance moves below its name. The card screen scrolls (PLACE-9).
+- Since 1.4: in the card screen's list of places, long names wrap, and at the accessibility text sizes each distance moves below its name. The card screen scrolls (PLACE-9).
 
 **Since:** 1.0
 **Where:** `Cards/UI/Screens/CardListView.swift`, `Cards/UI/Screens/LocationPickerView.swift`, `Cards/UI/Components/ProximityLabel.swift`, `Cards/UI/Components/CardIconPicker.swift`
@@ -56,13 +56,13 @@ As someone using VoiceOver, I want every control labelled and every image that a
 
 - Colour swatches read their name, such as "Teal", and "Selected" for the chosen one. The grid reads as "Card colour" (1.3).
 - Each swatch, and the custom colour well, has a 44 point touch area (1.3).
-- In preparation for 1.4: icon swatches read what they show, such as "Basket", and "Selected" for the chosen one, each group's name is a heading, and the grid reads as "Card icon" (CARD-12).
+- Since 1.4: icon swatches read what they show, such as "Basket", and "Selected" for the chosen one, each group's name is a heading, and the grid reads as "Card icon" (CARD-12).
 - A place in the edit form reads as one item: its name and radius (1.3).
-- The radius slider reads "Radius" with its value, such as "200 m" (1.3). In preparation for 1.4 the value says its unit in full, "200 metres" or "220 yards" (PLACE-3).
-- The map's ring, the place icons, the field icons in the location sheet and the tick on a swatch are hidden from VoiceOver (1.3). In preparation for 1.4 the pin reads "Map pin", with the place's name and radius, and its Move North, South, East and West actions move the map, so VoiceOver users can place it.
+- The radius slider reads "Radius" with its value, such as "200 m" (1.3). Since 1.4 the value says its unit in full, "200 metres" or "220 yards" (PLACE-3).
+- The map's ring, the place icons, the field icons in the location sheet and the tick on a swatch are hidden from VoiceOver (1.3). Since 1.4 the pin reads "Map pin", with the place's name and radius, and its Move North, South, East and West actions move the map, so VoiceOver users can place it.
 - The external link icon in Settings reads "External link" (1.1).
 - When the camera can't be used, its title and text read as one item, such as "No camera, Type the card's code below.", Open Settings is a separate button, and the icon is hidden (CARD-2) (1.3).
-- In preparation for 1.4: the camera view reads "Barcode scanner" with a hint, and double-tapping it focuses on its middle (BAR-6). The torch button reads "Torch", a switch that is on or off, has a 44 point touch area and grows with the text size (BAR-7). The red line and the focus square are hidden from VoiceOver.
+- Since 1.4: the camera view reads "Barcode scanner" with a hint, and double-tapping it focuses on its middle (BAR-6). The torch button reads "Torch", a switch that is on or off, has a 44 point touch area and grows with the text size (BAR-7). The red line and the focus square are hidden from VoiceOver.
 - The widget reads as one item with a hint, and its barcode image is hidden (WID-5).
 
 **Since:** 1.0
@@ -72,11 +72,11 @@ As someone using VoiceOver, I want every control labelled and every image that a
 
 As a card holder, I want a tap I can feel when I do something, so that I know it worked without looking closely.
 
-- Tapping a card in the list plays a heavy haptic tap. In preparation for 1.4 it plays none: the tap only played the first time a card was opened, and opening a card needs no haptic.
-- In preparation for 1.4: a long press on a card's tile plays a haptic as its menu appears (CARD-10). It is the system's own context menu haptic; the app adds none.
-- Deleting a card plays a medium haptic tap. In preparation for 1.4: from the tile's menu, or from Delete Card in the edit form once you confirm (CARD-6).
+- Tapping a card in the list plays a heavy haptic tap. Since 1.4 it plays none: the tap only played the first time a card was opened, and opening a card needs no haptic.
+- Since 1.4: a long press on a card's tile plays a haptic as its menu appears (CARD-10). It is the system's own context menu haptic; the app adds none.
+- Deleting a card plays a medium haptic tap. Since 1.4: from the tile's menu, or from Delete Card in the edit form once you confirm (CARD-6).
 - A successful scan vibrates the phone (CARD-2).
-- In preparation for 1.4: a barcode filled in from a photo or a file plays a success haptic (CARD-13).
+- Since 1.4: a barcode filled in from a photo or a file plays a success haptic (CARD-13).
 - Choosing a colour plays a selection haptic (1.3).
 
 **Since:** 1.0

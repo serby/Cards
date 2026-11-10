@@ -58,7 +58,7 @@ As a card holder, I want my location to stay on my phone, so that nobody learns 
 - Your current location is only used on the device: for distances (PLACE-6), the widget's nearest card (WID-1), where the map opens (PLACE-1) and which places are watched for arrivals (ARR-3). The widget keeps its last reading in the App Group on the device, and it never goes into iCloud Sync, an export or a share (WID-1).
 - The places you add are stored with the card, and sync and export with it (DATA-1, DATA-2).
 - Arrival notifications are watched by iOS on the device, with no server involved (ARR-1).
-- The map and the place search use Apple's map services, which receive the area shown or the text searched for (PLACE-2). In preparation for 1.4 naming a place sends Apple Maps the point under the pin, or where you are when the sheet opens (PLACE-10).
+- The map and the place search use Apple's map services, which receive the area shown or the text searched for (PLACE-2). Since 1.4 naming a place sends Apple Maps the point under the pin, or where you are when the sheet opens (PLACE-10).
 
 **Since:** 1.3
 **Where:** `Cards/Core/Services/LocationService.swift`, `CardsWidget/WidgetLocation.swift`, `Cards/Core/Services/PlaceSearch+MapKit.swift`, `Cards/Features/ArrivalScheduler.swift`, `Cards/Core/Services/NotificationClient.swift`, `Website/templates/privacy.html`
@@ -103,7 +103,7 @@ As a card holder, I want the app to ask what I think only after it has worked fo
 - The counts are kept on the device under `reviewPrompt` and don't sync, so each device counts its own days (DATA-1). They never leave the device (PLAT-4).
 - It never asks in UI tests (`-uiTesting` or `CARDS_UI_TESTING=1`) or the screenshot runs (`-screenshotSeed`), which do not count days either. The Storybook and previews show the pure views, which never ask.
 
-**Since:** In preparation for 1.4
+**Since:** 1.4
 **Where:** `Cards/Core/Models/ReviewPrompt.swift`, `Cards/Core/Models/DeviceSettings.swift`, `Cards/Features/CardListScreen.swift`, `Cards/App/DevelopmentHooks.swift` (`asksForReviews`), `CardsTests/ReviewPromptTests.swift`
 **Notes:** The card shown in full above the grid where you are (SET-3) is not counted, because it never opens a card's screen.
 
@@ -117,24 +117,24 @@ As someone looking for a card wallet, I want the App Store listing in my languag
 - Each listing's What's New is that version's changelog in its language (SET-2), and its screenshots and creative assets (the product page header and search result on iOS 27) show the app in its language, with captions in it.
 - App Review's notes are written once, in British English.
 
-**Since:** In preparation for 1.4
+**Since:** 1.4
 **Where:** `metadata/<locale>/`, `screenshots/store/<locale>/captions.json`, `screenshots/store/<locale>/creative-asset.json`, `scripts/check-metadata.ts`, `scripts/check-store-images.ts`, `scripts/upload-metadata.ts`, `scripts/upload-screenshots.ts`
 
 ### PLAT-10: Read about the app on its website
 
 As someone deciding whether to get the app, I want a website that says what it does, in my language, so that I can find out before I open the App Store.
 
-- https://cards.serby.net is built from the App Store listing, the changelog and the app, so it says what they say: the listing's name, subtitle and description, the promise that the app is free, with no ads, no in-app purchases and no limit on cards, and always will be, the store images with their captions read as their descriptions, and a link to the App Store. In preparation for 1.4 the site shows the iPhone Duo's images, which are nearer square than the iPhone's, so a row of them fits the page (PLAT-13).
+- https://cards.serby.net is built from the App Store listing, the changelog and the app, so it says what they say: the listing's name, subtitle and description, the promise that the app is free, with no ads, no in-app purchases and no limit on cards, and always will be, the store images with their captions read as their descriptions, and a link to the App Store. Since 1.4 the site shows the iPhone Duo's images, which are nearer square than the iPhone's, so a row of them fits the page (PLAT-13).
 - It lists the languages the app speaks, each named in its own language and in English (PLAT-7), and which iOS it needs (PLAT-1).
 - What's New shows the current version and, under Earlier versions, every one before it, with the app's own words for What's New, the version and each kind of change (SET-2). A change with no translation shows in British English, as in the app. A version still in preparation is not shown.
 - It has a page in British English at `/` and one in each of the app's other languages, `/es/`, `/de/` and `/ja/`, made from the Spain, Germany and Japan listings, linked to each other for search engines and by a language switcher. American English and Mexican Spanish read the British English and Spanish pages, as they read the app.
 - The privacy policy, in British English at `/privacy.html`, the listings' privacy URL, says what leaves the device (PLAT-4, PLAT-5) and names the third-party code from the app's package pins.
 - The share link page (`/add`, SHARE-1), App Review's sample codes (`/demo.html`) and the universal link file are served as they are.
-- The pages work without JavaScript, follow light and dark appearance and Increase Contrast, use the app's pink, and keep every text at WCAG AA contrast. In preparation for 1.4 the store images sit in one row that scrolls sideways, as the App Store shows them.
+- The pages work without JavaScript, follow light and dark appearance and Increase Contrast, use the app's pink, and keep every text at WCAG AA contrast. Since 1.4 the store images sit in one row that scrolls sideways, as the App Store shows them.
 - The site is deployed only once the British English page's store images are present. Until another language's images are composed its page leaves them out, so it never shows another language's or version's pictures.
-- In preparation for 1.4 the site counts visits with Google Analytics, through Google Tag Manager, only for visitors who allow it. A banner on every page made from `page.html` asks, in the page's language, "Can this website count your visit with Google Analytics? It uses cookies to do so. The app itself never tracks you.", with "No thanks" and "Allow". Until a visitor chooses Allow no Google script loads and no cookie is set. The choice is kept in the browser, "Cookie Settings" at the foot of every page asks again, and choosing No thanks removes Google Analytics' cookies. The share link page and App Review's sample codes never load it. The privacy policy says what is sent and that the app itself has no analytics (PLAT-4).
+- Since 1.4 the site counts visits with Google Analytics, through Google Tag Manager, only for visitors who allow it. A banner on every page made from `page.html` asks, in the page's language, "Can this website count your visit with Google Analytics? It uses cookies to do so. The app itself never tracks you.", with "No thanks" and "Allow". Until a visitor chooses Allow no Google script loads and no cookie is set. The choice is kept in the browser, "Cookie Settings" at the foot of every page asks again, and choosing No thanks removes Google Analytics' cookies. The share link page and App Review's sample codes never load it. The privacy policy says what is sent and that the app itself has no analytics (PLAT-4).
 
-**Since:** In preparation for 1.4
+**Since:** 1.4
 **Where:** `scripts/build-website.ts`, `scripts/lib/website.ts`, `Website/site.json`, `Website/templates/`, `Website/static/`, `.github/workflows/website.yml`, `scripts/website.test.ts`
 
 ### PLAT-11: Choose whether the app shares diagnostics
@@ -146,7 +146,7 @@ As a card holder, I want to decide whether the app sends its developer crash rep
 - The switch is kept on the device under `sharesDiagnostics` and doesn't sync.
 - The app sends no diagnostics yet. Crash reporting added later (Sentry is planned) must send nothing while the switch is off, must never send cards, codes, places or locations, and must be named in the privacy policy (PLAT-10), the App Store privacy details and Acknowledgements (PLAT-12) before it ships.
 
-**Since:** In preparation for 1.4
+**Since:** 1.4
 **Where:** `Cards/UI/Screens/SettingsListView+Privacy.swift`, `Cards/Features/SettingsScreen.swift`, `Cards/Core/Models/DeviceSettings.swift`
 
 ### PLAT-12: See the open source software the app uses
@@ -157,14 +157,14 @@ As a card holder, I want to see the open source software the app is built with a
 - A library's row opens a screen titled with its name showing its licence in full, as the project ships it, in English, which can be selected and copied, and a "Project Website" row that opens the project's page in the browser.
 - Every package in `Package.resolved` is listed, and a unit test fails when one is missing (`PrivacySettingsTests`).
 
-**Since:** In preparation for 1.4
+**Since:** 1.4
 **Where:** `Cards/Core/Models/OpenSourceLibrary.swift`, `Cards/UI/Screens/SettingsListView+Privacy.swift`, `Cards/UI/Screens/AcknowledgementsView.swift`, `Cards/UI/Screens/OpenSourceLicenceView.swift`, `CardsTests/PrivacySettingsTests.swift`
 
 ### PLAT-13: See what the app does from its App Store images
 
 As someone looking at the listing, I want its images to show what the app does for me, the way it looks on a phone, so that I can tell in a few seconds whether it is the app I want.
 
-- In preparation for 1.4 the images lead with what sets the app apart, in this order (docs/BRAND.md):
+- Since 1.4 the images lead with what sets the app apart, in this order (docs/BRAND.md):
   1. "Your card, ready when you arrive": the Cards tab with the card for where you are in full at the top (SET-3).
   2. "On your Home Screen": a Home Screen with the widget showing the card for where you are, and the app's icon, and nothing else (WID-1).
   3. "Your cards stay yours", with "No account", "No tracking" and "iCloud or this device": Settings at iCloud Sync, Data and Share Diagnostics (PLAT-4, DATA-8, PLAT-11).
@@ -179,8 +179,8 @@ As someone looking at the listing, I want its images to show what the app does f
 - Each device's image is drawn from a vector template, `screenshots/templates/<device>.svg`, which any SVG editor opens: the composer (`scripts/compose-store-images.ts`) fills it in from each listing's `captions.json` and the raw captures, and renders it with headless Chrome at the size App Store Connect takes, with no alpha channel. The colours come from `card-colours.json`, which a unit test keeps the same as the app's palette.
 - The images show only made-up businesses (LANGUAGE.md).
 
-**Since:** In preparation for 1.4
+**Since:** 1.4
 **Where:** `screenshots/templates/`, `screenshots/store/<locale>/captions.json`, `scripts/compose-store-images.ts`, `scripts/lib/store-images.ts`, `scripts/store-images.test.ts`, `scripts/capture-screenshots.ts`, `CardsUITests/CardsScreenshotTests.swift`, `CardsUITests/CardsWidgetScreenshotTests.swift`, `Cards/Development/ScreenshotSeed.swift` (`insertMany`), `CardsTests/StoreImageColoursTests.swift`, `scripts/lib/website.ts` (`screenshotSuffix`), `scripts/check-store-images.ts`, `scripts/upload-creative-assets.ts`
-- In preparation for 1.4 the creative assets are a product page header (3840 x 1646) and a search result asset (3840 x 2560) for each listing, each with one short phrase in its language on the brand pink: the header "Your card, ready when you arrive", beside the card for where you are with card tiles fanned round it, and the search result "Your loyalty cards, ready to scan", beside the iPhone Duo showing the Cards tab. The phrase and the app's screen stay inside Apple's art safe area for each, so nothing that matters is cropped or covered; the tiles round them may be.
+- Since 1.4 the creative assets are a product page header (3840 x 1646) and a search result asset (3840 x 2560) for each listing, each with one short phrase in its language on the brand pink: the header "Your card, ready when you arrive", beside the card for where you are with card tiles fanned round it, and the search result "Your loyalty cards, ready to scan", beside the iPhone Duo showing the Cards tab. The phrase and the app's screen stay inside Apple's art safe area for each, so nothing that matters is cropped or covered; the tiles round them may be.
 
 **Notes:** The templates are `iPhone.svg`, `iPad.svg` and `Duo.svg` for the screenshots and `Header.svg` and `Search.svg` for the creative assets. The creative assets crop the iPhone Duo captures.

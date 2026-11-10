@@ -14,7 +14,7 @@ As a card holder, I want to mark on a map where I use a card, so that the app kn
 - The map opens on the last location the app has, about 800 metres across. When it has none yet, it follows your location as it arrives.
 - The map shows your position as the usual blue dot, and a location button beside the search field (the postcode field in 1.3) brings the map back to it.
 - Add is disabled until the map has reported its centre. Add saves the point under the pin with the name and radius set in the sheet, and closes it. Cancel closes it and adds nothing.
-- A place added without a name is called "Pinned location". In preparation for 1.4 the name is filled in from the map (PLACE-10), so this is a place Apple Maps had no name for and you gave none.
+- A place added without a name is called "Pinned location". Since 1.4 the name is filled in from the map (PLACE-10), so this is a place Apple Maps had no name for and you gave none.
 - Places added in the edit form are saved with the card when the form is saved (CARD-5).
 - Opening the sheet asks for location permission if it has not been asked before (PLACE-7).
 
@@ -26,14 +26,14 @@ As a card holder, I want to mark on a map where I use a card, so that the app kn
 As a card holder, I want to search for a shop, an address, a street, a town or a postcode, so that I can add a place without hunting for it on the map.
 
 - In 1.3 the sheet has a Postcode field with a "Find" button. It asks Apple's geocoder for the text, takes the first match, and an empty name takes the search text in capitals.
-- In preparation for 1.4 it is a search field instead, "Search for a place", with autocorrection off and a Search key. VoiceOver reads it as "Search for a place", with the hint "Finds shops, addresses, streets, towns and postcodes".
-- In preparation for 1.4: once you pause typing for a quarter of a second, Apple Maps suggests businesses and other points of interest, addresses, streets, towns and postcodes, those on or near the map on screen first. They list below the field in place of the name and radius, each as its title over its subtitle, such as "Local Roast Notting Hill" over "Pembridge Road, London W11", and VoiceOver reads both. Four fit before the list scrolls, and scrolling it puts the keyboard away.
-- In preparation for 1.4: "Searching…" shows until the first suggestions arrive, and a spinner in the field while new ones are on their way. The last suggestions stay listed until the next arrive.
-- In preparation for 1.4: choosing a suggestion, or pressing Search without choosing one, which takes Apple Maps' best match, puts its title in the field, closes the list and moves the map and the place's circle there, about 1,200 metres across. The place takes the name of what was found (PLACE-10), and VoiceOver says "Showing <name> on the map".
-- In preparation for 1.4: a clear button in the field empties it and closes the list. Going back to the field with text in it shows the list again.
+- Since 1.4 it is a search field instead, "Search for a place", with autocorrection off and a Search key. VoiceOver reads it as "Search for a place", with the hint "Finds shops, addresses, streets, towns and postcodes".
+- Since 1.4: once you pause typing for a quarter of a second, Apple Maps suggests businesses and other points of interest, addresses, streets, towns and postcodes, those on or near the map on screen first. They list below the field in place of the name and radius, each as its title over its subtitle, such as "Local Roast Notting Hill" over "Pembridge Road, London W11", and VoiceOver reads both. Four fit before the list scrolls, and scrolling it puts the keyboard away.
+- Since 1.4: "Searching…" shows until the first suggestions arrive, and a spinner in the field while new ones are on their way. The last suggestions stay listed until the next arrive.
+- Since 1.4: choosing a suggestion, or pressing Search without choosing one, which takes Apple Maps' best match, puts its title in the field, closes the list and moves the map and the place's circle there, about 1,200 metres across. The place takes the name of what was found (PLACE-10), and VoiceOver says "Showing <name> on the map".
+- Since 1.4: a clear button in the field empties it and closes the list. Going back to the field with text in it shows the list again.
 - The radius stays as you set it, before or after the search (PLACE-3).
-- When nothing matches, the sheet says "No place found for “<text>”" below the field, and the map stays where it is. In preparation for 1.4 that is said as you type, and also after pressing Search, when VoiceOver reads it out.
-- In preparation for 1.4: when the device is offline the sheet says "You are offline. Connect to the internet to search, or drag the map to the place.", and when Apple Maps cannot answer, "Search is not working right now. Try again, or drag the map to the place."
+- When nothing matches, the sheet says "No place found for “<text>”" below the field, and the map stays where it is. Since 1.4 that is said as you type, and also after pressing Search, when VoiceOver reads it out.
+- Since 1.4: when the device is offline the sheet says "You are offline. Connect to the internet to search, or drag the map to the place.", and when Apple Maps cannot answer, "Search is not working right now. Try again, or drag the map to the place."
 - Searching for empty or blank text does nothing.
 
 **Since:** 1.3
@@ -46,10 +46,10 @@ As a card holder, I want to set the size of a place, so that a big shop or a sma
 
 - The radius starts at 200 m.
 - A Radius slider sets it from 50 m to 1,000 m in steps of 25 m, with the value beside it, as "200 m".
-- In preparation for 1.4: the radius is in the units chosen in Settings > Distances (SET-4). With Miles, or Automatic where the measurement system is UK or US, it is in yards: the slider runs from 50 yd to 1,100 yd in steps of 25 yd, and the 200 m a place starts with shows as "220 yd". A radius is shown to the nearest 5 m or 5 yd, and is kept in metres whichever unit set it, so a place set in yards shows its metres rounded, as "230 m" for 250 yd.
+- Since 1.4: the radius is in the units chosen in Settings > Distances (SET-4). With Miles, or Automatic where the measurement system is UK or US, it is in yards: the slider runs from 50 yd to 1,100 yd in steps of 25 yd, and the 200 m a place starts with shows as "220 yd". A radius is shown to the nearest 5 m or 5 yd, and is kept in metres whichever unit set it, so a place set in yards shows its metres rounded, as "230 m" for 250 yd.
 - A pink ring round the pin shows the radius at the map's scale as you drag and zoom.
 - In the edit form, each place shows its name on one line and its radius below, as "200 m radius", or in preparation for 1.4 "220 yd radius" in yards.
-- In 1.3 a place's name and radius can't be changed once it is added; you remove it and add it again (PLACE-5). In preparation for 1.4, tapping the place changes it (PLACE-8).
+- In 1.3 a place's name and radius can't be changed once it is added; you remove it and add it again (PLACE-5). Since 1.4, tapping the place changes it (PLACE-8).
 
 **Since:** 1.3
 **Where:** `Cards/Core/Models/CardLocation.swift` (`defaultRadius`, `radiusRange`), `Cards/Core/Models/DistanceFormat.swift` (`radius(_:width:)`, `RadiusScale`), `Cards/UI/Screens/LocationPickerView.swift`, `Cards/UI/Components/RadiusSlider.swift`, `Cards/UI/Components/CardLocationRow.swift`, `CardsTests/DistanceFormatTests.swift`
@@ -60,7 +60,7 @@ As a card holder, I want to set the size of a place, so that a big shop or a sma
 As a card holder, I want to save the place I am at from the card itself, so that I don't have to open the editor at the till.
 
 - Below the card face, a quiet "Add current location" button opens the same Add Location sheet as the edit form (PLACE-1).
-- The sheet opens on the last location the app has, which is normally where you are. In preparation for 1.4 its name is filled in with what Apple Maps calls that spot (PLACE-10).
+- The sheet opens on the last location the app has, which is normally where you are. Since 1.4 its name is filled in with what Apple Maps calls that spot (PLACE-10).
 - Add saves the place to the card straight away.
 - The button is hidden while you are inside one of the card's places, and shows again once you leave.
 - The button also shows when the app doesn't know where you are.
@@ -85,10 +85,10 @@ As a card holder, I want to see how far I am from the places I use each card, so
 - A card's distance is to the edge of its nearest place's circle. Inside a circle it is 0, and the card counts as here.
 - The list shows "Here", in semibold with a filled location arrow, or the distance, such as "350 m", on a white pill at the end of the row.
 - The card screen and the widget name the place too: "At Boulder Barn", or "350 m · Boulder Barn".
-- In preparation for 1.4: inside more than one of a card's places, the one whose middle you are nearer is named, where before it was the first in the card's order. A card with more than one place also lists its nearest five on the card screen (PLACE-9).
-- In preparation for 1.4: on the card screen, tapping the place in the top panel opens it in the maps app chosen in Settings > Maps, Apple Maps unless Google Maps is chosen (SET-5), as a place in the list does (PLACE-9), whether the card has one place or several. VoiceOver reads it as a button with the hint "Opens this place in Maps", or "Opens this place in Google Maps". The tile on the Cards tab, the card for where you are and a shared card's image don't open it.
-- VoiceOver reads "You're at Boulder Barn" or "350 m from Boulder Barn" (A11Y-1). In preparation for 1.4 it says the units in full: "350 metres from Boulder Barn".
-- Distances are in the units of the device's region, in the style used for road distances, such as "350 m" or "0.4 mi". In preparation for 1.4 they are in the units chosen in Settings > Distances, which follows the device's measurement system unless you choose Kilometres or Miles (SET-4).
+- Since 1.4: inside more than one of a card's places, the one whose middle you are nearer is named, where before it was the first in the card's order. A card with more than one place also lists its nearest five on the card screen (PLACE-9).
+- Since 1.4: on the card screen, tapping the place in the top panel opens it in the maps app chosen in Settings > Maps, Apple Maps unless Google Maps is chosen (SET-5), as a place in the list does (PLACE-9), whether the card has one place or several. VoiceOver reads it as a button with the hint "Opens this place in Maps", or "Opens this place in Google Maps". The tile on the Cards tab, the card for where you are and a shared card's image don't open it.
+- VoiceOver reads "You're at Boulder Barn" or "350 m from Boulder Barn" (A11Y-1). Since 1.4 it says the units in full: "350 metres from Boulder Barn".
+- Distances are in the units of the device's region, in the style used for road distances, such as "350 m" or "0.4 mi". Since 1.4 they are in the units chosen in Settings > Distances, which follows the device's measurement system unless you choose Kilometres or Miles (SET-4).
 - No distance shows for a card without places, or while the app doesn't know where you are.
 - Distances follow your location while the app is open, from fixes about 100 metres accurate, updated after you move 25 metres or more.
 
@@ -121,7 +121,7 @@ As a card holder, I want to change a place I added, so that I can fix its name, 
 - VoiceOver reads a place's row as a button, with the hint "Opens the map to change this place".
 - Swiping a place to remove it still works as before (PLACE-5).
 
-**Since:** In preparation for 1.4
+**Since:** 1.4
 **Where:** `Cards/UI/Screens/CardEditView.swift`, `Cards/UI/Screens/LocationPickerView.swift` (`init(editing:search:onAppear:onSave:)`), `Cards/UI/ViewState/CardViewState.swift` (`CardDraft.update(_:)`), `CardsTests/CardLocationTests.swift` (`changingAPlaceInTheFormKeepsItsSpotAndId`, `aPlaceRemovedMeanwhileIsNotBroughtBack`), `CardsUITests/CardPlacesAndSettingsUITests.swift` (`testEditAPlace`)
 
 ### PLACE-9: See a card's nearest places
@@ -141,7 +141,7 @@ As a card holder, I want to see which of a card's places are nearest and how far
 - The card screen scrolls when the list makes it taller than the screen.
 - VoiceOver reads the heading as a heading, and each place as a button that reads as the distance does, "You're at Joe's Market Notting Hill" or "350 metres from Joe's Market Kensington" (SET-4), or just the name while the app doesn't know where you are, with the hint "Opens this place in Maps", or "Opens this place in Google Maps" (A11Y-1).
 
-**Since:** In preparation for 1.4
+**Since:** 1.4
 **Where:** `Cards/Core/Models/CardPlaces.swift`, `Cards/Core/Models/CardLocation.swift` (`nearest(_:to:)`, `mapsURL(in:)`), `Cards/UI/Screens/CardDetailView.swift` (`PlacesPanel`), `Cards/UI/Components/CardFaceView.swift` (`footer`), `Cards/Features/CardDetail+CardItem.swift`, `CardsTests/CardPlacesTests.swift`
 **Notes:** The nearest place shows twice, in the top panel and first in the list. Joe's Market has two places in the screenshot cards, so its card screen shows the list.
 
@@ -160,6 +160,6 @@ As a card holder, I want a place to be named for what is there, so that I don't 
 - When Apple Maps has no name for a spot the pin moves to, or cannot be reached, a name it gave an earlier spot is cleared rather than left on the wrong place. A place saved with no name is "Pinned location" (PLACE-1).
 - When changing a place (PLACE-8), its name counts as your own and stays when you move it, unless it is "Pinned location", which Apple Maps may replace.
 
-**Since:** In preparation for 1.4
+**Since:** 1.4
 **Where:** `Cards/UI/ViewState/PlaceNameDraft.swift`, `Cards/Core/Models/PlaceFields.swift`, `Cards/Core/Services/PlaceSearch+MapKit.swift`, `Cards/UI/Screens/LocationPickerView.swift`, `CardsTests/PlaceNameDraftTests.swift`, `CardsTests/PlaceSearchTests.swift`, `CardsUITests/CardPlacesAndSettingsUITests.swift` (`testAddCurrentLocationFromCard`, `testFindAPlaceBySearch`)
 **Notes:** In London, Apple Maps' area is the borough, so names can be long, such as "Vicarage Gate, Kensington and Chelsea". Debug builds launched for UI tests search made-up places instead of Apple Maps (`DevelopmentHooks.placeSearch`).

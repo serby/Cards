@@ -11,7 +11,7 @@ As someone building the app, I want the development tools in one place, so that 
 - Storybook opens full screen over the tabs, with Done to close it, because its story list and stage are a split view that can't be pushed onto the tab's stack. Test Notification, Review Prompt and Language are pushed, with Back to return.
 - The tab is hidden during UI tests (`-uiTesting` or `CARDS_UI_TESTING=1`), as the Storybook tab was.
 
-**Since:** In preparation for 1.4
+**Since:** 1.4
 **Where:** `Cards/App/DevelopmentHooks.swift`, `Cards/Core/Navigation/AppTab.swift`, `Cards/Development/Tools/DevelopmentView.swift`, `Cards/Development/Storybook/StorybookView.swift`
 
 ### DEV-2: Send a test arrival notification
@@ -25,7 +25,7 @@ As someone building the app, I want to send an arrival notification for any card
 - The first tap asks for permission if the app never has (ARR-4). If notifications are off for the app, the tool shows "Notifications are off for Card Barcodes. Turn them on in Settings.", which opens the app's notification settings, and the tap sends nothing. It checks again on coming back to the app.
 - With no cards it says "No Cards".
 
-**Since:** In preparation for 1.4
+**Since:** 1.4
 **Where:** `Cards/Development/Tools/TestNotificationScreen.swift`, `Cards/Development/Tools/TestArrival.swift`, `Cards/Features/ArrivalPlan.swift`, `Cards/Core/Services/NotificationClient.swift`, `CardsTests/TestArrivalTests.swift`, `CardsTests/NotificationClientTests.swift`
 **Notes:** Planning the arrivals again cancels every pending notification, so if the places to watch change in those five seconds, as they do when a card is added or edited, the test notification is cancelled too.
 
@@ -39,7 +39,7 @@ As someone building the app, I want to see what the review prompt has counted an
 - "Start Again" clears the counts, as on a new install.
 - After each button the section's footer says what it did, and VoiceOver announces it.
 
-**Since:** In preparation for 1.4
+**Since:** 1.4
 **Where:** `Cards/Development/Tools/ReviewPromptScreen.swift`, `Cards/Development/Tools/DevelopmentView.swift`, `Cards/Core/Models/ReviewPrompt.swift`
 
 ### DEV-4: Open the app in another language
@@ -52,6 +52,6 @@ As someone building the app, I want to open the app in any of its languages from
 - Only the language changes. The region stays as it is, so distances on Automatic keep their units, and dates and times keep the region's clock and calendar. The footer says so.
 - The Home Screen widget stays in the iPhone's language, as it runs in a process of its own with its own defaults. The footer says so.
 
-**Since:** In preparation for 1.4
+**Since:** 1.4
 **Where:** `Cards/Development/Tools/LanguageScreen.swift`, `Cards/Development/Tools/LanguageChoice.swift`, `Cards/Development/Tools/AppLanguageClient.swift`, `Cards/Development/Storybook/Catalogue/DevelopmentStories.swift`, `CardsTests/LanguageToolTests.swift`
 **Notes:** A language given at launch, by the scheme's App Language or `-AppleLanguages`, wins over the one chosen here while it is given, and the tool still ticks the one chosen here. The language list is the Storybook's (`StoryLanguage`), so a newly translated language appears in both with no code change. The bundle has one English, the British source, so there is no separate English (US): American wording in What's New follows the region, which this tool leaves alone.
