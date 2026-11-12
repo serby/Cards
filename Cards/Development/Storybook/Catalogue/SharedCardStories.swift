@@ -14,6 +14,7 @@ let sharedCardStory = Story(
         .options("Type", BarcodeType.allNames, BarcodeType.ean13.rawValue),
         .options("Colour", CardColor.allNames, CardDetail.sample.color.rawValue),
         IconKnob.knob(CardDetail.sample.icon),
+        .text("Notes", CardDetail.withNotes.notes ?? ""),
         .number("Locations", 1, in: 0...Double(CardLocation.samples.count), step: 1)
     ] + DistanceKnobs.knobs,
     gallery: SharedCardKind.allCases.map { kind in
@@ -27,7 +28,8 @@ let sharedCardStory = Story(
         barcodeType: .named(knobs.option("Type")),
         timestamp: .now,
         color: .named(knobs.option("Colour")),
-        icon: knobs.icon
+        icon: knobs.icon,
+        notes: knobs.string("Notes")
     )
     let kind = SharedCardKind(rawValue: knobs.option("State")) ?? .new
     let places = Array(CardLocation.samples.prefix(knobs.integer("Locations")))
@@ -43,7 +45,8 @@ private let sharedFace = CardDetail(
     barcodeType: CardDetail.sample.barcodeType,
     timestamp: CardDetail.sample.timestamp,
     color: CardDetail.sample.color,
-    icon: CardDetail.sample.icon
+    icon: CardDetail.sample.icon,
+    notes: CardDetail.withNotes.notes
 )
 
 /// The sheet's three states, for the State knob.

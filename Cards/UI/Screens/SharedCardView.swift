@@ -1,7 +1,8 @@
 import SwiftUI
 
 /// The "Add Card?" sheet for a card someone shared (SHARE-3): the card's face
-/// and places, and Add Card, or Open Card when the app already has it.
+/// with its notes, its places, and Add Card, or Open Card when the app already
+/// has it.
 public struct SharedCardView: View {
     private let state: SharedCardState
     private let actions: SharedCardActions
@@ -79,12 +80,17 @@ public struct SharedCardView: View {
         }
     }
 
-    /// The face and the places, with what you can do about them held at the bottom.
+    /// The face with its notes, as the card's screen shows them, and the places,
+    /// with what you can do about them held at the bottom.
     private func details<Footer: View>(_ card: CardDetail, places: [CardLocation], @ViewBuilder footer: () -> Footer) -> some View {
         let footer = footer()
         return List {
             Section {
-                CardFaceView(card: card)
+                CardFaceView(card: card) {
+                    if let notes = card.notes {
+                        NotesPanel(notes: notes)
+                    }
+                }
                     .listRowInsets(EdgeInsets())
                     .listRowBackground(Color.clear)
             }
@@ -122,6 +128,10 @@ public struct SharedCardView: View {
 #if DEBUG
 #Preview("New card") {
     SharedCardView(state: .new(.sample, places: CardLocation.samples))
+}
+
+#Preview("New card with notes") {
+    SharedCardView(state: .new(.withNotes, places: CardLocation.samples))
 }
 
 #Preview("Already here") {

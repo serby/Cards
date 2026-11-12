@@ -165,8 +165,11 @@ extension CardEditView {
                 .accessibilityIdentifier("notesSectionHeader")
         } footer: {
             Text(
-                "Notes show on the card's screen. They are left out when you share the card.",
-                comment: "Footer under the notes field in the card form. Sharing sends the card as a link or a picture."
+                "Notes show on the card's screen, and go with the card when you share it as a link.",
+                comment: """
+                    Footer under the notes field in the card form. Sharing a card as a link, from its screen, sends its notes too; \
+                    sharing it as a picture does not.
+                    """
             )
             .foregroundStyle(Color.secondaryText)
             .accessibilityIdentifier("notesFooter")

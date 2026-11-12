@@ -34,6 +34,7 @@ struct SharingTests {
         #expect(read.icon == "basket.fill")
         #expect(read.places == [SharedCard.Place(name: "Joe's Market Notting Hill", latitude: 51.5090, longitude: -0.1960, radius: 150)])
         #expect(read.notifiesOnArrival == false)
+        #expect(read.notes == "Double points on Tuesdays.")
     }
 
     @Test(arguments: [
@@ -81,12 +82,12 @@ struct SharingTests {
         #expect(SharedCard(payload: card.payload.replacingOccurrences(of: ".", with: "")) == card)
     }
 
-    /// The link carries the card, not the sharer's history with it or their notes (CARD-14).
+    /// The link carries the card with its notes (CARD-14), not the sharer's history with it.
     @Test func thePayloadLeavesOutWhatIsTheSharers() throws {
         let json = try #require(Data(base64Encoded: base64(fromURL: SharedCard(joesMarket).payload)))
         let decoded = try JSONSerialization.jsonObject(with: json)
         let object = try #require(decoded as? [String: Any])
-        #expect(Set(object.keys) == ["v", "name", "code", "type", "color", "icon", "places", "notifiesOnArrival"])
+        #expect(Set(object.keys) == ["v", "name", "code", "type", "color", "icon", "places", "notifiesOnArrival", "notes"])
         let place = try #require((object["places"] as? [[String: Any]])?.first)
         #expect(Set(place.keys) == ["name", "latitude", "longitude", "radius"])
         #expect(object["v"] as? Int == 1)
@@ -119,6 +120,28 @@ struct SharingTests {
         let bare = try #require(SharedCardLink(url: noHash))
         #expect(bare.payload.isEmpty)
         #expect(bare.card == nil)
+    }
+
+    /// A card without notes makes the link 1.4 made, and blank notes are none.
+    @Test func aCardWithoutNotesLeavesTheKeyOut() throws {
+        for notes in [nil, "", " \n "] {
+            let card = SharedCard(name: "Gym", code: "1", notes: notes)
+            #expect(card.notes == nil)
+            let json = try #require(Data(base64Encoded: base64(fromURL: card.payload)))
+            let object = try #require(try JSONSerialization.jsonObject(with: json) as? [String: Any])
+            #expect(object["notes"] == nil)
+        }
+        #expect(SharedCard(payload: encode(#"{"v": 1, "name": "Gym", "code": "1", "notes": " \n "}"#))?.notes == nil)
+    }
+
+    /// Notes too long for a link are left out, so the rest of the card still shares.
+    @Test func notesTooLongForALinkAreLeftOut() throws {
+        let long = CardItem(code: "1", name: "Gym", notes: String(repeating: "日本語のメモ", count: 4_000))
+        let shared = SharedCard(long)
+        #expect(shared.notes == nil)
+        #expect(SharedCard(payload: shared.payload) == shared)
+        let fits = CardItem(code: "1", name: "Gym", notes: String(repeating: "Points ", count: 6_000))
+        #expect(SharedCard(payload: SharedCard(fits).payload)?.notes == fits.notes)
     }
 
     @Test func anOversizedPayloadHoldsNoCard() {
@@ -232,6 +255,7 @@ struct SharingTests {
         #expect(card.notifiesOnArrival == false)
         #expect(card.locations.map(\.name) == ["Joe's Market Notting Hill"])
         #expect(card.locations.first?.id != joesMarket.locations.first?.id)
+        #expect(card.notes == "Double points on Tuesdays.")
     }
 
     /// The sheet's Add Card and Open Card buttons put the system background's
@@ -265,7 +289,7 @@ struct SharingTests {
         }
     }
 
-    /// The picture leaves the card's notes out, as the link does (CARD-14).
+    /// The picture leaves the card's notes out (CARD-14), though the link carries them.
     @Test @MainActor func theSharedImageLeavesOutTheNotes() throws {
         let withoutNotes = try #require(CardShareImage.png(of: .twoPlaces).flatMap(UIImage.init(data:)))
         let withNotes = try #require(CardShareImage.png(of: .withNotes).flatMap(UIImage.init(data:)))

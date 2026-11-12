@@ -33,7 +33,8 @@ public struct SharedCardScreen: View {
             barcodeType: card.barcodeType,
             timestamp: openedAt,
             color: card.color,
-            icon: card.icon
+            icon: card.icon,
+            notes: card.notes
         )
         return existingCode == nil ? .new(face, places: places) : .alreadyAdded(face, places: places)
     }

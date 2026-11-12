@@ -1,8 +1,8 @@
 import SwiftUI
 
 /// Draws the picture Share Image sends (SHARE-2): the card face on its own, with
-/// no copy button, no distance to the sharer's places and none of their notes
-/// (CARD-14), in light appearance, at three times screen scale so the barcode
+/// no copy button, no distance to the sharer's places and no notes (CARD-14),
+/// as the picture is for scanning and the link carries the rest, in light appearance, at three times screen scale so the barcode
 /// stays sharp enough to scan from another screen. The renderer starts from
 /// SwiftUI's defaults rather than the screen's, so the face is given the
 /// screen's language and direction: its date

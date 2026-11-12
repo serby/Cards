@@ -8496,37 +8496,37 @@
         }
       }
     },
-    "Notes show on the card's screen. They are left out when you share the card." : {
-      "comment" : "Footer under the notes field in the card form. Sharing sends the card as a link or a picture.",
+    "Notes show on the card's screen, and go with the card when you share it as a link." : {
+      "comment" : "Footer under the notes field in the card form. Sharing a card as a link, from its screen, sends its notes too; sharing it as a picture does not.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "تظهر الملاحظات على شاشة البطاقة. ولا يتم تضمينها عند مشاركة البطاقة."
+            "value" : "تظهر الملاحظات على شاشة البطاقة، وتُرسل مع البطاقة عند مشاركتها كرابط."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Notizen werden auf dem Bildschirm der Karte angezeigt. Beim Teilen der Karte werden sie weggelassen."
+            "value" : "Notizen erscheinen auf der Karte und werden mitgesendet, wenn du die Karte als Link teilst."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Las notas se muestran en la pantalla de la tarjeta. No se incluyen al compartir la tarjeta."
+            "value" : "Las notas se muestran en la pantalla de la tarjeta y se incluyen al compartirla como enlace."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Les notes s’affichent sur l’écran de la carte. Elles sont exclues lorsque vous partagez la carte."
+            "value" : "Les notes apparaissent sur l’écran de la carte et accompagnent la carte lorsque vous la partagez sous forme de lien."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "メモはカードの画面に表示されます。カードを共有するときは含まれません。"
+            "value" : "メモはカードの画面に表示され、リンクとして共有するとカードと一緒に送信されます。"
           }
         }
       }

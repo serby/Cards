@@ -191,6 +191,13 @@ public extension CardFaceView where Footer == EmptyView {
     }
 }
 
+public extension CardFaceView where NumberAccessory == EmptyView {
+    /// The face with nothing beside the number, and `footer` below it.
+    init(card: CardDetail, @ViewBuilder footer: () -> Footer) {
+        self.init(card: card, accessoryWidth: 0, numberAccessory: { EmptyView() }, footer: footer)
+    }
+}
+
 public extension CardFaceView where NumberAccessory == EmptyView, Footer == EmptyView {
     /// The face with nothing beside or below the number.
     init(card: CardDetail) {

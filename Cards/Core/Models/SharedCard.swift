@@ -2,8 +2,9 @@ import CoreLocation
 import Foundation
 
 /// A card as it travels in a share link (SHARE-1): everything someone needs to
-/// add it, and nothing about the person who shared it, such as when they added
-/// it, where it sits in their list or when they last opened it.
+/// add it, its notes included, and nothing about how the person who shared it
+/// uses it, such as when they added it, where it sits in their list or when
+/// they last opened it.
 ///
 /// The link carries it after the "#" as JSON in base64url without padding, so
 /// browsers never send it to the website, with a "." every `segmentLength`
@@ -31,8 +32,11 @@ public struct SharedCard: Hashable, Sendable {
     /// The format version this build writes and reads.
     public static let version = 1
     /// The longest payload read, in characters. A card with a dozen places is
-    /// under 2,000, so anything much longer is not one of ours.
-    public static let maximumPayloadLength = 16_384
+    /// under 2,000; only notes make one longer, and these leave room for about
+    /// 48,000 bytes of them as UTF-8: as many letters of English, a third as
+    /// many characters of Japanese. Anything longer is not one of ours, and a
+    /// card whose notes would make it longer shares without them.
+    public static let maximumPayloadLength = 65_536
     /// The longest run of characters in a payload without a ".". Link detectors
     /// end a link at a longer one: iOS's `NSDataDetector` keeps a fragment of
     /// 301 unbroken characters and drops one of 302, so in WhatsApp a card with
@@ -47,6 +51,8 @@ public struct SharedCard: Hashable, Sendable {
     public var icon: String?
     public var places: [Place]
     public var notifiesOnArrival: Bool
+    /// The card's notes (CARD-14), as a card keeps them, or nil for none.
+    public var notes: String?
 
     public init(
         name: String,
@@ -55,7 +61,8 @@ public struct SharedCard: Hashable, Sendable {
         color: CardColor = .standard,
         icon: String? = nil,
         places: [Place] = [],
-        notifiesOnArrival: Bool = true
+        notifiesOnArrival: Bool = true,
+        notes: String? = nil
     ) {
         self.name = name
         self.code = code
@@ -64,11 +71,13 @@ public struct SharedCard: Hashable, Sendable {
         self.icon = icon
         self.places = places
         self.notifiesOnArrival = notifiesOnArrival
+        self.notes = CardNotes.kept(notes)
     }
 }
 
 public extension SharedCard {
-    /// What `card` shares.
+    /// What `card` shares: all of it, or, when its notes are too long for a
+    /// link to carry, the rest of it without them.
     init(_ card: CardItem) {
         self.init(
             name: card.name,
@@ -77,8 +86,12 @@ public extension SharedCard {
             color: card.getColor(),
             icon: card.icon,
             places: card.locations.map { Place(name: $0.name, latitude: $0.latitude, longitude: $0.longitude, radius: $0.radius) },
-            notifiesOnArrival: card.notifiesOnArrival
+            notifiesOnArrival: card.notifiesOnArrival,
+            notes: card.notes
         )
+        if payload.count > Self.maximumPayloadLength {
+            notes = nil
+        }
     }
 
     /// The text after the "#" in a share link.
@@ -136,7 +149,8 @@ public extension SharedCard {
             color: color,
             locations: locations,
             notifiesOnArrival: notifiesOnArrival,
-            icon: icon
+            icon: icon,
+            notes: notes
         )
     }
 
@@ -149,7 +163,7 @@ public extension SharedCard {
 extension SharedCard: Codable {
     private enum CodingKeys: String, CodingKey {
         case version = "v"
-        case name, code, type, color, icon, places, notifiesOnArrival
+        case name, code, type, color, icon, places, notifiesOnArrival, notes
     }
 
     private struct NotACard: Error {}
@@ -166,6 +180,8 @@ extension SharedCard: Codable {
         icon = try container.decodeIfPresent(String.self, forKey: .icon).flatMap { $0.isEmpty ? nil : $0 }
         places = try (container.decodeIfPresent([Place].self, forKey: .places) ?? []).compactMap(\.valid)
         notifiesOnArrival = try container.decodeIfPresent(Bool.self, forKey: .notifiesOnArrival) ?? true
+        // Missing from links made before 1.5, which left notes out.
+        notes = CardNotes.kept(try container.decodeIfPresent(String.self, forKey: .notes))
     }
 
     public func encode(to encoder: any Encoder) throws {
@@ -180,6 +196,7 @@ extension SharedCard: Codable {
             try container.encode(places, forKey: .places)
         }
         try container.encode(notifiesOnArrival, forKey: .notifiesOnArrival)
+        try container.encodeIfPresent(notes, forKey: .notes)
     }
 }
 
