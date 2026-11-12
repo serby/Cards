@@ -14,4 +14,15 @@ public enum CardGeometry {
     public static let barcodeFrame: CGFloat = 6
     /// The white inside the barcode's frame.
     public static let barcodeCornerRadius = panelCornerRadius - barcodeFrame
+    /// From the edge of that white to the barcode on it.
+    public static let barcodePlatePadding: CGFloat = 16
+
+    /// The widest a barcode or QR code is drawn, in points. `BarcodeView`
+    /// draws its image this wide, so a wider one would only scale its pixels
+    /// up, and a QR code would grow taller than a scanner needs.
+    public static let maximumBarcodeWidth: CGFloat = 400
+    /// The widest a card face is: its barcode at its widest, with the white,
+    /// the frame and the card's inset round it. Every screen that shows a face
+    /// keeps it, and what sits with it, to this width with `cardColumn()`.
+    public static let maximumWidth = maximumBarcodeWidth + 2 * (barcodePlatePadding + barcodeFrame + inset)
 }

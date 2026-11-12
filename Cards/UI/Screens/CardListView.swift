@@ -160,8 +160,8 @@ public struct CardListView: View {
                 }
         }
         .buttonStyle(.plain)
-        // A card face as wide as an iPad would leave no room for the grid.
-        .frame(maxWidth: 560)
+        // As wide as on the card's screen, which leaves room for the grid on an iPad (CARD-4).
+        .cardColumn()
         .accessibilityHint(
             Text(
                 "Opens the card for where you are",

@@ -66,11 +66,19 @@ struct BarcodeViewTests {
         let image = barcodeView.generateBarcode(from: "1234567890", type: .code128)
         #expect(image != nil, "Should generate a valid barcode image")
         if let image = image {
-            let expectedWidth = pointsWidth * 1.0
-            let expectedHeight = (pointsWidth / 3) * 1.0
+            let expectedWidth = CardGeometry.maximumBarcodeWidth
+            let expectedHeight = CardGeometry.maximumBarcodeWidth / 3
             #expect(abs(image.size.width - expectedWidth) <= 1.0, "Image width should match expected width")
             #expect(abs(image.size.height - expectedHeight) <= 1.0, "Image height should match expected height")
         }
+    }
+
+    /// The card is as wide as its barcode at its widest with the white, the
+    /// frame and the card's edge round it: 476 points, as CARD-4 says.
+    @Test func theWidestCardIsAsWideAsItsWidestBarcode() {
+        let round = 2 * (CardGeometry.barcodePlatePadding + CardGeometry.barcodeFrame + CardGeometry.inset)
+        #expect(CardGeometry.maximumWidth == CardGeometry.maximumBarcodeWidth + round)
+        #expect(CardGeometry.maximumWidth == 476)
     }
 
     @Test func barcodeOnWhiteAddsAQuietZone() throws {

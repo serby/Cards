@@ -91,6 +91,7 @@ public struct SharedCardView: View {
                         NotesPanel(notes: notes)
                     }
                 }
+                    .cardColumn()
                     .listRowInsets(EdgeInsets())
                     .listRowBackground(Color.clear)
             }
@@ -102,10 +103,12 @@ public struct SharedCardView: View {
                 }
             }
         }
+        // The places and the buttons keep to the card's column, as on the card's screen (CARD-4).
+        .cardColumnMargins()
         .safeAreaInset(edge: .bottom) {
             VStack(spacing: 12) { footer }
+                .cardColumn()
                 .padding()
-                .frame(maxWidth: .infinity)
                 .background(.bar)
         }
     }

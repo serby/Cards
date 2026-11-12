@@ -21,7 +21,7 @@ As a card holder, I want the app to handle the barcodes loyalty and membership c
 As a card holder, I want the barcode drawn large and clean, so that the till's scanner reads it first time.
 
 - Codes are drawn on the device by RSBarcodes_Swift, through one helper, so the card screen, the arrival notification's attachment and the widget draw the same bars (1.3).
-- On the card screen the code is drawn 400 points wide and a third as high for a strip, or 400 by 400 for a square code, at the screen's scale, then fitted to the width of the card.
+- On the card screen the code is drawn 400 points wide and a third as high for a strip, or 400 by 400 for a square code, at the screen's scale, then fitted to the width of the card. In preparation for 1.5, 400 points is also the widest the barcode is shown, so the card face is no wider than it needs (CARD-4).
 - The bars sit on a white tile inside a grey, translucent frame, and the white stays white in dark mode (COL-3).
 - The image attached to an arrival notification is the code on white with a 60 pixel quiet zone: 1,200 by 400 pixels for a strip, 600 by 600 for a square code. It does not show on the Lock Screen (ARR-1).
 - The widget's image is one opaque image of the code on white with a quiet zone, so it stays scannable on tinted Home Screens (WID-6).

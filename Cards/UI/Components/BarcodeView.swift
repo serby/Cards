@@ -2,8 +2,6 @@ import AVFoundation
 import RSBarcodes_Swift
 import SwiftUI
 
-public let pointsWidth: CGFloat = 400
-
 public struct BarcodeView: View {
     /// The plate the bars sit on. Always white, whatever the appearance, as
     /// scanners expect dark bars on a light ground.
@@ -42,7 +40,7 @@ public struct BarcodeView: View {
                 }
             }
             .frame(maxWidth: .infinity)
-            .padding()
+            .padding(CardGeometry.barcodePlatePadding)
             .background(Self.plate, in: .rect(cornerRadius: CardGeometry.barcodeCornerRadius))
         }
         .padding(CardGeometry.barcodeFrame)
@@ -70,8 +68,9 @@ public struct BarcodeView: View {
     }
 
     public func generateBarcode(from code: String, type: BarcodeType) -> UIImage? {
-        let height = type.isSquare ? pointsWidth : pointsWidth / 3
-        let size = CGSize(width: pointsWidth * displayScale, height: height * displayScale)
+        let width = CardGeometry.maximumBarcodeWidth
+        let height = type.isSquare ? width : width / 3
+        let size = CGSize(width: width * displayScale, height: height * displayScale)
         return BarcodeImage.make(code, type: type, size: size)
     }
 }

@@ -61,6 +61,7 @@ public struct CardDetailView: View {
                     addCurrentLocationButton
                 }
             }
+            .cardColumn()
             .padding()
         }
         .scrollBounceBehavior(.basedOnSize)
