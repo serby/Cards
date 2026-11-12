@@ -355,6 +355,12 @@ extension SettingsListView {
     }
 }
 
+#Preview("Not signed in to iCloud") {
+    NavigationStack {
+        SettingsListView(state: .notSignedInToICloud, brightnessBoost: .constant(true))
+    }
+}
+
 #Preview("iCloud Sync off") {
     @Previewable @State var syncs = false
     NavigationStack {

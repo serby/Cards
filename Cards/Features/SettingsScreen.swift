@@ -14,6 +14,7 @@ public struct SettingsScreen: View {
     @AppStorage(DeviceSettings.syncsWithICloudKey) private var syncsWithICloud = true
     @AppStorage(DeviceSettings.sharesDiagnosticsKey) private var sharesDiagnostics = true
     @Environment(ArrivalScheduler.self) private var arrivalScheduler
+    @Environment(ICloudSyncMonitor.self) private var iCloudSyncMonitor
     @Environment(\.iCloudCards) private var iCloudCards
     @Environment(\.clipboard) private var clipboard
     @Environment(\.fileReader) private var fileReader
@@ -39,7 +40,8 @@ public struct SettingsScreen: View {
                 cardCount: cards.count,
                 notificationsBlocked: notificationsBlocked,
                 changelog: Self.changelog,
-                iCloudDeletion: iCloudDeletion
+                iCloudDeletion: iCloudDeletion,
+                iCloudSync: iCloudSyncMonitor.status
             ),
             brightnessBoost: $brightnessBoost,
             arrivalNotifications: $arrivalNotifications,
@@ -169,10 +171,13 @@ extension SettingsScreen {
 
 #if DEBUG
 #Preview {
+    @Previewable @State var iCloudSync = ICloudSyncMonitor(sync: .upToDate(ago: 3 * 60))
     NavigationStack {
         SettingsScreen()
     }
     .environment(ArrivalScheduler(notifications: .silent))
+    .environment(iCloudSync)
+    .task { await iCloudSync.run() }
     .modelContainer(for: CardItem.self, inMemory: true)
 }
 #endif

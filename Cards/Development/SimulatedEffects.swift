@@ -74,3 +74,18 @@ final class LanguageOverrideBox {
         self.override = override
     }
 }
+
+extension ICloudSync {
+    /// Signed in to iCloud, with one piece of syncing that ended `ago` seconds
+    /// before the changes were asked for, and nothing after it (DATA-10).
+    static func upToDate(ago: TimeInterval) -> Self {
+        Self(
+            account: { .available },
+            changes: {
+                AsyncStream { continuation in
+                    continuation.yield(.event(ICloudSyncEvent(id: UUID(), kind: .import, ended: .now.addingTimeInterval(-ago))))
+                }
+            }
+        )
+    }
+}

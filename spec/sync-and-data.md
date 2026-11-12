@@ -131,3 +131,23 @@ As a card holder who has turned iCloud sync off, I want to delete the copy of my
 **Since:** 1.4
 **Where:** `Cards/Core/Services/ICloudCards.swift`, `Cards/UI/Screens/SettingsListView+Privacy.swift`, `Cards/Features/SettingsScreen.swift`, `CardsTests/PrivacySettingsTests.swift`
 **Notes:** Only the device that deletes stops syncing. Another device with iCloud Sync on uploads its cards again, as the caption says.
+
+### DATA-10: See whether my cards are syncing
+
+As a card holder with iCloud Sync on, I want to see how syncing is going, so that I know my cards are on my other devices, or why they are not.
+
+- With iCloud Sync on (DATA-8), Settings > iCloud shows a status under the switch: a symbol, a line saying where syncing has got to, and a caption under it when there is more to say. With iCloud Sync off it shows no status, and Delete Cards from iCloud instead (DATA-9).
+- "Checking iCloud…" with a spinner, just after the app opens, before anything is known.
+- "Syncing…" with a spinner, while cards are being sent to iCloud or fetched from it.
+- "Up to date" with a cloud and a tick, and "Last synced 3 minutes ago", counting on while it shows, once syncing has ended well.
+- "Not signed in to iCloud", in the warning colour, with "Sign in to iCloud in the Settings app to sync your cards.", when no one is signed in on the device.
+- "iCloud isn't available" with "Your cards stay on this device until iCloud is available again.", when iCloud is restricted, as by Screen Time, or not available for now.
+- "Waiting for a connection", with a crossed-out cloud, when the device is offline or iCloud can't be reached, with when it last synced, or "Your changes sync once this device is online." if it never has.
+- "iCloud storage is full", in the warning colour, with "Your cards sync again once there is room in your iCloud account."
+- "Couldn't sync" for any other failure, with when it last synced, or "Card Barcodes tries again by itself."
+- The app follows syncing from the moment it opens, so the status is current as soon as Settings shows, and signing in or out of iCloud while it runs changes it. When syncing last ended well is kept on the device, so after a relaunch the status says when it last synced until syncing starts again.
+- VoiceOver reads the status and its caption as one element.
+
+**Since:** In preparation for 1.5
+**Where:** `Cards/Core/Models/ICloudSyncStatus.swift` (`ICloudSyncTracker`), `Cards/Core/Services/ICloudSync.swift`, `Cards/Features/ICloudSyncMonitor.swift`, `Cards/App/CardsApp.swift`, `Cards/Features/SettingsScreen.swift`, `Cards/UI/Screens/SettingsListView+Privacy.swift` (`iCloudSyncStatusRow`), `Cards/Core/Models/DeviceSettings.swift` (`iCloudLastSyncedKey`), `Cards/App/DevelopmentHooks.swift` (`iCloudSync`), `CardsTests/ICloudSyncStatusTests.swift`
+**Notes:** The status comes from the events SwiftData's CloudKit mirroring posts (`NSPersistentCloudKitContainer.eventChangedNotification`), each piece of setting up, fetching or sending from its start to its end, and from the account's status (`CKContainer.accountStatus()`, again on `CKAccountChanged`). UI tests and the App Store screenshots, whose store is in memory and never syncs, show it up to date as of three minutes before.

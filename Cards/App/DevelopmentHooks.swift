@@ -112,6 +112,17 @@ enum DevelopmentHooks {
         #endif
     }
 
+    /// How Settings learns what iCloud Sync is doing (DATA-10): from CloudKit,
+    /// except in UI tests, whose store is in memory and never syncs, so there it
+    /// is up to date as of a few minutes ago, as the App Store screenshot shows.
+    static var iCloudSync: ICloudSync {
+        #if DEBUG
+        isUITesting ? .upToDate(ago: 3 * 60) : .live
+        #else
+        .live
+        #endif
+    }
+
     /// Whether the app counts the days cards are shown on and asks for an App
     /// Store rating (PLAT-8): always, except in UI tests and the screenshots,
     /// where Apple's prompt would cover the screen under test.

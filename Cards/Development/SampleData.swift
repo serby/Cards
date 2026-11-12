@@ -193,7 +193,8 @@ public extension SettingsState {
         appBuild: "42",
         authorName: "Paul Serby",
         authorURL: URL(string: "https://github.com/serby"),
-        cardCount: 6
+        cardCount: 6,
+        iCloudSync: .upToDate(lastSynced: .now.addingTimeInterval(-3 * 60))
     )
 
     static let noCards = SettingsState(
@@ -210,7 +211,18 @@ public extension SettingsState {
         authorName: "Paul Serby",
         authorURL: URL(string: "https://github.com/serby"),
         cardCount: 6,
-        notificationsBlocked: true
+        notificationsBlocked: true,
+        iCloudSync: .upToDate(lastSynced: .now.addingTimeInterval(-3 * 60))
+    )
+
+    /// iCloud Sync on, with no one signed in to iCloud (DATA-10).
+    static let notSignedInToICloud = SettingsState(
+        appVersion: "1.1",
+        appBuild: "42",
+        authorName: "Paul Serby",
+        authorURL: URL(string: "https://github.com/serby"),
+        cardCount: 6,
+        iCloudSync: .noAccount
     )
 }
 

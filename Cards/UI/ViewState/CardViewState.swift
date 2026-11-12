@@ -139,6 +139,8 @@ public struct SettingsState: Hashable, Sendable {
     public let iCloudDeletion: ICloudDeletion
     /// The open source software the app is built with, for Acknowledgements (PLAT-12).
     public let libraries: [OpenSourceLibrary]
+    /// How iCloud Sync is going, shown while it is on (DATA-10).
+    public let iCloudSync: ICloudSyncStatus
 
     public init(
         appVersion: String?,
@@ -149,7 +151,8 @@ public struct SettingsState: Hashable, Sendable {
         notificationsBlocked: Bool = false,
         changelog: [ChangelogVersion] = [],
         iCloudDeletion: ICloudDeletion = .notAsked,
-        libraries: [OpenSourceLibrary] = OpenSourceLibrary.all
+        libraries: [OpenSourceLibrary] = OpenSourceLibrary.all,
+        iCloudSync: ICloudSyncStatus = .checking
     ) {
         self.appVersion = appVersion
         self.appBuild = appBuild
@@ -160,6 +163,7 @@ public struct SettingsState: Hashable, Sendable {
         self.changelog = changelog
         self.iCloudDeletion = iCloudDeletion
         self.libraries = libraries
+        self.iCloudSync = iCloudSync
     }
 }
 

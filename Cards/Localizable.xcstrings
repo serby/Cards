@@ -2642,6 +2642,41 @@
         }
       }
     },
+    "Card Barcodes tries again by itself." : {
+      "comment" : "Under “Couldn't sync” in Settings, when the cards have never synced on this device. Card Barcodes is the app's name.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يعيد Card Barcodes المحاولة تلقائيًا."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Card Barcodes versucht es automatisch erneut."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Card Barcodes vuelve a intentarlo automáticamente."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Card Barcodes réessaie automatiquement."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Card Barcodesが自動的に再試行します。"
+          }
+        }
+      }
+    },
     "Card code copied" : {
       "comment" : "VoiceOver announcement after the copy button on a card's screen copies the code.",
       "localizations" : {
@@ -2953,6 +2988,41 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "スペルを確認するか、別の名前をお試しください。"
+          }
+        }
+      }
+    },
+    "Checking iCloud…" : {
+      "comment" : "iCloud Sync status in Settings, just after the app opens, before it knows how syncing is going.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "جارٍ التحقق من iCloud…"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud wird geprüft …"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comprobando iCloud…"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vérification d’iCloud…"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloudを確認中…"
           }
         }
       }
@@ -3548,6 +3618,41 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "コーラル"
+          }
+        }
+      }
+    },
+    "Couldn't sync" : {
+      "comment" : "iCloud Sync status in Settings when the last try to sync failed for another reason.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تعذرت المزامنة"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Synchronisieren fehlgeschlagen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se ha podido sincronizar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Synchronisation impossible"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "同期できませんでした"
           }
         }
       }
@@ -6218,6 +6323,76 @@
         }
       }
     },
+    "iCloud isn't available" : {
+      "comment" : "iCloud Sync status in Settings when iCloud is restricted, as by Screen Time, or not available for now. iCloud is Apple's service; keep the name.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud غير متوفر"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud ist nicht verfügbar"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud no está disponible"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud n’est pas disponible"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloudを利用できません"
+          }
+        }
+      }
+    },
+    "iCloud storage is full" : {
+      "comment" : "iCloud Sync status in Settings when the person's iCloud account has no room left. iCloud is Apple's service; keep the name.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مساحة تخزين iCloud ممتلئة"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud-Speicher ist voll"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El almacenamiento de iCloud está lleno"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le stockage iCloud est plein"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloudストレージがいっぱいです"
+          }
+        }
+      }
+    },
     "iCloud Sync" : {
       "comment" : "Settings switch that syncs the cards through the user's iCloud account. iCloud is Apple's service; keep the name.",
       "localizations" : {
@@ -6917,6 +7092,41 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "キロメートル"
+          }
+        }
+      }
+    },
+    "Last synced %@" : {
+      "comment" : "Under the iCloud Sync status in Settings: when the cards last synced. The argument is a time from now, such as “3 minutes ago” or “yesterday”.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "آخر مزامنة %@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zuletzt synchronisiert: %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Última sincronización: %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dernière synchronisation %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最終同期：%@"
           }
         }
       }
@@ -8457,6 +8667,41 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "なし"
+          }
+        }
+      }
+    },
+    "Not signed in to iCloud" : {
+      "comment" : "iCloud Sync status in Settings when no one is signed in to iCloud on the device. iCloud is Apple's service; keep the name.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لم يتم تسجيل الدخول إلى iCloud"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nicht bei iCloud angemeldet"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No has iniciado sesión en iCloud"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Non connecté à iCloud"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloudにサインインしていません"
           }
         }
       }
@@ -11267,6 +11512,41 @@
         }
       }
     },
+    "Sign in to iCloud in the Settings app to sync your cards." : {
+      "comment" : "Under “Not signed in to iCloud” in Settings. The Settings app is iOS's, not this app's Settings tab.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "سجّل الدخول إلى iCloud في تطبيق الإعدادات لمزامنة بطاقاتك."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Melde dich in der App „Einstellungen“ bei iCloud an, um deine Karten zu synchronisieren."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inicia sesión en iCloud en la app Ajustes para sincronizar tus tarjetas."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connectez-vous à iCloud dans l’app Réglages pour synchroniser vos cartes."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カードを同期するには、「設定」アプリでiCloudにサインインしてください。"
+          }
+        }
+      }
+    },
     "Sky" : {
       "comment" : "Card colour name read by VoiceOver in the colour picker: a light blue, the colour of a clear sky.",
       "localizations" : {
@@ -11543,6 +11823,41 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "スイミング"
+          }
+        }
+      }
+    },
+    "Syncing…" : {
+      "comment" : "iCloud Sync status in Settings while the cards are being sent to or fetched from iCloud.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "جارٍ المزامنة…"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wird synchronisiert …"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sincronizando…"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Synchronisation…"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "同期中…"
           }
         }
       }
@@ -12425,6 +12740,41 @@
         }
       }
     },
+    "Up to date" : {
+      "comment" : "iCloud Sync status in Settings when every card on this device is in iCloud and every change in iCloud is here.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "محدَّث"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auf dem neuesten Stand"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actualizado"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "À jour"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最新の状態"
+          }
+        }
+      }
+    },
     "UPC-E" : {
       "comment" : "Barcode format in the barcode type picker. A standard name: keep it as it is.",
       "localizations" : {
@@ -12526,6 +12876,41 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "バージョン%@"
+          }
+        }
+      }
+    },
+    "Waiting for a connection" : {
+      "comment" : "iCloud Sync status in Settings when the device is offline or iCloud could not be reached.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "في انتظار الاتصال"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Warten auf Verbindung"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esperando conexión"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En attente d’une connexion"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "接続を待機中"
           }
         }
       }
@@ -12981,6 +13366,111 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "カードは、iCloudから削除するまでiCloudに残ります。"
+          }
+        }
+      }
+    },
+    "Your cards stay on this device until iCloud is available again." : {
+      "comment" : "Under “iCloud isn't available” in Settings: the cards are kept on the device and sync once iCloud is available again.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تبقى بطاقاتك على هذا الجهاز حتى يصبح iCloud متاحًا مرة أخرى."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine Karten bleiben auf diesem Gerät, bis iCloud wieder verfügbar ist."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tus tarjetas se quedan en este dispositivo hasta que iCloud vuelva a estar disponible."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vos cartes restent sur cet appareil jusqu’à ce qu’iCloud soit à nouveau disponible."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloudが再び利用できるようになるまで、カードはこのデバイスに保存されます。"
+          }
+        }
+      }
+    },
+    "Your cards sync again once there is room in your iCloud account." : {
+      "comment" : "Under “iCloud storage is full” in Settings. iCloud is Apple's service; keep the name.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تتم مزامنة بطاقاتك مجددًا عند توفر مساحة في حساب iCloud الخاص بك."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine Karten werden wieder synchronisiert, sobald in deinem iCloud-Account Platz ist."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tus tarjetas se sincronizan de nuevo cuando haya espacio en tu cuenta de iCloud."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vos cartes se synchronisent à nouveau dès que votre compte iCloud a de l’espace libre."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloudアカウントに空き容量ができると、カードは再び同期されます。"
+          }
+        }
+      }
+    },
+    "Your changes sync once this device is online." : {
+      "comment" : "Under “Waiting for a connection” in Settings, when the cards have never synced on this device.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تتم مزامنة تغييراتك عند اتصال هذا الجهاز بالإنترنت."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine Änderungen werden synchronisiert, sobald dieses Gerät online ist."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tus cambios se sincronizan cuando este dispositivo tenga conexión."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vos modifications se synchronisent dès que cet appareil est en ligne."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このデバイスがオンラインになると、変更が同期されます。"
           }
         }
       }

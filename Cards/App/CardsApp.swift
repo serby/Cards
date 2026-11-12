@@ -8,6 +8,8 @@ struct CardsApp: App {
     @State private var navigationManager: NavigationManager
     @State private var locationService = LocationService(fixedLocation: DevelopmentHooks.screenshotLocation)
     @State private var arrivalScheduler = ArrivalScheduler(notifications: DevelopmentHooks.notifications)
+    /// Followed from launch, for the status in Settings (DATA-10).
+    @State private var iCloudSyncMonitor: ICloudSyncMonitor
     /// Set in Settings, and handed to every screen and the widget from here (SET-4).
     @AppStorage(DeviceSettings.distanceUnitsKey) private var distanceUnits = DistanceUnits.automatic
     /// Set in Settings, and handed to the card screen from here (SET-5).
@@ -31,6 +33,11 @@ struct CardsApp: App {
             navigationManager.navigate(to: .card(code))
         }
         UNUserNotificationCenter.current().delegate = arrivalRouter
+        // Made before the store opens, so it hears the store's first syncing, and
+        // run once for the life of the app, whatever windows come and go.
+        let iCloudSyncMonitor = ICloudSyncMonitor(sync: DevelopmentHooks.iCloudSync)
+        _iCloudSyncMonitor = State(initialValue: iCloudSyncMonitor)
+        Task { await iCloudSyncMonitor.run() }
         let syncs = UserDefaults.standard.object(forKey: DeviceSettings.syncsWithICloudKey) as? Bool ?? true
         DevelopmentHooks.initializeCloudKitSchemaIfRequested()
         let container = Self.makeModelContainer(syncsWithICloud: syncs)
@@ -90,6 +97,7 @@ struct CardsApp: App {
         .tint(.accent)
         .environment(locationService)
         .environment(arrivalScheduler)
+        .environment(iCloudSyncMonitor)
         .environment(\.mapShowsPointsOfInterest, DevelopmentHooks.mapShowsPointsOfInterest)
         .environment(\.placeSearch, DevelopmentHooks.placeSearch)
         .environment(\.distanceUnits, distanceUnits)
@@ -117,6 +125,7 @@ struct CardsApp: App {
                 .onChange(of: syncsWithICloud) {
                     // An in-memory store (UI tests) never syncs, and a new one would be empty.
                     guard !DevelopmentHooks.isUITesting else { return }
+                    iCloudSyncMonitor.storeOpened(syncsWithICloud: syncsWithICloud)
                     modelContainer = Self.makeModelContainer(syncsWithICloud: syncsWithICloud)
                 }
         }
