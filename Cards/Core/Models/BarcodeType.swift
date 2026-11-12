@@ -1,4 +1,4 @@
-import AVFoundation
+import Foundation
 
 public enum BarcodeType: String, Codable, CaseIterable, Hashable, Sendable {
     case code128 = "Code 128"
@@ -66,56 +66,6 @@ public enum BarcodeType: String, Codable, CaseIterable, Hashable, Sendable {
                 "PDF 417",
                 comment: "Barcode format in the barcode type picker: the stacked 2D PDF417 code, not a PDF file. Keep it as it is."
             )
-        }
-    }
-}
-
-public struct BarcodeMapper {
-    public static func mapBarcodeTypeToMetadataObjectType(_ type: BarcodeType) -> AVMetadataObject.ObjectType? {
-        switch type {
-        case .code128:
-            return .code128
-        case .code39:
-            return .code39
-        case .qrCode:
-            return .qr
-        case .ean8:
-            return .ean8
-        case .ean13:
-            return .ean13
-        case .pdf417:
-            return .pdf417
-        case .upce:
-            return .upce
-        case .aztec:
-            return .aztec
-        case .code93:
-            return .code93
-        }
-    }
-
-    public static func mapMetadataObjectTypeToBarcodeType(_ metadataType: AVMetadataObject.ObjectType) -> BarcodeType? {
-        switch metadataType {
-        case .code128:
-            return .code128
-        case .code39:
-            return .code39
-        case .qr:
-            return .qrCode
-        case .ean8:
-            return .ean8
-        case .ean13:
-            return .ean13
-        case .pdf417:
-            return .pdf417
-        case .upce:
-            return .upce
-        case .aztec:
-            return .aztec
-        case .code93:
-            return .code93
-        default:
-            return nil
         }
     }
 }

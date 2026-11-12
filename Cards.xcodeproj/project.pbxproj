@@ -64,6 +64,7 @@
 		A100000000000000000000A1 /* Exceptions for "Cards" folder in "CardsWidget" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Core/Models/BarcodeMapper.swift,
 				Core/Models/BarcodeType.swift,
 				Core/Models/CardColor.swift,
 				Core/Models/CardLocation.swift,
@@ -82,6 +83,7 @@
 				UI/Modifiers/KeepsColoursWhenInverted.swift,
 				UI/Modifiers/ReadsLeftToRight.swift,
 				UI/Theme/CardPalette.swift,
+				"UI/Theme/Colors+System.swift",
 				UI/Theme/Colors.swift,
 				UI/ViewState/CardWidgetState.swift,
 			);
