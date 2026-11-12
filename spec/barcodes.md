@@ -47,15 +47,15 @@ As a card holder, I want to be told when a card's code can't be drawn as its bar
 As a card holder, I want the screen at full brightness while I show a card, so that the scanner reads it in any light.
 
 - Brightness Boost is on by default. It is one setting, changed in Settings (SET-1) or with the sun button on a card, and kept on the device.
-- With it on, opening a card fades the screen to full brightness over half a second, and VoiceOver announces "Screen brightness increased for better barcode visibility".
-- Leaving the card fades the brightness back to where it was over 0.2 seconds.
-- The sun button in the card's toolbar is filled and pink while the boost is on. Tapping it turns the setting on or off at once: on fades to full brightness and announces "Brightness boost on"; off fades back and announces "Brightness boost off" (1.1).
+- With it on, opening a card turns the screen up to full brightness, and leaving the card puts the brightness back to where it was. In preparation for 1.5 both happen at once; until then the screen faded up over half a second and back over 0.2 seconds.
+- The sun button in the card's toolbar is filled and pink while the boost is on. Tapping it turns the setting on or off at once, and the brightness with it, and VoiceOver announces "Brightness Boost on" or "Brightness Boost off" (1.1). Turning the setting off in Settings, as in another window on iPad, puts the brightness back too.
+- In preparation for 1.5: leaving the app with a card open, for the Home Screen, another app, the app switcher or Control Centre, puts the brightness back at once, and coming back to the card turns it up again. Until 1.5 the screen stayed at full brightness after the app had gone. A system alert over the card, such as the location permission prompt, puts it back too until it closes.
 - With it off, opening a card leaves the brightness alone.
-- The Settings caption reads "Boosts brightness when viewing card to improve scannability".
+- The Settings caption reads "Turns the screen up to full brightness while a card is open, so its barcode scans easily."
 
 **Since:** 1.0
-**Where:** `Cards/UI/Screens/CardDetailView.swift`, `Cards/UI/Environment/ScreenBrightness.swift`, `Cards/Features/CardDetailScreen.swift`, `Cards/UI/Screens/SettingsListView.swift`
-**Notes:** The brightness is put back when the card screen goes away, which includes opening Edit from it. The app doesn't put it back itself when it goes to the background with a card open.
+**Where:** `Cards/UI/Screens/CardDetailView.swift`, `Cards/UI/Environment/ScreenBrightness.swift` (`BrightnessBoost`), `Cards/Features/CardDetailScreen.swift`, `Cards/UI/Screens/SettingsListView.swift`, `CardsTests/BrightnessBoostTests.swift`
+**Notes:** The brightness is put back when the card screen goes away, which includes opening Edit from it. iOS keeps the brightness an app sets after the app has gone, until the phone locks, so the card screen puts it back whenever the app stops being active, and reads it afresh when it boosts again, so a brightness set meanwhile is the one put back next. It writes to the screen of the app's active scene, or of one on its way in or out of the foreground, as the app's scene is no longer active when it leaves.
 
 ### BAR-5: Scan a card held close to the camera
 

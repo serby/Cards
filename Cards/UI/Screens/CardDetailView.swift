@@ -14,7 +14,8 @@ public struct CardDetailView: View {
 
     @Environment(\.screenBrightness) private var screenBrightness
     @Environment(\.accessibilityAnnouncer) private var announcer
-    @State private var originalBrightness: CGFloat?
+    @Environment(\.scenePhase) private var scenePhase
+    @State private var boost = BrightnessBoost()
     /// VoiceOver starts on the card's name, which also confirms a save.
     @AccessibilityFocusState private var nameFocused: Bool
     @State private var showsLocationPicker = false
@@ -77,9 +78,21 @@ public struct CardDetailView: View {
         .accessibilityIdentifier("cardDetailView")
         // No announcement here: it would cut across VoiceOver reading the new
         // screen every time it opens. The button says whether the boost is on.
-        .task {
-            guard brightnessBoost else { return }
-            await boost()
+        .onAppear {
+            if brightnessBoost {
+                boost.start(on: screenBrightness)
+            }
+        }
+        .onChange(of: scenePhase) { _, phase in
+            boost.follow(phase, enabled: brightnessBoost, on: screenBrightness)
+        }
+        // The sun button, or Settings in another window on iPad.
+        .onChange(of: brightnessBoost) { _, enabled in
+            if enabled {
+                boost.start(on: screenBrightness)
+            } else {
+                boost.end(on: screenBrightness)
+            }
         }
         .task {
             // After the push settles, or VoiceOver moves focus to the bar.
@@ -87,9 +100,7 @@ public struct CardDetailView: View {
             nameFocused = true
         }
         .onDisappear {
-            guard let originalBrightness else { return }
-            let brightness = screenBrightness
-            Task { await brightness.fade(to: originalBrightness, duration: 0.2) }
+            boost.end(on: screenBrightness)
         }
         .toolbar {
             // Share first, so brightness and Edit keep the places they had at the trailing edge.
@@ -102,7 +113,7 @@ public struct CardDetailView: View {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button {
                     brightnessBoost.toggle()
-                    Task { await applyToggle() }
+                    announceToggle()
                 } label: {
                     Image(systemName: brightnessBoost ? "sun.max.fill" : "sun.max")
                         .foregroundStyle(brightnessBoost ? Color.accent : .primary)
@@ -245,21 +256,13 @@ public struct CardDetailView: View {
         )
     }
 
-    private func boost() async {
-        if originalBrightness == nil {
-            originalBrightness = screenBrightness.read()
-        }
-        await screenBrightness.fade(to: 1.0, duration: 0.5)
-    }
-
-    private func applyToggle() async {
+    /// Says what the sun button did; the boost follows the setting itself.
+    private func announceToggle() {
         if brightnessBoost {
-            await boost()
             announcer.announce(
                 String(localized: "Brightness Boost on", comment: "VoiceOver announcement after the sun button turns Brightness Boost on.")
             )
         } else {
-            await screenBrightness.fade(to: originalBrightness ?? 0.5, duration: 0.2)
             announcer.announce(
                 String(localized: "Brightness Boost off", comment: "VoiceOver announcement after the sun button turns Brightness Boost off.")
             )

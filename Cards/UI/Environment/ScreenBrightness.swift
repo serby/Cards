@@ -22,19 +22,53 @@ public extension ScreenBrightness {
         write: { UIScreen.current?.brightness = max(0, min(1, $0)) }
     )
 
-    /// Ramps brightness to `target` in fixed steps.
-    @MainActor
-    func fade(to target: CGFloat, duration: TimeInterval) async {
-        let stepTime: TimeInterval = 0.05
-        let steps = max(1, Int(duration / stepTime))
-        let start = read()
-        let delta = (target - start) / CGFloat(steps)
+}
 
-        for _ in 0..<steps {
-            write(read() + delta)
-            try? await Task.sleep(for: .seconds(stepTime))
+/// The boost a card's screen gives the screen while Brightness Boost is on
+/// (BAR-4): full brightness at once, and the brightness it found put back at
+/// once when it ends, as when the card closes or the app leaves the foreground.
+public struct BrightnessBoost: Sendable {
+    /// The brightness before the boost, while it is on.
+    public private(set) var original: CGFloat?
+
+    public init() {}
+
+    public var isOn: Bool {
+        original != nil
+    }
+
+    /// Turns `screen` up to full, remembering where it was unless the boost is
+    /// already on, so starting twice still puts back the brightness found first.
+    @MainActor
+    public mutating func start(on screen: ScreenBrightness) {
+        if original == nil {
+            original = screen.read()
         }
-        write(target)
+        screen.write(1)
+    }
+
+    /// Puts back the brightness the boost found, if it is on.
+    @MainActor
+    public mutating func end(on screen: ScreenBrightness) {
+        guard let original else { return }
+        screen.write(original)
+        self.original = nil
+    }
+
+    /// Follows the app in and out of the foreground while a card is open. iOS
+    /// keeps the brightness an app sets after the app has gone, until the
+    /// phone locks, so it is put back as soon as the app stops being active,
+    /// as for the Home Screen, the app switcher or Control Centre, and turned
+    /// up again when it is active once more, if `enabled`.
+    @MainActor
+    public mutating func follow(_ phase: ScenePhase, enabled: Bool, on screen: ScreenBrightness) {
+        if phase == .active {
+            if enabled {
+                start(on: screen)
+            }
+        } else {
+            end(on: screen)
+        }
     }
 }
 
