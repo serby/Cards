@@ -43,25 +43,27 @@ As a card holder with an iPhone Duo, I want the app to work on it, so that my ca
 As a card holder, I want an app that doesn't watch me, so that I can trust it with my cards.
 
 - There is no account or sign-in. Sync uses your own iCloud account (DATA-1), and can be turned off (DATA-8).
+- In preparation for 1.5, the iPhone sends the Apple Watch paired with it a copy of every card, without its notes, by Apple's WatchConnectivity, straight from one of your devices to the other and with iCloud Sync on or off (WATCH-1). The watch keeps it in its own app's container. Nothing goes anywhere else.
 - There are no ads, analytics or tracking, and the app makes no network requests of its own. It sends no diagnostics yet (PLAT-11).
 - The only third-party code is RSBarcodes_Swift, which draws barcodes on the device, and Settings > Acknowledgements shows its licence (PLAT-12).
 - The app times its own cold and warm starts and writes them to the device's log, and nowhere else.
 - The app declares that it uses no non-exempt encryption.
 
 **Since:** 1.0
-**Where:** `Cards/Core/Services/PerformanceTracker.swift`, `Cards.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved`, `Info.plist`, `Website/templates/privacy.html`
+**Where:** `Cards/Core/Services/PerformanceTracker.swift`, `Cards.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved`, `Info.plist`, `Cards/Core/Services/WatchSync.swift`, `Website/templates/privacy.html`
 
 ### PLAT-5: Keep my location on my device
 
 As a card holder, I want my location to stay on my phone, so that nobody learns where I go.
 
 - Your current location is only used on the device: for distances (PLACE-6), the widget's nearest card (WID-1), where the map opens (PLACE-1) and which places are watched for arrivals (ARR-3). The widget keeps its last reading in the App Group on the device, and it never goes into iCloud Sync, an export or a share (WID-1).
+- In preparation for 1.5, the Apple Watch app finds where the watch is with its own location, only while it is open and only with your permission, for its distances and to open the card for the place you are at (WATCH-4). Its readings stay on the watch: it keeps none and sends none to the iPhone or anywhere else.
 - The places you add are stored with the card, and sync and export with it (DATA-1, DATA-2).
 - Arrival notifications are watched by iOS on the device, with no server involved (ARR-1).
 - The map and the place search use Apple's map services, which receive the area shown or the text searched for (PLACE-2). Since 1.4 naming a place sends Apple Maps the point under the pin, or where you are when the sheet opens (PLACE-10).
 
 **Since:** 1.3
-**Where:** `Cards/Core/Services/LocationService.swift`, `CardsWidget/WidgetLocation.swift`, `Cards/Core/Services/PlaceSearch+MapKit.swift`, `Cards/Features/ArrivalScheduler.swift`, `Cards/Core/Services/NotificationClient.swift`, `Website/templates/privacy.html`
+**Where:** `Cards/Core/Services/LocationService.swift`, `CardsWidget/WidgetLocation.swift`, `Cards/Core/Services/PlaceSearch+MapKit.swift`, `Cards/Features/ArrivalScheduler.swift`, `Cards/Core/Services/NotificationClient.swift`, `CardsWatch/Services/WatchLocation.swift`, `Website/templates/privacy.html`
 
 ### PLAT-6: Know the camera is only used to scan
 
@@ -79,7 +81,7 @@ As a card holder, I want the camera used only when I am scanning a card, so that
 As a card holder, I want the app in my own language, so that I understand every screen.
 
 - The app speaks British English, and, in preparation for 1.4, Spanish (Spain), German, Japanese, French and Arabic. It follows the language chosen for it in iOS Settings, or the device's language, and falls back to British English for any other.
-- Every word on screen and every word VoiceOver speaks is translated, including the app's name under its icon, the permission prompts, the arrival notification, the Home Screen widget and its gallery entry, and What's New for 1.4 (SET-2). The user's own words, card names, codes and place names, are shown as typed.
+- Every word on screen and every word VoiceOver speaks is translated, including the app's name under its icon, the permission prompts, the arrival notification, the Home Screen widget and its gallery entry, What's New for 1.4 (SET-2), and, in preparation for 1.5, the Apple Watch app and its location prompt (WATCH-2). The user's own words, card names, codes and place names, are shown as typed.
 - Dates, distances and radii follow the device's region: "1,5 km" in Germany, "400 yd" in the UK, "0.93 mi" in the US. Distances are spoken in full by VoiceOver ("350 metres", "350 Meter").
 - Counts use each language's plural forms: "1 card", "2 cards"; Japanese has one form for every number, and Arabic six.
 - In Arabic the app is laid out right to left, as iOS lays out its own apps: tabs, lists, forms and the card grid start on the right.
@@ -87,7 +89,7 @@ As a card holder, I want the app in my own language, so that I understand every 
 - An English device always shows English, never a translation, because `Info.plist` keeps `CFBundleDevelopmentRegion`.
 
 **Since:** 1.0 (English), in preparation for 1.4 (Spanish, German, Japanese, French and Arabic)
-**Where:** `Cards/Localizable.xcstrings`, `Cards/InfoPlist.xcstrings`, `CardsWidget/Localizable.xcstrings`, `CardsWidget/InfoPlist.xcstrings`, `Cards.xcodeproj/project.pbxproj` (`knownRegions`), `CardsTests/LocalisationBundleTests.swift`, `CardsUITests/CardsLocalisationScreenshotTests.swift`
+**Where:** `Cards/Localizable.xcstrings`, `Cards/InfoPlist.xcstrings`, `CardsWidget/Localizable.xcstrings`, `CardsWidget/InfoPlist.xcstrings`, `CardsWatch/Localizable.xcstrings`, `CardsWatch/InfoPlist.xcstrings`, `Cards.xcodeproj/project.pbxproj` (`knownRegions`), `CardsTests/LocalisationBundleTests.swift`, `CardsUITests/CardsLocalisationScreenshotTests.swift`
 **Notes:** Italian, Traditional Chinese, Brazilian Portuguese, Korean and Simplified Chinese were translated on the localisation branch and are held back for later waves; `l10n/context.md` says how to bring each back. The right-to-left UI tests and audits run in Arabic (`CardsRightToLeftUITests`).
 
 ### PLAT-8: Be asked for a rating only once the app has helped

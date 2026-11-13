@@ -7,7 +7,8 @@
 //
 // The languages are the project's knownRegions less en and Base, and the
 // catalogues are every *.xcstrings under the targets' source folders, Cards/
-// (the app) and CardsWidget/ (the widget extension), except Cards/Development,
+// (the app), CardsWidget/ (the widget extension) and CardsWatch/ (the Apple
+// Watch app), except Cards/Development,
 // so there is no separate configuration. A string compiled into both targets
 // is in both catalogues; it is translated once and must read the same in both.
 // Catalogues are written in Xcode's own format, so Xcode re-saving them
@@ -158,7 +159,7 @@ export function projectAt(root: string): Project {
     return {
         root,
         pbxproj: join(root, "Cards.xcodeproj", "project.pbxproj"),
-        sources: [join(root, "Cards"), join(root, "CardsWidget")],
+        sources: [join(root, "Cards"), join(root, "CardsWidget"), join(root, "CardsWatch")],
         development: join(root, "Cards", "Development"),
         l10n: join(root, "l10n"),
     };
@@ -822,7 +823,7 @@ export function projectFrom(rootOption: string | undefined): Project {
     return projectAt(resolve(rootOption ?? repositoryRoot));
 }
 
-/// The source folders, as messages name them: "Cards/ or CardsWidget/".
+/// The source folders, as messages name them: "Cards/ or CardsWidget/ or CardsWatch/".
 export function sourceFolders(project: Project): string {
     return project.sources.map((path) => `${relative(project.root, path)}/`).join(" or ");
 }

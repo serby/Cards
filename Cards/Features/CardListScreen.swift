@@ -9,6 +9,8 @@ public struct CardListScreen: View {
     @Environment(LocationService.self) private var locationService
     @Environment(ArrivalScheduler.self) private var arrivalScheduler
     @Environment(\.widgetSnapshot) private var widgetSnapshot
+    @Environment(\.watchSync) private var watchSync
+    @Environment(\.distanceUnits) private var distanceUnits
     @Environment(\.requestReview) private var requestReview
     @Environment(\.calendar) private var calendar
     @Environment(\.scenePhase) private var scenePhase
@@ -56,6 +58,10 @@ public struct CardListScreen: View {
         }
         .task(id: widgetCards) {
             widgetSnapshot.write(widgetCards)
+        }
+        // The barcodes are drawn for the watch only when what it shows changes (WATCH-1).
+        .task(id: WatchContents(cards: widgetCards, icons: cardItems.map(\.icon), distanceUnits: distanceUnits)) {
+            watchSync.send(WatchSnapshot(cards: cardItems.map(WatchCard.init), distanceUnits: distanceUnits))
         }
         .onChange(of: navigationManager.navigationPath.isEmpty) { _, isEmpty in
             guard isEmpty else { return }
@@ -228,6 +234,14 @@ private struct ArrivalWatch: Hashable {
     let cards: [ArrivalPlan.Card]
     // swiftlint:disable:next discouraged_optional_collection
     let area: [Int]?
+}
+
+/// What the Apple Watch is sent (WATCH-1), so it is sent again only when that
+/// changes: the widget's copy of each card, plus its icon and the Distances choice.
+private struct WatchContents: Hashable {
+    let cards: [WidgetCard]
+    let icons: [String?]
+    let distanceUnits: DistanceUnits
 }
 
 #if DEBUG

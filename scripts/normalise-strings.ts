@@ -13,7 +13,7 @@ import { findCatalogues, loadCatalogues, projectFrom, saveCatalogue } from "./li
 
 const usage = `Usage: node scripts/normalise-strings.ts [<file>…] [options]
 
-Rewrites String Catalogues in Xcode's format: the files given, or every one under Cards/ and CardsWidget/.
+Rewrites String Catalogues in Xcode's format: the files given, or every one under Cards/, CardsWidget/ and CardsWatch/.
 
 Options:
   --root <dir>   Repository root (default: this repository)`;

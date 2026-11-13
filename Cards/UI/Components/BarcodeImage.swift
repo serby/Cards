@@ -16,6 +16,16 @@ public enum BarcodeImage {
         )
     }
 
+    /// The bare code at one pixel a module, as the generator draws it before
+    /// scaling it to a size, for reading its modules (`BarcodeModules`); nil if
+    /// the code is not valid for `type`.
+    public static func unscaled(_ code: String, type: BarcodeType) -> CGImage? {
+        guard let metadataType = BarcodeMapper.mapBarcodeTypeToMetadataObjectType(type) else {
+            return nil
+        }
+        return RSUnifiedCodeGenerator.shared.generateCode(code, machineReadableCodeObjectType: metadataType.rawValue)?.cgImage
+    }
+
     /// The code at `size` pixels on white, with a `margin` pixel quiet zone round
     /// it. One opaque image, so nothing can tint the white away from the bars.
     public static func onWhite(_ code: String, type: BarcodeType, size: CGSize, margin: CGFloat) -> UIImage? {

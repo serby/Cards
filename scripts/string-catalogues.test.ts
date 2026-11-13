@@ -211,16 +211,23 @@ describe("completeness", () => {
     });
 });
 
-describe("the app's and the widget's catalogues", () => {
-    test("are found under Cards/ and CardsWidget/, leaving out Cards/Development and everything else", () => {
+describe("the app's, the widget's and the watch's catalogues", () => {
+    test("are found under Cards/, CardsWidget/ and CardsWatch/, leaving out Cards/Development and everything else", () => {
         const root = projectWithWidget();
         try {
             const empty = formatCatalogue({ sourceLanguage: "en", strings: {}, version: "1.0" });
             writeFileSync(join(root, "CardsWidget", "InfoPlist.xcstrings"), empty);
+            mkdirSync(join(root, "CardsWatch"), { recursive: true });
+            writeFileSync(join(root, "CardsWatch", "Localizable.xcstrings"), empty);
             mkdirSync(join(root, "scripts", "fixtures"), { recursive: true });
             writeFileSync(join(root, "scripts", "fixtures", "Fixture.xcstrings"), empty);
             const found = findCatalogues(projectAt(root)).map((path) => relative(root, path));
-            assert.deepEqual(found, ["Cards/Localizable.xcstrings", "CardsWidget/InfoPlist.xcstrings", "CardsWidget/Localizable.xcstrings"]);
+            assert.deepEqual(found, [
+                "Cards/Localizable.xcstrings",
+                "CardsWatch/Localizable.xcstrings",
+                "CardsWidget/InfoPlist.xcstrings",
+                "CardsWidget/Localizable.xcstrings",
+            ]);
         } finally {
             rmSync(root, { recursive: true, force: true });
         }

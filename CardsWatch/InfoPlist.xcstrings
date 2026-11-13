@@ -1,0 +1,103 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "CFBundleDisplayName" : {
+      "comment" : "The Apple Watch app's name under its icon and in the Watch app on the iPhone. It is the app's name, Card Barcodes, which is never translated.",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Card Barcodes"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Card Barcodes"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Card Barcodes"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Card Barcodes"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Card Barcodes"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Card Barcodes"
+          }
+        }
+      }
+    },
+    "CFBundleName" : {
+      "comment" : "The Apple Watch app's product name, CardsWatch. watchOS names the app by its display name, so this stays as it is.",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "CardsWatch"
+          }
+        }
+      },
+      "shouldTranslate" : false
+    },
+    "NSLocationWhenInUseUsageDescription" : {
+      "comment" : "Shown by watchOS when the Apple Watch app first asks for the watch's location. Explains that the app uses it to show how far away the user's cards' places are, and to open the card for the place where the user is.",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يُستخدم موقعك لعرض مدى بُعدك عن أماكن بطاقاتك، ولفتح البطاقة الخاصة بالمكان الذي أنت فيه."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dein Standort wird verwendet, um anzuzeigen, wie weit du von den Orten deiner Karten entfernt bist, und um die Karte für den Ort zu öffnen, an dem du bist."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Your location is used to show how far you are from your cards' places, and to open the card for the place you are at."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu ubicación se usa para mostrar a qué distancia estás de los lugares de tus tarjetas y para abrir la tarjeta del lugar en el que estás."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votre position est utilisée pour afficher la distance qui vous sépare des lieux de vos cartes et pour ouvrir la carte du lieu où vous vous trouvez."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カードの場所までの距離を表示し、今いる場所のカードを開くために位置情報を使用します。"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

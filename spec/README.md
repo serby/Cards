@@ -50,6 +50,7 @@ Only write what the code does. If a criterion is wrong, fix the criterion or the
 | [places.md](places.md) | PLACE | Adding places on the map or by searching, naming them from the map, the radius, Add current location, removing places, distances, a card's nearest places and location permission |
 | [arrival-notifications.md](arrival-notifications.md) | ARR | A reminder on arrival, opening the card from it, the 20-region limit and watching the nearest places as you move, permission, the Settings switch and each card's own switch |
 | [widget.md](widget.md) | WID | The Home Screen widget: nearest or chosen card, refresh, opening the card, layouts, tinted Home Screens and the snapshot |
+| [watch.md](watch.md) | WATCH | The Apple Watch app: the cards sent from the iPhone and kept on the watch, the list, each card's barcode drawn on the watch, opening the card for where you are, and opening a card from an arrival notification |
 | [sync-and-data.md](sync-and-data.md) | DATA | iCloud sync, how it is going, turning it off and deleting the cards from iCloud, export and import as JSON without duplicates, opening an export in the app, old exports, deleting every card, and where the store lives |
 | [settings.md](settings.md) | SET | The Settings screen and What's New |
 | [navigation.md](navigation.md) | NAV | The tabs, bringing the Cards tab forward, and `cards://` links |

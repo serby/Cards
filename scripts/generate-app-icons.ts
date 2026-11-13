@@ -1,6 +1,8 @@
 // Renders the app icon PNGs from DesignAssets/Icon.svg.
 // Light uses the SVG as is; dark and tinted swap it to a white glyph on black
 // (iOS tints the tinted variant by luminance, so it shares the dark artwork).
+// The Apple Watch app's single icon is the light artwork, which watchOS masks
+// to a circle; the cards sit well inside it.
 // Outputs are opaque RGB with no alpha, as App Store Connect requires.
 // Requires librsvg and ImageMagick: brew install librsvg imagemagick
 //
@@ -14,8 +16,9 @@ import { basename, delimiter, join } from "node:path";
 const root = join(import.meta.dirname, "..");
 const source = join(root, "DesignAssets", "Icon.svg");
 const iconSet = join(root, "Cards", "Assets.xcassets", "AppIcon.appiconset");
+const watchIconSet = join(root, "CardsWatch", "Assets.xcassets", "AppIcon.appiconset");
 const design = join(root, "DesignAssets");
-const webIcon = join(root, "Website", "src", "icon.png");
+const webIcon = join(root, "Website", "static", "icon.png");
 
 const light = { background: "#FFFFFF", foreground: "#0A0A0A" };
 const dark = { background: "#000000", foreground: "#FFFFFF" };
@@ -66,10 +69,12 @@ try {
 
     for (const icon of [lightIcon, darkIcon, tintedIcon]) copyFileSync(icon, join(design, basename(icon)));
 
-    // The apple-touch-icon that Website/src/index.html links to.
+    render(source, 1024, join(watchIconSet, "Icon.png"));
+
+    // The apple-touch-icon the website's pages link to.
     render(source, 180, webIcon);
 } finally {
     rmSync(work, { recursive: true, force: true });
 }
 
-console.log(`App icons written to ${iconSet}, ${design} and ${webIcon}`);
+console.log(`App icons written to ${iconSet}, ${watchIconSet}, ${design} and ${webIcon}`);
