@@ -10,6 +10,7 @@ As a card holder, I want the app split into my cards and its settings, so that t
 - The Cards tab opens on the list (CARD-1). Opening a card, editing it and adding one push screens on top of the list, with Back to return.
 - The Cards tab keeps its place when you switch tabs, so a card left open is still open when you come back (1.3).
 - Opening a card from a link, the widget or a notification brings the Cards tab forward, so it shows even when Settings was open (NAV-2, WID-4, ARR-2) (1.3).
+- In preparation for 1.5: opening an export in the app from Files, Mail or AirDrop brings the Settings tab forward instead, to import it, and the Cards tab keeps its place (DATA-11).
 - The tab bar uses the pink accent (COL-7). It is iOS's own and always in view: it never minimises on scroll (in preparation for 1.4).
 
 **Since:** 1.0

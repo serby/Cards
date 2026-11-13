@@ -83,7 +83,8 @@ public struct ImportCardsView: View {
                 .foregroundStyle(Color.accent)
                 .padding()
             }
-            .fileImporter(isPresented: $choosingFile, allowedContentTypes: [.json], onCompletion: onChooseFile)
+            // Text files too: before 1.5 an export saved to Files was kept as one (DATA-7).
+            .fileImporter(isPresented: $choosingFile, allowedContentTypes: [.json, .plainText], onCompletion: onChooseFile)
             .navigationTitle(Text("Import JSON", comment: "Title of the sheet for pasting cards exported as JSON."))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

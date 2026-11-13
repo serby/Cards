@@ -23,6 +23,8 @@ As a person with several devices, I want my cards to sync through my iCloud acco
 As a card holder, I want to export my cards, so that I have a copy I control.
 
 - Settings > Data > "Export as JSON" opens the share sheet with every card as JSON text.
+- In preparation for 1.5: the share sheet gets a file rather than text, named "Card Barcodes <date>.json" with the day's date where the device is, as year, month and day, such as "Card Barcodes 2026-11-13.json". The date is the device's day in its own time zone, so an export made late at night in London or early in the morning in Tokyo is named for that day there. The name is the same in every language, as Card Barcodes is the app's name in all of them, and its digits are always 0 to 9. The share sheet shows the file's name, Save to Files keeps it under that name as a JSON file, and Mail, Messages and AirDrop send it as an attachment. Until 1.5 the share sheet got the JSON as text, which Save to Files kept as a text file under a name of its own.
+- In preparation for 1.5: if the file can't be written, as when the device is full, the share sheet gets the JSON as text instead, as it did before.
 - The JSON is an array of cards, pretty-printed with sorted keys. Each card has `code`, `color`, `locations`, `name`, `notifiesOnArrival`, `order`, `timestamp` and `type`.
 - `timestamp` is an ISO 8601 date. `type` is the barcode type's name, such as "EAN-13". `color` is a palette name or "#RRGGBB" (COL-8). Each place has `id`, `name`, `latitude`, `longitude` and `radius` in metres. `notifiesOnArrival` is `true` or `false`, the card's own arrival switch (ARR-6) (1.3).
 - Since 1.4: a card with notes also has `notes`, the text as the card keeps it (CARD-14). A card without notes has no `notes` key.
@@ -30,8 +32,8 @@ As a card holder, I want to export my cards, so that I have a copy I control.
 - The app only exports when asked.
 
 **Since:** 1.0
-**Where:** `Cards/Features/SettingsScreen.swift`, `Cards/Core/Models/CardItem.swift:61-98`, `Cards/UI/Components/ShareSheet.swift`
-**Notes:** Before 1.3 cards were exported in no particular order, but each carries its `order`, so an older export still restores in its order (DATA-3).
+**Where:** `Cards/Features/SettingsScreen.swift` (`export`), `Cards/Core/Models/CardExport.swift`, `Cards/Core/Services/FileWriter.swift`, `Cards/Core/Models/CardItem.swift` (`CardItemDTO`), `Cards/UI/Components/ShareSheet.swift`, `Cards/Core/Services/FileWriter.swift` (`removeHandedOver`), `CardsTests/ExportFileTests.swift` (`HandedOverFileTests`)
+**Notes:** Before 1.3 cards were exported in no particular order, but each carries its `order`, so an older export still restores in its order (DATA-3). The file is written to a folder of the app's temporary files that holds only the latest export, so exports from other days do not pile up, and iOS clears it out in time.
 
 ### DATA-3: Import cards from JSON
 
@@ -95,13 +97,15 @@ As a card holder, I want my cards to survive every update, so that I never lose 
 
 As a card holder, I want to import an export saved as a file, so that I don't have to copy and paste its text.
 
-- The Import JSON sheet (DATA-3) has a "Choose File" button beside "Paste from Clipboard", or below it at the accessibility text sizes. It opens the Files picker, limited to JSON files.
+- The Import JSON sheet (DATA-3) has a "Choose File" button beside "Paste from Clipboard", or below it at the accessibility text sizes. It opens the Files picker, limited to JSON files. In preparation for 1.5 it takes text files too, so an export saved to Files before 1.5, which was kept as a text file and could not be chosen, can be.
+- In preparation for 1.5: a file made by Export as JSON (DATA-2) and saved to Files imports every card in it as it was exported, by Choose File, on another device or on the same one after its cards are deleted. On the device it came from, with its cards still there, it adds nothing (DATA-3). A test exports cards to a file and imports that file back, end to end.
+- In preparation for 1.5: an export can also be opened in the app from Files, Mail or AirDrop, without Choose File (DATA-11).
 - Choosing a file closes the sheet and imports its cards with the same rules and messages as pasted text (DATA-3, DATA-4): duplicates are skipped and the rest are added at the end. Any text in the box is left out and cleared.
 - Cancelling the Files picker goes back to the sheet, and imports nothing.
 - A file that cannot be read, or is not a card export, shows "Invalid JSON format", and nothing is imported.
 
 **Since:** 1.4
-**Where:** `Cards/UI/Screens/SettingsListView.swift`, `Cards/Features/SettingsScreen.swift`, `Cards/Core/Services/FileReader.swift`, `Cards/Core/Models/CardImport.swift`, `CardsTests/ImportFileTests.swift`
+**Where:** `Cards/UI/Screens/SettingsListView.swift`, `Cards/UI/Screens/ImportCardsView.swift`, `Cards/Features/SettingsScreen.swift`, `Cards/Core/Services/FileReader.swift`, `Cards/Core/Models/CardImport.swift`, `CardsTests/ImportFileTests.swift`, `CardsTests/ExportFileTests.swift` (`anExportedFileImportsTheSameCardsOnAnotherDevice`, `anExportedFileAddsNothingWhereItsCardsAlreadyAre`, `anExportSavedAsTextBefore15Imports`)
 
 ### DATA-8: Keep my cards on this device only
 
@@ -151,3 +155,16 @@ As a card holder with iCloud Sync on, I want to see how syncing is going, so tha
 **Since:** In preparation for 1.5
 **Where:** `Cards/Core/Models/ICloudSyncStatus.swift` (`ICloudSyncTracker`), `Cards/Core/Services/ICloudSync.swift`, `Cards/Features/ICloudSyncMonitor.swift`, `Cards/App/CardsApp.swift`, `Cards/Features/SettingsScreen.swift`, `Cards/UI/Screens/SettingsListView+Privacy.swift` (`iCloudSyncStatusRow`), `Cards/Core/Models/DeviceSettings.swift` (`iCloudLastSyncedKey`), `Cards/App/DevelopmentHooks.swift` (`iCloudSync`), `CardsTests/ICloudSyncStatusTests.swift`
 **Notes:** The status comes from the events SwiftData's CloudKit mirroring posts (`NSPersistentCloudKitContainer.eventChangedNotification`), each piece of setting up, fetching or sending from its start to its end, and from the account's status (`CKContainer.accountStatus()`, again on `CKAccountChanged`). UI tests and the App Store screenshots, whose store is in memory and never syncs, show it up to date as of three minutes before.
+
+### DATA-11: Open an export in the app
+
+As a card holder, I want to open an export from Files, Mail or AirDrop straight in Card Barcodes, so that I don't have to find it again with Choose File.
+
+- The app tells iOS it can open JSON files, as an alternative to the apps that own them, so iOS offers Card Barcodes for a JSON file, such as an export (DATA-2), but never makes it the app that opens JSON files.
+- Opening a JSON file in Card Barcodes brings the app forward on the Settings tab, launching it if it was not running, and imports the file with the same rules and result message as Choose File (DATA-3, DATA-4, DATA-7): duplicates are skipped, the rest are added at the end, and the "Import Result" alert says what happened. A file that is not a card export shows "Invalid JSON format", and nothing is imported.
+- iOS hands the app a copy of the file, so the file in Files, the mail or the AirDrop is left as it was. The app deletes its copy once it has imported it, as the copy holds every card in the export.
+- The "Add Card?" sheet (SHARE-3) and the export share sheet (DATA-2), if either was showing, close to make way for the result. The Cards tab keeps what it was showing (NAV-1).
+- Only JSON files are offered to the app. An export saved to Files before 1.5, kept as a text file, imports with Choose File (DATA-7).
+
+**Since:** In preparation for 1.5
+**Where:** `Info.plist` (`CFBundleDocumentTypes`, `LSSupportsOpeningDocumentsInPlace`), `Cards/App/CardsApp.swift`, `Cards/Core/Navigation/NavigationManager.swift` (`handleDeepLink`, `importFile`), `Cards/Features/SettingsScreen.swift`, `CardsTests/NavigationTests.swift` (`anOpenedFileIsImportedInSettings`, `linksAreNotImported`), `CardsTests/ExportFileTests.swift`

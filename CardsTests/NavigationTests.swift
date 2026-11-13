@@ -255,5 +255,36 @@ struct NavigationTests {
         navigationManager.handleDeepLink(try #require(URL(string: "https://cards.serby.net/privacy.html")))
         #expect(navigationManager.sharedCard == nil)
         #expect(navigationManager.currentRoute == .cards)
+        #expect(navigationManager.fileToImport == nil)
+    }
+
+    /// DATA-11: an export opened in the app from Files, Mail or AirDrop, which
+    /// iOS hands over as a copy in the app's own folders, brings Settings
+    /// forward to import it. The "Add Card?" sheet makes way, and the Cards tab
+    /// keeps the card it was showing.
+    @Test(arguments: [
+        "Documents/Inbox/Card Barcodes 2026-11-13.json",
+        "tmp/net.serby.Cards-Inbox/Card Barcodes 2026-11-13-1.json"
+    ])
+    func anOpenedFileIsImportedInSettings(path: String) {
+        let file = URL.temporaryDirectory.appending(path: path)
+        navigationManager.navigate(to: .card("123"))
+        navigationManager.show(SharedCardLink(payload: "abc"))
+
+        navigationManager.handleDeepLink(file)
+
+        #expect(navigationManager.tab == .settings)
+        #expect(navigationManager.fileToImport == file)
+        #expect(navigationManager.sharedCard == nil)
+        #expect(navigationManager.currentRoute == .card("123"))
+        #expect(navigationManager.navigationPath.count == 1)
+    }
+
+    /// Links to screens and shared cards are not files, so nothing waits to be imported.
+    @Test(arguments: ["cards://cards/card/123", "cards://cards/add#abc", "https://cards.serby.net/add#abc"])
+    func linksAreNotImported(_ string: String) throws {
+        navigationManager.handleDeepLink(try #require(URL(string: string)))
+        #expect(navigationManager.fileToImport == nil)
+        #expect(navigationManager.tab == .cards)
     }
 }

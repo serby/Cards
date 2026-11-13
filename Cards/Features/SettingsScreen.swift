@@ -18,6 +18,11 @@ public struct SettingsScreen: View {
     @Environment(\.iCloudCards) private var iCloudCards
     @Environment(\.clipboard) private var clipboard
     @Environment(\.fileReader) private var fileReader
+    @Environment(\.fileWriter) private var fileWriter
+    /// Where today is, for the export's name (DATA-2): the device's own time zone.
+    @Environment(\.timeZone) private var timeZone
+    /// Hands over a file opened in the app, to import (DATA-11).
+    @Environment(NavigationManager.self) private var navigationManager
     @Environment(\.openURL) private var openURL
     @Environment(\.scenePhase) private var scenePhase
     @State private var notificationsBlocked = false
@@ -26,7 +31,8 @@ public struct SettingsScreen: View {
     private static let changelog = ChangelogStore.bundled()
 
     @State private var message: String?
-    @State private var showExportSheet = false
+    /// What the share sheet is sharing; nil when it is not showing.
+    @State private var exportItem: ExportItem?
 
     public init() {}
 
@@ -52,7 +58,9 @@ public struct SettingsScreen: View {
             sharesDiagnostics: $sharesDiagnostics,
             message: $message,
             actions: SettingsActions(
-                exportCards: { showExportSheet = true },
+                exportCards: {
+                    exportItem = Self.export(cards, on: .now, in: timeZone, writer: fileWriter)
+                },
                 importCards: { text in
                     message = Self.importText(text, existing: cards, into: modelContext)
                 },
@@ -65,8 +73,23 @@ public struct SettingsScreen: View {
                 deleteICloudCards: deleteICloudCards
             )
         )
-        .sheet(isPresented: $showExportSheet) {
-            ShareSheet(items: [exportJSON()])
+        .sheet(item: $exportItem) { item in
+            ShareSheet(items: [item.activityItem])
+        }
+        // An export opened in the app from Files, Mail or AirDrop imports as one
+        // chosen with Choose File does (DATA-11). Initial too, as Settings may be
+        // appearing for the first time to import it, at launch or from the Cards tab.
+        .onChange(of: navigationManager.fileToImport, initial: true) {
+            guard let file = navigationManager.fileToImport else { return }
+            navigationManager.fileToImport = nil
+            // The share sheet would keep the result from showing.
+            exportItem = nil
+            // Fetched now rather than from the query, which may not have loaded
+            // when Settings is built to import, so duplicates are still found.
+            let existing = (try? modelContext.fetch(FetchDescriptor<CardItem>())) ?? cards
+            message = Self.importFile(.success(file), reader: fileReader, existing: existing, into: modelContext)
+            // iOS handed the app a copy to import; it holds every card, so it goes.
+            fileWriter.removeHandedOver(file)
         }
         // A deletion said how it went for the time iCloud Sync was off.
         .onChange(of: syncsWithICloud) {
@@ -100,24 +123,53 @@ public struct SettingsScreen: View {
         openURL(url)
     }
 
-    private func exportJSON() -> String {
-        let encoder = JSONEncoder()
-        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
-        encoder.dateEncodingStrategy = .iso8601
-
-        let dtos = cards.map { CardItemDTO(from: $0) }
-        guard let data = try? encoder.encode(dtos),
-              let json = String(data: data, encoding: .utf8) else {
-            return "{}"
-        }
-        return json
-    }
-
     private func deleteAllCards() {
         for card in cards {
             modelContext.delete(card)
         }
         try? modelContext.save()
+    }
+}
+
+/// Exporting the cards (DATA-2).
+extension SettingsScreen {
+    /// What Export as JSON hands the share sheet.
+    enum ExportItem: Hashable, Identifiable {
+        /// The export as a file, which the share sheet shows by its name, Save
+        /// to Files keeps as a JSON file and Mail sends as an attachment.
+        case file(URL)
+        /// The export as text, as before 1.5, if the file could not be written.
+        case text(String)
+
+        /// Which kind, not the whole export, as one sheet shows at a time.
+        var id: String {
+            switch self {
+            case .file(let url):
+                url.path
+            case .text:
+                "text"
+            }
+        }
+
+        var activityItem: Any {
+            switch self {
+            case .file(let url):
+                url
+            case .text(let json):
+                json
+            }
+        }
+    }
+
+    /// What Export as JSON shares: `cards` as a file named for the day `date`
+    /// falls on in `timeZone`, written with `writer`, or as text if the file
+    /// could not be written. Nil, sharing nothing, if they cannot be encoded.
+    static func export(_ cards: [CardItem], on date: Date, in timeZone: TimeZone, writer: FileWriter) -> ExportItem? {
+        guard let json = try? CardExport.json(cards) else { return nil }
+        if let file = try? writer.write(json, CardExport.fileName(on: date, in: timeZone)) {
+            return .file(file)
+        }
+        return String(bytes: json, encoding: .utf8).map(ExportItem.text)
     }
 }
 
@@ -140,9 +192,9 @@ extension SettingsScreen {
         importJSON(Data(text.utf8), existing: existing, into: context, locale: locale)
     }
 
-    /// Imports the file chosen in the Files picker, read with `reader`, and says
-    /// what happened. A file that could not be chosen or read is invalid, as
-    /// text that is not an export is.
+    /// Imports the file chosen in the Files picker, or opened in the app from
+    /// Files, Mail or AirDrop, read with `reader`, and says what happened. A file
+    /// that could not be chosen or read is invalid, as text that is not an export is.
     static func importFile(
         _ choice: Result<URL, any Error>,
         reader: FileReader,
@@ -177,6 +229,7 @@ extension SettingsScreen {
     }
     .environment(ArrivalScheduler(notifications: .silent))
     .environment(iCloudSync)
+    .environment(NavigationManager())
     .task { await iCloudSync.run() }
     .modelContainer(for: CardItem.self, inMemory: true)
 }

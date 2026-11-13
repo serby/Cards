@@ -83,6 +83,7 @@ struct CardsApp: App {
             Tab(value: AppTab.settings) {
                 NavigationStack {
                     SettingsScreen()
+                        .environment(navigationManager)
                 }
             } label: {
                 Label(LocalizedStringResource("Settings", comment: "Tab bar item for the app's settings."), systemImage: "gearshape")
@@ -110,6 +111,8 @@ struct CardsApp: App {
         .onAppear {
             performanceTracker.recordAppLaunch()
         }
+        // A `cards://` link, or an export opened in the app from Files, Mail or
+        // AirDrop (DATA-11), which iOS hands over as a copy (Info.plist).
         .onOpenURL(perform: navigationManager.handleDeepLink)
         // A universal link, such as a card shared from cards.serby.net (SHARE-3).
         .onContinueUserActivity(NSUserActivityTypeBrowsingWeb) { activity in
