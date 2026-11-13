@@ -19,7 +19,7 @@ EN TU IPHONE Y TU IPAD
 Tus tarjetas se sincronizan a través de tu propia cuenta de iCloud, así que están en tu iPhone, tu iPad y tu iPhone Duo. No hay que crear ninguna cuenta.
 
 PRIVADA
-No hay anuncios ni analíticas, y nada te rastrea. Tu ubicación se queda en tu dispositivo, salvo cuando se pide a Mapas de Apple que busque y ponga nombre a los lugares que añades. Exporta tus tarjetas a un archivo cuando quieras.
+No hay anuncios, y nada te rastrea. Para corregir errores y decidir qué hacer después, la app puede enviar informes de fallos y contar qué funciones usas. Nunca incluyen tus tarjetas, tus lugares ni ningún dato personal, y cada cosa se desactiva con un solo interruptor en Ajustes. Tu ubicación se queda en tu dispositivo, salvo cuando se pide a Mapas de Apple que busque y ponga nombre a los lugares que añades. Exporta tus tarjetas a un archivo cuando quieras.
 
 PARA TODOS
 Card Barcodes funciona con VoiceOver, con tamaños de texto más grandes y con el modo oscuro.

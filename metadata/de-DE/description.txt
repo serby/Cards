@@ -19,7 +19,7 @@ AUF IPHONE UND IPAD
 Deine Karten werden über deinen eigenen iCloud-Account synchronisiert, so hast du sie auf deinem iPhone, iPad und iPhone Duo. Du musst kein Konto anlegen.
 
 PRIVAT
-Es gibt keine Werbung und keine Analysen, und nichts verfolgt dich. Dein Standort bleibt auf deinem Gerät. Nur Apple Karten wird gefragt, um die Orte zu finden und zu benennen, die du hinzufügst. Exportiere deine Karten jederzeit in eine Datei.
+Es gibt keine Werbung, und nichts verfolgt dich. Damit Fehler behoben werden und klar ist, was als Nächstes kommt, kann die App Absturzberichte senden und zählen, welche Funktionen du nutzt. Dabei werden nie deine Karten, deine Orte oder persönliche Daten übermittelt, und beides lässt sich mit einem Schalter in den Einstellungen ausschalten. Dein Standort bleibt auf deinem Gerät. Nur Apple Karten wird gefragt, um die Orte zu finden und zu benennen, die du hinzufügst. Exportiere deine Karten jederzeit in eine Datei.
 
 FÜR ALLE
 Card Barcodes funktioniert mit VoiceOver, größerer Schrift und dem Dunkelmodus.

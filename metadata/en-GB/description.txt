@@ -19,7 +19,7 @@ ON YOUR IPHONE AND IPAD
 Your cards sync through your own iCloud account, so they are on your iPhone, iPad and iPhone Duo. There is no account to create.
 
 PRIVATE
-There are no ads or analytics, and nothing tracks you. Your location stays on your device, except that Apple Maps is asked to find and name the places you add. Export your cards to a file whenever you want.
+There are no ads, and nothing tracks you. To fix problems and decide what to build next, the app can send crash reports and count which features you use. Neither ever includes your cards, your places or any personal data, and each is one switch in Settings to turn off. Your location stays on your device, except that Apple Maps is asked to find and name the places you add. Export your cards to a file whenever you want.
 
 FOR EVERYONE
 Card Barcodes works with VoiceOver, larger text sizes and dark mode.
