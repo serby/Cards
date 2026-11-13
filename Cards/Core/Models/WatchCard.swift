@@ -150,6 +150,22 @@ public struct WatchArrival: Hashable, Sendable {
         self.code = code
         self.placeID = placeID
     }
+
+    /// Where the watch keeps the arrival a card was last opened for.
+    public static let storageKey = "watchArrival"
+
+    /// The arrival as the watch keeps it: the place's id, then the card's code,
+    /// which may hold any character, so it goes last.
+    public var stored: String {
+        "\(placeID.uuidString) \(code)"
+    }
+
+    /// The arrival kept as `stored`, or nil for none or anything else.
+    public init?(stored: String) {
+        let parts = stored.split(separator: " ", maxSplits: 1, omittingEmptySubsequences: false)
+        guard parts.count == 2, let placeID = UUID(uuidString: String(parts[0])), !parts[1].isEmpty else { return nil }
+        self.init(code: String(parts[1]), placeID: placeID)
+    }
 }
 
 public extension Collection<WatchCard> {

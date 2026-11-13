@@ -13,7 +13,9 @@ struct WatchCardsScreen: View {
     @Environment(\.scenePhase) private var scenePhase
     /// Where the watch was last found, or nil until it has been.
     @State private var location: CLLocation?
-    @State private var arrivals = WatchArrivals()
+    /// The arrival a card was last opened for, kept on the watch, as watchOS
+    /// often ends the app while it is in the background (WATCH-4).
+    @AppStorage(WatchArrival.storageKey) private var keptArrival = ""
 
     var body: some View {
         @Bindable var navigation = navigation
@@ -35,13 +37,16 @@ struct WatchCardsScreen: View {
     }
 
     /// Finds the watch, then opens the card for the place it is at, unless
-    /// that card was opened for this arrival already or you opened another
-    /// while waiting for the fix.
+    /// that card was opened for this arrival already, a notification has just
+    /// opened one, or you opened another while waiting for the fix.
     private func openTheCardWhereYouAre() async {
         let shownBefore = navigation.path
         guard let found = await watchLocation.current(), !Task.isCancelled else { return }
         location = found
-        guard let code = arrivals.cardToOpen(in: cards.cards, at: found), navigation.path == shownBefore else { return }
+        var arrivals = WatchArrivals(current: WatchArrival(stored: keptArrival))
+        let code = arrivals.cardToOpen(in: cards.cards, at: found)
+        keptArrival = arrivals.current?.stored ?? ""
+        guard let code, navigation.path == shownBefore, !navigation.justOpenedFromNotification() else { return }
         navigation.open(code)
     }
 

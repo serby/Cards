@@ -40,7 +40,7 @@ As a card holder, I want my watch to show the card's barcode big enough to scan,
 - A strip barcode fills the width. A square code, such as a QR code, takes up to 70% of the screen's height, so all of it shows without scrolling, as a scanner needs.
 - The barcode is black on a white plate across the screen, with the quiet zone a scanner needs: 10 modules each side of a strip barcode, 4 round a QR code and 2 round an Aztec code or a PDF417. A QR or Aztec code is square; a strip barcode is twice as wide as it is high; a PDF417 keeps its own shape.
 - Each module takes a whole number of the screen's pixels where at least one fits, so every bar is the same width and its edges are sharp; a code too long for that is drawn to fit the width. The barcode never mirrors.
-- A code that can't be drawn shows "This code can't be drawn" on the plate, with the code below.
+- A code that can't be drawn shows "This code can't be drawn" on the plate, with the code below. So does a strip barcode with more bars than the watch's screen has pixels across, such as a long Code 39, which would blur to grey and not scan.
 - VoiceOver reads the barcode as "Barcode", with its type as the value, such as "EAN-13", and spells the code out character by character. The plate keeps its colours under Smart Invert. Text follows the watch's text size.
 - The screen scrolls when the name and barcode are taller than the display.
 
@@ -55,7 +55,7 @@ As a card holder, I want my watch to open the right card when I get to the shop,
 - Each time the app opens or comes to the front, it finds where the watch is with the watch's own location, and asks for location access While Using the App the first time, with the reason "Your location is used to show how far you are from your cards' places, and to open the card for the place you are at."
 - It uses a reading up to 2 minutes old when there is one, and otherwise waits up to 10 seconds for a new one. Without access or a reading, it shows the list.
 - Inside one of a card's places, by the rule the iPhone's "Here" follows (PLACE-6, SET-3), it opens that card's screen at once. Inside several, the place whose middle is nearest wins, and on a tie the card higher in the list.
-- It does this once per arrival: going back to the list leaves the list showing, even when the app comes to the front again in the same place. The arrival ends when the watch is found outside every place, or the app is quit; arriving at another place opens its card.
+- It does this once per arrival: going back to the list leaves the list showing, even when the app comes to the front again in the same place. The watch keeps the arrival, so watchOS ending the app in the background does not open the card again. The arrival ends when the watch is found outside every place; arriving at another place opens its card.
 - If you open a card yourself while the watch is still finding where it is, it leaves your choice alone.
 
 **Since:** In preparation for 1.5
@@ -68,7 +68,7 @@ As a card holder, I want to tap the arrival reminder on my watch to see the card
 
 - The iPhone's arrival notification (ARR-1) shows on the watch when iOS forwards it there, as it does when the phone is locked and the watch is on your wrist.
 - Tapping it on the watch opens the watch app on that card's screen, found by the code it carries (`ArrivalAlert.codeKey`), in place of whatever the app showed.
-- The handler is set before launch finishes, so a tap that launches the app reaches it.
+- The handler is set before launch finishes, so a tap that launches the app reaches it. The card for where you are (WATCH-4) does not replace the card a notification opened in the minute after.
 - If the card is not on the watch, the screen says "Card not found".
 
 **Since:** In preparation for 1.5

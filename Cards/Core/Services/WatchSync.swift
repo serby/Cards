@@ -45,6 +45,8 @@ private final class WatchLink: NSObject, WCSessionDelegate, @unchecked Sendable 
         var latest: Data?
         /// What the watch was last sent, since this launch or this watch.
         var sent: Data?
+        /// The file carrying `sent`, while it is on its way as one.
+        var sentFile: URL?
     }
 
     private let session: WCSession
@@ -69,31 +71,36 @@ private final class WatchLink: NSObject, WCSessionDelegate, @unchecked Sendable 
     }
 
     /// Sends the newest snapshot if the watch can take it and has not had it.
+    /// It is claimed, stamped and sent under the lock, so two deliveries at
+    /// once, from the main thread and WatchConnectivity's queue, can never send
+    /// an older snapshot with a newer time, which the watch would keep.
     private func deliver() {
         guard session.activationState == .activated, session.isPaired, session.isWatchAppInstalled else { return }
-        let next = state.withLock { state -> Data? in
-            guard let latest = state.latest, latest != state.sent else { return nil }
-            state.sent = latest
-            return latest
-        }
-        guard let next else { return }
-        let sentAt = Date()
-        do {
-            if next.count <= WatchSnapshot.contextLimit {
-                try session.updateApplicationContext([WatchSnapshot.cardsKey: next, WatchSnapshot.sentAtKey: sentAt])
-            } else {
-                session.outstandingFileTransfers.forEach { $0.cancel() }
-                let file = FileManager.default.temporaryDirectory.appending(path: "watch-cards-\(UUID().uuidString)")
-                try next.write(to: file)
-                session.transferFile(file, metadata: [WatchSnapshot.sentAtKey: sentAt])
+        state.withLock { state in
+            guard let latest = state.latest, latest != state.sent else { return }
+            do {
+                state.sentFile = try send(latest, at: Date())
+                state.sent = latest
+            } catch {
+                // Sent again with the next change of cards, or the next launch.
+                Self.logger.error("Could not send the cards to the watch: \(error.localizedDescription, privacy: .public)")
             }
-        } catch {
-            // Sent again with the next change of cards, or the next launch.
-            state.withLock { state in
-                if state.sent == next { state.sent = nil }
-            }
-            Self.logger.error("Could not send the cards to the watch: \(error.localizedDescription, privacy: .public)")
         }
+    }
+
+    /// Sends `snapshot`, as the application context or, when it is too big for
+    /// one, as a file, whose address it gives back. A file still on its way
+    /// is older either way, so it is cancelled.
+    private func send(_ snapshot: Data, at sentAt: Date) throws -> URL? {
+        session.outstandingFileTransfers.forEach { $0.cancel() }
+        if snapshot.count <= WatchSnapshot.contextLimit {
+            try session.updateApplicationContext([WatchSnapshot.cardsKey: snapshot, WatchSnapshot.sentAtKey: sentAt])
+            return nil
+        }
+        let file = FileManager.default.temporaryDirectory.appending(path: "watch-cards-\(UUID().uuidString)")
+        try snapshot.write(to: file)
+        session.transferFile(file, metadata: [WatchSnapshot.sentAtKey: sentAt])
+        return file
     }
 
     func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: (any Error)?) {
@@ -121,10 +128,22 @@ private final class WatchLink: NSObject, WCSessionDelegate, @unchecked Sendable 
         session.activate()
     }
 
+    /// A file that carried the newest snapshot and failed is sent again; one
+    /// cancelled for a newer snapshot is not.
     func session(_ session: WCSession, didFinish fileTransfer: WCSessionFileTransfer, error: (any Error)?) {
-        try? FileManager.default.removeItem(at: fileTransfer.file.fileURL)
+        let file = fileTransfer.file.fileURL
+        try? FileManager.default.removeItem(at: file)
+        let failedNewest = state.withLock { state in
+            guard state.sentFile == file else { return false }
+            state.sentFile = nil
+            if error != nil { state.sent = nil }
+            return error != nil
+        }
         if let error {
             Self.logger.error("The cards' file did not reach the watch: \(error.localizedDescription, privacy: .public)")
+        }
+        if failedNewest {
+            deliver()
         }
     }
 }

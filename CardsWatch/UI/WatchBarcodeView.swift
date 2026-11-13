@@ -16,10 +16,14 @@ struct WatchBarcodeView: View {
     let modules: BarcodeModules?
     let type: BarcodeType
     @Environment(\.displayScale) private var displayScale
+    /// How wide the plate is, once laid out, to tell whether every module gets
+    /// a pixel of its own.
+    @State private var width: CGFloat = 0
 
     var body: some View {
         content
             .frame(maxWidth: .infinity)
+            .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { width = $0 }
             .background(CardPanel.fill, in: .rect(cornerRadius: Self.cornerRadius))
             // A mirrored barcode will not scan, so it stays as drawn right to left too.
             .readsLeftToRight()
@@ -27,7 +31,7 @@ struct WatchBarcodeView: View {
             // the failure. The code itself is read out, spelled, by the line under it.
             .accessibilityElement(children: .ignore)
             .accessibilityLabel(
-                modules == nil
+                !drawsModules
                     ? failureText
                     : Text(
                         "Barcode",
@@ -35,14 +39,20 @@ struct WatchBarcodeView: View {
                     )
             )
             .accessibilityValue(Text(type.displayName))
-            .accessibilityAddTraits(modules == nil ? [] : .isImage)
+            .accessibilityAddTraits(drawsModules ? .isImage : [])
             .accessibilityIdentifier("watchBarcode")
             .keepsColoursWhenInverted()
     }
 
+    /// Whether the code is drawn, rather than the message that it cannot be.
+    private var drawsModules: Bool {
+        guard let modules else { return false }
+        return width == 0 || Self.fits(modules, type: type, width: width, scale: displayScale)
+    }
+
     @ViewBuilder
     private var content: some View {
-        if let modules {
+        if let modules, drawsModules {
             let type = type
             let scale = displayScale
             Canvas { context, size in
@@ -70,6 +80,13 @@ struct WatchBarcodeView: View {
 
     /// The plate's width over its height: a strip's fixed shape, or the grid's
     /// own with its quiet zone.
+    /// Whether each module gets at least a whole pixel across `width` points.
+    /// One with less would be drawn between pixels and blur to grey, which no
+    /// scanner reads, so the plate says it cannot be drawn instead.
+    static func fits(_ modules: BarcodeModules, type: BarcodeType, width: CGFloat, scale: CGFloat) -> Bool {
+        width * scale / (CGFloat(modules.columns) + CGFloat(type.quietZone * 2)) >= 1
+    }
+
     static func aspectRatio(of modules: BarcodeModules, type: BarcodeType) -> CGFloat {
         guard modules.rows > 1 else { return stripAspectRatio }
         let quiet = CGFloat(type.quietZone * 2)

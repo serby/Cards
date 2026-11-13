@@ -20,7 +20,7 @@ struct CardsWatchApp: App {
         // the watch app on its card (WATCH-5). Set before launch finishes, so a
         // tap that launched the app is not missed.
         arrivalRouter = ArrivalNotificationRouter { code in
-            navigation.open(code)
+            navigation.openFromNotification(code)
         }
         UNUserNotificationCenter.current().delegate = arrivalRouter
         phone = PhoneLink { encoded, sentAt in

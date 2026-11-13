@@ -322,3 +322,17 @@ struct WatchCardTests {
         #expect(arrivals.current == nil)
     }
 }
+
+/// The watch keeps the arrival a card was opened for, so a relaunch at the
+/// same place leaves the list as you chose (WATCH-4).
+struct WatchArrivalStorageTests {
+    @Test func anArrivalRoundTripsThroughWhatTheWatchKeeps() throws {
+        let arrival = WatchArrival(code: "https://serby.net/a b", placeID: UUID())
+        #expect(WatchArrival(stored: arrival.stored) == arrival)
+    }
+
+    @Test(arguments: ["", "not-a-uuid code", "\(UUID().uuidString) ", "\(UUID().uuidString)"])
+    func anythingElseIsNoArrival(_ stored: String) {
+        #expect(WatchArrival(stored: stored) == nil)
+    }
+}
