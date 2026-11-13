@@ -147,7 +147,7 @@ public struct CardListView: View {
         Button {
             actions.selectCard(card.id)
         } label: {
-            CardFaceView(card: card)
+            CardFaceView(card: card, style: .lockUp)
                 // Read as the tile is, the name and then the distance, rather than every part of the face.
                 .accessibilityRepresentation {
                     HStack {

@@ -202,6 +202,7 @@ private let cardFaceStory = Story(
     title: "CardFaceView",
     section: "Components",
     knobs: [
+        .options("Style", CardFaceStyle.allCases.map(\.rawValue), CardFaceStyle.full.rawValue),
         .text("Name", CardDetail.sample.name),
         .text("Code", CardDetail.sample.code),
         .options("Type", BarcodeType.allNames, BarcodeType.ean13.rawValue),
@@ -213,7 +214,7 @@ private let cardFaceStory = Story(
     ],
     gallery: [CardDetail.sample, .qr, .invalidCode].map { card in
         (name: card.name, view: AnyView(CardFaceView(card: card).padding()))
-    }
+    } + [(name: "Lock-up", view: AnyView(CardFaceView(card: .here, style: .lockUp).padding()))]
 ) { knobs in
     let card = CardDetail(
         id: "story",
@@ -226,7 +227,11 @@ private let cardFaceStory = Story(
         icon: knobs.icon
     )
     return AnyView(
-        CardFaceView(card: card, accessoryWidth: knobs.bool("Copy button") ? 44 : 0) {
+        CardFaceView(
+            card: card,
+            accessoryWidth: knobs.bool("Copy button") ? 44 : 0,
+            style: CardFaceStyle(rawValue: knobs.option("Style")) ?? .full
+        ) {
             if knobs.bool("Copy button") {
                 Image(systemName: "doc.on.doc")
                     .foregroundStyle(CardPanel.secondaryInk)

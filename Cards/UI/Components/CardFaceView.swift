@@ -4,9 +4,11 @@ import SwiftUI
 /// date on white panels. The card screen shows it with a copy button beside the
 /// number, the place in the top panel opening in the maps app (PLACE-6, SET-5),
 /// and the card's places and notes on panels below (PLACE-9, CARD-14); anywhere
-/// else (a shared image, the card at the top of the list) shows it as it is.
+/// else (a shared image, the Add Card? sheet) shows it as it is. Its lock-up,
+/// the top panel alone, is the card for where you are on the Cards tab (SET-3).
 public struct CardFaceView<NumberAccessory: View, Footer: View>: View {
     private let card: CardDetail
+    private let style: CardFaceStyle
     /// How wide `numberAccessory` is, so a matching space on the other side keeps
     /// the number centred on its panel.
     private let accessoryWidth: CGFloat
@@ -23,10 +25,12 @@ public struct CardFaceView<NumberAccessory: View, Footer: View>: View {
         accessoryWidth: CGFloat,
         nameFocus: AccessibilityFocusState<Bool>.Binding? = nil,
         linksNearestPlace: Bool = false,
+        style: CardFaceStyle = .full,
         @ViewBuilder numberAccessory: () -> NumberAccessory,
         @ViewBuilder footer: () -> Footer
     ) {
         self.card = card
+        self.style = style
         self.accessoryWidth = accessoryWidth
         self.nameFocus = nameFocus
         self.linksNearestPlace = linksNearestPlace
@@ -80,58 +84,61 @@ public struct CardFaceView<NumberAccessory: View, Footer: View>: View {
             }
             .cardPanel()
 
-            // It says itself that it is a barcode, and of which type.
-            BarcodeView(barcodeString: card.code, barcodeType: card.barcodeType)
+            // The lock-up stops at the top panel.
+            if style == .full {
+                // It says itself that it is a barcode, and of which type.
+                BarcodeView(barcodeString: card.code, barcodeType: card.barcodeType)
 
-            // Centred like the name above when they wrap, as at the largest
-            // text sizes, rather than each line at the leading edge.
-            VStack(spacing: 4) {
-                // Beside the code, with a matching space on the other side, or
-                // under it at the accessibility sizes, where the grown accessory
-                // would run into the code's wrapped lines.
-                numberLayout {
-                    if !dynamicTypeSize.isAccessibilitySize {
-                        Color.clear
-                            .frame(width: accessoryWidth, height: 1)
-                            .accessibilityHidden(true)
+                // Centred like the name above when they wrap, as at the largest
+                // text sizes, rather than each line at the leading edge.
+                VStack(spacing: 4) {
+                    // Beside the code, with a matching space on the other side, or
+                    // under it at the accessibility sizes, where the grown accessory
+                    // would run into the code's wrapped lines.
+                    numberLayout {
+                        if !dynamicTypeSize.isAccessibilitySize {
+                            Color.clear
+                                .frame(width: accessoryWidth, height: 1)
+                                .accessibilityHidden(true)
+                        }
+                        Text(card.code)
+                            .font(.title3.monospaced().weight(.semibold))
+                            .foregroundStyle(CardPanel.ink)
+                            .multilineTextAlignment(.center)
+                            .readsLeftToRight()
+                            .frame(maxWidth: .infinity)
+                            .textSelection(.enabled)
+                            .accessibilityIdentifier("cardCodeText")
+                            .accessibilityLabel(
+                                Text(
+                                    "Card code: \(Text(card.code).speechSpellsOutCharacters())",
+                                    comment: """
+                                        VoiceOver label for a card's code, shown with its barcode on the card's screen and in the Home Screen \
+                                        widget. VoiceOver spells the code out character by character.
+                                        """
+                                )
+                            )
+                            .accessibilityAddTraits(.isStaticText)
+                        numberAccessory
                     }
-                    Text(card.code)
-                        .font(.title3.monospaced().weight(.semibold))
-                        .foregroundStyle(CardPanel.ink)
+
+                    Text(card.timestamp, format: Date.FormatStyle(date: .abbreviated, time: .shortened))
+                        .font(.caption)
                         .multilineTextAlignment(.center)
-                        .readsLeftToRight()
-                        .frame(maxWidth: .infinity)
-                        .textSelection(.enabled)
-                        .accessibilityIdentifier("cardCodeText")
+                        .foregroundStyle(supportingInk)
+                        .accessibilityIdentifier("cardTimestampText")
                         .accessibilityLabel(
                             Text(
-                                "Card code: \(Text(card.code).speechSpellsOutCharacters())",
-                                comment: """
-                                    VoiceOver label for a card's code, shown with its barcode on the card's screen and in the Home Screen \
-                                    widget. VoiceOver spells the code out character by character.
-                                    """
+                                "Created on \(card.timestamp, format: Date.FormatStyle(date: .long, time: .shortened))",
+                                comment: "VoiceOver label for when the card was added. The argument is a date and time: 14 November 2023 at 22:13."
                             )
                         )
                         .accessibilityAddTraits(.isStaticText)
-                    numberAccessory
                 }
+                .cardPanel()
 
-                Text(card.timestamp, format: Date.FormatStyle(date: .abbreviated, time: .shortened))
-                    .font(.caption)
-                    .multilineTextAlignment(.center)
-                    .foregroundStyle(supportingInk)
-                    .accessibilityIdentifier("cardTimestampText")
-                    .accessibilityLabel(
-                        Text(
-                            "Created on \(card.timestamp, format: Date.FormatStyle(date: .long, time: .shortened))",
-                            comment: "VoiceOver label for when the card was added. The argument is a date and time: 14 November 2023 at 22:13."
-                        )
-                    )
-                    .accessibilityAddTraits(.isStaticText)
+                footer
             }
-            .cardPanel()
-
-            footer
         }
         .padding(CardGeometry.inset)
         .frame(maxWidth: .infinity)
@@ -199,10 +206,19 @@ public extension CardFaceView where NumberAccessory == EmptyView {
 }
 
 public extension CardFaceView where NumberAccessory == EmptyView, Footer == EmptyView {
-    /// The face with nothing beside or below the number.
-    init(card: CardDetail) {
-        self.init(card: card, accessoryWidth: 0) { EmptyView() }
+    /// The face with nothing beside or below the number, or its lock-up.
+    init(card: CardDetail, style: CardFaceStyle = .full) {
+        self.init(card: card, accessoryWidth: 0, style: style, numberAccessory: { EmptyView() }, footer: { EmptyView() })
     }
+}
+
+/// How much of a card's face shows.
+public enum CardFaceStyle: String, CaseIterable, Hashable, Sendable {
+    /// All of it: the name, the barcode, the number and the date, and any panels below.
+    case full = "Full"
+    /// The lock-up: the top panel alone, with the icon, the name and where you
+    /// are, on the card's colour, for the card for where you are (SET-3).
+    case lockUp = "Lock-up"
 }
 
 extension View {
@@ -230,6 +246,11 @@ private extension View {
 #if DEBUG
 #Preview("Barcode") {
     CardFaceView(card: .sample)
+        .padding()
+}
+
+#Preview("Lock-up") {
+    CardFaceView(card: .here, style: .lockUp)
         .padding()
 }
 
