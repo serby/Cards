@@ -9,10 +9,12 @@
 // runs this once it has imported the certificate.
 //
 // The App IDs and their App Group must already exist: Xcode registers them the
-// first time someone builds for a device (`make device`). The API cannot assign
+// first time someone builds for a device (`make device`), the Apple Watch app's
+// (net.serby.Cards.watchkitapp) included. A watch app's App ID is an iOS one, and
+// its profile an iOS App Store profile like the others. The API cannot assign
 // App Groups, so this script does not try to create App IDs.
 //
-// Usage: KEYCHAIN_PATH=... node scripts/install-signing-profiles.ts net.serby.Cards net.serby.Cards.Widget
+// Usage: KEYCHAIN_PATH=... node scripts/install-signing-profiles.ts net.serby.Cards net.serby.Cards.Widget net.serby.Cards.watchkitapp
 //   KEYCHAIN_PATH  keychain holding the Apple Distribution certificate to sign with
 //                  (default: the keychain search list)
 // Needs ASC_KEY_ID, ASC_ISSUER_ID and ASC_KEY_CONTENT (see scripts/lib/app-store-connect.ts).

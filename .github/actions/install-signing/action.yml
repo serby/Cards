@@ -1,7 +1,8 @@
 name: Install signing
 description: >
   Imports the Apple Distribution certificate into a temporary keychain and
-  installs App Store profiles for the app and its widget, creating or renewing
+  installs App Store profiles for the app, its widget and its Apple Watch app,
+  creating or renewing
   them through the App Store Connect API (scripts/install-signing-certificate.ts,
   which runs scripts/install-signing-profiles.ts). Delete the keychain afterwards
   with `node scripts/install-signing-certificate.ts --remove`.
@@ -39,4 +40,4 @@ runs:
         ASC_KEY_ID: ${{ inputs.asc-key-id }}
         ASC_ISSUER_ID: ${{ inputs.asc-issuer-id }}
         ASC_KEY_CONTENT: ${{ inputs.asc-key-content }}
-      run: node scripts/install-signing-certificate.ts net.serby.Cards net.serby.Cards.Widget
+      run: node scripts/install-signing-certificate.ts net.serby.Cards net.serby.Cards.Widget net.serby.Cards.watchkitapp
