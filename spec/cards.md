@@ -96,10 +96,12 @@ As a card holder, I want to open a card and see its barcode and number, so that 
 - The toolbar has the brightness button (BAR-4) and Edit (CARD-5). Since 1.4 a share button comes first, to their left (SHARE-1).
 - Below the card, "Add current location" opens the map to add a place (PLACE-4) (1.3).
 - Opening a card raises the screen brightness when Brightness Boost is on (BAR-4).
+- In preparation for 1.5: tapping a tile (CARD-10), or the card for where you are (SET-3), opens the card screen by zooming it up out of the tile, iOS's own zoom transition, rather than sliding it in from the side. Swiping down on the card screen, when it is scrolled to the top, or in from the leading edge, shrinks it back into its tile as the finger moves, and letting go part way leaves it open. The back button shrinks it back too. With Reduce Motion on, the card screen appears without the zoom.
+- In preparation for 1.5: a card opened from anywhere without a tile on screen, as from a notification (ARR-2), the widget (WID-1), a shared link (SHARE-3) or after saving a new card, slides in as before, and goes back the same way.
 - Since 1.4: opening a card records when it was last viewed, for the Last viewed order (CARD-11). Coming back to the card from its edit form counts as opening it again.
 
 **Since:** 1.0
-**Where:** `Cards/UI/Screens/CardDetailView.swift`, `Cards/Features/CardDetailScreen.swift`, `Cards/UI/Actions/CardActions.swift`, `CardsUITests/CardsUITests.swift` (`testAdd`), `CardsUITests/CardPlacesAndSettingsUITests.swift` (`testCopyCardCode`), `CardsUITests/CardsScreenshotTests.swift`
+**Where:** `Cards/UI/Screens/CardDetailView.swift`, `Cards/Features/CardDetailScreen.swift`, `Cards/UI/Actions/CardActions.swift`, `CardsUITests/CardsUITests.swift` (`testAdd`), `CardsUITests/CardPlacesAndSettingsUITests.swift` (`testCopyCardCode`), `CardsUITests/CardsScreenshotTests.swift`, `Cards/UI/ViewState/CardZoomSource.swift`, `Cards/Features/CardListScreen.swift` (`ZoomingDestination`), `Cards/UI/Screens/CardListView.swift` (`zoomSource`)
 
 ### CARD-5: Edit a card
 
@@ -180,7 +182,7 @@ As a card holder, I want my cards laid out in a grid, so that I can see more of 
 - At the accessibility text sizes the grid has half as many columns, one on iPhone and two on iPad, so names have room (A11Y-3).
 - Each tile is filled with the card's colour at full strength, in its gradient (COL-4), with the card face's rounded corners. Along the top are its icon on the left, if it has one (CARD-12), and on the right how far away its nearest place is, on a white panel whose corners nest inside the tile's (PLACE-6). Its name, in the colour's ink, is at the bottom.
 - A tile is at least 112 points high, growing with the text size up to 200 points, and names wrap rather than being cut short. The tiles in a row are as tall as the tallest.
-- Tapping a tile opens the card (CARD-4). Opening a card plays no haptic (A11Y-5).
+- Tapping a tile opens the card (CARD-4), in preparation for 1.5 by zooming up out of the tile. Opening a card plays no haptic (A11Y-5).
 - A long press on a tile lifts it and shows a menu with Edit and Delete, and the system plays its haptic as the menu appears. Edit opens the card's edit form with the card's screen behind it, so Back goes to the card and Save shows it (CARD-5). Delete removes the card at once, with the medium haptic swiping had in the list (CARD-6).
 - In custom order (CARD-11), you press and hold a tile and drag it onto another to reorder the cards (CARD-7). The tile under the dragged one is outlined in the accent colour. The new order is saved and syncs (DATA-1).
 - When the cards change order, from a drag, a new sort order, a search or as you move, the tiles slide to their new places.

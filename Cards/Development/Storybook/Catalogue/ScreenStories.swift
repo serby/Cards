@@ -65,6 +65,7 @@ private let cardListStory = Story(
         .toggle("Distances", true),
         .toggle("Icons", true),
         .toggle("Card where you are", false),
+        .toggle("Zoom sources", false),
         .text("Search", ""),
         .options("Sort", CardSortOrder.allCases.map(\.rawValue), CardSortOrder.custom.rawValue)
     ] + DistanceKnobs.knobs,
@@ -80,23 +81,26 @@ private let cardListStory = Story(
     let search = knobs.string("Search")
     let sortOrder = Binding(get: { CardSortOrder(rawValue: knobs.option("Sort")) ?? .custom }, set: { knobs.select($0.rawValue, for: "Sort") })
     return pushed {
-        CardListView(
-            cards: CardSummary.samples.prefix(knobs.integer("Cards"))
-                .filter { CardArrangement.name($0.name, matches: search) }
-                .map { card in
-                    CardSummary(
-                        id: card.id,
-                        name: card.name,
-                        color: knobs.bool("Colours") ? card.color : .standard,
-                        proximity: knobs.bool("Distances") ? card.proximity : nil,
-                        icon: knobs.bool("Icons") ? card.icon : nil
-                    )
-                },
-            cardHere: knobs.bool("Card where you are") ? .here : nil,
-            search: knobs.stringBinding("Search"),
-            sortOrder: sortOrder
-        )
-        .distances(knobs)
+        WithNamespace { zoom in
+            CardListView(
+                cards: CardSummary.samples.prefix(knobs.integer("Cards"))
+                    .filter { CardArrangement.name($0.name, matches: search) }
+                    .map { card in
+                        CardSummary(
+                            id: card.id,
+                            name: card.name,
+                            color: knobs.bool("Colours") ? card.color : .standard,
+                            proximity: knobs.bool("Distances") ? card.proximity : nil,
+                            icon: knobs.bool("Icons") ? card.icon : nil
+                        )
+                    },
+                cardHere: knobs.bool("Card where you are") ? .here : nil,
+                search: knobs.stringBinding("Search"),
+                sortOrder: sortOrder,
+                zoom: knobs.bool("Zoom sources") ? zoom : nil
+            )
+            .distances(knobs)
+        }
     }
 }
 

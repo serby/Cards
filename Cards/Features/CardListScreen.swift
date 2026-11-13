@@ -14,6 +14,13 @@ public struct CardListScreen: View {
     @Environment(\.requestReview) private var requestReview
     @Environment(\.calendar) private var calendar
     @Environment(\.scenePhase) private var scenePhase
+    /// With Reduce Motion on, cards open without zooming (CARD-4).
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    /// Where card screens zoom up out of: the tiles and the card for where you are.
+    @Namespace private var cardZoom
+    /// What the card being opened from here zooms out of, until its screen
+    /// takes it. Nil for a card opened from anywhere else, which slides in.
+    @State private var opening: CardZoomSource?
     @AppStorage(ArrivalPlan.enabledKey) private var arrivalNotifications = true
     @AppStorage(DeviceSettings.cardSortOrderKey) private var sortOrder = CardSortOrder.custom
     @AppStorage(DeviceSettings.showsCardWhereYouAreKey) private var showsCardWhereYouAre = false
@@ -38,8 +45,10 @@ public struct CardListScreen: View {
             cardHere: cardHere.map(detail),
             search: $search,
             sortOrder: $sortOrder,
+            zoom: cardZoom,
             actions: CardListActions(
-                selectCard: { code in navigationManager.navigate(to: .card(code)) },
+                selectCard: { code in open(code, from: .tile) },
+                selectCardWhereYouAre: { code in open(code, from: .cardWhereYouAre) },
                 editCard: { code in navigationManager.navigate(to: .editCard(code)) },
                 addCard: { navigationManager.navigate(to: .newCard) },
                 deleteCard: deleteCard,
@@ -167,8 +176,13 @@ public struct CardListScreen: View {
             EmptyView()
         case .card(let code):
             if let card = findCard(by: code) {
-                CardDetailScreen(item: card, navigationManager: navigationManager)
-                    .onAppear(perform: cardShown)
+                ZoomingDestination(source: zoomSource(for: code), in: cardZoom) {
+                    CardDetailScreen(item: card, navigationManager: navigationManager)
+                        .onAppear(perform: cardShown)
+                }
+                // Taken, so the next card opened from a notification, the widget,
+                // a link or a save slides in.
+                .onAppear { opening = nil }
             } else {
                 Text("Card not found", comment: "Shown when a link or notification opens a card that has since been deleted.")
             }
@@ -199,6 +213,20 @@ public struct CardListScreen: View {
             .navigationTitle(Text("Add Card", comment: "Title of the form for adding a new card."))
             .onAppear { cardOnTop = false }
         }
+    }
+
+    /// Opens the card with `code`, zooming up out of `kind` of source.
+    private func open(_ code: String, from kind: CardZoomSource.Kind) {
+        opening = CardZoomSource(kind, cardID: code)
+        navigationManager.navigate(to: .card(code))
+    }
+
+    /// What the card screen for `code` zooms out of: the source it was opened
+    /// from here, or nil when it was opened from anywhere else or with Reduce
+    /// Motion on, so it slides in.
+    private func zoomSource(for code: String) -> CardZoomSource? {
+        guard !reduceMotion, let opening, opening.cardID == code else { return nil }
+        return opening
     }
 
     private func findCard(by code: String) -> CardItem? {
@@ -242,6 +270,30 @@ private struct WatchContents: Hashable {
     let cards: [WidgetCard]
     let icons: [String?]
     let distanceUnits: DistanceUnits
+}
+
+/// A card's screen that zooms up out of `source` as it opens, and back into
+/// it as it goes, by Back or a swipe (CARD-4), or slides in without one. The
+/// source is fixed when the screen is made, so the screen never changes
+/// between the two while it shows, which would make it anew.
+private struct ZoomingDestination<Content: View>: View {
+    @State private var source: CardZoomSource?
+    private let namespace: Namespace.ID
+    private let content: Content
+
+    init(source: CardZoomSource?, in namespace: Namespace.ID, @ViewBuilder content: () -> Content) {
+        _source = State(initialValue: source)
+        self.namespace = namespace
+        self.content = content()
+    }
+
+    var body: some View {
+        if let source {
+            content.navigationTransition(.zoom(sourceID: source, in: namespace))
+        } else {
+            content
+        }
+    }
 }
 
 #if DEBUG

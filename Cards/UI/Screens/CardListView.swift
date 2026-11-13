@@ -9,6 +9,8 @@ public struct CardListView: View {
     @Binding private var search: String
     @Binding private var sortOrder: CardSortOrder
     private let actions: CardListActions
+    /// Where the card screens zoom up from, or nil for no zoom (CARD-4).
+    private let zoom: Namespace.ID?
     @State private var toolbarVisible = true
     @State private var searchPresented = false
     @State private var deleteTrigger = false
@@ -19,18 +21,22 @@ public struct CardListView: View {
 
     /// - Parameters:
     ///   - cards: The cards to show, already searched and in order.
-    ///   - cardHere: The card for where you are, shown in full above the grid (SET-3).
+    ///   - cardHere: The card for where you are, shown above the grid (SET-3).
+    ///   - zoom: The namespace the tiles and the card for where you are are
+    ///     sources in, for a card's screen to zoom up out of (CARD-4).
     public init(
         cards: [CardSummary],
         cardHere: CardDetail? = nil,
         search: Binding<String> = .constant(""),
         sortOrder: Binding<CardSortOrder> = .constant(.custom),
+        zoom: Namespace.ID? = nil,
         actions: CardListActions = CardListActions()
     ) {
         self.cards = cards
         self.cardHere = cardHere
         _search = search
         _sortOrder = sortOrder
+        self.zoom = zoom
         self.actions = actions
     }
 
@@ -97,6 +103,7 @@ public struct CardListView: View {
                     onMoveUp: move(card, by: -1),
                     onMoveDown: move(card, by: 1)
                 )
+                .zoomSource(CardZoomSource(.tile, cardID: card.id), in: zoom)
                 .if(canReorder) { tile in
                     reorderable(tile, card: card)
                 }
@@ -145,7 +152,11 @@ public struct CardListView: View {
 
     private func cardWhereYouAre(_ card: CardDetail) -> some View {
         Button {
-            actions.selectCard(card.id)
+            if let select = actions.selectCardWhereYouAre {
+                select(card.id)
+            } else {
+                actions.selectCard(card.id)
+            }
         } label: {
             CardFaceView(card: card, style: .lockUp)
                 // Read as the tile is, the name and then the distance, rather than every part of the face.
@@ -160,6 +171,7 @@ public struct CardListView: View {
                 }
         }
         .buttonStyle(.plain)
+        .zoomSource(CardZoomSource(.cardWhereYouAre, cardID: card.id), in: zoom)
         // As wide as on the card's screen, which leaves room for the grid on an iPad (CARD-4).
         .cardColumn()
         .accessibilityHint(
@@ -278,6 +290,19 @@ extension CardSortOrder {
             "line.3.horizontal"
         case .location:
             "location"
+        }
+    }
+}
+
+private extension View {
+    /// A source for a card's screen to zoom up out of, when there is a namespace.
+    @ViewBuilder
+    func zoomSource(_ source: CardZoomSource, in zoom: Namespace.ID?) -> some View {
+        if let zoom {
+            // The zoom keeps the card's rounded corners all the way.
+            matchedTransitionSource(id: source, in: zoom) { $0.clipShape(CardTileView.shape) }
+        } else {
+            self
         }
     }
 }

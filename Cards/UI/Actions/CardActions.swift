@@ -6,7 +6,11 @@ import SwiftUI
 /// can supply only the ones they care about.
 @MainActor
 public struct CardListActions {
+    /// Opens the card from its tile.
     public var selectCard: (CardSummary.ID) -> Void
+    /// Opens the card for where you are from above the grid (SET-3); nil to
+    /// open it as a tile does.
+    public var selectCardWhereYouAre: ((CardSummary.ID) -> Void)?
     /// Opens the card's edit form, from the long-press menu.
     public var editCard: (CardSummary.ID) -> Void
     public var addCard: () -> Void
@@ -17,12 +21,14 @@ public struct CardListActions {
 
     public init(
         selectCard: @escaping (CardSummary.ID) -> Void = { _ in },
+        selectCardWhereYouAre: ((CardSummary.ID) -> Void)? = nil,
         editCard: @escaping (CardSummary.ID) -> Void = { _ in },
         addCard: @escaping () -> Void = {},
         deleteCard: @escaping (CardSummary.ID) -> Void = { _ in },
         moveCard: @escaping (_ card: CardSummary.ID, _ target: CardSummary.ID) -> Void = { _, _ in }
     ) {
         self.selectCard = selectCard
+        self.selectCardWhereYouAre = selectCardWhereYouAre
         self.editCard = editCard
         self.addCard = addCard
         self.deleteCard = deleteCard
