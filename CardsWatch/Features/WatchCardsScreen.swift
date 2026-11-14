@@ -20,7 +20,7 @@ struct WatchCardsScreen: View {
     var body: some View {
         @Bindable var navigation = navigation
         NavigationStack(path: $navigation.path) {
-            WatchCardListView(cards: cards.cards.map(summary))
+            WatchCardListView(cards: cards.cards.map(summary), closest: closest)
                 .navigationDestination(for: String.self) { code in
                     if let card = cards.card(code) {
                         WatchCardView(card: card)
@@ -48,6 +48,15 @@ struct WatchCardsScreen: View {
         keptArrival = arrivals.current?.stored ?? ""
         guard let code, navigation.path == shownBefore, !navigation.justOpenedFromNotification() else { return }
         navigation.open(code)
+    }
+
+    /// The card whose nearest place is closest to where the watch was found.
+    private var closest: WatchClosestCard? {
+        guard let location else { return nil }
+        let nearest = cards.cards
+            .compactMap { card in card.proximity(to: location).map { (card, $0.distance) } }
+            .min { $0.1 < $1.1 }?.0
+        return nearest.map { WatchClosestCard(summary: summary($0), modules: $0.modules, barcodeType: $0.barcodeType) }
     }
 
     private func summary(_ card: WatchCard) -> WatchCardSummary {

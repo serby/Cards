@@ -16,7 +16,6 @@ struct WatchCardView: View {
                 code
             }
             .foregroundStyle(card.color.ink)
-            .padding(.horizontal, 4)
         }
         // In the bar at the top, beside Back, which leaves the screen to the code.
         .navigationTitle(card.name)

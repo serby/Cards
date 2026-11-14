@@ -84,7 +84,7 @@ extension BarcodeModules: Codable {
 
 public extension BarcodeType {
     /// The light margin a scanner needs on each side of the code, in modules:
-    /// ten for a strip of bars, four round a QR code, as its standard asks, and
+    /// five for a strip of bars, as on the phone, four round a QR code, as its standard asks, and
     /// two round an Aztec code or a PDF417.
     var quietZone: Int {
         switch self {
@@ -92,8 +92,11 @@ public extension BarcodeType {
             4
         case .aztec, .pdf417:
             2
+        // About what the phone's plate leaves round its strip barcodes, which
+        // scan at tills; the 10 the formats' specifications ask for left the
+        // watch's narrow screen mostly white.
         case .code128, .code39, .ean8, .ean13, .code93, .upce:
-            10
+            5
         }
     }
 }

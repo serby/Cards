@@ -9,6 +9,10 @@ struct WatchCardListView: View {
     static let rowCornerRadius: CGFloat = 14
 
     let cards: [WatchCardSummary]
+    /// The card whose place is closest, shown with its barcode above the list,
+    /// as the phone shows the card for where you are (WATCH-6); nil when the
+    /// watch doesn't know where it is, or no card has a place.
+    var closest: WatchClosestCard?
     @Environment(\.distanceFormat) private var distanceFormat
 
     var body: some View {
@@ -16,7 +20,30 @@ struct WatchCardListView: View {
             if cards.isEmpty {
                 emptyState
             } else {
-                List(cards) { card in
+                List {
+                    if let closest {
+                        Section {
+                            NavigationLink(value: closest.summary.id) {
+                                ClosestCard(card: closest)
+                            }
+                            .listRowBackground(
+                                RoundedRectangle(cornerRadius: Self.rowCornerRadius, style: .continuous).fill(closest.summary.color.rowFill)
+                            )
+                            .accessibilityLabel(spokenLabel(closest.summary))
+                            .accessibilityIdentifier("watchClosestCard")
+                        }
+                    }
+                    Section {
+                        rows
+                    }
+                }
+            }
+        }
+        .navigationTitle(Text("Cards", comment: "Title of the list of the user's loyalty cards on Apple Watch."))
+    }
+
+    private var rows: some View {
+        ForEach(cards) { card in
                     NavigationLink(value: card.id) {
                         Row(card: card)
                     }
@@ -25,10 +52,7 @@ struct WatchCardListView: View {
                     .accessibilityLabel(spokenLabel(card))
                     // By the card's code, so UI tests find it in any language.
                     .accessibilityIdentifier("watchCardRow_\(card.id)")
-                }
-            }
         }
-        .navigationTitle(Text("Cards", comment: "Title of the list of the user's loyalty cards on Apple Watch."))
     }
 
     private var emptyState: some View {
@@ -63,6 +87,19 @@ struct WatchCardListView: View {
                 as in “Joe's Market, 350 metres from Joe's Market Notting Hill”.
                 """
         )
+    }
+
+    /// The closest card: its name and distance over its barcode, ready to scan.
+    private struct ClosestCard: View {
+        let card: WatchClosestCard
+
+        var body: some View {
+            VStack(alignment: .leading, spacing: 6) {
+                Row(card: card.summary)
+                WatchBarcodeView(modules: card.modules, type: card.barcodeType)
+                    .padding(.bottom, 6)
+            }
+        }
     }
 
     /// A card's row: its icon beside its name, with the distance under the name.

@@ -38,7 +38,7 @@ As a card holder, I want my watch to show the card's barcode big enough to scan,
 
 - The card's screen shows its name in the bar at the top, beside Back, so the code has the screen, and its code below the barcode, in small monospaced type that reads left to right in every language. The background is the card's gradient, or black for a Default card, and the text is in the colour's ink, the name in the bar too.
 - A strip barcode fills the width. A square code, such as a QR code, takes up to 70% of the screen's height, so all of it shows without scrolling, as a scanner needs.
-- The barcode is black on a white plate across the screen, with the quiet zone a scanner needs: 10 modules each side of a strip barcode, 4 round a QR code and 2 round an Aztec code or a PDF417. A QR or Aztec code is square; a strip barcode is twice as wide as it is high; a PDF417 keeps its own shape.
+- The barcode is black on a white plate across the screen, with a quiet zone round it: 5 modules each side of a strip barcode, about what the phone's plate leaves (10 until Paul asked for less white on 14 November 2026), 4 round a QR code and 2 round an Aztec code or a PDF417. A QR or Aztec code is square; a strip barcode is twice as wide as it is high; a PDF417 keeps its own shape.
 - Each module takes a whole number of the screen's pixels where at least one fits, so every bar is the same width and its edges are sharp; a code too long for that is drawn to fit the width. The barcode never mirrors.
 - A code that can't be drawn shows "This code can't be drawn" on the plate, with the code below. So does a strip barcode with more bars than the watch's screen has pixels across, such as a long Code 39, which would blur to grey and not scan.
 - VoiceOver reads the barcode as "Barcode", with its type as the value, such as "EAN-13", and spells the code out character by character. The plate keeps its colours under Smart Invert. Text follows the watch's text size.
@@ -74,3 +74,17 @@ As a card holder, I want to tap the arrival reminder on my watch to see the card
 **Since:** In preparation for 1.5
 **Where:** `Cards/Features/ArrivalNotificationRouter.swift`, `CardsWatch/App/CardsWatchApp.swift`, `CardsWatch/Services/WatchNavigation.swift`
 **Notes:** iOS decides whether a notification shows on the iPhone or the watch. The simulator does not forward the iPhone's notifications to a paired watch, so a tap there is tried with a notification pushed to the watch simulator (docs/DEVELOPMENT.md, section 6).
+
+### WATCH-6: See the closest card's barcode at the top of my list
+
+As a card holder, I want the barcode of the card I am closest to at the top of my watch's list, so that I can show it without looking for it, as the phone puts the card for where I am at the top of its list (SET-3).
+
+- Once the watch knows where it is (WATCH-4), the list starts with the card whose nearest place is closest, in a section of its own above the rest: its row, with its icon, name and distance, over its barcode on the white plate (WATCH-3).
+- It shows wherever you are, near or far, as the widget's nearest card does (WID-1), and changes as the watch is found somewhere else.
+- Tapping it opens the card's screen. The card is still in the list below, in its place.
+- Without a location, or with no card that has a place, the list starts with the cards as before.
+- VoiceOver reads it as the card's row is read, its name and then the distance.
+
+**Since:** In preparation for 1.5
+**Where:** `CardsWatch/Features/WatchCardsScreen.swift` (`closest`), `CardsWatch/UI/WatchCardListView.swift` (`ClosestCard`), `CardsWatch/UI/WatchCardSummary.swift` (`WatchClosestCard`)
+**Notes:** Paul asked for it on 14 November 2026.

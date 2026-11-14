@@ -10,3 +10,11 @@ struct WatchCardSummary: Identifiable, Hashable, Sendable {
     /// Nil while where you are is unknown, or the card has no places.
     let proximity: CardProximity?
 }
+
+/// The closest card, as the top of the watch's list shows it: its row and its
+/// barcode (WATCH-6).
+struct WatchClosestCard: Hashable, Sendable {
+    let summary: WatchCardSummary
+    let modules: BarcodeModules?
+    let barcodeType: BarcodeType
+}
