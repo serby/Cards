@@ -62,7 +62,7 @@ As a card holder, I want to save the place I am at from the card itself, so that
 - Below the card face, a quiet "Add current location" button opens the same Add Location sheet as the edit form (PLACE-1).
 - The sheet opens on the last location the app has, which is normally where you are. Since 1.4 its name is filled in with what Apple Maps calls that spot (PLACE-10).
 - Add saves the place to the card straight away.
-- The button is hidden while you are inside one of the card's places, and shows again once you leave.
+- In preparation for 1.5 the button is always there, however many places the card has and wherever you are, even inside one of them. Until 1.5 it was hidden while you were inside one of the card's places.
 - The button also shows when the app doesn't know where you are.
 
 **Since:** 1.3

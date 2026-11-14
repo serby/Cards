@@ -57,10 +57,9 @@ public struct CardDetailView: View {
                 .compositingGroup()
                 .shadow(color: .black.opacity(0.12), radius: 16, y: 8)
 
-                // Pointless where the card already is, so it goes once you are inside one of its places.
-                if card.proximity?.isHere != true {
-                    addCurrentLocationButton
-                }
+                // Always there, even inside one of the card's places, as a shop
+                // can have a second entrance or a branch close by (PLACE-4).
+                addCurrentLocationButton
             }
             .cardColumn()
             .padding()

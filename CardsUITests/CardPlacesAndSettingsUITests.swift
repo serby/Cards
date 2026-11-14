@@ -6,8 +6,8 @@ import XCTest
 /// runs it again in Arabic, right to left.
 class CardPlacesAndSettingsUITests: CardsUITestCase {
     /// Adding where you are from the card screen saves it to the card, named
-    /// for the place under the pin, and the card then reads as "here" and stops
-    /// offering to add it again (PLACE-4, PLACE-10).
+    /// for the place under the pin, and the card then reads as "here" and still
+    /// offers to add another (PLACE-4, PLACE-10).
     @MainActor
     func testAddCurrentLocationFromCard() throws {
         let app = launchWithSeededCards()
@@ -26,7 +26,8 @@ class CardPlacesAndSettingsUITests: CardsUITestCase {
         app.buttons["addLocationButton"].tap()
 
         XCTAssertTrue(waitForElement(app.descendants(matching: .any)["cardProximityText"].firstMatch))
-        XCTAssertTrue(addHere.disappears(within: 3))
+        // Still there inside the new place, to add another (PLACE-4).
+        XCTAssertTrue(addHere.exists)
     }
 
     /// The copy button says it copied, then goes back to offering to copy.
