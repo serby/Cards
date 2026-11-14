@@ -82,20 +82,12 @@ public struct CardFaceView<NumberAccessory: View, Footer: View>: View {
                     }
                 }
 
-                // The lock-up shows the number, for typing in, as the full face does below its barcode.
-                if style == .lockUp {
-                    Text(card.code)
-                        .font(.headline.monospaced())
-                        .foregroundStyle(CardPanel.ink)
-                        .multilineTextAlignment(.center)
-                        .readsLeftToRight()
-                        .accessibilityIdentifier("cardCodeText")
-                }
             }
             .cardPanel()
 
-            // The lock-up stops at the top panel.
-            if style == .full {
+            // The lock-up keeps the barcode and the number, and leaves out the
+            // date and anything below.
+            Group {
                 // It says itself that it is a barcode, and of which type.
                 BarcodeView(barcodeString: card.code, barcodeType: card.barcodeType)
 
@@ -132,6 +124,7 @@ public struct CardFaceView<NumberAccessory: View, Footer: View>: View {
                         numberAccessory
                     }
 
+                    if style == .full {
                     Text(card.timestamp, format: Date.FormatStyle(date: .abbreviated, time: .shortened))
                         .font(.caption)
                         .multilineTextAlignment(.center)
@@ -144,10 +137,13 @@ public struct CardFaceView<NumberAccessory: View, Footer: View>: View {
                             )
                         )
                         .accessibilityAddTraits(.isStaticText)
+                    }
                 }
                 .cardPanel()
 
-                footer
+                if style == .full {
+                    footer
+                }
             }
         }
         .padding(CardGeometry.inset)
@@ -226,8 +222,8 @@ public extension CardFaceView where NumberAccessory == EmptyView, Footer == Empt
 public enum CardFaceStyle: String, CaseIterable, Hashable, Sendable {
     /// All of it: the name, the barcode, the number and the date, and any panels below.
     case full = "Full"
-    /// The lock-up: the top panel alone, with the icon, the name, where you
-    /// are and the number, on the card's colour, for the card for where you are (SET-3).
+    /// The lock-up: the name and where you are, the barcode and the number,
+    /// without the date or any panel below, for the card for where you are (SET-3).
     case lockUp = "Lock-up"
 }
 
