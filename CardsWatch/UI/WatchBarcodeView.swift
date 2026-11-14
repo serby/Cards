@@ -1,17 +1,15 @@
 import SwiftUI
 
 /// A card's barcode on the watch (WATCH-3), drawn from the modules the iPhone
-/// sent, black on a white plate with the quiet zone a scanner needs. Each
-/// module takes a whole number of the screen's pixels where they fit, so every
-/// bar has the same width and sharp edges at any size. A square code stays
-/// square, and a strip runs as wide as the plate. Without modules, the code
-/// could not be drawn, and the plate says so.
+/// sent, black on a white plate that is exactly the code and the quiet zone
+/// its standard requires (`BarcodePlate`), centred. Each module takes a whole
+/// number of the screen's pixels, so every bar has the same width and sharp
+/// edges at any size. Without modules, or with more than the screen has
+/// pixels for, the plate says the code can't be drawn.
 struct WatchBarcodeView: View {
     static let cornerRadius: CGFloat = 8
-    /// A strip barcode's plate is twice as wide as it is high.
-    static let stripAspectRatio: CGFloat = 2
-    /// The white above and below a strip's bars, as a share of the plate's height.
-    static let stripMargin: CGFloat = 0.12
+    /// A strip barcode's plate is this many times as wide as it is high.
+    static let stripAspectRatio: CGFloat = 1.8
 
     let modules: BarcodeModules?
     let type: BarcodeType
@@ -24,7 +22,6 @@ struct WatchBarcodeView: View {
         content
             .frame(maxWidth: .infinity)
             .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { width = $0 }
-            .background(CardPanel.fill, in: .rect(cornerRadius: Self.cornerRadius))
             // A mirrored barcode will not scan, so it stays as drawn right to left too.
             .readsLeftToRight()
             // One element that says what is shown: the barcode and its format, or
@@ -47,7 +44,7 @@ struct WatchBarcodeView: View {
     /// Whether the code is drawn, rather than the message that it cannot be.
     private var drawsModules: Bool {
         guard let modules else { return false }
-        return width == 0 || Self.fits(modules, type: type, width: width, scale: displayScale)
+        return width == 0 || plate(for: modules, in: CGSize(width: width, height: .greatestFiniteMagnitude)) != nil
     }
 
     @ViewBuilder
@@ -56,7 +53,19 @@ struct WatchBarcodeView: View {
             let type = type
             let scale = displayScale
             Canvas { context, size in
-                context.fill(Self.path(of: modules, type: type, in: size, scale: scale), with: .color(.black))
+                let plate = BarcodePlate(modules: modules, type: type, fitting: size, scale: scale, stripAspectRatio: Self.stripAspectRatio)
+                guard let plate else { return }
+                // Centred on whole pixels, in the space left by the whole-pixel modules.
+                let offset = CGPoint(
+                    x: ((size.width - plate.size.width) / 2 * scale).rounded(.down) / scale,
+                    y: ((size.height - plate.size.height) / 2 * scale).rounded(.down) / scale
+                )
+                let radius = plate.cornerRadius(upTo: Self.cornerRadius, zone: type.quietZone, isStrip: modules.rows == 1)
+                context.fill(
+                    Path(roundedRect: CGRect(origin: offset, size: plate.size), cornerRadius: radius),
+                    with: .color(CardPanel.fill)
+                )
+                context.fill(Self.path(of: modules, on: plate, at: offset), with: .color(.black))
             }
             .aspectRatio(Self.aspectRatio(of: modules, type: type), contentMode: .fit)
         } else {
@@ -65,6 +74,8 @@ struct WatchBarcodeView: View {
                 .foregroundStyle(CardPanel.ink)
                 .multilineTextAlignment(.center)
                 .padding(10)
+                .frame(maxWidth: .infinity)
+                .background(CardPanel.fill, in: .rect(cornerRadius: Self.cornerRadius))
         }
     }
 
@@ -80,36 +91,21 @@ struct WatchBarcodeView: View {
 
     /// The plate's width over its height: a strip's fixed shape, or the grid's
     /// own with its quiet zone.
-    /// Whether each module gets at least a whole pixel across `width` points.
-    /// One with less would be drawn between pixels and blur to grey, which no
-    /// scanner reads, so the plate says it cannot be drawn instead.
-    static func fits(_ modules: BarcodeModules, type: BarcodeType, width: CGFloat, scale: CGFloat) -> Bool {
-        width * scale / (CGFloat(modules.columns) + CGFloat(type.quietZone * 2)) >= 1
+    private func plate(for modules: BarcodeModules, in space: CGSize) -> BarcodePlate? {
+        BarcodePlate(modules: modules, type: type, fitting: space, scale: displayScale, stripAspectRatio: Self.stripAspectRatio)
     }
 
+    /// The plate's width over its height: a strip's fixed shape, or the grid's
+    /// own with its quiet zone.
     static func aspectRatio(of modules: BarcodeModules, type: BarcodeType) -> CGFloat {
         guard modules.rows > 1 else { return stripAspectRatio }
-        let quiet = CGFloat(type.quietZone * 2)
-        return (CGFloat(modules.columns) + quiet) / (CGFloat(modules.rows) + quiet)
+        let zone = type.quietZone
+        return CGFloat(zone.leading + modules.columns + zone.trailing) / CGFloat(modules.rows + zone.vertical * 2)
     }
 
-    /// The dark modules as rectangles on a plate of `size` points, centred
-    /// inside the quiet zone, each run of dark modules in a row as one
-    /// rectangle so no seam shows between them. Module sizes and edges fall on
-    /// whole pixels at `scale` when each module gets at least one.
-    static func path(of modules: BarcodeModules, type: BarcodeType, in size: CGSize, scale: CGFloat) -> Path {
-        let isStrip = modules.rows == 1
-        let quiet = CGFloat(type.quietZone * 2)
-        let across = size.width / (CGFloat(modules.columns) + quiet)
-        let fit = isStrip ? across : min(across, size.height / (CGFloat(modules.rows) + quiet))
-        let pixels = (fit * scale).rounded(.down)
-        let module = pixels >= 1 ? pixels / scale : fit
-        let snap = { (value: CGFloat) in (value * scale).rounded() / scale }
-
-        let left = snap((size.width - module * CGFloat(modules.columns)) / 2)
-        let top = isStrip ? snap(size.height * stripMargin) : snap((size.height - module * CGFloat(modules.rows)) / 2)
-        let rowHeight = isStrip ? size.height - top * 2 : module
-
+    /// The dark modules as rectangles on `plate`, placed at `offset`, each run
+    /// of dark modules in a row as one rectangle so no seam shows between them.
+    static func path(of modules: BarcodeModules, on plate: BarcodePlate, at offset: CGPoint) -> Path {
         var path = Path()
         for row in 0..<modules.rows {
             var column = 0
@@ -123,15 +119,16 @@ struct WatchBarcodeView: View {
                     column += 1
                 }
                 path.addRect(CGRect(
-                    x: left + CGFloat(start) * module,
-                    y: top + CGFloat(row) * rowHeight,
-                    width: CGFloat(column - start) * module,
-                    height: rowHeight
+                    x: offset.x + plate.origin.x + CGFloat(start) * plate.module,
+                    y: offset.y + plate.origin.y + CGFloat(row) * plate.rowHeight,
+                    width: CGFloat(column - start) * plate.module,
+                    height: plate.rowHeight
                 ))
             }
         }
         return path
     }
+
 }
 
 #if DEBUG

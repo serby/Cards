@@ -21,27 +21,33 @@ enum WatchSampleCodes {
     ]
 }
 
-/// Draws modules as the watch does (WATCH-3): on white with the type's quiet
-/// zone, a strip's bars the full height, and square cells otherwise.
+/// Draws modules as the watch does (WATCH-3): on a white plate of exactly the
+/// type's quiet zone, a strip's bars the plate's full height, and square cells
+/// otherwise, with `surround` pixels of a dark card colour round the plate, as
+/// a scanner sees it on the watch.
 enum ModuleDrawing {
-    static func image(_ modules: BarcodeModules, type: BarcodeType, moduleSize: Int) -> CGImage? {
-        let quiet = type.quietZone
-        let barHeight = modules.rows == 1 ? max(40, (modules.columns + quiet * 2) * moduleSize * 2 / 5) : 0
-        let width = (modules.columns + quiet * 2) * moduleSize
-        let height = modules.rows == 1 ? barHeight + quiet * moduleSize : (modules.rows + quiet * 2) * moduleSize
+    static func image(_ modules: BarcodeModules, type: BarcodeType, moduleSize: Int, surround: Int = 0) -> CGImage? {
+        let zone = type.quietZone
+        let plateWidth = (zone.leading + modules.columns + zone.trailing) * moduleSize
+        let plateHeight = modules.rows == 1 ? max(40, plateWidth * 5 / 9) : (modules.rows + zone.vertical * 2) * moduleSize
+        let width = plateWidth + surround * 2
+        let height = plateHeight + surround * 2
         let format = UIGraphicsImageRendererFormat()
         format.scale = 1
         format.opaque = true
         return UIGraphicsImageRenderer(size: CGSize(width: width, height: height), format: format).image { context in
-            UIColor.white.setFill()
+            // Joe's Market's blue, the darkest a plate sits on.
+            UIColor(red: 0.07, green: 0.31, blue: 0.62, alpha: 1).setFill()
             context.fill(CGRect(x: 0, y: 0, width: width, height: height))
+            UIColor.white.setFill()
+            context.fill(CGRect(x: surround, y: surround, width: plateWidth, height: plateHeight))
             UIColor.black.setFill()
             for row in 0..<modules.rows {
                 for column in 0..<modules.columns where modules.isDark(column: column, row: row) {
-                    let x = (quiet + column) * moduleSize
+                    let x = surround + (zone.leading + column) * moduleSize
                     let rect = modules.rows == 1
-                        ? CGRect(x: x, y: quiet * moduleSize / 2, width: moduleSize, height: barHeight)
-                        : CGRect(x: x, y: (quiet + row) * moduleSize, width: moduleSize, height: moduleSize)
+                        ? CGRect(x: x, y: surround, width: moduleSize, height: plateHeight)
+                        : CGRect(x: x, y: surround + (zone.vertical + row) * moduleSize, width: moduleSize, height: moduleSize)
                     context.fill(rect)
                 }
             }
@@ -146,7 +152,7 @@ struct BarcodeModulesVisionTests {
     @Test(arguments: WatchSampleCodes.all)
     func theWatchesDrawingScans(type: BarcodeType, code: String) throws {
         let modules = try #require(BarcodeModules(code: code, type: type))
-        let image = try #require(ModuleDrawing.image(modules, type: type, moduleSize: 4))
+        let image = try #require(ModuleDrawing.image(modules, type: type, moduleSize: 4, surround: 24))
         let request = VNDetectBarcodesRequest()
 
         try VNImageRequestHandler(cgImage: image).perform([request])

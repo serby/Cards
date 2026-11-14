@@ -1,3 +1,4 @@
+import CoreGraphics
 import Foundation
 
 /// A barcode as the grid of modules it is made of, each dark or light, one bit
@@ -82,21 +83,90 @@ extension BarcodeModules: Codable {
     }
 }
 
+/// The light margin a scanner needs round a code, in modules, as each
+/// format's standard sets it, and no more (WATCH-3). A strip barcode needs it
+/// only at its two ends, as its bars run its full height.
+public struct BarcodeQuietZone: Hashable, Sendable {
+    /// Before the first module, and after the last.
+    public let leading: Int
+    public let trailing: Int
+    /// Above and below, for a code of rows; none for a strip.
+    public let vertical: Int
+
+    public init(leading: Int, trailing: Int, vertical: Int) {
+        self.leading = leading
+        self.trailing = trailing
+        self.vertical = vertical
+    }
+}
+
 public extension BarcodeType {
-    /// The light margin a scanner needs on each side of the code, in modules:
-    /// five for a strip of bars, as on the phone, four round a QR code, as its standard asks, and
-    /// two round an Aztec code or a PDF417.
-    var quietZone: Int {
+    /// The quiet zone its standard requires: ten modules at each end of a Code
+    /// 128, a Code 39 or a Code 93; eleven before and seven after an EAN-13,
+    /// seven each side of an EAN-8, nine before and seven after a UPC-E; four
+    /// all round a QR code and two round a PDF417. An Aztec code's standard
+    /// asks for none, as its finder is at its middle, but on a card's colour
+    /// Vision reads none of it without a light margin and all of it with one
+    /// module, so it has two, a module to spare for a till's scanner.
+    var quietZone: BarcodeQuietZone {
         switch self {
+        case .code128, .code39, .code93:
+            BarcodeQuietZone(leading: 10, trailing: 10, vertical: 0)
+        case .ean13:
+            BarcodeQuietZone(leading: 11, trailing: 7, vertical: 0)
+        case .ean8:
+            BarcodeQuietZone(leading: 7, trailing: 7, vertical: 0)
+        case .upce:
+            BarcodeQuietZone(leading: 9, trailing: 7, vertical: 0)
         case .qrCode:
-            4
-        case .aztec, .pdf417:
-            2
-        // About what the phone's plate leaves round its strip barcodes, which
-        // scan at tills; the 10 the formats' specifications ask for left the
-        // watch's narrow screen mostly white.
-        case .code128, .code39, .ean8, .ean13, .code93, .upce:
-            5
+            BarcodeQuietZone(leading: 4, trailing: 4, vertical: 4)
+        case .pdf417:
+            BarcodeQuietZone(leading: 2, trailing: 2, vertical: 2)
+        case .aztec:
+            BarcodeQuietZone(leading: 2, trailing: 2, vertical: 2)
         }
+    }
+}
+
+/// Where a code goes on its white plate, in points, for a space it must fit
+/// (WATCH-3): each module a whole number of the screen's pixels, so every bar
+/// is the same width with sharp edges, and the plate exactly the code and its
+/// quiet zone, with no more white. Nil when a module would be under a pixel,
+/// as it would blur to grey that no scanner reads.
+public struct BarcodePlate: Equatable, Sendable {
+    /// The plate's size: the code and its quiet zone.
+    public let size: CGSize
+    /// One module's width, and a 2D code's module height.
+    public let module: CGFloat
+    /// The code's top-left corner on the plate.
+    public let origin: CGPoint
+    /// How tall each row of modules is: a strip's bars run the plate's height.
+    public let rowHeight: CGFloat
+
+    /// The plate for `modules` of `type` in `space`, at `scale` pixels a
+    /// point. A strip's plate is `stripAspectRatio` times as wide as it is high.
+    public init?(modules: BarcodeModules, type: BarcodeType, fitting space: CGSize, scale: CGFloat, stripAspectRatio: CGFloat) {
+        let zone = type.quietZone
+        let isStrip = modules.rows == 1
+        let across = CGFloat(zone.leading + modules.columns + zone.trailing)
+        let down = CGFloat(modules.rows + zone.vertical * 2)
+        var pixels = (space.width * scale / across).rounded(.down)
+        if !isStrip {
+            pixels = min(pixels, (space.height * scale / down).rounded(.down))
+        }
+        guard pixels >= 1, scale > 0 else { return nil }
+        module = pixels / scale
+        let width = module * across
+        let height = isStrip ? ((width / stripAspectRatio) * scale).rounded() / scale : module * down
+        size = CGSize(width: width, height: height)
+        origin = CGPoint(x: module * CGFloat(zone.leading), y: module * CGFloat(zone.vertical))
+        rowHeight = isStrip ? height : module
+    }
+
+    /// The plate's corners, round but never into the code: no rounder than
+    /// the quiet zone is wide, so an Aztec code's plate is square.
+    public func cornerRadius(upTo maximum: CGFloat, zone: BarcodeQuietZone, isStrip: Bool) -> CGFloat {
+        let sides = CGFloat(min(zone.leading, zone.trailing)) * module
+        return min(maximum, isStrip ? sides : min(sides, CGFloat(zone.vertical) * module))
     }
 }
