@@ -134,9 +134,9 @@ struct DistanceFormatTests {
         #expect(format(.miles).radiusScale == .yards)
         #expect(format(.automatic, Self.us).radiusScale == .yards)
 
-        #expect(RadiusScale.metres.range == 50...1_000)
+        #expect(RadiusScale.metres.range == 25...1_000)
         #expect(RadiusScale.metres.step == 25)
-        #expect(RadiusScale.yards.range == 50...1_100)
+        #expect(RadiusScale.yards.range == 25...1_100)
         #expect(RadiusScale.yards.step == 25)
         #expect(RadiusScale.metres.unit == .meters)
         #expect(RadiusScale.yards.unit == .yards)
@@ -155,5 +155,14 @@ struct DistanceFormatTests {
         #expect(DistanceUnits.stored("miles") == .miles)
         #expect(DistanceUnits.stored("leagues") == .automatic)
         #expect(DistanceUnits.stored(nil) == .automatic)
+    }
+}
+
+/// A new place starts at 50 m, and a place can be as small as 25 m (PLACE-3).
+struct PlaceRadiusTests {
+    @Test func aNewPlaceStartsAtFiftyMetresAndCanBeTwentyFive() {
+        #expect(CardLocation.defaultRadius == 50)
+        #expect(CardLocation.radiusRange.lowerBound == 25)
+        #expect(CardLocation(name: "Local Roast Coffee", latitude: 51.5, longitude: -0.2).radius == 50)
     }
 }

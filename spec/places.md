@@ -44,16 +44,16 @@ As a card holder, I want to search for a shop, an address, a street, a town or a
 
 As a card holder, I want to set the size of a place, so that a big shop or a small café both count when I am inside them.
 
-- The radius starts at 200 m.
-- A Radius slider sets it from 50 m to 1,000 m in steps of 25 m, with the value beside it, as "200 m".
-- Since 1.4: the radius is in the units chosen in Settings > Distances (SET-4). With Miles, or Automatic where the measurement system is UK or US, it is in yards: the slider runs from 50 yd to 1,100 yd in steps of 25 yd, and the 200 m a place starts with shows as "220 yd". A radius is shown to the nearest 5 m or 5 yd, and is kept in metres whichever unit set it, so a place set in yards shows its metres rounded, as "230 m" for 250 yd.
+- The radius starts at 50 m; until 1.5 it started at 200 m.
+- A Radius slider sets it from 25 m to 1,000 m in steps of 25 m, with the value beside it, as "50 m". Until 1.5 it started at 50 m.
+- Since 1.4: the radius is in the units chosen in Settings > Distances (SET-4). With Miles, or Automatic where the measurement system is UK or US, it is in yards: the slider runs from 25 yd to 1,100 yd in steps of 25 yd (50 yd until 1.5), and the 50 m a place starts with shows as "55 yd". A radius is shown to the nearest 5 m or 5 yd, and is kept in metres whichever unit set it, so a place set in yards shows its metres rounded, as "230 m" for 250 yd.
 - A pink ring round the pin shows the radius at the map's scale as you drag and zoom.
 - In the edit form, each place shows its name on one line and its radius below, as "200 m radius", or in preparation for 1.4 "220 yd radius" in yards.
 - In 1.3 a place's name and radius can't be changed once it is added; you remove it and add it again (PLACE-5). Since 1.4, tapping the place changes it (PLACE-8).
 
 **Since:** 1.3
 **Where:** `Cards/Core/Models/CardLocation.swift` (`defaultRadius`, `radiusRange`), `Cards/Core/Models/DistanceFormat.swift` (`radius(_:width:)`, `RadiusScale`), `Cards/UI/Screens/LocationPickerView.swift`, `Cards/UI/Components/RadiusSlider.swift`, `Cards/UI/Components/CardLocationRow.swift`, `CardsTests/DistanceFormatTests.swift`
-**Notes:** A shared card's radii are kept between 50 m and 1,000 m when it is added (SHARE-3), so a place at either end of the yards slider, 50 yd (46 m) or 1,100 yd (1,006 m), arrives as 50 m or 1,000 m.
+**Notes:** A shared card's radii are kept between 25 m and 1,000 m when it is added (SHARE-3), so a place at either end of the yards slider, 25 yd (23 m) or 1,100 yd (1,006 m), arrives as 25 m or 1,000 m. Paul set the 25 m smallest radius and the 50 m start on 14 November 2026; places made before keep their radius. A place this small is smaller than a phone's position is often accurate to indoors, so being "Here" (PLACE-6) and an arrival reminder (ARR-1), which iOS judges from the network as much as from GPS, can be late or missed for one.
 
 ### PLACE-4: Add where I am straight from the card
 

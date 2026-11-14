@@ -58,7 +58,7 @@ As someone using VoiceOver, I want every control labelled and every image that a
 - Each swatch, and the custom colour well, has a 44 point touch area (1.3).
 - Since 1.4: icon swatches read what they show, such as "Basket", and "Selected" for the chosen one, each group's name is a heading, and the grid reads as "Card icon" (CARD-12).
 - A place in the edit form reads as one item: its name and radius (1.3).
-- The radius slider reads "Radius" with its value, such as "200 m" (1.3). Since 1.4 the value says its unit in full, "200 metres" or "220 yards" (PLACE-3).
+- The radius slider reads "Radius" with its value, such as "50 m" (1.3). Since 1.4 the value says its unit in full, "200 metres" or "220 yards" (PLACE-3).
 - The map's ring, the place icons, the field icons in the location sheet and the tick on a swatch are hidden from VoiceOver (1.3). Since 1.4 the pin reads "Map pin", with the place's name and radius, and its Move North, South, East and West actions move the map, so VoiceOver users can place it.
 - The external link icon in Settings reads "External link" (1.1).
 - When the camera can't be used, its title and text read as one item, such as "No camera, Type the card's code below.", Open Settings is a separate button, and the icon is hidden (CARD-2) (1.3).

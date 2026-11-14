@@ -72,7 +72,7 @@ public struct RadiusScale: Hashable, Sendable {
     private let metresPerUnit: Double
 
     public static let metres = Self(range: CardLocation.radiusRange, step: 25, metresPerUnit: 1)
-    public static let yards = Self(range: 50...1_100, step: 25, metresPerUnit: 0.9144)
+    public static let yards = Self(range: 25...1_100, step: 25, metresPerUnit: 0.9144)
 
     /// The unit the slider's values are in.
     public var unit: UnitLength {

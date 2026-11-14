@@ -3,10 +3,10 @@ import Foundation
 
 /// A place a card is used: a circle on the map. A card can have any number.
 public struct CardLocation: Codable, Hashable, Identifiable, Sendable {
-    /// The radius a location gets when added by postcode, in metres.
-    public static let defaultRadius: CLLocationDistance = 200
-    /// The radii the location picker offers, in metres.
-    public static let radiusRange: ClosedRange<CLLocationDistance> = 50...1_000
+    /// The radius a new place starts with, in metres: about a shop's own floor.
+    public static let defaultRadius: CLLocationDistance = 50
+    /// The radii the location picker offers, in metres, from a kiosk's 25.
+    public static let radiusRange: ClosedRange<CLLocationDistance> = 25...1_000
 
     public var id: UUID
     public var name: String
