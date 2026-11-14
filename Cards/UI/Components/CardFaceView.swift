@@ -81,6 +81,16 @@ public struct CardFaceView<NumberAccessory: View, Footer: View>: View {
                             .accessibilityAddTraits(.isStaticText)
                     }
                 }
+
+                // The lock-up shows the number, for typing in, as the full face does below its barcode.
+                if style == .lockUp {
+                    Text(card.code)
+                        .font(.headline.monospaced())
+                        .foregroundStyle(CardPanel.ink)
+                        .multilineTextAlignment(.center)
+                        .readsLeftToRight()
+                        .accessibilityIdentifier("cardCodeText")
+                }
             }
             .cardPanel()
 
@@ -216,8 +226,8 @@ public extension CardFaceView where NumberAccessory == EmptyView, Footer == Empt
 public enum CardFaceStyle: String, CaseIterable, Hashable, Sendable {
     /// All of it: the name, the barcode, the number and the date, and any panels below.
     case full = "Full"
-    /// The lock-up: the top panel alone, with the icon, the name and where you
-    /// are, on the card's colour, for the card for where you are (SET-3).
+    /// The lock-up: the top panel alone, with the icon, the name, where you
+    /// are and the number, on the card's colour, for the card for where you are (SET-3).
     case lockUp = "Lock-up"
 }
 
