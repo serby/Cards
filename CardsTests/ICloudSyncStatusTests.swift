@@ -1,6 +1,7 @@
 @testable import Cards
 import CloudKit
 import Foundation
+import Synchronization
 import Testing
 
 /// What Settings says about iCloud Sync, from the account and the syncing
@@ -155,5 +156,39 @@ struct ICloudSyncStatusTests {
         let monitor = ICloudSyncMonitor(sync: sync, defaults: UserDefaults(suiteName: "ICloudSyncStatusTestsSlow") ?? .standard)
         await monitor.run()
         #expect(monitor.tracker.lastSynced == later)
+    }
+}
+
+/// Only real sync failures reach the diagnostics' log (PLAT-14): not being
+/// signed in to iCloud is a state, which would otherwise log every launch.
+struct ICloudSyncLoggingTests {
+    @MainActor @Test(arguments: [
+        (ICloudSyncEvent.Failure.signedOut, false),
+        (.offline, true),
+        (.storageFull, true),
+        (.other, true)
+    ])
+    func onlyRealFailuresAreLogged(_ failure: ICloudSyncEvent.Failure, _ logged: Bool) async throws {
+        let messages = Mutex<[String]>([])
+        let telemetry = Telemetry(
+            setSharesDiagnostics: { _ in },
+            setSharesUsageData: { _ in },
+            record: { _ in },
+            log: { message, _ in messages.withLock { $0.append(message) } },
+            time: { _, _ in },
+            countCards: { _ in }
+        )
+        let sync = ICloudSync(
+            account: { .available },
+            changes: {
+                AsyncStream { continuation in
+                    continuation.yield(.event(ICloudSyncEvent(id: UUID(), kind: .setup, ended: .now, failure: failure)))
+                    continuation.finish()
+                }
+            }
+        )
+        let defaults = try #require(UserDefaults(suiteName: "ICloudSyncLoggingTests"))
+        await ICloudSyncMonitor(sync: sync, defaults: defaults, telemetry: telemetry).run()
+        #expect(messages.withLock { $0.isEmpty } == !logged)
     }
 }

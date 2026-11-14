@@ -42,7 +42,9 @@ public final class ICloudSyncMonitor {
                 case let .event(event):
                     let before = tracker.lastSynced
                     tracker.record(event)
-                    if let failure = event.failure {
+                    // Not being signed in is a state, not a fault, and happens on every
+                    // launch for someone without iCloud, so only real failures are logged.
+                    if let failure = event.failure, failure != .signedOut {
                         telemetry.log("iCloud sync failed", ["kind": "\(event.kind)", "reason": "\(failure)"])
                     }
                     if let lastSynced = tracker.lastSynced, lastSynced != before {
