@@ -8,12 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		AF00000000000000000000A3 /* RSBarcodes_Swift in Frameworks */ = {isa = PBXBuildFile; productRef = AF00000000000000000000A2 /* RSBarcodes_Swift */; };
-		AF00000000000000000000B3 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = AF00000000000000000000B2 /* Sentry */; };
-		AF00000000000000000000C3 /* FirebaseAnalyticsCore in Frameworks */ = {isa = PBXBuildFile; productRef = AF00000000000000000000C2 /* FirebaseAnalyticsCore */; };
 		AF00000000000000000000A5 /* RSBarcodes_Swift in Frameworks */ = {isa = PBXBuildFile; productRef = AF00000000000000000000A4 /* RSBarcodes_Swift */; };
 		AF00000000000000000000A6 /* CardsWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = AA00000000000000000000D4 /* CardsWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		AF00000000000000000000A7 /* changelog.json in Resources */ = {isa = PBXBuildFile; fileRef = AA00000000000000000000C2 /* changelog.json */; };
 		AF00000000000000000000A8 /* CardsWatch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = AA00000000000000000000D5 /* CardsWatch.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		AF00000000000000000000B3 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = AF00000000000000000000B2 /* Sentry */; };
+		AF00000000000000000000C3 /* FirebaseAnalyticsCore in Frameworks */ = {isa = PBXBuildFile; productRef = AF00000000000000000000C2 /* FirebaseAnalyticsCore */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -105,8 +105,8 @@
 				UI/Modifiers/KeepsColoursWhenInverted.swift,
 				UI/Modifiers/ReadsLeftToRight.swift,
 				UI/Theme/CardPalette.swift,
-				"UI/Theme/Colors+System.swift",
 				UI/Theme/Colors.swift,
+				"UI/Theme/Colors+System.swift",
 				UI/ViewState/CardWidgetState.swift,
 			);
 			target = AA00000000000000000000E4 /* CardsWidget */;
