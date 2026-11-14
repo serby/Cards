@@ -67,7 +67,7 @@
 	<key>GOOGLE_ANALYTICS_REGISTRATION_WITH_AD_NETWORK_ENABLED</key>
 	<false/>
 	<key>SentryDSN</key>
-	<string></string>
+	<string>https://0c9460142edd4a05943b2268a525957b@o397201.ingest.us.sentry.io/5251473</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>LSSupportsOpeningDocumentsInPlace</key>
