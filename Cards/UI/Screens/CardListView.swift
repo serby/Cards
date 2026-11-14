@@ -314,6 +314,13 @@ private extension View {
     }
 }
 
+#Preview("Populated At Location") {
+    NavigationStack {
+        CardListView(cards: CardSummary.samples,
+                     cardHere: CardDetail.here)
+    }
+}
+
 #Preview("Empty") {
     NavigationStack {
         CardListView(cards: [])

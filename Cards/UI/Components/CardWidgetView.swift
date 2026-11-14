@@ -54,7 +54,7 @@ public struct CardWidgetView<Accessory: View>: View {
             }
             .widgetPanel(isFullColor)
             // About 4:1, the space a medium widget leaves under the name, so the bars use its full width.
-            CardWidgetBarcode(card: card, pixelSize: CGSize(width: 900, height: 190), margin: 28)
+            CardWidgetBarcode(card: card, pixelSize: CGSize(width: 900, height: 190), margin: 0)
                 .keepsColoursWhenInverted()
         }
     }
