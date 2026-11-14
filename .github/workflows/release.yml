@@ -71,6 +71,12 @@ jobs:
         RELEASE_TAG: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') && github.ref_name || '' }}
       run: node scripts/release-version.ts
 
+    # Readable crash stacks for reports sent with Share Diagnostics on (PLAT-14).
+    - name: Upload the dSYMs to Sentry
+      env:
+        SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      run: node scripts/upload-dsyms.ts
+
     - name: Remove the keychain
       if: ${{ always() }}
       run: node scripts/install-signing-certificate.ts --remove
