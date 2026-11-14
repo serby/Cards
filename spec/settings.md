@@ -13,7 +13,7 @@ As a card holder, I want one screen for the app's settings and data, so that I k
   - iCloud, with the iCloud Sync switch and its caption, and with sync off "Delete Cards from iCloud" and its caption (DATA-8, DATA-9) (in preparation for 1.4).
   - Data, with "Export as JSON" (DATA-2), "Import JSON" (DATA-3) and "Delete All Cards" (DATA-5).
   - Privacy, with the Share Diagnostics switch, its caption and a note on iOS's own crash reports (PLAT-11) (in preparation for 1.4).
-  - In preparation for 1.5: Privacy also has a Share Usage Data switch under it, off until it is turned on (PLAT-15).
+  - In preparation for 1.5: Privacy also has a Share Usage Data switch under it, on until it is turned off (PLAT-15).
   - "Acknowledgements", a row on its own that opens the open source software the app is built with (PLAT-12) (in preparation for 1.4).
   - Last, "Version", with the version and build number, as "1.3 (<build>)", and "Created by Paul Serby", which opens https://github.com/serby and has an external link icon. The Version row only shows when both numbers are known.
 - Brightness Boost and Arrival Notifications are on by default. Both are kept on the device and don't sync (DATA-1).

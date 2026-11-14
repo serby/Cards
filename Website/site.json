@@ -129,12 +129,12 @@
     },
     "consent": {
       "comment": "The banner at the foot of the website asking to count the visit with Google Analytics, which uses cookies. Google Analytics is Google's product; keep its name. The app is Card Barcodes itself, which never tracks anyone.",
-      "en": "Can this website count your visit with Google Analytics? It uses cookies to do so. The app counts nothing unless you allow it in its own Settings.",
-      "es": "¿Puede esta web contar tu visita con Google Analytics? Para ello usa cookies. La app no cuenta nada salvo que lo permitas en sus propios Ajustes.",
-      "de": "Darf diese Website deinen Besuch mit Google Analytics zählen? Dafür verwendet sie Cookies. Die App zählt nichts, solange du es nicht in ihren eigenen Einstellungen erlaubst.",
-      "ja": "このウェブサイトで、Google アナリティクスを使って訪問を記録してもよいですか？記録には Cookie を使います。アプリは、アプリ自体の設定で許可しない限り何も記録しません。",
-      "fr": "Ce site peut-il compter votre visite avec Google Analytics ? Il utilise des cookies pour cela. L’app ne compte rien sans votre accord dans ses propres Réglages.",
-      "ar": "هل يمكن لهذا الموقع احتساب زيارتك باستخدام Google Analytics؟ يستخدم ملفات تعريف الارتباط لذلك. أما التطبيق فلا يحصي شيئًا ما لم تسمح بذلك في إعداداته."
+      "en": "Can this website count your visit with Google Analytics? It uses cookies to do so. The app's own counting is separate, and you can turn it off in its Settings.",
+      "es": "¿Puede esta web contar tu visita con Google Analytics? Para ello usa cookies. Lo que cuenta la app es aparte, y puedes desactivarlo en sus Ajustes.",
+      "de": "Darf diese Website deinen Besuch mit Google Analytics zählen? Dafür verwendet sie Cookies. Was die App zählt, ist davon getrennt, und du kannst es in ihren Einstellungen ausschalten.",
+      "ja": "このウェブサイトで、Google アナリティクスを使って訪問を記録してもよいですか？記録には Cookie を使います。アプリでの記録はこれとは別で、アプリの「設定」でオフにできます。",
+      "fr": "Ce site peut-il compter votre visite avec Google Analytics ? Il utilise des cookies pour cela. Ce que compte l’app est distinct, et vous pouvez le désactiver dans ses Réglages.",
+      "ar": "هل يمكن لهذا الموقع احتساب زيارتك باستخدام Google Analytics؟ يستخدم ملفات تعريف الارتباط لذلك. أما ما يحصيه التطبيق فمنفصل، ويمكنك إيقافه من إعداداته."
     },
     "consentAccept": {
       "comment": "Button in the website's analytics banner that allows Google Analytics.",
