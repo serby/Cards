@@ -5,7 +5,6 @@
 //  Created by Serby, Paul on 18/12/2024.
 //
 
-@testable import Cards
 import XCTest
 
 final class CardsUITestsLaunchTests: XCTestCase {

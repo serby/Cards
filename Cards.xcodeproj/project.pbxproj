@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		AF00000000000000000000A3 /* RSBarcodes_Swift in Frameworks */ = {isa = PBXBuildFile; productRef = AF00000000000000000000A2 /* RSBarcodes_Swift */; };
+		AF00000000000000000000B3 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = AF00000000000000000000B2 /* Sentry */; };
+		AF00000000000000000000C3 /* FirebaseAnalyticsCore in Frameworks */ = {isa = PBXBuildFile; productRef = AF00000000000000000000C2 /* FirebaseAnalyticsCore */; };
 		AF00000000000000000000A5 /* RSBarcodes_Swift in Frameworks */ = {isa = PBXBuildFile; productRef = AF00000000000000000000A4 /* RSBarcodes_Swift */; };
 		AF00000000000000000000A6 /* CardsWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = AA00000000000000000000D4 /* CardsWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		AF00000000000000000000A7 /* changelog.json in Resources */ = {isa = PBXBuildFile; fileRef = AA00000000000000000000C2 /* changelog.json */; };
@@ -181,6 +183,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				AF00000000000000000000A3 /* RSBarcodes_Swift in Frameworks */,
+				AF00000000000000000000B3 /* Sentry in Frameworks */,
+				AF00000000000000000000C3 /* FirebaseAnalyticsCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -267,6 +271,8 @@
 			name = Cards;
 			packageProductDependencies = (
 				AF00000000000000000000A2 /* RSBarcodes_Swift */,
+				AF00000000000000000000B2 /* Sentry */,
+				AF00000000000000000000C2 /* FirebaseAnalyticsCore */,
 			);
 			productName = Cards;
 			productReference = AA00000000000000000000D1 /* Cards.app */;
@@ -408,6 +414,8 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				AF00000000000000000000A1 /* XCRemoteSwiftPackageReference "RSBarcodes_Swift" */,
+				AF00000000000000000000B1 /* XCRemoteSwiftPackageReference "sentry-cocoa" */,
+				AF00000000000000000000C1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = AA00000000000000000000A3 /* Products */;
@@ -950,6 +958,22 @@
 				version = 5.2.0;
 			};
 		};
+		AF00000000000000000000B1 /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/getsentry/sentry-cocoa.git";
+			requirement = {
+				kind = exactVersion;
+				version = 9.34.0;
+			};
+		};
+		AF00000000000000000000C1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
+			requirement = {
+				kind = exactVersion;
+				version = 13.2.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -962,6 +986,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = AF00000000000000000000A1 /* XCRemoteSwiftPackageReference "RSBarcodes_Swift" */;
 			productName = RSBarcodes_Swift;
+		};
+		AF00000000000000000000B2 /* Sentry */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AF00000000000000000000B1 /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
+			productName = Sentry;
+		};
+		AF00000000000000000000C2 /* FirebaseAnalyticsCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AF00000000000000000000C1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalyticsCore;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

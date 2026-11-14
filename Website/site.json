@@ -7,7 +7,21 @@
     "description": "What Card Barcodes does with your cards, your location and the camera, and what leaves your device."
   },
   "packages": {
-    "rsbarcodes_swift": "an open-source library that draws barcodes, entirely on your device"
+    "rsbarcodes_swift": "an open-source library that draws barcodes, entirely on your device",
+    "sentry-cocoa": "Sentry's library, which sends crash reports and performance data while Share Diagnostics is on, as above",
+    "firebase-ios-sdk": "Google's Firebase, whose Google Analytics counts which features are used while Share Usage Data is on, as above",
+    "googleappmeasurement": "Google Analytics' measurement, which Firebase sends its counts through, built without advertising identifier support",
+    "googleutilities": "Firebase's shared utilities, which send nothing of their own",
+    "promises": "a library Firebase uses to run its work, which sends nothing",
+    "nanopb": "a library Firebase uses to encode what it sends, which sends nothing of its own",
+    "interop-ios-for-google-sdks": "the interfaces Google's libraries share, which send nothing",
+    "abseil-cpp-binary": null,
+    "app-check": null,
+    "google-ads-on-device-conversion-ios-sdk": null,
+    "googledatatransport": null,
+    "grpc-binary": null,
+    "gtm-session-fetcher": null,
+    "leveldb": null
   },
   "strings": {
     "download": {

@@ -35,14 +35,19 @@ struct PrivacySettingsTests {
         let acknowledged = Set(OpenSourceLibrary.all.compactMap { $0.url?.absoluteString })
         for pin in try JSONDecoder().decode(ResolvedPackages.self, from: data).pins {
             let url = pin.location.hasSuffix(".git") ? String(pin.location.dropLast(4)) : pin.location
-            #expect(acknowledged.contains(url), "\(url) is in Package.resolved but not in OpenSourceLibrary.all")
+            #expect(
+                acknowledged.contains(url) != OpenSourceLibrary.pinnedButNotBuiltIn.contains(url),
+                "\(url) is in Package.resolved, so it must be in exactly one of OpenSourceLibrary.all and pinnedButNotBuiltIn"
+            )
         }
     }
 
     @Test func everyLicenceIsShownInFull() {
         for library in OpenSourceLibrary.all {
             #expect(library.licenceText.contains("Copyright"), "\(library.name)'s licence has no copyright line")
-            #expect(library.licenceText.contains("THE SOFTWARE IS PROVIDED \"AS IS\""), "\(library.name)'s licence is cut short")
+            // The end of the MIT, Apache 2.0 and zlib licences, so none is cut short.
+            let ends = ["THE SOFTWARE IS PROVIDED \"AS IS\"", "limitations under the License.", "This notice may not be removed or altered"]
+            #expect(ends.contains { library.licenceText.contains($0) }, "\(library.name)'s licence is cut short")
         }
     }
 }

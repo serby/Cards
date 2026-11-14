@@ -84,8 +84,8 @@ export interface SiteConfig {
     supportEmail: string;
     privacyEmail: string;
     privacyPage: { title: string; description: string };
-    /// What each Swift package does, by its identity in Package.resolved.
-    packages: Record<string, string>;
+    /// Each pinned package, by identity: what it does, or null when it is pinned only because another package names it and is not built into the app.
+    packages: Record<string, string | null>;
     strings: Record<string, Record<string, string>>;
 }
 
@@ -348,7 +348,9 @@ function readPackages(rootDir: string, config: SiteConfig, problems: string[]): 
     for (const identity of Object.keys(config.packages ?? {})) {
         if (!pins.some((pin) => pin.identity === identity)) problems.push(`Website/site.json: packages describes ${identity}, which Package.resolved does not pin; delete it`);
     }
-    return pins.map((pin) => {
+    // null marks a package pinned only because another names it, whose code
+    // is not built into the app, so the policy leaves it out.
+    return pins.filter((pin) => config.packages?.[pin.identity] !== null).map((pin) => {
         const description = config.packages?.[pin.identity];
         if (!description?.trim()) problems.push(`Website/site.json: packages has no description of ${pin.identity}, which the app uses; the privacy policy lists every third-party package`);
         const name = pin.location.replace(/\/$/, "").split("/").pop()?.replace(/\.git$/, "") ?? pin.identity;
