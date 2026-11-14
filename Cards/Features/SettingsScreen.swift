@@ -13,12 +13,14 @@ public struct SettingsScreen: View {
     /// CardsApp opens the store again when this changes (DATA-8).
     @AppStorage(DeviceSettings.syncsWithICloudKey) private var syncsWithICloud = true
     @AppStorage(DeviceSettings.sharesDiagnosticsKey) private var sharesDiagnostics = true
+    @AppStorage(DeviceSettings.sharesUsageDataKey) private var sharesUsageData = true
     @Environment(ArrivalScheduler.self) private var arrivalScheduler
     @Environment(ICloudSyncMonitor.self) private var iCloudSyncMonitor
     @Environment(\.iCloudCards) private var iCloudCards
     @Environment(\.clipboard) private var clipboard
     @Environment(\.fileReader) private var fileReader
     @Environment(\.fileWriter) private var fileWriter
+    @Environment(\.telemetry) private var telemetry
     /// Where today is, for the export's name (DATA-2): the device's own time zone.
     @Environment(\.timeZone) private var timeZone
     /// Hands over a file opened in the app, to import (DATA-11).
@@ -56,16 +58,22 @@ public struct SettingsScreen: View {
             mapsApp: $mapsApp,
             syncsWithICloud: $syncsWithICloud,
             sharesDiagnostics: $sharesDiagnostics,
+            sharesUsageData: $sharesUsageData,
             message: $message,
             actions: SettingsActions(
                 exportCards: {
                     exportItem = Self.export(cards, on: .now, in: timeZone, writer: fileWriter)
+                    telemetry.record(.cardsExported(CountBand(cards.count)))
                 },
                 importCards: { text in
+                    let before = cards.count
                     message = Self.importText(text, existing: cards, into: modelContext)
+                    recordImport(.pasted, before: before)
                 },
                 importFile: { choice in
+                    let before = cards.count
                     message = Self.importFile(choice, reader: fileReader, existing: cards, into: modelContext)
+                    recordImport(.file, before: before)
                 },
                 deleteAllCards: deleteAllCards,
                 readClipboard: { clipboard.read() },
@@ -88,9 +96,18 @@ public struct SettingsScreen: View {
             // when Settings is built to import, so duplicates are still found.
             let existing = (try? modelContext.fetch(FetchDescriptor<CardItem>())) ?? cards
             message = Self.importFile(.success(file), reader: fileReader, existing: existing, into: modelContext)
+            recordImport(.openedFile, before: existing.count)
             // iOS handed the app a copy to import; it holds every card, so it goes.
             fileWriter.removeHandedOver(file)
         }
+        .onAppear { telemetry.record(.screen(.settings)) }
+        .onChange(of: brightnessBoost) { telemetry.record(.settingChanged(.brightnessBoost, to: brightnessBoost ? "on" : "off")) }
+        .onChange(of: arrivalNotifications) { telemetry.record(.settingChanged(.arrivalNotifications, to: arrivalNotifications ? "on" : "off")) }
+        .onChange(of: showsCardWhereYouAre) { telemetry.record(.settingChanged(.showsCardWhereYouAre, to: showsCardWhereYouAre ? "on" : "off")) }
+        .onChange(of: distanceUnits) { telemetry.record(.settingChanged(.distanceUnits, to: distanceUnits.rawValue)) }
+        .onChange(of: mapsApp) { telemetry.record(.settingChanged(.mapsApp, to: mapsApp.rawValue)) }
+        .onChange(of: syncsWithICloud) { telemetry.record(.settingChanged(.iCloudSync, to: syncsWithICloud ? "on" : "off")) }
+        .onChange(of: sharesDiagnostics) { telemetry.record(.settingChanged(.sharesDiagnostics, to: sharesDiagnostics ? "on" : "off")) }
         // A deletion said how it went for the time iCloud Sync was off.
         .onChange(of: syncsWithICloud) {
             iCloudDeletion = .notAsked
@@ -121,6 +138,13 @@ public struct SettingsScreen: View {
     private func openNotificationSettings() {
         guard let url = URL(string: UIApplication.openNotificationSettingsURLString) else { return }
         openURL(url)
+    }
+
+    /// Counts an import by how many cards it added, as a band (PLAT-15).
+    private func recordImport(_ source: ImportSource, before: Int) {
+        let after = (try? modelContext.fetchCount(FetchDescriptor<CardItem>())) ?? before
+        telemetry.record(.cardsImported(source, added: CountBand(after - before)))
+        telemetry.log("Cards imported", ["method": source.rawValue, "added": CountBand(after - before).rawValue])
     }
 
     private func deleteAllCards() {

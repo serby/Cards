@@ -17,6 +17,10 @@ struct CardsApp: App {
     /// Set in Settings (DATA-8). Changing it opens the store again, with or
     /// without iCloud, on the same file.
     @AppStorage(DeviceSettings.syncsWithICloudKey) private var syncsWithICloud = true
+    /// Set in Settings (PLAT-14, PLAT-15), and followed at once.
+    @AppStorage(DeviceSettings.sharesDiagnosticsKey) private var sharesDiagnostics = true
+    @AppStorage(DeviceSettings.sharesUsageDataKey) private var sharesUsageData = true
+    private let telemetry: Telemetry
     @State private var modelContainer: ModelContainer
     private let widgetSettings = WidgetSettings.live
     private let performanceTracker = PerformanceTracker()
@@ -29,18 +33,29 @@ struct CardsApp: App {
         // Set before launch finishes so a tap that launched the app is not missed.
         // Handing iOS its delegate is wiring, so it is done here at the composition
         // root rather than through the notification client.
+        // First, so a crash while the store opens is caught, and only as the
+        // switches allow.
+        let telemetry = DevelopmentHooks.telemetry
+        self.telemetry = telemetry
+        let defaults = UserDefaults.standard
+        telemetry.setSharesDiagnostics(defaults.object(forKey: DeviceSettings.sharesDiagnosticsKey) as? Bool ?? true)
+        telemetry.setSharesUsageData(defaults.object(forKey: DeviceSettings.sharesUsageDataKey) as? Bool ?? true)
         arrivalRouter = ArrivalNotificationRouter { code in
+            telemetry.record(.cardOpened(.notification))
             navigationManager.navigate(to: .card(code))
         }
         UNUserNotificationCenter.current().delegate = arrivalRouter
         // Made before the store opens, so it hears the store's first syncing, and
         // run once for the life of the app, whatever windows come and go.
-        let iCloudSyncMonitor = ICloudSyncMonitor(sync: DevelopmentHooks.iCloudSync)
+        let iCloudSyncMonitor = ICloudSyncMonitor(sync: DevelopmentHooks.iCloudSync, telemetry: telemetry)
         _iCloudSyncMonitor = State(initialValue: iCloudSyncMonitor)
         Task { await iCloudSyncMonitor.run() }
         let syncs = UserDefaults.standard.object(forKey: DeviceSettings.syncsWithICloudKey) as? Bool ?? true
         DevelopmentHooks.initializeCloudKitSchemaIfRequested()
-        let container = Self.makeModelContainer(syncsWithICloud: syncs)
+        let container = telemetry.measure(.storeOpen) { Self.makeModelContainer(syncsWithICloud: syncs) }
+        // Once a launch, as a band (PLAT-14): what the device holds as it opens,
+        // before any syncing it then does.
+        telemetry.countCards(CountBand((try? container.mainContext.fetchCount(FetchDescriptor<CardItem>())) ?? 0))
         do {
             try DevelopmentHooks.seedScreenshotCards(into: container)
         } catch {
@@ -98,6 +113,9 @@ struct CardsApp: App {
         .tint(.accent)
         .environment(locationService)
         .environment(arrivalScheduler)
+        .environment(\.telemetry, telemetry)
+        .onChange(of: sharesDiagnostics) { telemetry.setSharesDiagnostics(sharesDiagnostics) }
+        .onChange(of: sharesUsageData) { telemetry.setSharesUsageData(sharesUsageData) }
         .environment(iCloudSyncMonitor)
         .environment(\.mapShowsPointsOfInterest, DevelopmentHooks.mapShowsPointsOfInterest)
         .environment(\.placeSearch, DevelopmentHooks.placeSearch)
@@ -113,10 +131,14 @@ struct CardsApp: App {
         }
         // A `cards://` link, or an export opened in the app from Files, Mail or
         // AirDrop (DATA-11), which iOS hands over as a copy (Info.plist).
-        .onOpenURL(perform: navigationManager.handleDeepLink)
+        .onOpenURL { url in
+            if let event = Self.event(opening: url) { telemetry.record(event) }
+            navigationManager.handleDeepLink(url)
+        }
         // A universal link, such as a card shared from cards.serby.net (SHARE-3).
         .onContinueUserActivity(NSUserActivityTypeBrowsingWeb) { activity in
             if let url = activity.webpageURL {
+                if let event = Self.event(opening: url) { telemetry.record(event) }
                 navigationManager.handleDeepLink(url)
             }
         }
@@ -147,5 +169,15 @@ struct CardsApp: App {
                 break
             }
         }
+    }
+
+    /// What opening `url` counts as: a file to import is counted when it is
+    /// imported, and a share link when its card is added, so only a link to a
+    /// card's screen, as the widget opens, counts here; anything else is nil.
+    private static func event(opening url: URL) -> AppEvent? {
+        if case .card = NavigationRoute.from(url: url) {
+            return .cardOpened(.link)
+        }
+        return nil
     }
 }

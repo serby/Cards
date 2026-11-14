@@ -13,11 +13,14 @@ public final class ICloudSyncMonitor {
     /// Listening from the moment the monitor is made, which CardsApp does
     /// before it opens the store, so the store's first syncing is not missed.
     @ObservationIgnored private let changes: AsyncStream<ICloudSync.Change>
+    /// Where a piece of syncing that failed is logged, with Share Diagnostics on (PLAT-14).
+    @ObservationIgnored private let telemetry: Telemetry
     /// How many times the account has been asked for.
     @ObservationIgnored private var accountReads = 0
 
-    public init(sync: ICloudSync, defaults: UserDefaults = .standard) {
+    public init(sync: ICloudSync, defaults: UserDefaults = .standard, telemetry: Telemetry = .silent) {
         self.sync = sync
+        self.telemetry = telemetry
         self.defaults = defaults
         changes = sync.changes()
         tracker = ICloudSyncTracker(lastSynced: defaults.object(forKey: DeviceSettings.iCloudLastSyncedKey) as? Date)
@@ -39,6 +42,9 @@ public final class ICloudSyncMonitor {
                 case let .event(event):
                     let before = tracker.lastSynced
                     tracker.record(event)
+                    if let failure = event.failure {
+                        telemetry.log("iCloud sync failed", ["kind": "\(event.kind)", "reason": "\(failure)"])
+                    }
                     if let lastSynced = tracker.lastSynced, lastSynced != before {
                         defaults.set(lastSynced, forKey: DeviceSettings.iCloudLastSyncedKey)
                     }

@@ -3657,6 +3657,41 @@
         }
       }
     },
+    "Counts which features you use, with Google Analytics, so the developer knows what to build next. Never your cards, your places or anything personal." : {
+      "comment" : "Under the Share Usage Data switch in Settings, saying what it counts and what it never does. Google Analytics is Google's product name; keep it.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يحصي الميزات التي تستخدمها عبر Google Analytics ليعرف المطوّر ما يجب تطويره لاحقًا. لا يشمل ذلك أبدًا بطاقاتك أو أماكنك أو أي بيانات شخصية."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zählt mit Google Analytics, welche Funktionen du verwendest, damit der Entwickler weiß, was als Nächstes gebraucht wird. Nie deine Karten, deine Orte oder etwas Persönliches."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuenta qué funciones usas, con Google Analytics, para que el desarrollador sepa qué crear a continuación. Nunca tus tarjetas, tus lugares ni nada personal."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compte les fonctionnalités que vous utilisez, avec Google Analytics, pour que le développeur sache quoi créer ensuite. Jamais vos cartes, vos lieux ni rien de personnel."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "どの機能が使われているかをGoogle Analyticsで集計し、開発者が次に作るものの参考にします。カード、場所、個人情報が送信されることはありません。"
+          }
+        }
+      }
+    },
     "Created by %@" : {
       "comment" : "Settings row that opens the author's website. The argument is the author's name.",
       "localizations" : {
@@ -7236,41 +7271,6 @@
         }
       }
     },
-    "Lets Card Barcodes send crash reports and performance data to its developer, to find and fix problems. Your cards and places are never included." : {
-      "comment" : "Under the Share Diagnostics switch in Settings, saying what it allows. Card Barcodes is the app's name.",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "يتيح لـ Card Barcodes إرسال تقارير الأعطال وبيانات الأداء إلى مطوّره للعثور على المشاكل وإصلاحها. لا يتم أبدًا تضمين بطاقاتك وأماكنك."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Erlaubt Card Barcodes, Absturzberichte und Leistungsdaten an den Entwickler zu senden, um Probleme zu finden und zu beheben. Deine Karten und Orte sind nie enthalten."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Permite que Card Barcodes envíe informes de errores y datos de rendimiento a su desarrollador para encontrar y corregir problemas. Tus tarjetas y lugares nunca se incluyen."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Autorise Card Barcodes à envoyer des rapports de plantage et des données de performance à son développeur, pour trouver et corriger les problèmes. Vos cartes et vos lieux ne sont jamais inclus."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "問題の発見と修正のために、Card Barcodesがクラッシュレポートとパフォーマンスデータを開発者に送信できるようにします。カードや場所の情報が含まれることはありません。"
-          }
-        }
-      }
-    },
     "Library" : {
       "comment" : "Card icon picker, read by VoiceOver: books on a shelf, for libraries.",
       "localizations" : {
@@ -10002,7 +10002,7 @@
       }
     },
     "Privacy" : {
-      "comment" : "Settings section heading for the Share Diagnostics switch.",
+      "comment" : "Settings section heading for the Share Diagnostics and Share Usage Data switches.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -10917,6 +10917,41 @@
         }
       }
     },
+    "Sends crash reports and performance data to Sentry, so the developer can find and fix problems. Never your cards, your places or anything personal." : {
+      "comment" : "Under the Share Diagnostics switch in Settings, saying what it sends and what it never does. Sentry is a company's product name; keep it.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يرسل تقارير الأعطال وبيانات الأداء إلى Sentry ليتمكّن المطوّر من العثور على المشكلات وإصلاحها. لا يشمل ذلك أبدًا بطاقاتك أو أماكنك أو أي بيانات شخصية."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sendet Absturzberichte und Leistungsdaten an Sentry, damit der Entwickler Probleme finden und beheben kann. Nie deine Karten, deine Orte oder etwas Persönliches."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Envía informes de error y datos de rendimiento a Sentry para que el desarrollador pueda detectar y corregir problemas. Nunca tus tarjetas, tus lugares ni nada personal."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Envoie les rapports de plantage et les données de performance à Sentry, pour que le développeur puisse trouver et corriger les problèmes. Jamais vos cartes, vos lieux ni rien de personnel."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クラッシュレポートとパフォーマンスデータをSentryに送信し、開発者が問題を見つけて修正できるようにします。カード、場所、個人情報が送信されることはありません。"
+          }
+        }
+      }
+    },
     "Sets notes shown on this card's screen" : {
       "comment" : "VoiceOver hint for the notes field in the card form.",
       "localizations" : {
@@ -11228,6 +11263,41 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "リンクを共有"
+          }
+        }
+      }
+    },
+    "Share Usage Data" : {
+      "comment" : "Settings switch that lets the app count which of its features are used, with Google Analytics.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مشاركة بيانات الاستخدام"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nutzungsdaten teilen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compartir datos de uso"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Partager les données d’utilisation"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用状況データを共有"
           }
         }
       }
@@ -12596,6 +12666,41 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ショッピングカート"
+          }
+        }
+      }
+    },
+    "Turn either off here at any time. Nothing is sent while it is off." : {
+      "comment" : "Under the Share Diagnostics and Share Usage Data switches in Settings: either can be turned off here, and nothing is sent while it is off.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يمكنك إيقاف أيٍّ منهما هنا في أي وقت. لا يتم إرسال أي شيء أثناء إيقافه."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beides kannst du hier jederzeit ausschalten. Solange es aus ist, wird nichts gesendet."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Puedes desactivar cualquiera de las dos opciones aquí en cualquier momento. Mientras esté desactivada, no se envía nada."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Désactivez l’un ou l’autre ici à tout moment. Rien n’est envoyé tant qu’il est désactivé."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "どちらもここでいつでもオフにできます。オフの間は何も送信されません。"
           }
         }
       }

@@ -21,6 +21,7 @@ let settingsStory = Story(
         .options("iCloud status", ICloudSyncSample.allCases.map(\.rawValue), ICloudSyncSample.upToDate.rawValue),
         .options("iCloud deletion", ICloudDeletion.allCases.map(\.rawValue), ICloudDeletion.notAsked.rawValue),
         .toggle("Share diagnostics", true),
+        .toggle("Share usage data", true),
         .options("Maps app", MapsApp.allCases.map(\.rawValue), MapsApp.appleMaps.rawValue),
         .text("Message", "")
     ] + DistanceKnobs.knobs,
@@ -93,6 +94,7 @@ let settingsStory = Story(
             mapsApp: knobs.optionBinding("Maps app", default: MapsApp.appleMaps),
             syncsWithICloud: knobs.boolBinding("iCloud sync"),
             sharesDiagnostics: knobs.boolBinding("Share diagnostics"),
+            sharesUsageData: knobs.boolBinding("Share usage data"),
             message: message
         )
         .distances(knobs)

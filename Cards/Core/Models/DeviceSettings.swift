@@ -23,8 +23,10 @@ public enum DeviceSettings {
     /// When iCloud Sync last ended well, a `Date`, so Settings can say it after a
     /// relaunch (DATA-10). Not a setting anyone changes.
     public static let iCloudLastSyncedKey = "iCloudLastSynced"
-    /// Whether the app may send its developer crash reports and performance data
-    /// (PLAT-11). On until it is turned off in Settings. The app sends none yet:
-    /// the crash reporting to come must ask this first, and never send cards or places.
+    /// Whether the app sends its developer crash reports and performance data
+    /// through Sentry (PLAT-11, PLAT-14). On until it is turned off in Settings.
     public static let sharesDiagnosticsKey = "sharesDiagnostics"
+    /// Whether the app counts which features are used through Google Analytics
+    /// (PLAT-15). On until it is turned off in Settings.
+    public static let sharesUsageDataKey = "sharesUsageData"
 }

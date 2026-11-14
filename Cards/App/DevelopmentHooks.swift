@@ -123,6 +123,18 @@ enum DevelopmentHooks {
         #endif
     }
 
+    /// What the app tells its developer (PLAT-14, PLAT-15): Sentry and Google
+    /// Analytics, under their switches, except in UI tests and unit tests,
+    /// where nothing is ever sent. Debug builds report as "debug", so they are
+    /// told apart from the App Store's.
+    static var telemetry: Telemetry {
+        #if DEBUG
+        isUITesting || ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil ? .silent : .live(environment: "debug")
+        #else
+        .live(environment: "production")
+        #endif
+    }
+
     /// Whether the app counts the days cards are shown on and asks for an App
     /// Store rating (PLAT-8): always, except in UI tests and the screenshots,
     /// where Apple's prompt would cover the screen under test.

@@ -10,6 +10,7 @@ public struct CardEditScreen: View {
     @Environment(\.accessibilityAnnouncer) private var announcer
     @Query private var cards: [CardItem]
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.telemetry) private var telemetry
     @Environment(\.placeSearch) private var placeSearch
     @AppStorage(ArrivalPlan.enabledKey) private var arrivalNotifications = true
     @Environment(\.fileReader) private var fileReader
@@ -47,6 +48,7 @@ public struct CardEditScreen: View {
                     draft.barcodeType = type
                 }
             }
+            .onAppear { telemetry.record(.screen(isNewCard ? .newCard : .editCard)) }
     }
 
     @ViewBuilder
@@ -119,6 +121,7 @@ public struct CardEditScreen: View {
         cardItem.apply(draft)
 
         if let onSave {
+            telemetry.record(.cardAdded(.form))
             onSave(cardItem)
         } else {
             navigationManager?.navigate(to: .card(cardItem.code))

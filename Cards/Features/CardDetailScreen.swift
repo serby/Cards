@@ -3,6 +3,9 @@ import SwiftUI
 
 public struct CardDetailScreen: View {
     @AppStorage("brightnessBoost") private var brightnessBoost = true
+    @Environment(\.telemetry) private var telemetry
+    /// Whether this viewing's barcode was counted, so coming back from Edit or a sheet doesn't count it again.
+    @State private var countedBarcode = false
     @Environment(LocationService.self) private var locationService
     @Environment(\.modelContext) private var modelContext
     @Environment(\.placeSearch) private var placeSearch
@@ -32,7 +35,14 @@ public struct CardDetailScreen: View {
                 copyCode: { clipboard.write(item.code) }
             )
         )
-        .onAppear(perform: recordView)
+        .onAppear {
+            recordView()
+            telemetry.record(.screen(.card))
+            if !countedBarcode {
+                countedBarcode = true
+                telemetry.record(.barcodeShown(brightnessBoost: brightnessBoost))
+            }
+        }
     }
 
     /// Opening a card is what "Last viewed" sorts by (CARD-11). Stored with the

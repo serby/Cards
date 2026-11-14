@@ -10,6 +10,7 @@ public struct CardListScreen: View {
     @Environment(ArrivalScheduler.self) private var arrivalScheduler
     @Environment(\.widgetSnapshot) private var widgetSnapshot
     @Environment(\.watchSync) private var watchSync
+    @Environment(\.telemetry) private var telemetry
     @Environment(\.distanceUnits) private var distanceUnits
     @Environment(\.requestReview) private var requestReview
     @Environment(\.calendar) private var calendar
@@ -70,8 +71,12 @@ public struct CardListScreen: View {
         }
         // The barcodes are drawn for the watch only when what it shows changes (WATCH-1).
         .task(id: WatchContents(cards: widgetCards, icons: cardItems.map(\.icon), distanceUnits: distanceUnits)) {
-            watchSync.send(WatchSnapshot(cards: cardItems.map(WatchCard.init), distanceUnits: distanceUnits))
+            let snapshot = telemetry.measure(.watchSnapshot) {
+                WatchSnapshot(cards: cardItems.map(WatchCard.init), distanceUnits: distanceUnits)
+            }
+            watchSync.send(snapshot)
         }
+        .onAppear { telemetry.record(.screen(.cards)) }
         .onChange(of: navigationManager.navigationPath.isEmpty) { _, isEmpty in
             guard isEmpty else { return }
             if cardOnTop {
@@ -217,6 +222,7 @@ public struct CardListScreen: View {
 
     /// Opens the card with `code`, zooming up out of `kind` of source.
     private func open(_ code: String, from kind: CardZoomSource.Kind) {
+        telemetry.record(.cardOpened(kind == .tile ? .grid : .cardWhereYouAre))
         opening = CardZoomSource(kind, cardID: code)
         navigationManager.navigate(to: .card(code))
     }

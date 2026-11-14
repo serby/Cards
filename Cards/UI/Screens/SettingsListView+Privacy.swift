@@ -257,14 +257,42 @@ extension SettingsListView {
                 Text("Share Diagnostics", comment: "Settings switch that lets the app send its developer crash reports and performance data."),
                 subtitle: Text(
                     """
-                    Lets Card Barcodes send crash reports and performance data to its developer, to find and fix problems. \
-                    Your cards and places are never included.
+                    Sends crash reports and performance data to Sentry, so the developer can find and fix problems. \
+                    Never your cards, your places or anything personal.
                     """,
-                    comment: "Under the Share Diagnostics switch in Settings, saying what it allows. Card Barcodes is the app's name."
+                    comment: """
+                        Under the Share Diagnostics switch in Settings, saying what it sends and what it never does. \
+                        Sentry is a company's product name; keep it.
+                        """
                 ),
                 isOn: $sharesDiagnostics,
                 identifier: "shareDiagnosticsToggle"
             )
+            switchRow(
+                Text("Share Usage Data", comment: "Settings switch that lets the app count which of its features are used, with Google Analytics."),
+                subtitle: Text(
+                    """
+                    Counts which features you use, with Google Analytics, so the developer knows what to build next. \
+                    Never your cards, your places or anything personal.
+                    """,
+                    comment: """
+                        Under the Share Usage Data switch in Settings, saying what it counts and what it never does. \
+                        Google Analytics is Google's product name; keep it.
+                        """
+                ),
+                isOn: $sharesUsageData,
+                identifier: "shareUsageDataToggle"
+            )
+            Text(
+                "Turn either off here at any time. Nothing is sent while it is off.",
+                comment: """
+                    Under the Share Diagnostics and Share Usage Data switches in Settings: \
+                    either can be turned off here, and nothing is sent while it is off.
+                    """
+            )
+            .font(.caption)
+            .foregroundStyle(Color.secondaryText)
+            .accessibilityIdentifier("privacySwitchesFooter")
             Text(
                 """
                 iOS shares its own crash reports with app developers only when Share With App Developers is on, \
@@ -279,7 +307,7 @@ extension SettingsListView {
             .foregroundStyle(Color.secondaryText)
             .accessibilityIdentifier("shareDiagnosticsFooter")
         } header: {
-            Text("Privacy", comment: "Settings section heading for the Share Diagnostics switch.")
+            Text("Privacy", comment: "Settings section heading for the Share Diagnostics and Share Usage Data switches.")
                 .foregroundStyle(Color.secondaryText)
                 .accessibilityIdentifier("privacySectionHeader")
         }

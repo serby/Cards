@@ -15,6 +15,8 @@ public struct SettingsListView: View {
     @Binding var syncsWithICloud: Bool
     /// Whether the app may send its developer diagnostics (PLAT-11).
     @Binding var sharesDiagnostics: Bool
+    /// Whether the app counts which features are used (PLAT-15).
+    @Binding var sharesUsageData: Bool
     /// The import result to show in an alert, already in the app's language.
     @Binding private var message: String?
     let actions: SettingsActions
@@ -37,6 +39,7 @@ public struct SettingsListView: View {
         mapsApp: Binding<MapsApp> = .constant(.appleMaps),
         syncsWithICloud: Binding<Bool> = .constant(true),
         sharesDiagnostics: Binding<Bool> = .constant(true),
+        sharesUsageData: Binding<Bool> = .constant(true),
         message: Binding<String?> = .constant(nil),
         actions: SettingsActions = SettingsActions()
     ) {
@@ -48,6 +51,7 @@ public struct SettingsListView: View {
         _mapsApp = mapsApp
         _syncsWithICloud = syncsWithICloud
         _sharesDiagnostics = sharesDiagnostics
+        _sharesUsageData = sharesUsageData
         _message = message
         self.actions = actions
     }

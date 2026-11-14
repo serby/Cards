@@ -9,6 +9,7 @@ public struct SharedCardScreen: View {
     private let navigationManager: NavigationManager
     @Query private var cards: [CardItem]
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.telemetry) private var telemetry
     /// When the sheet opened: the date the face shows, which adding then records.
     @State private var openedAt = Date.now
     /// The card's places as the sheet lists them, made once so their ids stay put.
@@ -22,6 +23,7 @@ public struct SharedCardScreen: View {
 
     public var body: some View {
         SharedCardView(state: state, actions: SharedCardActions(add: add, open: open))
+            .onAppear { telemetry.record(.screen(.sharedCard)) }
     }
 
     private var state: SharedCardState {
@@ -54,6 +56,7 @@ public struct SharedCardScreen: View {
             return
         }
         modelContext.insert(added)
+        telemetry.record(.cardAdded(.link))
         try? modelContext.save()
         // Navigating closes the sheet.
         navigationManager.navigate(to: .card(added.code))
